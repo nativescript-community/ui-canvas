@@ -1,0 +1,29 @@
+{
+    "name": "nativescript-canvas",
+    "version": "0.0.1",
+    "description": "Nativescript Canvas plugin.",
+    "main": "./canvas",
+    "typings": "./canvas.d.ts",
+    "nativescript": {
+        "platforms": {
+            "android": "3.0.0",
+            "ios": "3.0.0"
+        }
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "iOS"
+    ],
+    "author": {
+        "name": "Martin Guillon",
+        "email": "martin@akylas.fr"
+    },
+    "bugs": {
+        "url": "https://github.com/Akylas/nativescript-canvas/issues"
+    },
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/Akylas/nativescript-canvas",
+    "readmeFilename": "README.md"
+}

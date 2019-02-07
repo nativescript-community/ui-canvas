@@ -1,17 +1,56 @@
 {
-  "name": "nativescript-canvas",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "node prepackage.js"
-  },
-  "author": "",
-  "license": "Apache-2.0",
-  "nativescript": {},
-  "devDependencies": {
-    "mkdirp": "^0.5.1",
-    "q": "^1.4.1"
-  }
+    "name": "nativescript-canvas",
+    "version": "1.0.0",
+    "scripts": {
+        "tsc": "tsc -skipLibCheck && cp src/canvas.d.ts plugin",
+        "build.wrappers": "npm i && npm run tsc",
+        "build.android": "bash src-native/android/build.sh",
+        "build.ios": "bash src-native/ios/build.sh",
+        "build.native": "npm run build.android && npm run build.ios",
+        "build": "npm run build.wrappers && npm run build.native",
+        "demo.ios": "npm i && npm run tsc && cd demo && tns run ios",
+        "demo.android": "npm i && npm run tsc && cd demo && tns run android",
+        "clean.demo": "rimraf demo/hooks demo/node_modules demo/platforms",
+        "clean": "rimraf plugin/ios plugin/android plugin/**/*.d.ts plugin/**/*.js plugin/**/*.js.map plugin/node_modules plugin/package-lock.json",
+        "plugin.watch.tsc": "npm run tsc -- -w",
+        "plugin.watch.android": "npm i && npm-watch build.android",
+        "plugin.watch.ios": "npm i && npm-watch build.ios",
+        "plugin.watch": "npm run plugin.watch.tsc & npm run plugin.watch.android & npm run plugin.watch.ios"
+    },
+    "devDependencies": {
+        "@types/node": "^10.12.21",
+        "npm-watch": "^0.6.0",
+        "prompt": "^1.0.0",
+        "rimraf": "^2.6.3",
+        "tns-core-modules": "5.1.2",
+        "tns-platform-declarations": "^5.1.2",
+        "tslint": "^5.12.1",
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-config-standard": "^8.0.1",
+        "typescript": "~3.2.4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Akylas/nativescript-canvas.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Akylas/nativescript-canvas/issues"
+    },
+    "homepage": "https://github.com/Akylas/nativescript-canvas#readme",
+    "watch": {
+        "build.android": {
+            "patterns": [
+                "../src-native/android/canvas/src"
+            ],
+            "extensions": "java"
+        },
+        "build.ios": {
+            "patterns": [
+                "../src-native/ios/Canvas"
+            ],
+            "extensions": "h,m,mm"
+        }
+    }
 }

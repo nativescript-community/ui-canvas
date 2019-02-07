@@ -1,0 +1,42 @@
+// Add your native dependencies here:
+
+// Uncomment to add recyclerview-v7 dependency
+//dependencies {
+//	compile 'com.android.support:recyclerview-v7:+'
+//}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src/main/java']
+    }
+}
+
+android {
+  defaultConfig {
+    generatedDensities = []
+    applicationId = "org.nativescript.demovuecanvas"
+    multiDexEnabled true
+    //override supported platforms
+    // ndk {
+    //       abiFilters.clear()
+    //   		abiFilters "armeabi-v7a"
+ 		// }
+
+     ndk {
+      abiFilters.clear()
+            // abiFilters 'x86', 'armeabi', 'armeabi-v7a'   
+             }
+
+  }
+  // splits {
+  //       abi {
+  //           enable true
+  //           reset()
+  //           include 'x86', 'armeabi', 'armeabi-v7a'
+  //           universalApk false
+  //       }
+  //   }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
+  }
+}

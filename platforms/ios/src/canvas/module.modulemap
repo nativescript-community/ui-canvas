@@ -1,6 +1,0 @@
-framework module canvas {
-  umbrella header "canvas.h"
-
-  export *
-  module * { export * }
-}
