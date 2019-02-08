@@ -18,11 +18,8 @@ function createRect(x, y, w, h) {
     return new Rect(x, y, x + w, y + h);
 }
 
-export function drawOnImage(scale = 1, canvas?) {
-    console.log('drawOnImage', isOnUiThread(), scale, !!canvas);
-
+export function drawOnImage(scale = 3, canvas?) {
     const folder: Folder = knownFolders.currentApp();
-
 
     const iconLocalFile: ImageSource = fromFile(path.join(folder.path, 'images/icon.png'));
     if (!canvas) {
@@ -41,6 +38,8 @@ export function drawOnImage(scale = 1, canvas?) {
 
     const width = canvas.getWidth();
     const height = canvas.getHeight();
+
+    console.log('drawOnImage', isOnUiThread(), scale, width, height);
 
     const hW = width / 2;
     const hH = height / 2;
@@ -139,6 +138,7 @@ export function drawOnImage(scale = 1, canvas?) {
     canvas.translate(300, 600);
     textPaint.textSize = 20;
     textPaint.style = Style.FILL;
+    canvas.drawPath(customPath, bgPaint);
     canvas.drawTextOnPath('text on path', customPath, 0, 0, textPaint);
     canvas.restore();
 
@@ -160,14 +160,14 @@ export function drawOnImage(scale = 1, canvas?) {
     canvas.drawView(label, createRect(0, 0, 100, 300));
     canvas.restore();
 
-    canvas.save();
-    canvas.translate(300, 700);
-    const gradient = new RadialGradient(0, 0, 50, 'red' as any, 'green' as any, TileMode.CLAMP);
-    const p = new Paint();
-    p.setDither(true);
-    p.setShader(gradient);
-    canvas.drawCircle(0, 0, 50, p);
-    canvas.restore();
+    // canvas.save();
+    // canvas.translate(300, 700);
+    // const gradient = new RadialGradient(0, 0, 50, 'red' as any, 'green' as any, TileMode.CLAMP);
+    // const p = new Paint();
+    // p.setDither(true);
+    // p.setShader(gradient);
+    // canvas.drawCircle(0, 0, 50, p);
+    // canvas.restore();
 
     return canvas.getImage();
 }

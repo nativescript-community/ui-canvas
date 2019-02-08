@@ -34,9 +34,9 @@ export default {
       <StackLayout>
       <Button text="testImage" @tap="onTap('testImage', $event)"/>
       <Button text="testImageWorker" @tap="onTap('testImageWorker', $event)"/>
-      <GridLayout columns="*,*" backgroundColor="red" height="100%">
-        <Image ref="imageView" col="0" stretch="aspectFit"/>
-        <CanvasView ref="canvasView"col="1"  backgroundColor="blue" @draw="onDraw($event)"/>
+      <GridLayout rows="*,*" backgroundColor="red" height="100%">
+        <Image ref="imageView" row="0" stretch="aspectFit"/>
+        <CanvasView ref="canvasView"row="1"  backgroundColor="blue" @draw="onDraw($event)"/>
       </GridLayout>
       </StackLayout>
     </Page>
