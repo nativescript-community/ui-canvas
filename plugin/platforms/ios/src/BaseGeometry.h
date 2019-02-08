@@ -3,8 +3,8 @@
  Erica Sadun, http://ericasadun.com
  
  */
-#import <UIKit/UIKit.h>;
-#import <QuartzCore/QuartzCore.h>;
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 // Just because
 #define TWO_PI (2 * M_PI)

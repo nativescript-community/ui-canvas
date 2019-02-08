@@ -15,3 +15,4 @@
 #import "BezierElement.h"
 #import "BezierFunctions.h"
 #import "UIBezierPath+Elements.h"
+#import "UIBezierPath+Text.h"

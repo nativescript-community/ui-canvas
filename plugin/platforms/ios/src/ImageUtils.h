@@ -7,8 +7,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>;
-#import <QuartzCore/QuartzCore.h>;
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 // 4 bytes per ARGB pixel, 8 bits per byte
 #define ARGB_COUNT 4
