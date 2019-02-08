@@ -17,8 +17,6 @@ Be sure to run a new build after adding plugins to avoid any issues.
 The nativescript Canvas is based on the [Android Canvas](https://developer.android.com/reference/android/graphics/Canvas) class.
 The android API is actually a direct subclass with some Additions
 
-iOS not working yet
-
 ## Plain NativeScript
 
 <span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:mdc="nativescript-canvas"` on the Page element_

@@ -1056,7 +1056,7 @@ export class Canvas implements ICanvas {
     }
 }
 
-class UICanvasView extends UIView {
+export class UICanvasView extends UIView {
     _canvas: Canvas; // CGContextRef;
     public _owner: WeakRef<CanvasView>;
 
