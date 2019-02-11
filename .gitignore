@@ -19,4 +19,3 @@ Pods
 !plugin/platforms
 /plugin/platforms/android/nativescript_*.aar
 *.xcuserdatad
-src-native

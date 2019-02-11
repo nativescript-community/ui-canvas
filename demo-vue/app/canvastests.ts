@@ -60,7 +60,9 @@ export function drawOnImage(scale = 3, canvas?) {
     canvas.save();
     canvas.translate(250, 10);
     bgPaint.setStyle(Style.FILL);
+    bgPaint.setShadowLayer(30, 0, 2, 'blue');
     canvas.drawRoundRect(createRect(0, 0, 200, 100), 30, 30, bgPaint);
+    bgPaint.clearShadowLayer();
     bgPaint.setStyle(Style.STROKE);
     canvas.drawRoundRect(createRect(0, 120, 200, 100), 30, 30, bgPaint);
     canvas.restore();
@@ -91,7 +93,9 @@ export function drawOnImage(scale = 3, canvas?) {
     canvas.drawText('Filled Text', 0, 150, textPaint);
 
     textPaint.setStyle(Style.STROKE);
+    textPaint.setShadowLayer(30, 0, 2, 'blue');
     canvas.drawText('Stroke Text', 0, 300, textPaint);
+    textPaint.clearShadowLayer();
     canvas.restore();
 
     // image
@@ -125,6 +129,7 @@ export function drawOnImage(scale = 3, canvas?) {
     // top left
     customPath.lineTo(mid + half * 0.5, half * 0.84);
     customPath.close();
+
     canvas.drawPath(customPath, bgPaint);
     bgPaint.setStyle(Style.STROKE);
     canvas.translate(200, 0);
@@ -133,11 +138,12 @@ export function drawOnImage(scale = 3, canvas?) {
 
     // draw text along path
     customPath.reset();
-    customPath.addArc(createRect(0, 0, 100, 100), 90, 180);
+    customPath.addArc(createRect(0, 0, 300, 300), 90, 180);
     canvas.save();
     canvas.translate(300, 600);
-    textPaint.textSize = 20;
-    textPaint.style = Style.FILL;
+    textPaint.color = 'blue';
+    textPaint.textSize = 30;
+    textPaint.style = Style.STROKE;
     canvas.drawPath(customPath, bgPaint);
     canvas.drawTextOnPath('text on path', customPath, 0, 0, textPaint);
     canvas.restore();
@@ -160,14 +166,14 @@ export function drawOnImage(scale = 3, canvas?) {
     canvas.drawView(label, createRect(0, 0, 100, 300));
     canvas.restore();
 
-    // canvas.save();
-    // canvas.translate(300, 700);
-    // const gradient = new RadialGradient(0, 0, 50, 'red' as any, 'green' as any, TileMode.CLAMP);
-    // const p = new Paint();
-    // p.setDither(true);
-    // p.setShader(gradient);
-    // canvas.drawCircle(0, 0, 50, p);
-    // canvas.restore();
+    canvas.save();
+    canvas.translate(300, 700);
+    const gradient = new RadialGradient(0, 0, 50, 'red' as any, 'green' as any, TileMode.CLAMP);
+    const p = new Paint();
+    p.setDither(true);
+    p.setShader(gradient);
+    canvas.drawCircle(0, 0, 50, p);
+    canvas.restore();
 
     return canvas.getImage();
 }

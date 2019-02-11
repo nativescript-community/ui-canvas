@@ -214,6 +214,7 @@ export class Matrix {}
 
 export class Path implements IPath {
     _path: any;
+    _fillType: FillType;
     constructor() {
         this._path = CGPathCreateMutable();
         // this._path = UIBezierPath.bezierPath();
@@ -328,8 +329,8 @@ export class Path implements IPath {
     moveTo(x: number, y: number): void {
         CGPathMoveToPoint(this._path, null, x, y);
     }
-    setFillType(param0: FillType): void {
-        // console.error('Method not implemented.');
+    setFillType(value: FillType): void {
+        this._fillType = value;
     }
     isEmpty(): boolean {
         console.error('Method not implemented.');
@@ -342,8 +343,7 @@ export class Path implements IPath {
         console.error('Method not implemented.');
     }
     getFillType(): FillType {
-        console.error('Method not implemented.');
-        return null;
+        return this._fillType;
     }
     addRect(...params) {
         const length = params.length;
@@ -386,6 +386,26 @@ export class Paint implements IPaint {
     dither = false;
     alpha = 1;
     currentContext: any;
+    shadowLayer?: {
+        radius: number;
+        dx: number;
+        dy: number;
+        color: Color;
+    };
+    shader;
+
+    public setShadowLayer(radius: number, dx: number, dy: number, color: number | Color | string): void {
+        this.shadowLayer = {
+            radius,
+            dx,
+            dy,
+            color: color instanceof Color ? color : new Color(color as any)
+        };
+    }
+    public clearShadowLayer() {
+        this.shadowLayer = undefined;
+    }
+
     public getAlpha(): number {
         return this.alpha;
     }
@@ -425,7 +445,7 @@ export class Paint implements IPaint {
         return this.strokeJoin;
     }
     public getShader() {
-        console.error('Method not implemented.');
+        return this.shader;
     }
     public setStrokeWidth(value: number): void {
         this.strokeWidth = value;
@@ -458,7 +478,10 @@ export class Paint implements IPaint {
         return this.strokeCap;
     }
     public setShader(value: any) {
-        console.error('Method not implemented.');
+        if (this.shader) {
+            this.shader.clear();
+        }
+        this.shader = value;
     }
     constructor() {
         // this.font = Font.default;
@@ -473,6 +496,9 @@ export class Paint implements IPaint {
 
     getUIFont() {
         return this.font.getUIFont(UIFont.systemFontOfSize(ios.getter(UIFont, UIFont.labelFontSize)));
+    }
+    getUIColor() {
+        return (this.color as Color).ios;
     }
 
     setTextSize(textSize) {
@@ -635,21 +661,6 @@ export class Canvas implements ICanvas {
     drawPoint(x: number, y: number, paint: IPaint): void {
         console.error('Method not implemented.');
     }
-    @paint
-    drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
-        const ctx = this.ctx;
-        const bPath = UIBezierPath.bezierPathWithCGPath(path._path);
-        // (bPath as any).drawAttributedString(NSAttributedString.alloc().initWithString(text));
-    }
-    drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: IPaint): void {
-        console.error('Method not implemented.');
-    }
-    drawPosText(...arg) {
-        // drawPosText(text: string, pos: number[], paint: IPaint): void;
-        // drawPosText(text: string[], index: number, count: number, pos: number[], paint: IPaint): void;
-        // drawPosText(text: any, index: any, count: any, pos?: any, paint?: any)
-        console.error('Method not implemented.');
-    }
     drawPoints(pts: number[], paint: IPaint): void {
         console.error('Method not implemented.');
     }
@@ -683,7 +694,11 @@ export class Canvas implements ICanvas {
         const ctx = this.ctx;
         CGContextBeginPath(ctx);
         CGContextAddPath(ctx, path._path);
-        this._drawPath(paint, ctx);
+        if (path._fillType === FillType.EVEN_ODD) {
+            this._drawEOFPath(paint, ctx);
+        } else {
+            this._drawPath(paint, ctx);
+        }
     }
     clipOutPath(path: IPath): boolean {
         console.error('Method not implemented.');
@@ -769,6 +784,14 @@ export class Canvas implements ICanvas {
         CGContextSetAlpha(ctx, paint.alpha);
         CGContextSetShouldAntialias(ctx, paint.antiAlias);
         CGContextSetShouldSmoothFonts(ctx, paint.antiAlias);
+
+        if (paint.shadowLayer) {
+            console.log('applying shadow layer');
+            const s = paint.shadowLayer;
+            CGContextSetShadowWithColor(ctx, CGSizeMake(s.dx, s.dy), s.radius, s.color.ios.CGColor);
+        } else {
+            CGContextSetShadow(ctx, CGSizeZero, 0);
+        }
         // CGContextSetRGBFillColor(ctx, 0.0, 1.0, 0.0, 1.0);
         if (paint.strokeWidth) {
             CGContextSetLineWidth(ctx, paint.strokeWidth);
@@ -866,7 +889,6 @@ export class Canvas implements ICanvas {
     fillRect(x: number, y: number, w: number, h: number, paint?: Paint) {
         const ctx = this.ctx;
         const color = paint.getColor();
-        console.log('fillRect', x, y, w, h, color.r, color.g, color.b, color.a / 255);
         CGContextFillRect(ctx, createCGRect(x, y, w, h));
     }
     @profile
@@ -882,7 +904,6 @@ export class Canvas implements ICanvas {
             rect = (params[0] as Rect).cgRect;
         }
 
-        console.log('drawRect', this._height, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
         if (paint.style === Style.FILL) {
             CGContextFillRect(ctx, rect);
         } else if (paint.style === Style.STROKE) {
@@ -912,17 +933,39 @@ export class Canvas implements ICanvas {
         CGContextClipToRect(ctx, rect);
         return true;
     }
-
-    private _drawPath(paint: Paint, ctx) {
+    private _drawEOFPath(paint: Paint, ctx) {
+        if (paint.shader) {
+            if (paint.shader instanceof RadialGradient) {
+                const g = paint.shader as RadialGradient;
+                console.log('drawing gradient', g);
+                CGContextClip(ctx);
+                CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
+            }
+        }
         if (paint.style === Style.FILL) {
-            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
-            // CGContextFillRect(ctx, rect);
+            CGContextEOFillPath(ctx);
         } else if (paint.style === Style.STROKE) {
             CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
-            // CGContextStrokeRect(ctx, rect);
+        } else {
+            CGContextEOFillPath(ctx);
+            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
+        }
+    }
+    private _drawPath(paint: Paint, ctx) {
+        if (paint.shader) {
+            if (paint.shader instanceof RadialGradient) {
+                const g = paint.shader as RadialGradient;
+                console.log('drawing gradient', g);
+                CGContextClip(ctx);
+                CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
+            }
+        }
+        if (paint.style === Style.FILL) {
+            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
+        } else if (paint.style === Style.STROKE) {
+            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
         } else {
             CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
-            // CGContextStrokeRect(ctx, rect);
         }
     }
 
@@ -1014,7 +1057,6 @@ export class Canvas implements ICanvas {
             x = params[1];
             y = params[2];
         }
-        console.log('drawText', text, x, y);
         // UIGraphicsPushContext(ctx);
         // CGContextTranslateCTM(ctx, 0.0, this._height);
         // CGContextScaleCTM(ctx, 1.0, -1.0);
@@ -1041,6 +1083,31 @@ export class Canvas implements ICanvas {
         // const fontSize = ((paint && paint.font) || this._paint.font).fontSize || 20;
         // CGContextShowTextAtPoint(ctx, x, y, text, text.length);
         // UIGraphicsGetCurrentContext();
+    }
+    @paint
+    drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
+        const ctx = this.ctx;
+        const bPath = UIBezierPath.bezierPathWithCGPath(path._path);
+        if (paint.style === Style.FILL) {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
+        } else if (paint.style === Style.STROKE) {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
+        } else {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
+        }
+        const attribs = NSDictionary.dictionaryWithObjectsForKeys([paint.getUIFont(), paint.getUIColor()], [NSFontAttributeName, NSForegroundColorAttributeName]);
+
+        const fontStr = NSAttributedString.alloc().initWithStringAttributes(text, attribs);
+        (bPath as any).drawAttributedString(fontStr);
+    }
+    drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: IPaint): void {
+        console.error('Method not implemented.');
+    }
+    drawPosText(...arg) {
+        // drawPosText(text: string, pos: number[], paint: IPaint): void;
+        // drawPosText(text: string[], index: number, count: number, pos: number[], paint: IPaint): void;
+        // drawPosText(text: any, index: any, count: any, pos?: any, paint?: any)
+        console.error('Method not implemented.');
     }
 
     getCGImage() {
@@ -1105,5 +1172,34 @@ export class CanvasView extends View {
 }
 
 export class RadialGradient {
-    constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {}
+    _gradient;
+    // centerX: number;
+    // centerY: number;
+    // radius: number;
+    // tileMode: TileMode;
+    constructor(public centerX: number, public centerY: number, public radius: number, public colors: any, public stops: any, public tileMode: TileMode) {}
+    get gradient() {
+        console.log('get gradient', this._gradient);
+        if (!this._gradient) {
+            console.log('create gradient', Array.isArray(this.colors), this.colors, this.stops);
+            if (Array.isArray(this.colors)) {
+                const cgColors = this.colors.map(c => (c instanceof Color ? c : new Color(c as any)).ios.CGColor);
+                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
+                CFRetain(this._gradient);
+            } else {
+                const cgColors = [this.colors, this.stops].map(c => (c instanceof Color ? c : new Color(c as any)).ios.CGColor);
+                console.log('cgColors', cgColors);
+                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
+                CFRetain(this._gradient);
+            }
+            console.log('created gradient', this._gradient);
+        }
+        return this._gradient;
+    }
+    clear() {
+        if (this._gradient) {
+            CFRelease(this._gradient);
+            this._gradient = undefined;
+        }
+    }
 }

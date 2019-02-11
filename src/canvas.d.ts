@@ -49,7 +49,8 @@ export class Paint {
     public setTextSize(value: number): void;
     public setShader(value: any): any;
     // public descent(): number;
-    // public setShadowLayer(param0: number, param1: number, param2: number, param3: number): void;
+    public setShadowLayer(radius: number, dx: number, dy: number, color: number | string | Color): void;
+    public clearShadowLayer();
     // public getFontSpacing(): number;
 }
 export class Canvas {
