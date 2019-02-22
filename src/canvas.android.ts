@@ -55,7 +55,7 @@ function initCanvasClass() {
                 const options = new android.graphics.BitmapFactory.Options();
                 options.inMutable = true;
                 (options as any).outConfig = android.graphics.Bitmap.Config.ARGB_8888;
-                this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth as number, height, options);
+                this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, options);
             }
             if (!this._bitmap.isMutable()) {
                 this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
@@ -273,10 +273,10 @@ class CanvasWrapper implements ICanvas {
         return this.canvas.getHeight();
     }
     getClipBounds() {
-        return this.canvas.getClipBounds() as any;
+        return this.canvas.getClipBounds();
     }
     getDensity() {
-        return this.canvas.getDensity() as any;
+        return this.canvas.getDensity();
     }
     getDrawFilter() {
         return this.canvas.getDrawFilter();

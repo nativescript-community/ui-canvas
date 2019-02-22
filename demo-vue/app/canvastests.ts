@@ -28,7 +28,7 @@ export function drawOnImage(scale = 3, canvas?) {
         canvas = new Canvas(imageFromLocalFile);
     }
     const bgPaint = new Paint();
-    bgPaint.setColor(new Color('black'));
+    bgPaint.setColor(new Color('yellow'));
     bgPaint.strokeWidth = 10;
 
     const textPaint = new Paint();

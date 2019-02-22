@@ -556,7 +556,7 @@ export class Canvas implements ICanvas {
     setDrawFilter(filter: any): void {
         console.error('Method not implemented.');
     }
-    @profile
+
     rotate(...args) {
         // rotate(degrees: number) {}
         // rotate(degrees: number, px: number, py: number): void;
@@ -575,7 +575,7 @@ export class Canvas implements ICanvas {
             CGContextRotateCTM(ctx, (Math.PI / 180) * degrees);
         }
     }
-    @profile
+
     scale(...args) {
         // scale(sx: number, sy: number, px: number, py: number): void;
         // scale(sx: number, sy: number): void;
@@ -595,22 +595,22 @@ export class Canvas implements ICanvas {
             CGContextScaleCTM(ctx, sx, sy);
         }
     }
-    @profile
+
     translate(dx: number, dy: number): void {
         CGContextTranslateCTM(this.ctx, dx, dy);
     }
     skew(sx: number, sy: number): void {
         console.error('Method not implemented.');
     }
-    @profile
+
     getClipBounds(): IRect {
         return new Rect(CGContextGetClipBoundingBox(this.ctx));
     }
-    @profile
+
     restore(): void {
         CGContextRestoreGState(this.ctx);
     }
-    @profile
+
     save(): number {
         CGContextSaveGState(this.ctx);
         return 0;
@@ -618,7 +618,7 @@ export class Canvas implements ICanvas {
     drawPaint(paint: IPaint): void {
         console.error('Method not implemented.');
     }
-    @profile
+
     drawARGB(a: number, r: number, g: number, b: number): void {
         this.save();
         const ctx = this.ctx;
@@ -626,11 +626,11 @@ export class Canvas implements ICanvas {
         CGContextFillRect(ctx, CGRectMake(0, 0, this._width, this._height));
         this.restore();
     }
-    @profile
+
     drawRGB(r: number, g: number, b: number): void {
         this.drawARGB(255, r, g, b);
     }
-    @profile
+
     drawColor(color: number | Color | string): void {
         const ctx = this.ctx;
         const actualColor = color instanceof Color ? color : new Color(color as any);
@@ -639,7 +639,7 @@ export class Canvas implements ICanvas {
         CGContextFillRect(ctx, CGRectMake(0, 0, this._width, this._height));
         this.restore();
     }
-    @profile
+
     @paint
     drawBitmap(...args) {
         // drawBitmap(bitmap: globalAndroid.graphics.Bitmap | UIImage | ImageSource, src: IRect, dest: IRect, paint: IPaint): void;
@@ -678,7 +678,6 @@ export class Canvas implements ICanvas {
         const ctx = this.ctx;
         const hR = radius / 2;
         const rect = CGRectMake(cx - radius, cy - radius, radius * 2, radius * 2);
-        console.log('drawRect', cx, cy, radius, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
         CGContextBeginPath(ctx);
         CGContextAddEllipseInRect(ctx, rect);
         this._drawPath(paint, ctx);
@@ -786,7 +785,6 @@ export class Canvas implements ICanvas {
         CGContextSetShouldSmoothFonts(ctx, paint.antiAlias);
 
         if (paint.shadowLayer) {
-            console.log('applying shadow layer');
             const s = paint.shadowLayer;
             CGContextSetShadowWithColor(ctx, CGSizeMake(s.dx, s.dy), s.radius, s.color.ios.CGColor);
         } else {
@@ -804,7 +802,6 @@ export class Canvas implements ICanvas {
         }
         if (paint.color) {
             const color = paint.getColor();
-            console.log('setting color', Style[paint.style], color.name);
             // if (paint.style === Style.FILL) {
             //     CGContextSetRGBFillColor(ctx, color.r / 255, color.g / 255, color.b / 255, color.a / 255);
             // } else if (paint.style === Style.STROKE) {
@@ -884,14 +881,13 @@ export class Canvas implements ICanvas {
         return context; // 7
     }
 
-    @profile
     @paint
     fillRect(x: number, y: number, w: number, h: number, paint?: Paint) {
         const ctx = this.ctx;
         const color = paint.getColor();
         CGContextFillRect(ctx, createCGRect(x, y, w, h));
     }
-    @profile
+
     @paint
     drawRect(...params) {
         const length = params.length;
@@ -913,14 +909,13 @@ export class Canvas implements ICanvas {
             CGContextStrokeRect(ctx, rect);
         }
     }
-    @profile
+
     @paint
     drawImage(x: number, y: number, w: number, h: number, image: ImageSource | UIImage) {
         const ctx = this.ctx;
         const theImage: UIImage = image instanceof ImageSource ? image.ios : image;
         CGContextDrawImage(ctx, createCGRect(x, y, w, h), theImage.CGImage);
     }
-    @profile
     clipRect(...params) {
         const ctx = this.ctx;
         const length = params.length;
@@ -936,8 +931,7 @@ export class Canvas implements ICanvas {
     private _drawEOFPath(paint: Paint, ctx) {
         if (paint.shader) {
             if (paint.shader instanceof RadialGradient) {
-                const g = paint.shader as RadialGradient;
-                console.log('drawing gradient', g);
+                const g = paint.shader;
                 CGContextClip(ctx);
                 CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
             }
@@ -954,8 +948,7 @@ export class Canvas implements ICanvas {
     private _drawPath(paint: Paint, ctx) {
         if (paint.shader) {
             if (paint.shader instanceof RadialGradient) {
-                const g = paint.shader as RadialGradient;
-                console.log('drawing gradient', g);
+                const g = paint.shader;
                 CGContextClip(ctx);
                 CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
             }
@@ -969,7 +962,6 @@ export class Canvas implements ICanvas {
         }
     }
 
-    @profile
     @paint
     drawRoundRect(...params) {
         // drawRoundRect(left: number, top: number, right: number, bottom: number, rx: number, ry: number, paint: IPaint): void;
@@ -986,12 +978,11 @@ export class Canvas implements ICanvas {
             radius = Math.max(params[1], params[2]);
             rect = (params[0] as Rect).cgRect;
         }
-        console.log('drawRect', paint.style, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height, radius);
         const path = UIBezierPath.bezierPathWithRoundedRectCornerRadius(rect, radius);
         CGContextAddPath(ctx, path.CGPath);
         this._drawPath(paint, ctx);
     }
-    @profile
+
     @paint
     drawArc(...params) {
         // drawArc(rect: Rect, startAngle: number, sweepAngle: number, useCenter: boolean, paint: Paint): void;
@@ -1018,7 +1009,6 @@ export class Canvas implements ICanvas {
         const cx = rect.origin.x + rect.size.width * 0.5;
         const cy = rect.origin.y + rect.size.height * 0.5;
         const r = rect.size.width * 0.5;
-        console.log('drawArc', cx, cy, r, sweepAngle, startAngle, useCenter, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 
         const path = CGPathCreateMutable();
         let t = CGAffineTransformMakeTranslation(cx, cy);
@@ -1113,12 +1103,11 @@ export class Canvas implements ICanvas {
     getCGImage() {
         return CGBitmapContextCreateImage(this.ctx);
     }
-    @profile
+
     getImage() {
         const imageRef = CGBitmapContextCreateImage(this.ctx);
         const result = UIImage.imageWithCGImageScaleOrientation(imageRef, this._scale, UIImageOrientation.Up);
         // CGImageRelease(imageRef);
-        console.log('getImage', result, result && result.size.width);
         return result;
     }
 }
@@ -1157,7 +1146,6 @@ export class UICanvasView extends UIView {
         }
         const size = this.bounds.size;
         this._canvas.setContext(context, size.width, size.height);
-        console.log('drawLayerInContext', context, size.width, size.height);
         const owner = this._owner && this._owner.get();
         if (owner) {
             owner.notify({ eventName: 'draw', object: owner, canvas: this._canvas });
@@ -1179,20 +1167,16 @@ export class RadialGradient {
     // tileMode: TileMode;
     constructor(public centerX: number, public centerY: number, public radius: number, public colors: any, public stops: any, public tileMode: TileMode) {}
     get gradient() {
-        console.log('get gradient', this._gradient);
         if (!this._gradient) {
-            console.log('create gradient', Array.isArray(this.colors), this.colors, this.stops);
             if (Array.isArray(this.colors)) {
-                const cgColors = this.colors.map(c => (c instanceof Color ? c : new Color(c as any)).ios.CGColor);
+                const cgColors = this.colors.map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             } else {
-                const cgColors = [this.colors, this.stops].map(c => (c instanceof Color ? c : new Color(c as any)).ios.CGColor);
-                console.log('cgColors', cgColors);
+                const cgColors = [this.colors, this.stops].map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             }
-            console.log('created gradient', this._gradient);
         }
         return this._gradient;
     }
