@@ -6,14 +6,32 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
-        "lib": ["es6", "dom", "es2015.iterable"],
+        "lib": [
+            "es6",
+            "dom",
+            "es2015.iterable"
+        ],
         "baseUrl": ".",
         "paths": {
-            "nativescript-canvas": ["../src"],
-            "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"],
-            "~/*": ["app/*"]
+            "nativescript-canvas": [
+                "../src"
+            ],
+            "*": [
+                "./node_modules/tns-core-modules/*",
+                "./node_modules/*"
+            ],
+            "~/*": [
+                "app/*"
+            ]
         }
     },
-    "include": ["**/*"],
-    "exclude": ["../src/node_modules", "../src/**/*.d.ts", "node_modules", "platforms"]
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "../src/node_modules",
+        "../src/**/*.d.ts",
+        "node_modules",
+        "platforms"
+    ]
 }

@@ -4,9 +4,9 @@ import * as views from './views';
 
 registerElement('CanvasView', () => require('nativescript-canvas').CanvasView);
 
-
 for (const comp of getExamples()) {
-    Vue.component(comp.name, comp);
+    console.log('registering example', comp.component.name);
+    Vue.component(comp.component.name, comp);
 }
 
 Vue.component(views.Home.name, views.Home);

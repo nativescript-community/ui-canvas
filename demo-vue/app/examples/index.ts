@@ -1,5 +1,12 @@
-
-
+import Complex from './Complex.vue';
+import Simple from './Simple.vue';
 export const getExamples = () => {
-    return [];
+    return [
+        {
+            component: Complex
+        },
+        {
+            component: Simple
+        }
+    ];
 };
