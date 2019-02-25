@@ -2,6 +2,7 @@ import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { Color } from 'tns-core-modules/color/color';
 import { View } from 'tns-core-modules/ui/core/view';
 import { android as androidApp } from 'tns-core-modules/application';
+import { screen } from 'tns-core-modules/platform';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { createRect } from './canvas.common';
@@ -49,6 +50,8 @@ function initCanvasClass() {
         _bitmap: android.graphics.Bitmap;
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
             super();
+            console.log('create canvas', screen.mainScreen.scale, imageOrWidth, height);
+            this.setDensity(screen.mainScreen.scale);
 
             if (imageOrWidth instanceof ImageSource) {
                 this._bitmap = imageOrWidth.android;
@@ -303,6 +306,7 @@ class CanvasWrapper implements ICanvas {
 }
 
 let AndroidCanvasView;
+const scale = screen.mainScreen.scale;
 function initAndroidCanvasViewClass() {
     if (AndroidCanvasView) {
         return AndroidCanvasView;
@@ -316,6 +320,8 @@ function initAndroidCanvasViewClass() {
         }
         augmentedCanvas: CanvasWrapper;
         onDraw(canvas) {
+            canvas.setDensity(scale);
+            canvas.scale(scale, scale);
             super.onDraw(canvas);
             const owner = this._owner && this._owner.get();
             if (owner) {
