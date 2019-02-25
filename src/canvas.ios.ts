@@ -1,36 +1,36 @@
 import { Font } from 'tns-core-modules/ui/styling/font';
 import { Color, View } from 'tns-core-modules/ui/core/view';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { ios, layout } from 'tns-core-modules/utils/utils';
+import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
 
 const enum MemberType {
     Static,
     Instance
 }
-export const time = Date.now;
+// const time = Date.now;
 
 function timelineProfileFunctionFactory<F extends Function>(fn: F, name: string, type: MemberType = MemberType.Instance): F {
     let result;
     if (type === MemberType.Instance) {
         result = function() {
-            const start = time();
+            // const start = time();
             console.log(name);
             try {
                 return fn.apply(this, arguments);
             } finally {
-                const end = time();
+                // const end = time();
                 // console.log(`Timeline: Modules: ${name} ${this}  (${start}ms. - ${end}ms.)`);
             }
         };
     } else {
         result = function() {
-            const start = time();
+            // const start = time();
             // console.log(`calling method: ${name}`);
             try {
                 return fn.apply(this, arguments);
             } finally {
-                const end = time();
+                // const end = time();
                 // console.log(`Timeline: Modules: ${name}  (${start}ms. - ${end}ms.)`);
             }
         };
