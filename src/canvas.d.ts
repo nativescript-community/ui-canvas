@@ -2,6 +2,8 @@ import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { Color } from 'tns-core-modules/color/color';
 import { View } from 'tns-core-modules/ui/core/view';
 
+export function createRect(x: number, y: number, w: number, h: number): Rect;
+
 // export * from './canvas.android'
 
 export class Paint {
@@ -56,7 +58,7 @@ export class Paint {
 export class Canvas {
     constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | UIImage | number, height?: number);
     getImage(): android.graphics.Bitmap | UIImage;
-        
+
     getDensity(): number;
     setDensity(density: number): void;
     getDrawFilter(): DrawFilter;
@@ -84,7 +86,7 @@ export class Canvas {
 
     drawBitmap(bitmap: android.graphics.Bitmap | UIImage | ImageSource, src: Rect, dest: Rect, paint: Paint): void;
     drawBitmap(bitmap: android.graphics.Bitmap | UIImage | ImageSource, x: number, y: number, paint: Paint): void;
-    
+
     drawRect(left: number, top: number, right: number, bottom: number, paint: Paint): void;
     drawRect(rect: Rect, paint: Paint): void;
     drawRoundRect(left: number, top: number, right: number, bottom: number, rx: number, ry: number, paint: Paint): void;
@@ -96,8 +98,8 @@ export class Canvas {
     drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void;
     drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: Paint): void;
     drawPosText(text: string, pos: number[], paint: Paint): void;
-    
-    drawPosText(text: string[], index: number, count: number, pos: number[], paint: Paint): void; //deprecated
+
+    drawPosText(text: string[], index: number, count: number, pos: number[], paint: Paint): void; // deprecated
 
     // saveLayer(param0: number, param1: number, param2: number, param3: number, param4: android.graphics.Paint, param5: number): number;
     drawPoints(pts: number[], paint: Paint): void;
@@ -128,7 +130,7 @@ export class Canvas {
     // restoreToCount(param0: number): void;
     // saveLayerAlpha(param0: android.graphics.RectF, param1: number): number;
     // saveLayer(param0: number, param1: number, param2: number, param3: number, param4: Paint): number;
-   // saveLayerAlpha(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): number;
+    // saveLayerAlpha(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): number;
     // drawPoints(param0: native.Array<number>, param1: number, param2: number, param3: android.graphics.Paint): void;
     drawView(view: View, rect?: Rect);
 }
@@ -212,5 +214,4 @@ export class Matrix extends android.graphics.Matrix {}
 //     return android.graphics.Paint.Join;
 // }
 
-declare class CanvasView extends View {
-}
+declare class CanvasView extends View {}

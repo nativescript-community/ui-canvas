@@ -4,6 +4,9 @@ import { View } from 'tns-core-modules/ui/core/view';
 import { android as androidApp } from 'tns-core-modules/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
+import { createRect } from './canvas.common';
+
+export { createRect };
 
 function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
     if (param0 instanceof ImageSource) {

@@ -4,6 +4,8 @@ import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
 
+export * from './canvas.common';
+
 const enum MemberType {
     Static,
     Instance
