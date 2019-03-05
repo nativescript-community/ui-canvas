@@ -214,4 +214,6 @@ export class Matrix extends android.graphics.Matrix {}
 //     return android.graphics.Paint.Join;
 // }
 
-declare class CanvasView extends View {}
+declare class CanvasView extends View {
+    redraw()
+}

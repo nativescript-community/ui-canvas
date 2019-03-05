@@ -1,13 +1,13 @@
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { Color } from 'tns-core-modules/color/color';
-import { View } from 'tns-core-modules/ui/core/view';
+import { layout, View } from 'tns-core-modules/ui/core/view';
 import { android as androidApp } from 'tns-core-modules/application';
 import { screen } from 'tns-core-modules/platform';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
-import { createRect } from './canvas.common';
+import { CanvasBase, createRect } from './canvas.common';
 
-export { createRect };
+export * from './canvas.common';
 
 function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
     if (param0 instanceof ImageSource) {
@@ -71,6 +71,13 @@ function initCanvasClass() {
 
         getImage() {
             return this._bitmap;
+        }
+
+        getWidth() {
+            return layout.toDeviceIndependentPixels(super.getWidth());
+        }
+        getHeight() {
+            return layout.toDeviceIndependentPixels(super.getHeight());
         }
 
         // override to allow the use of ImageSource
@@ -273,10 +280,10 @@ class CanvasWrapper implements ICanvas {
         return this.canvas.setDensity(param0);
     }
     getWidth() {
-        return this.canvas.getWidth();
+        return layout.toDeviceIndependentPixels(this.canvas.getWidth());
     }
     getHeight() {
-        return this.canvas.getHeight();
+        return layout.toDeviceIndependentPixels(this.canvas.getHeight());
     }
     getClipBounds() {
         return this.canvas.getClipBounds();
@@ -384,10 +391,18 @@ function initClasses() {
     TileMode = android.graphics.Shader.TileMode;
 }
 
-class CanvasView extends View {
+class CanvasView extends CanvasBase {
+    nativeViewProtected: android.view.View;
     createNativeView() {
         initAndroidCanvasViewClass();
         return new AndroidCanvasView(this);
+    }
+    redraw() {
+        if (this.nativeViewProtected) {
+            this.nativeViewProtected.invalidate();
+        }
+    }
+    drawShapes() {
     }
 }
 initClasses();

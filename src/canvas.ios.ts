@@ -3,6 +3,7 @@ import { Color, View } from 'tns-core-modules/ui/core/view';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
+import { CanvasBase } from './canvas.common';
 
 export * from './canvas.common';
 
@@ -539,7 +540,7 @@ export class Canvas implements ICanvas {
         return this._cgContext;
     }
     setContext(context, width, height): any {
-        console.error('setContext', context, width, height);
+        // console.error('setContext', context, width, height);
         this._cgContext = context;
         this._width = width;
         this._height = height;
@@ -999,13 +1000,13 @@ export class Canvas implements ICanvas {
             useCenter = false;
         if (length === 8) {
             rect = createCGRect(params[0], params[1], params[2], params[3]);
-            sweepAngle = params[4];
-            startAngle = params[5];
+            sweepAngle = params[5];
+            startAngle = params[4];
             useCenter = params[6];
         } else if (length === 5) {
             rect = (params[0] as Rect).cgRect;
-            sweepAngle = params[1];
-            startAngle = params[2];
+            sweepAngle = params[2];
+            startAngle = params[1];
             useCenter = params[3];
         }
         const cx = rect.origin.x + rect.size.width * 0.5;
@@ -1114,12 +1115,13 @@ export class Canvas implements ICanvas {
     }
 }
 
-export class UICanvasView extends UIView {
+export class UICustomCanvasView extends UIView {
     _canvas: Canvas; // CGContextRef;
+    _shapesCanvas: Canvas; // CGContextRef;
     public _owner: WeakRef<CanvasView>;
 
-    public static initWithOwner(owner: WeakRef<CanvasView>): UICanvasView {
-        const view = UICanvasView.new() as UICanvasView;
+    public static initWithOwner(owner: WeakRef<CanvasView>): UICustomCanvasView {
+        const view = UICustomCanvasView.new() as UICustomCanvasView;
         view.contentMode = UIViewContentMode.Redraw;
         view._owner = owner;
         return view;
@@ -1143,10 +1145,17 @@ export class UICanvasView extends UIView {
 
     drawLayerInContext(layer: CALayer, context: any) {
         super.drawLayerInContext(layer, context);
+        const size = this.bounds.size;
+        if (this._shapesCanvas) {
+            const context = this._shapesCanvas.ctx;
+            const viewport = CGRectMake(0, 0, size.width, size.height);
+            const image = this._shapesCanvas.getCGImage();
+            CGContextDrawImage(context, viewport, image);
+            CGImageRelease(image);
+        }
         if (!this._canvas) {
             this._canvas = new Canvas(0, 0);
         }
-        const size = this.bounds.size;
         this._canvas.setContext(context, size.width, size.height);
         const owner = this._owner && this._owner.get();
         if (owner) {
@@ -1155,9 +1164,26 @@ export class UICanvasView extends UIView {
     }
 }
 
-export class CanvasView extends View {
+export class CanvasView extends CanvasBase {
     createNativeView() {
-        return UICanvasView.initWithOwner(new WeakRef(this));
+        return UICustomCanvasView.initWithOwner(new WeakRef(this));
+    }
+    redraw() {
+        if (this.nativeViewProtected) {
+            const layer = this.nativeViewProtected.layer;
+            layer.setNeedsDisplay();
+            layer.displayIfNeeded();
+        }
+    }
+    shapesCanvas: ICanvas;
+    drawShapes() {
+        console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length);
+        if (this.shapes && this.shapes.shapes.length > 0) {
+            this.shapesCanvas = new Canvas(this.getMeasuredWidth(), this.getMeasuredHeight());
+            this.shapes.shapes.forEach(s => {
+                s.drawOnCanvas(this.shapesCanvas);
+            });
+        }
     }
 }
 
