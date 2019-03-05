@@ -1,8 +1,6 @@
 <template>
     <Page>
-        <ActionBar :title="title">
-            <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack"></NavigationButton>
-        </ActionBar>
+
         <StackLayout>
             <CanvasView width="100" height="100" @draw="onDraw"></CanvasView>
             <Label fontSize="16" width="100" height="100" backgroundColor="yellow">test</Label>
@@ -12,12 +10,12 @@
 
 <script lang="ts">
 import * as frameModule from 'tns-core-modules/ui/frame';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
-import { Component, Prop } from 'vue-property-decorator';
+import Vue from 'nativescript-vue';
+import { Component } from 'vue-property-decorator';
 import { createRect, Paint, Style } from 'nativescript-canvas';
 import { Color } from 'tns-core-modules/color/color';
 
-@Component({})
+@Component
 export default class Simple extends Vue {
     static title: 'Simple Example';
     onBack() {

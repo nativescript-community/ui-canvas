@@ -1,45 +1,27 @@
 import Vue, { registerElement } from 'nativescript-vue';
-import { getExamples } from './examples';
-import * as views from './views';
+import Home from './views/Home.vue';
 
-registerElement('CanvasView', () => require('nativescript-canvas').CanvasView);
 
-for (const comp of getExamples()) {
-    console.log('registering example', comp.component.name);
-    Vue.component(comp.component.name, comp);
-}
+import CanvasPlugin from 'nativescript-canvas/vue';
+Vue.use(CanvasPlugin);
 
-Vue.component(views.Home.name, views.Home);
-// Vue.config.silent = false;
-
-// function range(start, end, inclusive?) {
-//     let mapper = (_, k) => start + k;
-//     if (end < start) {
-//         mapper = (_, k) => start - k;
-//     }
-
-//     return Array.from({ length: Math.abs(start - end) + (inclusive ? 1 : 0) }, mapper);
+// for (const comp of getExamples()) {
+//     console.log('registering example', comp.component.name);
+//     Vue.component(comp.component.name, comp);
 // }
-// const expected = range(0, 256);
-// const actual = [];
+Vue.config.silent = false;
+Vue.config['debug'] = true;
 
-// const array = (NSArray.arrayWithArray(expected) as any) as any[];
+Vue.config.errorHandler = (e, vm, info) => {
+    throw e;
+};
 
-// // array.forEach(x => {
-// //     actual.push(x);
-// // });
-
-// console.log('test', (array as any).count, expected.length, actual);
-
-// for (const x of array) {
-//     actual.push(x);
-// }
-// console.log('test2', expected.length, actual);
-
+Vue.config.warnHandler = function(msg, vm, trace) {
+    console.log(msg, new Error().stack);
+};
+console.log('registering all, ready to start');
 new Vue({
-    template: `
-      <Frame>
-        <Home />
-      </Frame>
-    `
+    render: h => {
+        return h('frame', [h(Home)]);
+    }
 }).$start();

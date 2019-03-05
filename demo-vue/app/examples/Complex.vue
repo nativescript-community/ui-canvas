@@ -1,6 +1,6 @@
 <template>
     <Page>
-        <ActionBar :title="title">
+        <ActionBar>
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack"></NavigationButton>
         </ActionBar>
         <StackLayout>
@@ -16,13 +16,13 @@
 
 <script lang="ts">
 import * as frameModule from 'tns-core-modules/ui/frame';
-import Vue, { NativeScriptVue } from 'nativescript-vue';
-import { Component, Prop } from 'vue-property-decorator';
+import Vue from 'nativescript-vue';
+import { Component } from 'vue-property-decorator';
 import { drawOnImage } from '../canvastests';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { Image } from 'tns-core-modules/ui/image/image';
 
-@Component({})
+@Component
 export default class ComplexExample extends Vue {
     static title: 'Text fields sample';
     onBack() {
