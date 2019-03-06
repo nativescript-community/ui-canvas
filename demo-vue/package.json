@@ -16,14 +16,14 @@
         "@tweenjs/tween.js": "17.3.0",
         "nativescript-canvas": "file:../plugin",
         "nativescript-theme-core": "~1.0.4",
-        "akylas-nativescript-vue": "^2.1.1",
+        "akylas-nativescript-vue": "^2.1.5",
         "nativescript-vue": "^2.0.2",
         "tns-core-modules": "^5.2.2"
     },
     "devDependencies": {
         "@babel/core": "~7.3.4",
         "@babel/preset-env": "~7.3.4",
-        "akylas-nativescript-vue-template-compiler": "~2.1.1",
+        "akylas-nativescript-vue-template-compiler": "~2.1.5",
         "babel-loader": "~8.0.5",
         "babel-traverse": "6.26.0",
         "babel-types": "6.26.0",

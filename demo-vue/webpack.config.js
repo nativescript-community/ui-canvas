@@ -211,10 +211,10 @@ module.exports = env => {
             ]
         },
         plugins: [
-            new ForkTsCheckerWebpackPlugin({
-                tsconfig: resolve(tsconfig),
+            // new ForkTsCheckerWebpackPlugin({
+            //     tsconfig: resolve(tsconfig),
 
-            }),
+            // }),
             // ... Vue Loader plugin omitted
             // make sure to include the plugin!
             new VueLoaderPlugin(),

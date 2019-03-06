@@ -1,10 +1,56 @@
-import { Canvas, Paint, Rect } from './canvas';
-import { Color } from 'tns-core-modules/color/color';
-import { PercentLength } from 'tns-core-modules/ui/styling/style-properties';
+import { Cap, Join, Rect, Style } from './canvas';
 import { Property } from 'tns-core-modules/ui/core/properties';
 import { AddArrayFromBuilder, AddChildFromBuilder, View, ViewBase } from 'tns-core-modules/ui/core/view';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { Observable, PropertyChangeData } from 'tns-core-modules/data/observable';
+import Shape from './shapes/shape';
+
+export function parseCap(value: string | number) {
+    if (typeof value === 'string') {
+        switch (value) {
+            case 'square':
+                return Cap.SQUARE;
+            case 'butt':
+                return Cap.BUTT;
+            case 'round':
+            default:
+                return Cap.ROUND;
+        }
+    } else {
+        return value;
+    }
+}
+export function parseType(value: string | number) {
+    if (typeof value === 'string') {
+        switch (value) {
+            case 'fill':
+                return Style.FILL;
+            case 'stroke':
+                return Style.STROKE;
+            case 'fill_and_stroke':
+            default:
+                return Style.FILL_AND_STROKE;
+        }
+    } else {
+        return value;
+    }
+}
+export function parseJoin(value: string | number) {
+    if (typeof value === 'string') {
+        switch (value) {
+            case 'bevel':
+                return Join.BEVEL;
+            case 'round':
+                return Join.ROUND;
+            default:
+            case 'miter':
+                return Join.MITER;
+        }
+    } else {
+        return value;
+    }
+}
+
 declare module 'tns-core-modules/ui/core/view' {
     interface View {
         _onSizeChanged();
@@ -90,8 +136,8 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
 
     private addPropertyChangeHandler(shape: Shape) {
         const style = shape.style;
+        console.log('addPropertyChangeHandler', shape);
         shape.on(Observable.propertyChangeEvent, this.onPropertyChange, this);
-        // style.on('fontFamilyChange', this.onPropertyChange, this);
         // style.on('fontSizeChange', this.onPropertyChange, this);
         // style.on('fontStyleChange', this.onPropertyChange, this);
         // style.on('fontWeightChange', this.onPropertyChange, this);
@@ -142,6 +188,7 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
         this.notifyPropertyChange('.', this);
     }
     private onPropertyChange(data: PropertyChangeData) {
+        // console.log('onPropertyChange', data.propertyName);
         this.notifyPropertyChange(data.propertyName, this);
     }
 
@@ -154,46 +201,41 @@ export function createRect(x: number, y: number, w: number, h: number) {
     return new Rect(x, y, x + w, y + h);
 }
 
-export abstract class Shape extends ViewBase {
-    paint = new Paint();
-    abstract drawOnCanvas(canvas: Canvas);
-
-    @nsProperty color: Color;
-}
-
-export class Rectangle extends Shape {
-    drawOnCanvas(canvas: Canvas) {
-        console.log('Rectangle', 'drawOnCanvas', canvas.getWidth(), canvas.getHeight());
-        canvas.drawRect(this.getRect(canvas), this.paint);
-    }
-    @nsProperty width: PercentLength;
-    @nsProperty heigth: PercentLength;
-    @nsProperty x: PercentLength;
-    @nsProperty y: PercentLength;
-
-    getRect(canvas: Canvas) {
-        const availableWidth = canvas.getWidth();
-        const availableHeight = canvas.getHeight();
-        const style = this.style;
-        PercentLength.toDevicePixels(style.marginTop, 0, availableHeight);
-        return createRect(
-            PercentLength.toDevicePixels(style['x'], 0, availableWidth),
-            PercentLength.toDevicePixels(style['y'], 0, availableHeight),
-            PercentLength.toDevicePixels(style.width, 0, availableWidth),
-            PercentLength.toDevicePixels(style.height, 0, availableHeight)
-        );
-    }
-}
-
 export const shapesProperty = new Property<CanvasBase, Shapes>({ name: 'shapes', valueChanged: onShapesPropertyChanged });
+
+function throttle(fn, limit) {
+    let waiting = false;
+    return (...args) => {
+        if (!waiting) {
+            fn.apply(this, args);
+            waiting = true;
+            setTimeout(() => {
+                waiting = false;
+            }, limit);
+        }
+    };
+}
 
 export abstract class CanvasBase extends View {
     public shapes: Shapes;
+    public cached = false;
 
-    public _onShapesContentsChanged(data: PropertyChangeData) {
+    requeestDrawShapes() {
+        if (this.cached) {
+            this.drawShapes();
+        } else {
+            this.redraw();
+        }
+    }
+    requeestDrawShapesThrottled = throttle(() => this.requeestDrawShapes(), 5);
+    // throttling prevent too fast drawing on multiple properties change
+    _onShapesContentsChanged() {
         if (this.nativeViewProtected) {
-            // Notifications from the FormattedString start arriving before the Android view is even created.
-            this[shapesProperty.setNative](data.value);
+            if (this.cached) {
+                this.requeestDrawShapesThrottled();
+            } else {
+                this.requeestDrawShapes();
+            }
         }
     }
 
@@ -220,16 +262,16 @@ export abstract class CanvasBase extends View {
     }
     _onSizeChanged() {
         super._onSizeChanged();
-        console.log('CanvasBase', '_onSizeChanged');
         if (this.shapes) {
-            this.drawShapes();
+            this.requeestDrawShapes();
         }
     }
     [shapesProperty.setNative](value: Shapes) {
-        this.drawShapes();
+        this.requeestDrawShapes();
     }
 
     abstract drawShapes();
+    abstract redraw();
 }
 
 shapesProperty.register(CanvasBase);

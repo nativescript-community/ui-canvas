@@ -80,6 +80,8 @@ function initCanvasClass() {
             return layout.toDeviceIndependentPixels(super.getHeight());
         }
 
+        clear() {}
+
         // override to allow the use of ImageSource
         public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
             if (param0 instanceof ImageSource) {
@@ -152,6 +154,13 @@ function initPaintClass() {
         set textSize(value: number) {
             this.setTextSize(value);
         }
+        setShadowLayer(radius: number, dx: number, dy: number, color: any) {
+            if (color instanceof Color) {
+            } else {
+                color = new Color(color);
+            }
+            super.setShadowLayer(radius, dx, dy, color.android);
+        }
     }
     Paint = PaintImpl as any;
     return PaintImpl;
@@ -195,6 +204,9 @@ function initLinearGradientClass() {
 
 class CanvasWrapper implements ICanvas {
     canvas: any;
+    clear() {
+        this.canvas.clear();
+    }
     clipOutRect(...params) {
         return this.canvas.clipOutRect.apply(this.canvas, params);
     }
@@ -326,13 +338,22 @@ function initAndroidCanvasViewClass() {
             this.augmentedCanvas = new CanvasWrapper();
         }
         augmentedCanvas: CanvasWrapper;
-        onDraw(canvas) {
+        onDraw(canvas: android.graphics.Canvas) {
             canvas.setDensity(scale);
             canvas.scale(scale, scale);
             super.onDraw(canvas);
             const owner = this._owner && this._owner.get();
             if (owner) {
                 this.augmentedCanvas.canvas = canvas;
+                if (owner.shapesCanvas) {
+                    const shapeCanvas = owner.shapesCanvas;
+                    canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, new android.graphics.Paint());
+                } else if (!owner.cached) {
+                    const shapes = owner.shapes;
+                    if (shapes && shapes.shapes.length > 0) {
+                        shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.augmentedCanvas));
+                    }
+                }
                 owner.notify({ eventName: 'draw', object: owner, canvas: this.augmentedCanvas });
             }
         }
@@ -402,7 +423,20 @@ class CanvasView extends CanvasBase {
             this.nativeViewProtected.invalidate();
         }
     }
+    shapesCanvas: ICanvas;
     drawShapes() {
+        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
+        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
+        // console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length, width, height);
+        if (this.shapesCanvas) {
+            (this as any).clear();
+            this.shapesCanvas = null;
+        }
+        if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
+            const canvas = (this.shapesCanvas = new Canvas(width, height));
+            this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
+            this.redraw();
+        }
     }
 }
 initClasses();

@@ -1,5 +1,5 @@
 import { Font } from 'tns-core-modules/ui/styling/font';
-import { Color, View } from 'tns-core-modules/ui/core/view';
+import { Color, layout, View } from 'tns-core-modules/ui/core/view';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
@@ -201,6 +201,10 @@ export class Rect implements IRect {
             this._rect = createCGRect(l, t, r, b);
         }
     }
+
+    toString() {
+        return `Rect(${this.left},${this.top},${this.right},${this.bottom})`;
+    }
     // constructor(rect: CGRect) {
     //     this._rect = rect;
     // }
@@ -379,12 +383,12 @@ export class Path implements IPath {
 export class Paint implements IPaint {
     _color: Color = new Color('black');
     style: Style = Style.FILL;
-    textSize;
+    textSize = 16;
     _font: Font;
-    strokeWidth;
-    strokeMiter;
+    strokeWidth = 0;
+    strokeMiter = 0;
     strokeCap: Cap = Cap.ROUND;
-    strokeJoin: Join = Join.BEVEL;
+    strokeJoin: Join = Join.MITER;
     antiAlias = false;
     dither = false;
     alpha = 1;
@@ -526,6 +530,13 @@ export class Paint implements IPaint {
     getColor(): Color {
         return this._color;
     }
+
+    clear() {
+        if (this.shader) {
+            this.shader.clear();
+            this.shader = null;
+        }
+    }
 }
 
 export class Canvas implements ICanvas {
@@ -536,6 +547,12 @@ export class Canvas implements ICanvas {
     _height: number;
     _scale = UIScreen.mainScreen.scale;
 
+    clear(): any {
+        this._cgContext = null;
+        if (this._paint) {
+            this._paint.clear();
+        }
+    }
     get ctx() {
         return this._cgContext;
     }
@@ -747,7 +764,12 @@ export class Canvas implements ICanvas {
             }
         }
     }
-
+    // getWidth() {
+    //     return layout.toDeviceIndependentPixels(this._width);
+    // }
+    // getHeight() {
+    //     return layout.toDeviceIndependentPixels(this._height);
+    // }
     getWidth() {
         return this._width;
     }
@@ -902,7 +924,6 @@ export class Canvas implements ICanvas {
         } else if (length === 2) {
             rect = (params[0] as Rect).cgRect;
         }
-
         if (paint.style === Style.FILL) {
             CGContextFillRect(ctx, rect);
         } else if (paint.style === Style.STROKE) {
@@ -1117,7 +1138,6 @@ export class Canvas implements ICanvas {
 
 export class UICustomCanvasView extends UIView {
     _canvas: Canvas; // CGContextRef;
-    _shapesCanvas: Canvas; // CGContextRef;
     public _owner: WeakRef<CanvasView>;
 
     public static initWithOwner(owner: WeakRef<CanvasView>): UICustomCanvasView {
@@ -1146,18 +1166,26 @@ export class UICustomCanvasView extends UIView {
     drawLayerInContext(layer: CALayer, context: any) {
         super.drawLayerInContext(layer, context);
         const size = this.bounds.size;
-        if (this._shapesCanvas) {
-            const context = this._shapesCanvas.ctx;
-            const viewport = CGRectMake(0, 0, size.width, size.height);
-            const image = this._shapesCanvas.getCGImage();
-            CGContextDrawImage(context, viewport, image);
-            CGImageRelease(image);
-        }
+        const owner = this._owner && this._owner.get();
         if (!this._canvas) {
             this._canvas = new Canvas(0, 0);
         }
         this._canvas.setContext(context, size.width, size.height);
-        const owner = this._owner && this._owner.get();
+        if (owner.shapesCanvas) {
+            const canvas = owner.shapesCanvas;
+            const viewport = CGRectMake(0, 0, size.width, size.height);
+            const image = canvas.getCGImage();
+            // console.log('Canvas', 'drawLayerInContext', 'shapesCanvas', size.width, size.height, image);
+            CGContextDrawImage(context, viewport, image);
+            // CGImageRelease(image);
+        } else if (!owner.cached) {
+            const shapes = owner.shapes;
+            // console.log('Canvas', 'drawLayerInContext', 'drawing shapes', size.width, size.height, shapes.shapes.length);
+            if (shapes && shapes.shapes.length > 0) {
+                shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this._canvas));
+            }
+        }
+
         if (owner) {
             owner.notify({ eventName: 'draw', object: owner, canvas: this._canvas });
         }
@@ -1165,6 +1193,7 @@ export class UICustomCanvasView extends UIView {
 }
 
 export class CanvasView extends CanvasBase {
+    nativeViewProtected: UICustomCanvasView;
     createNativeView() {
         return UICustomCanvasView.initWithOwner(new WeakRef(this));
     }
@@ -1175,14 +1204,19 @@ export class CanvasView extends CanvasBase {
             layer.displayIfNeeded();
         }
     }
-    shapesCanvas: ICanvas;
+    shapesCanvas: Canvas;
     drawShapes() {
-        console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length);
-        if (this.shapes && this.shapes.shapes.length > 0) {
-            this.shapesCanvas = new Canvas(this.getMeasuredWidth(), this.getMeasuredHeight());
-            this.shapes.shapes.forEach(s => {
-                s.drawOnCanvas(this.shapesCanvas);
-            });
+        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
+        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
+        // console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length, width, height);
+        if (this.shapesCanvas) {
+            this.shapesCanvas.clear();
+            this.shapesCanvas = null;
+        }
+        if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
+            const canvas = (this.shapesCanvas = new Canvas(width, height));
+            this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
+            this.redraw();
         }
     }
 }

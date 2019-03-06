@@ -1,6 +1,8 @@
 <template>
     <Page>
-
+        <ActionBar>
+            <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack"></NavigationButton>
+        </ActionBar>
         <StackLayout>
             <CanvasView width="100" height="100" @draw="onDraw"></CanvasView>
             <Label fontSize="16" width="100" height="100" backgroundColor="yellow">test</Label>
@@ -23,7 +25,7 @@ export default class Simple extends Vue {
     }
     onDraw(event: { canvas }) {
         const canvas = event.canvas;
-        console.log('onDraw canvas:',canvas.getWidth() ,canvas.getHeight());
+        console.log('onDraw canvas:', canvas.getWidth(), canvas.getHeight());
 
         const bgPaint = new Paint();
         bgPaint.setAntiAlias(true);
@@ -43,7 +45,6 @@ export default class Simple extends Vue {
         bgPaint.setStyle(Style.FILL);
         bgPaint.setColor(new Color(255, 0, 0, 0));
         canvas.drawText('test', 0, 20, bgPaint);
-
     }
 }
 </script>
