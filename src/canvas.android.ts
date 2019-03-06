@@ -48,9 +48,10 @@ function initCanvasClass() {
     }
     class CanvasImpl extends android.graphics.Canvas {
         _bitmap: android.graphics.Bitmap;
+        _shouldReleaseBitmap = false;
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
             super();
-            console.log('create canvas', screen.mainScreen.scale, imageOrWidth, height);
+            // console.log('create canvas', screen.mainScreen.scale, imageOrWidth, height);
             this.setDensity(screen.mainScreen.scale);
 
             if (imageOrWidth instanceof ImageSource) {
@@ -58,12 +59,17 @@ function initCanvasClass() {
             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
                 this._bitmap = imageOrWidth;
             } else {
-                const options = new android.graphics.BitmapFactory.Options();
-                options.inMutable = true;
-                (options as any).outConfig = android.graphics.Bitmap.Config.ARGB_8888;
-                this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, options);
+                this._shouldReleaseBitmap = true;
+                // console.log('create canvas with size', imageOrWidth, height);
+                // const options = new android.graphics.BitmapFactory.Options();
+                // options.inMutable = true;
+                // (options as any).outConfig = android.graphics.Bitmap.Config.ARGB_8888;
+                // console.log('create canvas with size about to create bitmap');
+                this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
+                // console.log('create canvas with size created bitmap', this._bitmap);
             }
             if (!this._bitmap.isMutable()) {
+                this._shouldReleaseBitmap = true;
                 this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
             }
             this.setBitmap(this._bitmap);
@@ -74,13 +80,18 @@ function initCanvasClass() {
         }
 
         getWidth() {
-            return layout.toDeviceIndependentPixels(super.getWidth());
+            return Math.round(layout.toDeviceIndependentPixels(super.getWidth()));
         }
         getHeight() {
-            return layout.toDeviceIndependentPixels(super.getHeight());
+            return Math.round(layout.toDeviceIndependentPixels(super.getHeight()));
         }
 
-        clear() {}
+        clear() {
+            if (this._shouldReleaseBitmap) {
+                this._bitmap.recycle();
+                this._bitmap = null;
+            }
+        }
 
         // override to allow the use of ImageSource
         public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
@@ -412,6 +423,12 @@ function initClasses() {
     TileMode = android.graphics.Shader.TileMode;
 }
 
+
+declare module 'tns-core-modules/ui/core/view' {
+    interface View {
+        setOnLayoutChangeListener();
+    }
+}
 class CanvasView extends CanvasBase {
     nativeViewProtected: android.view.View;
     createNativeView() {
@@ -425,18 +442,53 @@ class CanvasView extends CanvasBase {
     }
     shapesCanvas: ICanvas;
     drawShapes() {
-        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
-        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
+        const width = Math.round(layout.toDeviceIndependentPixels(this.getMeasuredWidth()));
+        const height = Math.round(layout.toDeviceIndependentPixels(this.getMeasuredHeight()));
         // console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length, width, height);
         if (this.shapesCanvas) {
-            (this as any).clear();
+            (this.shapesCanvas as any).clear();
             this.shapesCanvas = null;
         }
         if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
+            // console.log('Canvas', 'shapes', 'create');
             const canvas = (this.shapesCanvas = new Canvas(width, height));
+            // console.log('Canvas', 'shapes', 'created');
             this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
+            // console.log('Canvas', 'shapes', 'drawn');
             this.redraw();
         }
+    }
+    // private layoutChangeCacheListenerIsSet: boolean;
+    // private layoutChangeCacheListener: android.view.View.OnLayoutChangeListener;
+    // private setOnLayoutChangeListener() {
+    //     if (this.nativeViewProtected) {
+    //         const owner = this;
+    //         this.layoutChangeCacheListenerIsSet = true;
+    //         this.layoutChangeCacheListener = this.layoutChangeCacheListener || new android.view.View.OnLayoutChangeListener({
+    //             onLayoutChange(
+    //                 v: android.view.View,
+    //                 left: number, top: number, right: number, bottom: number,
+    //                 oldLeft: number, oldTop: number, oldRight: number, oldBottom: number): void {
+    //                 if (left !== oldLeft || top !== oldTop || right !== oldRight || bottom !== oldBottom) {
+    //                     owner._raiseLayoutChangedEvent();
+    //                 }
+    //             }
+    //         });
+
+    //         this.nativeViewProtected.addOnLayoutChangeListener(this.layoutChangeCacheListener);
+    //     }
+    // }
+    public initNativeView() {
+        super.initNativeView();
+        this.setOnLayoutChangeListener();
+    }
+    public disposeNativeView() {
+        super.disposeNativeView();
+
+        // if (this.layoutChangeCacheListenerIsSet) {
+        //     this.layoutChangeCacheListenerIsSet = false;
+        //     this.nativeViewProtected.removeOnLayoutChangeListener(this.layoutChangeCacheListener);
+        // }
     }
 }
 initClasses();

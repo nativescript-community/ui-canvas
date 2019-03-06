@@ -7,6 +7,7 @@ import { layout } from 'tns-core-modules/ui/core/view';
 
 export default class Rectangle extends Shape {
     drawOnCanvas(canvas: Canvas) {
+        // console.log('Rectangle', 'drawOnCanvas');
         canvas.drawRect(this.getRect(canvas), this.paint);
     }
     @percentLengthProperty width: PercentLength;

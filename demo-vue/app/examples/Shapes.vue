@@ -10,7 +10,7 @@
 
         </ActionBar>
         <StackLayout>
-            <CanvasView ref="canvas" width="100%" height="100%" backgroundColor="#44ff0000">
+            <CanvasView cached="true" ref="canvas" width="100%" height="100%" backgroundColor="#44ff0000">
                 <Shapes>
                     <Rectangle shadow="3 3 black" strokeColor="red" :fillColor="shapeColor" strokeWidth="6" :left="shapeLeft" top="10" :width="shapeLeft + '%'" height="50%" />
                     <Arc color="yellow" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
@@ -36,21 +36,14 @@ export default class Simple extends Vue {
     sweepAngle = 0;
     arcWidth = Math.min(screen.mainScreen.widthDIPs, screen.mainScreen.heightDIPs) - 40;
     static title: 'Shapes Example';
-    mounted() {
-        console.log('screen.mainScreen.widthDIPs', screen.mainScreen.widthDIPs);
-        console.log('screen.mainScreen.heightDIPs', screen.mainScreen.heightDIPs);
-        console.log('arcWidth', this.arcWidth);
-    }
+    mounted() {}
     onBack() {
         frameModule.topmost().goBack();
     }
     changeColor() {
-        console.log('changeColor', this.shapeColor);
         this.shapeColor = this.shapeColor === 'blue' ? 'yellow' : 'blue';
-        console.log('changeColor2', this.shapeColor);
     }
     animateRectSize() {
-        console.log('animateRectSize');
         new Anim.Animation({ value: 10 })
             .to({ value: 40 }, 5000)
             .easing(Anim.Easing.Quadratic.Out)
@@ -60,9 +53,6 @@ export default class Simple extends Vue {
             .start();
     }
     animateArc() {
-        const canvas = (this.$refs.canvas as any).nativeView;
-
-        console.log('animateArc');
         new Anim.Animation({ value: 0 })
             .to({ value: 360 }, 5000)
             .onUpdate(obj => {
@@ -71,12 +61,11 @@ export default class Simple extends Vue {
             .start();
     }
 
-     onDraw(event: { canvas: Canvas }) {
+    onDraw(event: { canvas: Canvas }) {
         const canvas = event.canvas;
-        const w = canvas.getWidth()
-        const h = canvas.getHeight()
+        const w = canvas.getWidth();
+        const h = canvas.getHeight();
         // console.log('onDraw', w, h);
-
     }
 }
 </script>

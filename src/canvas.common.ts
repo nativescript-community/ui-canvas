@@ -1,6 +1,6 @@
 import { Cap, Join, Rect, Style } from './canvas';
 import { Property } from 'tns-core-modules/ui/core/properties';
-import { AddArrayFromBuilder, AddChildFromBuilder, View, ViewBase } from 'tns-core-modules/ui/core/view';
+import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, View, ViewBase } from 'tns-core-modules/ui/core/view';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { Observable, PropertyChangeData } from 'tns-core-modules/data/observable';
 import Shape from './shapes/shape';
@@ -53,7 +53,7 @@ export function parseJoin(value: string | number) {
 
 declare module 'tns-core-modules/ui/core/view' {
     interface View {
-        _onSizeChanged();
+        _raiseLayoutChangedEvent();
     }
 }
 
@@ -136,26 +136,12 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
 
     private addPropertyChangeHandler(shape: Shape) {
         const style = shape.style;
-        console.log('addPropertyChangeHandler', shape);
         shape.on(Observable.propertyChangeEvent, this.onPropertyChange, this);
-        // style.on('fontSizeChange', this.onPropertyChange, this);
-        // style.on('fontStyleChange', this.onPropertyChange, this);
-        // style.on('fontWeightChange', this.onPropertyChange, this);
-        // style.on('textDecorationChange', this.onPropertyChange, this);
-        // style.on('colorChange', this.onPropertyChange, this);
-        // style.on('backgroundColorChange', this.onPropertyChange, this);
     }
 
     private removePropertyChangeHandler(shape: Shape) {
         const style = shape.style;
         shape.off(Observable.propertyChangeEvent, this.onPropertyChange, this);
-        // style.off('fontFamilyChange', this.onPropertyChange, this);
-        // style.off('fontSizeChange', this.onPropertyChange, this);
-        // style.off('fontStyleChange', this.onPropertyChange, this);
-        // style.off('fontWeightChange', this.onPropertyChange, this);
-        // style.off('textDecorationChange', this.onPropertyChange, this);
-        // style.off('colorChange', this.onPropertyChange, this);
-        // style.off('backgroundColorChange', this.onPropertyChange, this);
     }
 
     private onShapesCollectionChanged(eventData: ChangedData<Shape>) {
@@ -202,6 +188,7 @@ export function createRect(x: number, y: number, w: number, h: number) {
 }
 
 export const shapesProperty = new Property<CanvasBase, Shapes>({ name: 'shapes', valueChanged: onShapesPropertyChanged });
+export const cachedProperty = new Property<CanvasBase, boolean>({ name: 'cached', defaultValue: false, valueConverter: booleanConverter });
 
 function throttle(fn, limit) {
     let waiting = false;
@@ -260,9 +247,10 @@ export abstract class CanvasBase extends View {
             callback(shapes);
         }
     }
-    _onSizeChanged() {
-        super._onSizeChanged();
-        if (this.shapes) {
+    _raiseLayoutChangedEvent() {
+        super._raiseLayoutChangedEvent();
+        console.log('_raiseLayoutChangedEvent', !!this.shapes);
+        if (!!this.shapes) {
             this.requeestDrawShapes();
         }
     }

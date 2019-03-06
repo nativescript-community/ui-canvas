@@ -109,7 +109,6 @@ interface Shadow {
 }
 
 function parseShadow(value: string) {
-    console.log('parseShadow', value);
     if (value === 'none') {
         return null;
     }
