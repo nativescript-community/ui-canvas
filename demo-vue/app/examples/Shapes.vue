@@ -13,7 +13,7 @@
             <CanvasView row="0" :density="density" ref="canvas" width="100%" backgroundColor="#44ff0000">
                 <Shapes>
                     <Rectangle shadow="3 3 black" strokeColor="red" :fillColor="shapeColor" strokeWidth="6" :left="shapeLeft" top="10" :width="shapeLeft + '%'" height="50%" />
-                    <Arc color="yellow"  shadow="0 0 10 red" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
+                    <Arc color="yellow" :antiAlias="antiAlias" shadow="0 0 10 red" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
                     <Text  :antiAlias="antiAlias" color="green" top="50" text="test Text" fontSize="50" />
                 </Shapes>
             </CanvasView>
