@@ -1,9 +1,9 @@
 import { Font } from 'tns-core-modules/ui/styling/font';
-import { Color, layout, View } from 'tns-core-modules/ui/core/view';
+import { Color, View } from 'tns-core-modules/ui/core/view';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
-import { CanvasBase } from './canvas.common';
+import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
 
 export * from './canvas.common';
 
@@ -486,7 +486,7 @@ export class Paint implements IPaint {
     }
     public setShader(value: any) {
         if (this.shader) {
-            this.shader.clear();
+            this.shader.release();
         }
         this.shader = value;
     }
@@ -545,13 +545,16 @@ export class Canvas implements ICanvas {
     needsApplyDefaultPaint = true;
     _width: number;
     _height: number;
-    _scale = UIScreen.mainScreen.scale;
+    _scale = DEFAULT_SCALE;
 
-    clear(): any {
+    release(): any {
         this._cgContext = null;
         if (this._paint) {
             this._paint.clear();
         }
+    }
+    clear() {
+        this.drawColor('transparent');
     }
     get ctx() {
         return this._cgContext;
@@ -1171,17 +1174,16 @@ export class UICustomCanvasView extends UIView {
             this._canvas = new Canvas(0, 0);
         }
         this._canvas.setContext(context, size.width, size.height);
+        this._canvas.setDensity(owner.density);
         if (owner.shapesCanvas) {
-            const canvas = owner.shapesCanvas;
+            const canvas = owner.shapesCanvas as Canvas;
+            canvas.setDensity(owner.density);
             const viewport = CGRectMake(0, 0, size.width, size.height);
             const image = canvas.getCGImage();
-            // console.log('Canvas', 'drawLayerInContext', 'shapesCanvas', size.width, size.height, image);
             CGContextDrawImage(context, viewport, image);
-            // CGImageRelease(image);
-        } else if (!owner.cached) {
+        } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
-            // console.log('Canvas', 'drawLayerInContext', 'drawing shapes', size.width, size.height, shapes.shapes.length);
-            if (shapes && shapes.shapes.length > 0) {
+            if (shapes.shapes.length > 0) {
                 shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this._canvas));
             }
         }
@@ -1202,21 +1204,6 @@ export class CanvasView extends CanvasBase {
             const layer = this.nativeViewProtected.layer;
             layer.setNeedsDisplay();
             layer.displayIfNeeded();
-        }
-    }
-    shapesCanvas: Canvas;
-    drawShapes() {
-        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
-        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
-        // console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length, width, height);
-        if (this.shapesCanvas) {
-            this.shapesCanvas.clear();
-            this.shapesCanvas = null;
-        }
-        if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
-            const canvas = (this.shapesCanvas = new Canvas(width, height));
-            this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
-            this.redraw();
         }
     }
 }
@@ -1242,7 +1229,7 @@ export class RadialGradient {
         }
         return this._gradient;
     }
-    clear() {
+    release() {
         if (this._gradient) {
             CFRelease(this._gradient);
             this._gradient = undefined;

@@ -9,14 +9,20 @@
             </StackLayout>
 
         </ActionBar>
-        <StackLayout>
-            <CanvasView cached="true" ref="canvas" width="100%" height="100%" backgroundColor="#44ff0000">
+        <GridLayout rows="*,auto">
+            <CanvasView row="0" :density="density" ref="canvas" width="100%" backgroundColor="#44ff0000">
                 <Shapes>
                     <Rectangle shadow="3 3 black" strokeColor="red" :fillColor="shapeColor" strokeWidth="6" :left="shapeLeft" top="10" :width="shapeLeft + '%'" height="50%" />
-                    <Arc color="yellow" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
+                    <Arc color="yellow"  shadow="0 0 10 red" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
+                    <Text  :antiAlias="antiAlias" color="green" top="50" text="test Text" fontSize="50" />
                 </Shapes>
             </CanvasView>
-        </StackLayout>
+            <GridLayout row="1" columns="auto, *, auto" orientation="horizontal">
+                <Label col="0" text="density" verticalAlignment="center"/>
+                <Slider col="1" height="40" v-model="density" minValue="0" maxValue="10" verticalAlignment="center" />
+                <Switch col="2" v-model="antiAlias"/>
+            </GridLayout>
+        </GridLayout>
     </Page>
 </template>
 
@@ -35,6 +41,8 @@ export default class Simple extends Vue {
     shapeLeft = 10;
     sweepAngle = 0;
     arcWidth = Math.min(screen.mainScreen.widthDIPs, screen.mainScreen.heightDIPs) - 40;
+    density = screen.mainScreen.scale
+    antiAlias = true
     static title: 'Shapes Example';
     mounted() {}
     onBack() {

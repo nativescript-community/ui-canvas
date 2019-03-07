@@ -57,6 +57,9 @@ export class Paint {
 }
 export class Canvas {
     constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | UIImage | number, height?: number);
+
+    clear() // clear the canvas by filling with transparent color
+    release() // release all data (image and such). Only to be called on destroy
     getImage(): android.graphics.Bitmap | UIImage;
 
     getDensity(): number;

@@ -30,7 +30,7 @@ function createSetter(key, options: ShapePropertyOptions) {
     return function(newVal) {
         const actualVal = options.converter ? options.converter(newVal) : newVal;
         this.style[key] = actualVal;
-        this.notify({ object: this, eventName: Observable.propertyChangeEvent, propertyName: key, value: actualVal });
+        // console.log('set', key, newVal, actualVal, options);
         if (options.paintSetter) {
             options.paintSetter(this.paint, actualVal);
         } else if (options.paintSetterName) {
@@ -42,11 +42,13 @@ function createSetter(key, options: ShapePropertyOptions) {
                 this.paint[key] = actualVal;
             } else {
                 const setter = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
+                // console.log('test', setter, !!this.paint[setter]);
                 if (this.paint[setter]) {
                     this.paint[setter](actualVal);
                 }
             }
         }
+        this.notify({ object: this, eventName: Observable.propertyChangeEvent, propertyName: key, value: actualVal });
     };
 }
 
@@ -75,6 +77,11 @@ export function shapeProperty(converter, ...args) {
     }
 }
 
+export function stringProperty(target: any, k?, desc?: PropertyDescriptor): any;
+export function stringProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
+export function stringProperty(...args) {
+    return shapeProperty(undefined, ...args);
+}
 export function colorProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function colorProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function colorProperty(...args) {
@@ -139,6 +146,8 @@ export default abstract class Shape extends ViewBase {
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;
     @numberProperty textSize: number;
+    // alias for textSize
+    @numberProperty({ paintGetterName: 'getTextSize', paintSetterName: 'setTextSize' }) fontSize: number;
     @booleanProperty({ paintGetterName: 'isAntiAlias', paintSetterName: 'setAntiAlias' }) antiAlias: boolean;
     @colorProperty({
         converter: parseShadow,
@@ -149,7 +158,7 @@ export default abstract class Shape extends ViewBase {
 
     drawMyShapeOnCanvas(canvas: Canvas) {
         const paint = this.paint;
-
+        // console.log('drawMyShapeOnCanvas', paint.getColor(), this.strokeColor, this.fillColor);
         if (this.strokeColor || this.fillColor) {
             const oldStyle = paint.getStyle();
             const oldColor = paint.getColor();

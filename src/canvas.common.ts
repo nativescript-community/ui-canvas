@@ -1,8 +1,9 @@
-import { Cap, Join, Rect, Style } from './canvas';
+import { Canvas, Cap, Join, Rect, Style } from './canvas';
 import { Property } from 'tns-core-modules/ui/core/properties';
-import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, View, ViewBase } from 'tns-core-modules/ui/core/view';
+import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, layout, View, ViewBase } from 'tns-core-modules/ui/core/view';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { Observable, PropertyChangeData } from 'tns-core-modules/data/observable';
+import { screen } from 'tns-core-modules/platform';
 import Shape from './shapes/shape';
 
 export function parseCap(value: string | number) {
@@ -189,6 +190,7 @@ export function createRect(x: number, y: number, w: number, h: number) {
 
 export const shapesProperty = new Property<CanvasBase, Shapes>({ name: 'shapes', valueChanged: onShapesPropertyChanged });
 export const cachedProperty = new Property<CanvasBase, boolean>({ name: 'cached', defaultValue: false, valueConverter: booleanConverter });
+export const densityProperty = new Property<CanvasBase, number>({ name: 'density', valueConverter: parseFloat });
 
 function throttle(fn, limit) {
     let waiting = false;
@@ -202,10 +204,11 @@ function throttle(fn, limit) {
         }
     };
 }
-
+export const DEFAULT_SCALE = screen.mainScreen.scale;
 export abstract class CanvasBase extends View {
     public shapes: Shapes;
     public cached = false;
+    public density = DEFAULT_SCALE;
 
     requeestDrawShapes() {
         if (this.cached) {
@@ -249,7 +252,6 @@ export abstract class CanvasBase extends View {
     }
     _raiseLayoutChangedEvent() {
         super._raiseLayoutChangedEvent();
-        console.log('_raiseLayoutChangedEvent', !!this.shapes);
         if (!!this.shapes) {
             this.requeestDrawShapes();
         }
@@ -257,9 +259,27 @@ export abstract class CanvasBase extends View {
     [shapesProperty.setNative](value: Shapes) {
         this.requeestDrawShapes();
     }
-
-    abstract drawShapes();
+    [densityProperty.setNative](value) {
+        this.requeestDrawShapes();
+    }
+    shapesCanvas: Canvas;
+    drawShapes() {
+        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
+        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
+        if (this.shapesCanvas) {
+            this.shapesCanvas.release();
+            this.shapesCanvas = null;
+        }
+        if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
+            const canvas = (this.shapesCanvas = new Canvas(width, height));
+            canvas.setDensity(this.density);
+            this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
+            this.redraw();
+        }
+    }
     abstract redraw();
 }
 
 shapesProperty.register(CanvasBase);
+cachedProperty.register(CanvasBase);
+densityProperty.register(CanvasBase);

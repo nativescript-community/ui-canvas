@@ -5,7 +5,7 @@ import { android as androidApp } from 'tns-core-modules/application';
 import { screen } from 'tns-core-modules/platform';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
-import { CanvasBase, createRect } from './canvas.common';
+import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
 
 export * from './canvas.common';
 
@@ -52,7 +52,7 @@ function initCanvasClass() {
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
             super();
             // console.log('create canvas', screen.mainScreen.scale, imageOrWidth, height);
-            this.setDensity(screen.mainScreen.scale);
+            this.setDensity(Math.round(DEFAULT_SCALE * 160));
 
             if (imageOrWidth instanceof ImageSource) {
                 this._bitmap = imageOrWidth.android;
@@ -85,9 +85,15 @@ function initCanvasClass() {
         getHeight() {
             return Math.round(layout.toDeviceIndependentPixels(super.getHeight()));
         }
-
+        drawColor(color: number | Color | string): void {
+            const actualColor = color instanceof Color ? color : new Color(color as any);
+            super.drawColor(actualColor.android);
+        }
         clear() {
-            if (this._shouldReleaseBitmap) {
+            this.drawColor('transparent');
+        }
+        release() {
+            if (this._shouldReleaseBitmap && this._bitmap) {
                 this._bitmap.recycle();
                 this._bitmap = null;
             }
@@ -146,7 +152,9 @@ function initPaintClass() {
                 super.setColor(new Color(color as any).android);
             }
         }
-
+        // get color() {
+        //     return this.getColor();
+        // }
         set color(color: Color | number | string) {
             this.setColor(color);
         }
@@ -215,6 +223,9 @@ function initLinearGradientClass() {
 
 class CanvasWrapper implements ICanvas {
     canvas: any;
+    release() {
+        this.canvas.release();
+    }
     clear() {
         this.canvas.clear();
     }
@@ -242,8 +253,9 @@ class CanvasWrapper implements ICanvas {
     drawArc(...params) {
         return this.canvas.drawArc.apply(this.canvas, params);
     }
-    drawColor(...params) {
-        return this.canvas.drawColor.apply(this.canvas, params);
+    drawColor(color: number | Color | string): void {
+        const actualColor = color instanceof Color ? color : new Color(color as any);
+        return this.canvas.drawColor(actualColor.android);
     }
     drawCircle(...params) {
         return this.canvas.drawCircle.apply(this.canvas, params);
@@ -323,6 +335,13 @@ class CanvasWrapper implements ICanvas {
     drawRGB(param0, param1, param2) {
         return this.canvas.drawRGB(param0, param1, param2);
     }
+    setShadowLayer(radius: number, dx: number, dy: number, color: any) {
+        if (color instanceof Color) {
+        } else {
+            color = new Color(color);
+        }
+        this.canvas.setShadowLayer(radius, dx, dy, color.android);
+    }
     public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
         drawBitmapOnCanvas(this.canvas, param0, param1, param2, param3);
     }
@@ -336,7 +355,6 @@ class CanvasWrapper implements ICanvas {
 }
 
 let AndroidCanvasView;
-const scale = screen.mainScreen.scale;
 function initAndroidCanvasViewClass() {
     if (AndroidCanvasView) {
         return AndroidCanvasView;
@@ -350,11 +368,13 @@ function initAndroidCanvasViewClass() {
         }
         augmentedCanvas: CanvasWrapper;
         onDraw(canvas: android.graphics.Canvas) {
-            canvas.setDensity(scale);
-            canvas.scale(scale, scale);
-            super.onDraw(canvas);
             const owner = this._owner && this._owner.get();
+            super.onDraw(canvas);
             if (owner) {
+                const scale = owner.density;
+                console.log('set canvas density', scale, Math.round(scale * 160));
+                canvas.setDensity(Math.round(scale * 160));
+                canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
                 this.augmentedCanvas.canvas = canvas;
                 if (owner.shapesCanvas) {
                     const shapeCanvas = owner.shapesCanvas;
@@ -372,35 +392,6 @@ function initAndroidCanvasViewClass() {
     AndroidCanvasView = AndroidCanvasViewImpl;
     return AndroidCanvasViewImpl;
 }
-
-// class A extends View {
-
-//     private Canvas canvas;
-//     private Bitmap bitmap;
-
-//     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-//         if (bitmap != null) {
-//             bitmap .recycle();
-//         }
-//         canvas= new Canvas();
-//         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-//         canvas.setBitmap(bitmap);
-//     }
-//     public void destroy() {
-//         if (bitmap != null) {
-//             bitmap.recycle();
-//         }
-//     }
-//     public void onDraw(Canvas c) {
-//       //draw onto the canvas if needed (maybe only the parts of animation that changed)
-//       canvas.drawRect(0,0,10,10,paint);
-
-//       //draw the bitmap to the real canvas c
-//       c.drawBitmap(bitmap,
-//           new Rect(0,0,bitmap.getWidth(),bitmap.getHeight()),
-//           new Rect(0,0,bitmap.getWidth(),bitmap.getHeight()), null);
-//     }
-// }
 
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, Path, Rect, Style, TileMode;
 
@@ -423,7 +414,6 @@ function initClasses() {
     TileMode = android.graphics.Shader.TileMode;
 }
 
-
 declare module 'tns-core-modules/ui/core/view' {
     interface View {
         setOnLayoutChangeListener();
@@ -440,55 +430,10 @@ class CanvasView extends CanvasBase {
             this.nativeViewProtected.invalidate();
         }
     }
-    shapesCanvas: ICanvas;
-    drawShapes() {
-        const width = Math.round(layout.toDeviceIndependentPixels(this.getMeasuredWidth()));
-        const height = Math.round(layout.toDeviceIndependentPixels(this.getMeasuredHeight()));
-        // console.log('Canvas', 'drawShapes', this.shapes && this.shapes.shapes.length, width, height);
-        if (this.shapesCanvas) {
-            (this.shapesCanvas as any).clear();
-            this.shapesCanvas = null;
-        }
-        if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
-            // console.log('Canvas', 'shapes', 'create');
-            const canvas = (this.shapesCanvas = new Canvas(width, height));
-            // console.log('Canvas', 'shapes', 'created');
-            this.shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(canvas));
-            // console.log('Canvas', 'shapes', 'drawn');
-            this.redraw();
-        }
-    }
-    // private layoutChangeCacheListenerIsSet: boolean;
-    // private layoutChangeCacheListener: android.view.View.OnLayoutChangeListener;
-    // private setOnLayoutChangeListener() {
-    //     if (this.nativeViewProtected) {
-    //         const owner = this;
-    //         this.layoutChangeCacheListenerIsSet = true;
-    //         this.layoutChangeCacheListener = this.layoutChangeCacheListener || new android.view.View.OnLayoutChangeListener({
-    //             onLayoutChange(
-    //                 v: android.view.View,
-    //                 left: number, top: number, right: number, bottom: number,
-    //                 oldLeft: number, oldTop: number, oldRight: number, oldBottom: number): void {
-    //                 if (left !== oldLeft || top !== oldTop || right !== oldRight || bottom !== oldBottom) {
-    //                     owner._raiseLayoutChangedEvent();
-    //                 }
-    //             }
-    //         });
-
-    //         this.nativeViewProtected.addOnLayoutChangeListener(this.layoutChangeCacheListener);
-    //     }
-    // }
     public initNativeView() {
         super.initNativeView();
+        // needed to update the cache canvas size on size change
         this.setOnLayoutChangeListener();
-    }
-    public disposeNativeView() {
-        super.disposeNativeView();
-
-        // if (this.layoutChangeCacheListenerIsSet) {
-        //     this.layoutChangeCacheListenerIsSet = false;
-        //     this.nativeViewProtected.removeOnLayoutChangeListener(this.layoutChangeCacheListener);
-        // }
     }
 }
 initClasses();
