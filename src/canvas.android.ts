@@ -372,7 +372,7 @@ function initAndroidCanvasViewClass() {
             super.onDraw(canvas);
             if (owner) {
                 const scale = owner.density;
-                console.log('set canvas density', scale, Math.round(scale * 160));
+                // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
                 canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
                 this.augmentedCanvas.canvas = canvas;
