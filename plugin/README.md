@@ -3,6 +3,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/Akylas/nativescript-canvas.svg)](https://github.com/Akylas/nativescript-canvas/network)
 [![GitHub stars](https://img.shields.io/github/stars/Akylas/nativescript-canvas.svg)](https://github.com/Akylas/nativescript-canvas/stargazers)
 
+[![NPM](https://nodei.co/npm/nativescript-canvas.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nativescript-canvas/)
 ## Installation
 
 * `tns plugin add nativescript-canvas`
