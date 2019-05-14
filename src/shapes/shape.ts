@@ -1,9 +1,8 @@
-import { Canvas, Cap, Join, Paint, Style } from '../canvas';
 import { Color } from 'tns-core-modules/color/color';
-import { Length, PercentLength } from 'tns-core-modules/ui/styling/style-properties';
-import { booleanConverter, ViewBase } from 'tns-core-modules/ui/core/view';
 import { Observable } from 'tns-core-modules/data/observable/observable';
-import { parseCap, parseJoin, parseType } from '../canvas.common';
+import { booleanConverter, ViewBase } from 'tns-core-modules/ui/core/view';
+import { Length, PercentLength } from 'tns-core-modules/ui/styling/style-properties';
+import { Canvas, Cap, Join, Paint, parseCap, parseDashEffect, parseJoin, parseType, Style } from '../canvas';
 
 function createGetter(key, options: ShapePropertyOptions) {
     return function() {
@@ -20,7 +19,7 @@ function hasSetter(obj, prop) {
     return descriptor && !!descriptor['set'];
 }
 
-interface ShapePropertyOptions {
+export interface ShapePropertyOptions {
     converter?: Function;
     paintGetterName?: string;
     paintSetterName?: string;
@@ -108,7 +107,7 @@ export function booleanProperty(...args) {
     return shapeProperty(v => booleanConverter(v), ...args);
 }
 
-interface Shadow {
+export interface Shadow {
     dx: number;
     dy: number;
     radius: number;
@@ -142,6 +141,7 @@ export default abstract class Shape extends ViewBase {
     @colorProperty strokeColor: Color;
     @colorProperty color: Color;
     @lengthProperty strokeWidth: number;
+    @stringProperty({ converter: parseDashEffect, paintSetterName: 'setPathEffect' }) dash: string;
     @numberProperty({ converter: parseType, paintSetterName: 'setStyle' }) paintStyle: Style;
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;

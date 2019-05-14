@@ -3,6 +3,11 @@ import { Color } from 'tns-core-modules/color/color';
 import { View } from 'tns-core-modules/ui/core/view';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
+export function parseCap(value: string | number): Cap;
+export function parseType(value: string | number): Style;
+export function parseJoin(value: string | number): Join;
+
+export function parseDashEffect(value: string): DashPathEffect;
 
 // export * from './canvas.android'
 
@@ -24,7 +29,7 @@ export class Paint {
     public measureText(text: string): number;
     public getTextSize(): number;
     public getTextBounds(text: string, index: number, bounds: number, rect: Rect): void;
-    // public setPathEffect(param0: android.graphics.PathEffect): android.graphics.PathEffect;
+    public setPathEffect(param0: PathEffect);
     public isAntiAlias(): boolean;
     public setStrokeJoin(value: Join): void;
     // public getTextWidths(param0: native.Array<string>, param1: number, param2: number, param3: native.Array<number>): number;
@@ -58,8 +63,8 @@ export class Paint {
 export class Canvas {
     constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | UIImage | number, height?: number);
 
-    clear() // clear the canvas by filling with transparent color
-    release() // release all data (image and such). Only to be called on destroy
+    clear(); // clear the canvas by filling with transparent color
+    release(); // release all data (image and such). Only to be called on destroy
     getImage(): android.graphics.Bitmap | UIImage;
 
     getDensity(): number;
@@ -204,6 +209,8 @@ export class Op extends android.graphics.Region.Op {}
 export class Direction extends android.graphics.Path.Direction {}
 export class FillType extends android.graphics.Path.FillType {}
 export class Matrix extends android.graphics.Matrix {}
+export class PathEffect extends android.graphics.PathEffect {}
+export class DashPathEffect extends android.graphics.DashPathEffect {}
 // declare Paint extends get Canvas() {
 //     return android.graphics.Canvas;
 // },
@@ -218,5 +225,5 @@ export class Matrix extends android.graphics.Matrix {}
 // }
 
 declare class CanvasView extends View {
-    redraw()
+    redraw();
 }

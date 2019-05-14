@@ -2,12 +2,26 @@ import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { Color } from 'tns-core-modules/color/color';
 import { layout, View } from 'tns-core-modules/ui/core/view';
 import { android as androidApp } from 'tns-core-modules/application';
-import { screen } from 'tns-core-modules/platform';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
 
 export * from './canvas.common';
+
+export function parseDashEffect(value: string) {
+    const array = value.split(' ').map(parseFloat);
+    const length = array.length;
+    const phase = array[length - 1];
+    console.log('parseDashEffect1', array, length, phase);
+    const nNative = Array.create('float', length - 1);
+    for (let i = 0; i < length - 1; i++) {
+        nNative[i] = array[i];
+    }
+    console.log('parseDashEffect2', nNative);
+    const result = new DashPathEffect(nNative, phase);
+    console.log('parseDashEffect', array, result);
+    return result;
+}
 
 function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
     if (param0 instanceof ImageSource) {
@@ -51,7 +65,6 @@ function initCanvasClass() {
         _shouldReleaseBitmap = false;
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
             super();
-            // console.log('create canvas', screen.mainScreen.scale, imageOrWidth, height);
             this.setDensity(Math.round(DEFAULT_SCALE * 160));
 
             if (imageOrWidth instanceof ImageSource) {
@@ -164,8 +177,16 @@ function initPaintClass() {
         set strokeCap(value: number) {
             this.setStrokeCap(value);
         }
+        setStrokeCap(value: number) {
+            console.log('setStrokeCap', value, typeof value, android.graphics.Paint.Cap.ROUND);
+            super.setStrokeCap(value);
+        }
         set strokeJoin(value: number) {
             this.setStrokeJoin(value);
+        }
+        setStrokeJoin(value: number) {
+            console.log('setStrokeJoin', value, typeof value, android.graphics.Paint.Join.ROUND);
+            super.setStrokeJoin(value);
         }
         set style(value: number) {
             this.setStyle(value);
@@ -179,6 +200,11 @@ function initPaintClass() {
                 color = new Color(color);
             }
             super.setShadowLayer(radius, dx, dy, color.android);
+        }
+
+        setPathEffect(effect) {
+            console.log('applying path effect', effect);
+            return super.setPathEffect(effect);
         }
     }
     Paint = PaintImpl as any;
@@ -393,7 +419,7 @@ function initAndroidCanvasViewClass() {
     return AndroidCanvasViewImpl;
 }
 
-let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, Path, Rect, Style, TileMode;
+let Cap, Direction, DashPathEffect, DrawFilter, FillType, Join, Matrix, Op, Path, PathEffect, Rect, Style, TileMode;
 
 function initClasses() {
     initCanvasClass();
@@ -406,6 +432,8 @@ function initClasses() {
     Rect = android.graphics.RectF;
 
     Path = android.graphics.Path;
+    DashPathEffect = android.graphics.DashPathEffect;
+    PathEffect = android.graphics.PathEffect;
     DrawFilter = android.graphics.DrawFilter;
     Op = android.graphics.Region.Op;
     Direction = android.graphics.Path.Direction;
@@ -437,4 +465,4 @@ class CanvasView extends CanvasBase {
     }
 }
 initClasses();
-export { Canvas, CanvasView, Cap, Direction, DrawFilter, FillType, Join, LinearGradient, Matrix, Op, Paint, Path, RadialGradient, Rect, Style, TileMode };
+export { Canvas, CanvasView, Cap, DashPathEffect, Direction, DrawFilter, FillType, Join, LinearGradient, Matrix, Op, Paint, Path, PathEffect, RadialGradient, Rect, Style, TileMode };

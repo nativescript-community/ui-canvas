@@ -4,6 +4,7 @@ import { ImageSource } from 'tns-core-modules/image-source/image-source';
 import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
+import { isArray } from 'util';
 
 export * from './canvas.common';
 
@@ -218,6 +219,14 @@ export class Rect implements IRect {
 }
 
 export class Matrix {}
+
+export class PathEffect {}
+export class DashPathEffect extends PathEffect {
+    constructor(public intervals: number[], public phase: number) {
+        super();
+        console.log('DashPathEffect', intervals, phase, new Error().stack);
+    }
+}
 
 export class Path implements IPath {
     _path: any;
@@ -537,6 +546,11 @@ export class Paint implements IPaint {
             this.shader = null;
         }
     }
+    pathEffect: PathEffect;
+    public setPathEffect(param0: PathEffect) {
+        console.log('setPathEffect', param0);
+        this.pathEffect = param0;
+    }
 }
 
 export class Canvas implements ICanvas {
@@ -687,14 +701,23 @@ export class Canvas implements ICanvas {
     drawPoints(pts: number[], paint: IPaint): void {
         console.error('Method not implemented.');
     }
-    drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: IPaint): void {
-        console.error('Method not implemented.');
+    @paint
+    drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void {
+        const ctx = this.ctx;
+        CGContextBeginPath(ctx);
+        CGContextMoveToPoint(ctx, startX, startY);
+        CGContextAddLineToPoint(ctx, stopX, stopY);
+        this._drawPath(paint, ctx);
     }
+    @paint
     drawLines(...args) {
         // drawLines(pts: number[], offset: number, count: number, paint: IPaint): void;
         // drawLines(pts: number[], paint: IPaint): void;
         // drawLines(pts: any, offset: any, count?: any, paint?: any)
-        console.error('Method not implemented.');
+        const ctx = this.ctx;
+        CGContextBeginPath(ctx);
+        // CGContextAddLines(ctx, rect);
+        // this._drawPath(paint, ctx);
     }
     @paint
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void {
@@ -980,10 +1003,33 @@ export class Canvas implements ICanvas {
                 CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
             }
         }
+        if (!!paint.pathEffect) {
+            if (paint.pathEffect instanceof DashPathEffect) {
+                const intervals = paint.pathEffect.intervals;
+                const length = intervals.length;
+                // const buffer = interop.alloc(length * interop.sizeof(interop.types.float));
+                // const reference = new interop.Reference(interop.types.float, buffer);
+                // for (let i = 0; i < length; i++) {
+                //     reference[i] = intervals[i];
+                // }
+
+                const view = new Float32Array(length);
+                for (let i = 0; i < length; i++) {
+                    view[i] = intervals[i];
+                }
+                // const intervals = paint.pathEffect.intervals;
+                // const outerPtr = interop.alloc(interop.sizeof(interop.Pointer));
+                // const outerRef = new interop.Reference(interop.types.id, outerPtr);
+                // outerRef.value = intervals;
+                
+                console.log('CGContextSetLineDash2', paint.pathEffect.phase, view, length);
+                CGContextSetLineDash(ctx, paint.pathEffect.phase, view.buffer as any, length);
+            }
+        }
         if (paint.style === Style.FILL) {
-            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
+            CGContextFillPath(ctx);
         } else if (paint.style === Style.STROKE) {
-            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
+            CGContextStrokePath(ctx);
         } else {
             CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
         }

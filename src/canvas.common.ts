@@ -1,4 +1,4 @@
-import { Canvas, Cap, Join, Rect, Style } from './canvas';
+import { Canvas, Cap, DashPathEffect, Join, Rect, Style } from './canvas';
 import { Property } from 'tns-core-modules/ui/core/properties';
 import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, layout, View, ViewBase } from 'tns-core-modules/ui/core/view';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
@@ -7,6 +7,7 @@ import { screen } from 'tns-core-modules/platform';
 import Shape from './shapes/shape';
 
 export function parseCap(value: string | number) {
+    console.log('parseCap', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'square':
@@ -22,6 +23,7 @@ export function parseCap(value: string | number) {
     }
 }
 export function parseType(value: string | number) {
+    console.log('parseType', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'fill':
@@ -37,6 +39,7 @@ export function parseType(value: string | number) {
     }
 }
 export function parseJoin(value: string | number) {
+    console.log('parseJoin', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'bevel':
@@ -50,6 +53,12 @@ export function parseJoin(value: string | number) {
     } else {
         return value;
     }
+}
+
+export function parseDashEffect(value: string) {
+    const array = value.split(' ').map(parseFloat);
+    const result = new DashPathEffect(array.slice(0, -1), array[array.length - 1]);
+    return result;
 }
 
 declare module 'tns-core-modules/ui/core/view' {
