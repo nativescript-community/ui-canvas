@@ -70,8 +70,13 @@ module.exports = env => {
         const srcFullPath = resolve(projectRoot, '..', 'src');
         aliases = Object.assign(aliases, {
             '#': srcFullPath,
-            'nativescript-canvas': '#/canvas.' + platform,
-            'nativescript-canvas$': '#/canvas.' + platform
+            'nativescript-canvas$': '#/canvas.' + platform,
+            'nativescript-canvas/vue$': '#/vue/index',
+            '../canvas$': '#/canvas.' + platform,
+            '../shapes/line$': '#/shapes/line',
+            '../shapes/text$': '#/shapes/text',
+            '../shapes/arc$': '#/shapes/arc',
+            '../shapes/rectangle$': '#/shapes/rectangle',
         });
     }
     const tsconfig = 'tsconfig.json';

@@ -15,6 +15,8 @@
                     <Rectangle shadow="3 3 black" strokeColor="red" :fillColor="shapeColor" strokeWidth="6" :left="shapeLeft" top="10" :width="shapeLeft + '%'" height="50%" />
                     <Arc color="yellow" :antiAlias="antiAlias" shadow="0 0 10 red" paintStyle="stroke" strokeCap="round" strokeWidth="10" left="20" top="20" :width="arcWidth" :height="arcWidth" startAngle="0" :sweepAngle="sweepAngle" />
                     <Text  :antiAlias="antiAlias" color="green" top="50" text="test Text" fontSize="50" />
+                    <Line  :antiAlias="antiAlias" color="yellow"  startX="10" startY="10" stopX="105" stopY="50"  strokeCap="round"  strokeJoin="round" strokeWidth="8" dash="5 10 15 20 0"/>
+                    <Line  :antiAlias="antiAlias" color="#1C2738"  startX="10%" startY="50%" stopX="90%" stopY="50%"  strokeCap="round"  strokeJoin="round" strokeWidth="1" dash="1 4 0"/>
                 </Shapes>
             </CanvasView>
             <GridLayout row="1" columns="auto, *, auto" orientation="horizontal">

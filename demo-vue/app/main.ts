@@ -9,8 +9,8 @@ Vue.use(CanvasPlugin);
 //     console.log('registering example', comp.component.name);
 //     Vue.component(comp.component.name, comp);
 // }
-Vue.config.silent = false;
-Vue.config['debug'] = true;
+Vue.config.silent = true;
+Vue.config['debug'] = false;
 
 Vue.config.errorHandler = (e, vm, info) => {
     throw e;
