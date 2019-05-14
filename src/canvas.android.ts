@@ -12,14 +12,11 @@ export function parseDashEffect(value: string) {
     const array = value.split(' ').map(parseFloat);
     const length = array.length;
     const phase = array[length - 1];
-    console.log('parseDashEffect1', array, length, phase);
     const nNative = Array.create('float', length - 1);
     for (let i = 0; i < length - 1; i++) {
         nNative[i] = array[i];
     }
-    console.log('parseDashEffect2', nNative);
     const result = new DashPathEffect(nNative, phase);
-    console.log('parseDashEffect', array, result);
     return result;
 }
 
@@ -177,16 +174,8 @@ function initPaintClass() {
         set strokeCap(value: number) {
             this.setStrokeCap(value);
         }
-        setStrokeCap(value: number) {
-            console.log('setStrokeCap', value, typeof value, android.graphics.Paint.Cap.ROUND);
-            super.setStrokeCap(value);
-        }
         set strokeJoin(value: number) {
             this.setStrokeJoin(value);
-        }
-        setStrokeJoin(value: number) {
-            console.log('setStrokeJoin', value, typeof value, android.graphics.Paint.Join.ROUND);
-            super.setStrokeJoin(value);
         }
         set style(value: number) {
             this.setStyle(value);
@@ -202,10 +191,6 @@ function initPaintClass() {
             super.setShadowLayer(radius, dx, dy, color.android);
         }
 
-        setPathEffect(effect) {
-            console.log('applying path effect', effect);
-            return super.setPathEffect(effect);
-        }
     }
     Paint = PaintImpl as any;
     return PaintImpl;

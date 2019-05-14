@@ -7,7 +7,6 @@ import { screen } from 'tns-core-modules/platform';
 import Shape from './shapes/shape';
 
 export function parseCap(value: string | number) {
-    console.log('parseCap', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'square':
@@ -23,7 +22,6 @@ export function parseCap(value: string | number) {
     }
 }
 export function parseType(value: string | number) {
-    console.log('parseType', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'fill':
@@ -39,7 +37,6 @@ export function parseType(value: string | number) {
     }
 }
 export function parseJoin(value: string | number) {
-    console.log('parseJoin', value);
     if (typeof value === 'string') {
         switch (value) {
             case 'bevel':
