@@ -1,18 +1,19 @@
 import { Font } from 'tns-core-modules/ui/styling/font';
 import { Color, View } from 'tns-core-modules/ui/core/view';
 import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { ios } from 'tns-core-modules/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
-import { isArray } from 'util';
 
 export * from './canvas.common';
+
+declare class TNSBaseInterface {
+    static dumpFloatsWithCount(a, b);
+}
 
 const enum MemberType {
     Static,
     Instance
 }
-// const time = Date.now;
 
 function timelineProfileFunctionFactory<F extends Function>(fn: F, name: string, type: MemberType = MemberType.Instance): F {
     let result;
@@ -224,7 +225,6 @@ export class PathEffect {}
 export class DashPathEffect extends PathEffect {
     constructor(public intervals: number[], public phase: number) {
         super();
-        console.log('DashPathEffect', intervals, phase, new Error().stack);
     }
 }
 
@@ -511,7 +511,7 @@ export class Paint implements IPaint {
     }
 
     getUIFont() {
-        return this.font.getUIFont(UIFont.systemFontOfSize(ios.getter(UIFont, UIFont.labelFontSize)));
+        return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
         return (this.color as Color).ios;
@@ -851,6 +851,13 @@ export class Canvas implements ICanvas {
         if (paint.strokeJoin) {
             CGContextSetLineJoin(ctx, paint.strokeJoin as any);
         }
+        if (!!paint.pathEffect) {
+            if (paint.pathEffect instanceof DashPathEffect) {
+                const intervals = paint.pathEffect.intervals;
+                const length = intervals.length;
+                CGContextSetLineDash(ctx, paint.pathEffect.phase, Float64Array.from(intervals) as any, length);
+            }
+        }
         if (paint.color) {
             const color = paint.getColor();
             // if (paint.style === Style.FILL) {
@@ -865,7 +872,7 @@ export class Canvas implements ICanvas {
         }
 
         if (withFont && paint.font) {
-            // const font = paint.font.getUIFont(UIFont.systemFontOfSize(ios.getter(UIFont, UIFont.labelFontSize))) as UIFont;
+            // const font = paint.font.getUIFont(UIFont.systemFontOfSize( UIFont.labelFontSize)) as UIFont;
             // console.log('set font', font.fontName, font.familyName, font.pointSize, font.fontDescriptor, font.fontDescriptor.postscriptName);
             // CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingMacRoman);
             // CGContextSetCharacterSpacing(ctx, 1.7);
@@ -876,6 +883,9 @@ export class Canvas implements ICanvas {
     }
     finishApplyPaint(paint) {
         paint.currentContext = null;
+        const ctx = this._cgContext;
+        console.log('reset line dash');
+        CGContextSetLineDash(ctx, 0, null, 0);
         this.restore();
     }
 
@@ -996,6 +1006,7 @@ export class Canvas implements ICanvas {
         }
     }
     private _drawPath(paint: Paint, ctx) {
+        console.log('_drawPath');
         if (paint.shader) {
             if (paint.shader instanceof RadialGradient) {
                 const g = paint.shader;
@@ -1003,33 +1014,34 @@ export class Canvas implements ICanvas {
                 CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, 0);
             }
         }
-        if (!!paint.pathEffect) {
-            if (paint.pathEffect instanceof DashPathEffect) {
-                const intervals = paint.pathEffect.intervals;
-                const length = intervals.length;
-                // const buffer = interop.alloc(length * interop.sizeof(interop.types.float));
-                // const reference = new interop.Reference(interop.types.float, buffer);
-                // for (let i = 0; i < length; i++) {
-                //     reference[i] = intervals[i];
-                // }
+        // if (!!paint.pathEffect) {
+        //     if (paint.pathEffect instanceof DashPathEffect) {
+        //         const intervals = paint.pathEffect.intervals;
+        //         const length = intervals.length;
+        //         // const buffer = interop.alloc(length * interop.sizeof(interop.types.float));
+        //         // const reference = new interop.Reference(interop.types.float, buffer);
+        //         // for (let i = 0; i < length; i++) {
+        //         //     reference[i] = intervals[i];
+        //         // }
 
-                const view = new Float32Array(length);
-                for (let i = 0; i < length; i++) {
-                    view[i] = intervals[i];
-                }
-                // const intervals = paint.pathEffect.intervals;
-                // const outerPtr = interop.alloc(interop.sizeof(interop.Pointer));
-                // const outerRef = new interop.Reference(interop.types.id, outerPtr);
-                // outerRef.value = intervals;
-                
-                console.log('CGContextSetLineDash2', paint.pathEffect.phase, view, length);
-                CGContextSetLineDash(ctx, paint.pathEffect.phase, view.buffer as any, length);
-            }
-        }
+        //         const view = new Float32Array(length);
+        //         for (let i = 0; i < length; i++) {
+        //             view[i] = intervals[i];
+        //         }
+        //         // const intervals = paint.pathEffect.intervals;
+        //         // const outerPtr = interop.alloc(interop.sizeof(interop.Pointer));
+        //         // const outerRef = new interop.Reference(interop.types.id, outerPtr);
+        //         // outerRef.value = intervals;
+
+        //         console.log('CGContextSetLineDash2', paint.pathEffect.phase, view, length);
+        //         CGContextSetLineDash(ctx, paint.pathEffect.phase, Float32Array.from(paint.pathEffect.intervals) as any, length);
+        //     }
+        // }
         if (paint.style === Style.FILL) {
-            CGContextFillPath(ctx);
+            // CGContextFillPath(ctx);
+            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
         } else if (paint.style === Style.STROKE) {
-            CGContextStrokePath(ctx);
+            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
         } else {
             CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
         }
