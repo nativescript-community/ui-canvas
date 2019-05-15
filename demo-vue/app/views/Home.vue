@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { getExamples } from '../examples';
-import Vue from 'akylas-nativescript-vue';
+import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 
 @Component

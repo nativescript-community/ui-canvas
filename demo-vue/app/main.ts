@@ -1,7 +1,6 @@
 import Vue, { registerElement } from 'nativescript-vue';
 import Home from './views/Home.vue';
 
-
 import CanvasPlugin from 'nativescript-canvas/vue';
 Vue.use(CanvasPlugin);
 
@@ -20,6 +19,7 @@ Vue.config.warnHandler = function(msg, vm, trace) {
     console.log(msg, new Error().stack);
 };
 console.log('registering all, ready to start');
+
 new Vue({
     render: h => {
         return h('frame', [h(Home)]);
