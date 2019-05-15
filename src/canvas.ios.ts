@@ -6,9 +6,7 @@ import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
 
 export * from './canvas.common';
 
-declare class TNSBaseInterface {
-    static dumpFloatsWithCount(a, b);
-}
+const  FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
 
 const enum MemberType {
     Static,
@@ -855,7 +853,7 @@ export class Canvas implements ICanvas {
             if (paint.pathEffect instanceof DashPathEffect) {
                 const intervals = paint.pathEffect.intervals;
                 const length = intervals.length;
-                CGContextSetLineDash(ctx, paint.pathEffect.phase, Float64Array.from(intervals) as any, length);
+                CGContextSetLineDash(ctx, paint.pathEffect.phase, FloatConstructor.from(intervals) as any, length);
             }
         }
         if (paint.color) {
