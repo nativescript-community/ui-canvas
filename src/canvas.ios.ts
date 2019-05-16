@@ -881,7 +881,6 @@ export class Canvas implements ICanvas {
     finishApplyPaint(paint) {
         paint.currentContext = null;
         const ctx = this._cgContext;
-        console.log('reset line dash');
         CGContextSetLineDash(ctx, 0, null, 0);
         this.restore();
     }
@@ -1003,7 +1002,6 @@ export class Canvas implements ICanvas {
         }
     }
     private _drawPath(paint: Paint, ctx) {
-        console.log('_drawPath');
         if (paint.shader) {
             if (paint.shader instanceof RadialGradient) {
                 const g = paint.shader;
