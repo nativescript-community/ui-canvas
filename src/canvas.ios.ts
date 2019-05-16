@@ -546,7 +546,6 @@ export class Paint implements IPaint {
     }
     pathEffect: PathEffect;
     public setPathEffect(param0: PathEffect) {
-        console.log('setPathEffect', param0);
         this.pathEffect = param0;
     }
 }
