@@ -47,9 +47,9 @@ registerElement('CanvasView', () => CanvasView);
 
 ```javascript
 import Vue from 'nativescript-vue';
-import CardViewPlugin from 'nativescript-canvas/vue';
+import CanvasPlugin from 'nativescript-canvas/vue';
 
-Vue.use(CardViewPlugin);
+Vue.use(CanvasPlugin);
 ```
 
 ```html
