@@ -7,7 +7,7 @@
         "build.plugin": "npm run tsc && cp README.md plugin/",
         "build.android": "bash src-native/android/build.sh",
         "build.ios": "bash src-native/ios/build.sh",
-        "build.native": "npm run build.android && npm run build.ios",
+        "build.native": "npm run build.ios",
         "build": "npm run build.native && npm run build.plugin && lerna publish",
         "demo.ios": "npm i && npm run tsc && cd demo && tns run ios",
         "demo.android": "npm i && npm run tsc && cd demo && tns run android",
