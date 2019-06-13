@@ -21,7 +21,7 @@ function createRect(x, y, w, h) {
 export function drawOnImage(scale = 3, canvas?) {
     const folder: Folder = knownFolders.currentApp();
 
-    const iconLocalFile: ImageSource = fromFile(path.join(folder.path, 'images/icon.png'));
+    const iconLocalFile: ImageSource = fromFile(path.join(folder.path, 'images/test.jpg'));
     if (!canvas) {
         const folderPath: string = path.join(folder.path, 'images/test.jpg');
         const imageFromLocalFile: ImageSource = fromFile(folderPath);
@@ -101,8 +101,8 @@ export function drawOnImage(scale = 3, canvas?) {
     // image
     canvas.save();
     canvas.translate(10, 600);
-    canvas.drawBitmap(iconLocalFile, 0, 0, null);
-    canvas.drawBitmap(iconLocalFile, null, createRect(150, 0, 50, 100), null);
+    // canvas.drawBitmap(iconLocalFile, 0, 0, null);
+    canvas.drawBitmap(iconLocalFile, null, createRect(150, 0, 200, 300), null);
     canvas.restore();
 
     // custom path
