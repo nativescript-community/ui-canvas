@@ -19,3 +19,4 @@ Pods
 !plugin/platforms
 /plugin/platforms/android/nativescript_*.aar
 *.xcuserdatad
+/plugin/README.md
