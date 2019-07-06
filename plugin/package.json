@@ -1,6 +1,6 @@
 {
     "name": "nativescript-canvas",
-    "version": "2.1.7",
+    "version": "2.1.8",
     "description": "Nativescript Canvas plugin.",
     "main": "./canvas",
     "typings": "./canvas.d.ts",
