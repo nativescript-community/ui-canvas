@@ -61,11 +61,11 @@ export class Paint {
     // public getFontSpacing(): number;
 }
 export class Canvas {
-    constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | UIImage | number, height?: number);
+    constructor(imageOrWidth: any /*  ImageSource | android.graphics.Bitmap | UIImage | number */, height?: number);
 
     clear(); // clear the canvas by filling with transparent color
     release(); // release all data (image and such). Only to be called on destroy
-    getImage(): android.graphics.Bitmap | UIImage;
+    getImage(): any //android.graphics.Bitmap | UIImage;
 
     getDensity(): number;
     setDensity(density: number): void;
@@ -92,8 +92,8 @@ export class Canvas {
     drawRGB(r: number, g: number, b: number): void;
     drawColor(color: number | Color): void;
 
-    drawBitmap(bitmap: android.graphics.Bitmap | UIImage | ImageSource, src: Rect, dest: Rect, paint: Paint): void;
-    drawBitmap(bitmap: android.graphics.Bitmap | UIImage | ImageSource, x: number, y: number, paint: Paint): void;
+    drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, src: Rect, dest: Rect, paint: Paint): void;
+    drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, x: number, y: number, paint: Paint): void;
 
     drawRect(left: number, top: number, right: number, bottom: number, paint: Paint): void;
     drawRect(rect: Rect, paint: Paint): void;
