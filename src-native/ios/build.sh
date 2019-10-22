@@ -7,4 +7,4 @@ SOURCE_NAME="Canvas"
 IOS_SOURCE_DIR="$CURRENT_DIR"
 
 cd $IOS_SOURCE_DIR
-xcodebuild -project Canvas.xcodeproj -scheme universal
+xcodebuild -project Canvas.xcodeproj -scheme universal -sdk iphonesimulator
