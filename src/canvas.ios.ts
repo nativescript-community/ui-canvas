@@ -100,6 +100,11 @@ export enum Join {
     MITER = CGLineJoin.kCGLineJoinMiter,
     ROUND = CGLineJoin.kCGLineJoinRound
 }
+export enum Align {
+    LEFT = 0,
+    RIGHT = 1,
+    CENTER = 2
+}
 
 export enum Direction {
     CCW,
@@ -136,10 +141,25 @@ export class Rect implements IRect {
     }
     set cgRect(rect: CGRect) {
         this._rect = rect;
+        this.left = this._rect.origin.x;
+        this.top = this._rect.origin.y;
+        this.right = this.left + this._rect.size.width;
+        this.bottom = this.top + this._rect.size.height;
     }
 
-    public set(rect: Rect) {
-        this._rect = rect.cgRect;
+    // public set(rect: Rect) {
+    //     this.cgRect = rect.cgRect;
+    // }
+    public set(...args) {
+        if (args.length === 1) {
+            this.cgRect = args[0];
+        } else {
+            const l = (this.left = args[0]);
+            const t = (this.top = args[1]);
+            const r = (this.right = args[2]);
+            const b = (this.bottom = args[3]);
+            this._rect = createCGRect(l, t, r, b);
+        }
     }
     public inset(param0: number, param1: number): void {
         console.error('Method not implemented.');
@@ -187,19 +207,7 @@ export class Rect implements IRect {
     right: number;
     bottom: number;
     constructor(...args) {
-        if (args.length === 1) {
-            this._rect = args[0];
-            this.left = this._rect.origin.x;
-            this.top = this._rect.origin.y;
-            this.right = this.left + this._rect.size.width;
-            this.bottom = this.top + this._rect.size.height;
-        } else {
-            const l = (this.left = args[0]);
-            const t = (this.top = args[1]);
-            const r = (this.right = args[2]);
-            const b = (this.bottom = args[3]);
-            this._rect = createCGRect(l, t, r, b);
-        }
+        this.set(args);
     }
 
     toString() {
@@ -388,6 +396,15 @@ export class Path implements IPath {
 }
 
 export class Paint implements IPaint {
+    public setTypeface(newValue: Typeface): Typeface {
+        throw new Error('Method not implemented.');
+    }
+    public setTextAlign(param0: Align): void {
+        throw new Error('Method not implemented.');
+    }
+    public getTextAlign(): Align {
+        throw new Error('Method not implemented.');
+    }
     _color: Color = new Color('black');
     style: Style = Style.FILL;
     textSize = 16;
@@ -548,15 +565,31 @@ export class Paint implements IPaint {
     public setPathEffect(param0: PathEffect) {
         this.pathEffect = param0;
     }
+
+    public getFontMetrics(fontMetrics?: FontMetrics): any {
+        throw new Error('Method not implemented.');
+    }
 }
 
 export class Canvas implements ICanvas {
+    restoreToCount(count: number): void {
+        throw new Error('Method not implemented.');
+    }
     _cgContext: any; // CGContextRef;
     _paint: Paint = new Paint();
     needsApplyDefaultPaint = true;
     _width: number;
     _height: number;
     _scale = DEFAULT_SCALE;
+
+    setBitmap(image) {
+        // if (image instanceof ImageSource) {
+        //     this._bitmap = image.android;
+        // } else {
+        //     this._bitmap = image;
+        // }
+        // this.setBitmap(this._bitmap);
+    }
 
     release(): any {
         this._cgContext = null;
@@ -640,14 +673,21 @@ export class Canvas implements ICanvas {
     getClipBounds(): IRect {
         return new Rect(CGContextGetClipBoundingBox(this.ctx));
     }
-
+    restoreCount = 0;
     restore(): void {
         CGContextRestoreGState(this.ctx);
     }
+    restoretoCount(count): void {
+        while (this.restoreCount >= count) {
+            CGContextRestoreGState(this.ctx);
+            this.restoreCount--;
+        }
+    }
 
     save(): number {
+        this.restoreCount++;
         CGContextSaveGState(this.ctx);
-        return 0;
+        return this.restoreCount;
     }
     drawPaint(paint: IPaint): void {
         console.error('Method not implemented.');
@@ -690,9 +730,9 @@ export class Canvas implements ICanvas {
         const dst = args[2] instanceof Rect ? args[2].cgRect : CGRectMake(args[1], args[2], image.size.width, image.size.height);
 
         CGContextSaveGState(ctx);
-        CGContextTranslateCTM(ctx, 0, dst.origin.y +  dst.size.height);
+        CGContextTranslateCTM(ctx, 0, dst.origin.y + dst.size.height);
         CGContextScaleCTM(ctx, 1.0, -1.0);
-        CGContextDrawImage(ctx,  CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), image.CGImage);
+        CGContextDrawImage(ctx, CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), image.CGImage);
         CGContextRestoreGState(ctx);
     }
 
@@ -1196,6 +1236,14 @@ export class Canvas implements ICanvas {
     }
 }
 
+export function createImage(options: { width: number; height: number; scale?: number }) {
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(options.width, options.height), false, options.scale);
+    const output = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return new ImageSource(output);
+}
+export function releaseImage(image: ImageSource) {}
+
 export class UICustomCanvasView extends UIView {
     _canvas: Canvas; // CGContextRef;
     public _owner: WeakRef<CanvasView>;
@@ -1244,19 +1292,26 @@ export class UICustomCanvasView extends UIView {
                 shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this._canvas));
             }
         }
-
-        if (owner) {
-            owner.notify({ eventName: 'draw', object: owner, canvas: this._canvas });
-        }
+        owner.onDraw(this._canvas);
     }
 }
 
 export class CanvasView extends CanvasBase {
+    onDraw(canvas: Canvas) {
+        this.notify({ eventName: 'draw', object: this, canvas: canvas });
+    }
     nativeViewProtected: UICustomCanvasView;
     createNativeView() {
         return UICustomCanvasView.initWithOwner(new WeakRef(this));
     }
     redraw() {
+        if (this.nativeViewProtected) {
+            const layer = this.nativeViewProtected.layer;
+            layer.setNeedsDisplay();
+            layer.displayIfNeeded();
+        }
+    }
+    invalidate() {
         if (this.nativeViewProtected) {
             const layer = this.nativeViewProtected.layer;
             layer.setNeedsDisplay();

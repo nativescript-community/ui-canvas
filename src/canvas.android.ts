@@ -9,15 +9,27 @@ import { Font } from '@nativescript/core/ui/styling/font';
 
 export * from './canvas.common';
 
+export function arrayoNativeArray(array) {
+    if (!Array.isArray(array)) {
+        return array;
+    }
+    const length = array.length;
+    const nNative = Array.create('float', length);
+    for (let i = 0; i < length; i++) {
+        nNative[i] = array[i];
+    }
+    return nNative;
+}
+
 export function parseDashEffect(value: string) {
     const array = value.split(' ').map(parseFloat);
     const length = array.length;
     const phase = array[length - 1];
-    const nNative = Array.create('float', length - 1);
-    for (let i = 0; i < length - 1; i++) {
-        nNative[i] = array[i];
-    }
-    const result = new DashPathEffect(nNative, phase);
+    // const nNative = Array.create('float', length - 1);
+    // for (let i = 0; i < length - 1; i++) {
+    //     nNative[i] = array[i];
+    // }
+    const result = new DashPathEffect(arrayoNativeArray(array), phase);
     return result;
 }
 
@@ -89,6 +101,14 @@ function initCanvasClass() {
         getImage() {
             return this._bitmap;
         }
+        setBitmap(image) {
+            if (image instanceof ImageSource) {
+                this._bitmap = image.android;
+            } else {
+                this._bitmap = image;
+            }
+            super.setBitmap(this._bitmap);
+        }
 
         getWidth() {
             return Math.round(layout.toDeviceIndependentPixels(super.getWidth()));
@@ -144,6 +164,11 @@ function initCanvasClass() {
                 }
             }
         }
+        public drawLines(...params) {
+            params[0] = arrayoNativeArray(params[0]);
+            // console.log('drawLines', params);
+            return super.drawLines.apply(this, params);
+        }
     }
     Canvas = CanvasImpl as any;
     return Canvas;
@@ -156,12 +181,22 @@ function initPaintClass() {
         return Paint;
     }
     class PaintImpl extends android.graphics.Paint {
+        fontInternal: Font;
         setColor(color: Color | number | string) {
+            // console.log('setColor', color);
             if (color instanceof Color) {
                 super.setColor(color.android);
             } else {
                 super.setColor(new Color(color as any).android);
             }
+        }
+        setTypeface(newValue: android.graphics.Typeface) {
+            return super.setTypeface(newValue);
+            //     let currentFont = this.fontInternal;
+            // if (!currentFont || currentFont.fontFamily !== newValue) {
+            //     const newFont = currentFont.withFontFamily(newValue);
+            //     target.fontInternal = Font.equals(Font.default, newFont) ? unsetValue : newFont;
+            // }
         }
         // get color() {
         //     return this.getColor();
@@ -184,6 +219,9 @@ function initPaintClass() {
         set textSize(value: number) {
             this.setTextSize(value);
         }
+        set typeface(typeface) {
+            this.setTypeface(typeface);
+        }
         setShadowLayer(radius: number, dx: number, dy: number, color: any) {
             if (color instanceof Color) {
             } else {
@@ -191,7 +229,6 @@ function initPaintClass() {
             }
             super.setShadowLayer(radius, dx, dy, color.android);
         }
-
     }
     Paint = PaintImpl as any;
     return PaintImpl;
@@ -235,6 +272,15 @@ function initLinearGradientClass() {
 
 class CanvasWrapper implements ICanvas {
     canvas: any;
+    setBitmap(image: any) {
+        if (image instanceof ImageSource) {
+            image = image.android;
+            // } else {
+            // this._bitmap = image;
+        }
+        // this.setBitmap(image);
+        this.canvas.setBitmap(image);
+    }
     release() {
         this.canvas.release();
     }
@@ -267,6 +313,7 @@ class CanvasWrapper implements ICanvas {
     }
     drawColor(color: number | Color | string): void {
         const actualColor = color instanceof Color ? color : new Color(color as any);
+        // console.log('drawColor', actualColor);
         return this.canvas.drawColor(actualColor.android);
     }
     drawCircle(...params) {
@@ -285,6 +332,8 @@ class CanvasWrapper implements ICanvas {
         return this.canvas.drawPath.apply(this.canvas, params);
     }
     drawLines(...params) {
+        params[0] = arrayoNativeArray(params[0]);
+        // console.log('drawLines', params);
         return this.canvas.drawLines.apply(this.canvas, params);
     }
     drawLine(...params) {
@@ -319,6 +368,9 @@ class CanvasWrapper implements ICanvas {
     }
     restore() {
         return this.canvas.restore();
+    }
+    restoreToCount(count) {
+        return this.canvas.restoreToCount(count);
     }
     setDrawFilter(param0) {
         return this.canvas.setDrawFilter(param0);
@@ -377,6 +429,9 @@ function initAndroidCanvasViewClass() {
             super(owner._context);
             this._owner = new WeakRef(owner);
             this.augmentedCanvas = new CanvasWrapper();
+
+            //default hardware accelerated
+            this.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         }
         augmentedCanvas: CanvasWrapper;
         onDraw(canvas: android.graphics.Canvas) {
@@ -397,7 +452,7 @@ function initAndroidCanvasViewClass() {
                         shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.augmentedCanvas));
                     }
                 }
-                owner.notify({ eventName: 'draw', object: owner, canvas: this.augmentedCanvas });
+                owner.onDraw(this.augmentedCanvas);
             }
         }
     }
@@ -405,17 +460,20 @@ function initAndroidCanvasViewClass() {
     return AndroidCanvasViewImpl;
 }
 
-let Cap, Direction, DashPathEffect, DrawFilter, FillType, Join, Matrix, Op, Path, PathEffect, Rect, Style, TileMode;
+let Cap, Direction, DashPathEffect, DrawFilter, FillType, Join, Matrix, Op, Path, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align;
 
 function initClasses() {
     initCanvasClass();
     initPaintClass();
     initRadialGradientClass();
     initLinearGradientClass();
+    Align = android.graphics.Paint.Align;
     Cap = android.graphics.Paint.Cap;
     Join = android.graphics.Paint.Join;
     Style = android.graphics.Paint.Style;
-    Rect = android.graphics.RectF;
+    Rect = android.graphics.Rect;
+    RectF = android.graphics.RectF;
+    FontMetrics = android.graphics.Paint.FontMetrics;
 
     Path = android.graphics.Path;
     DashPathEffect = android.graphics.DashPathEffect;
@@ -428,12 +486,15 @@ function initClasses() {
     TileMode = android.graphics.Shader.TileMode;
 }
 
-declare module 'tns-core-modules/ui/core/view' {
+declare module '@nativescript/core/ui/core/view' {
     interface View {
         setOnLayoutChangeListener();
     }
 }
 class CanvasView extends CanvasBase {
+    onDraw(canvas: ICanvas) {
+        this.notify({ eventName: 'draw', object: this, canvas: canvas });
+    }
     nativeViewProtected: android.view.View;
     createNativeView() {
         initAndroidCanvasViewClass();
@@ -441,6 +502,13 @@ class CanvasView extends CanvasBase {
     }
     redraw() {
         if (this.nativeViewProtected) {
+            console.log('redraw');
+            this.nativeViewProtected.invalidate();
+        }
+    }
+    invalidate() {
+        if (this.nativeViewProtected) {
+            console.log('invalidate');
             this.nativeViewProtected.invalidate();
         }
     }
@@ -450,5 +518,38 @@ class CanvasView extends CanvasBase {
         this.setOnLayoutChangeListener();
     }
 }
+
+export function createImage(options: { width: number; height: number; scale?: number; config?: android.graphics.Bitmap.Config }) {
+    ImageSource.fromData;
+    return new ImageSource(android.graphics.Bitmap.createBitmap(options.width, options.height, options.config || android.graphics.Bitmap.Config.ARGB_4444));
+}
+export function releaseImage(image: ImageSource) {
+    if (image.android) {
+        (image.android as android.graphics.Bitmap).recycle();
+        image.setNativeSource(null);
+    }
+}
+
 initClasses();
-export { Canvas, CanvasView, Cap, DashPathEffect, Direction, DrawFilter, FillType, Join, LinearGradient, Matrix, Op, Paint, Path, PathEffect, RadialGradient, Rect, Style, TileMode };
+export {
+    Canvas,
+    CanvasView,
+    Cap,
+    DashPathEffect,
+    Direction,
+    DrawFilter,
+    FillType,
+    Join,
+    LinearGradient,
+    Matrix,
+    Op,
+    Paint,
+    Path,
+    PathEffect,
+    RadialGradient,
+    Rect,
+    Style,
+    TileMode,
+    FontMetrics,
+    Align
+};

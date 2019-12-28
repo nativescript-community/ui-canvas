@@ -58,7 +58,7 @@ export function parseDashEffect(value: string) {
     return result;
 }
 
-declare module 'tns-core-modules/ui/core/view' {
+declare module '@nativescript/core/ui/core/view' {
     interface View {
         _raiseLayoutChangedEvent();
     }
@@ -122,12 +122,13 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
         return this._shapes;
     }
     public toString(): string {
-        let result = '';
+        let result = super.toString();
         for (let i = 0, length = this._shapes.length; i < length; i++) {
             result += this._shapes.getItem(i).toString();
         }
         return result;
     }
+
 
     public _addArrayFromBuilder(name: string, value: any[]) {
         if (name === knownCollections.shapes) {
@@ -136,8 +137,9 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
     }
 
     public _addChildFromBuilder(name: string, value: any): void {
-        // if (name === CHILD_SPAN) {
-        this.shapes.push(value);
+        console.log('Shapes', '_addChildFromBuilder', name, value);
+        // if (value instanceof Shape) {
+            this.shapes.push(value);
         // }
     }
 
@@ -152,6 +154,7 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
     }
 
     private onShapesCollectionChanged(eventData: ChangedData<Shape>) {
+        console.log('onShapesCollectionChanged');
         if (eventData.addedCount > 0) {
             for (let i = 0; i < eventData.addedCount; i++) {
                 const shape = (eventData.object as ObservableArray<Shape>).getItem(eventData.index + i);
@@ -179,9 +182,10 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
         }
 
         this.notifyPropertyChange('.', this);
+        console.log('onShapesCollectionChanged done');
     }
     private onPropertyChange(data: PropertyChangeData) {
-        // console.log('onPropertyChange', data.propertyName);
+        console.log('onPropertyChange', data.propertyName);
         this.notifyPropertyChange(data.propertyName, this);
     }
 
@@ -216,26 +220,29 @@ export abstract class CanvasBase extends View {
     public cached = false;
     public density = DEFAULT_SCALE;
 
-    requeestDrawShapes() {
+    requestDrawShapes() {
+        console.log('requestDrawShapes');
         if (this.cached) {
             this.drawShapes();
         } else {
             this.redraw();
         }
     }
-    requeestDrawShapesThrottled = throttle(() => this.requeestDrawShapes(), 5);
+    requestDrawShapesThrottled = throttle(() => this.requestDrawShapes(), 5);
     // throttling prevent too fast drawing on multiple properties change
     _onShapesContentsChanged() {
+        console.log('CanvasBase', '_onShapesContentsChanged')
         if (this.nativeViewProtected) {
             if (this.cached) {
-                this.requeestDrawShapesThrottled();
+                this.requestDrawShapesThrottled();
             } else {
-                this.requeestDrawShapes();
+                this.requestDrawShapes();
             }
         }
     }
 
     public _addChildFromBuilder(name: string, value: any): void {
+        console.log('CanvasBase', '_addChildFromBuilder', name)
         // if (name === CHILD_SHAPES) {
         //     if (!this.shapes) {
         //         const shapes = new Shapes();
@@ -248,6 +255,7 @@ export abstract class CanvasBase extends View {
         if (name === CHILD_SHAPES) {
             this.shapes = value;
         }
+        console.log('CanvasBase done', '_addChildFromBuilder', name)
     }
 
     eachChild(callback: (child: ViewBase) => boolean): void {
@@ -258,18 +266,22 @@ export abstract class CanvasBase extends View {
     }
     _raiseLayoutChangedEvent() {
         super._raiseLayoutChangedEvent();
+        console.log('_raiseLayoutChangedEvent', !!this.shapes)
         if (!!this.shapes) {
-            this.requeestDrawShapes();
+            this.requestDrawShapes();
         }
     }
     [shapesProperty.setNative](value: Shapes) {
-        this.requeestDrawShapes();
+        this.requestDrawShapes();
     }
     [densityProperty.setNative](value) {
-        this.requeestDrawShapes();
+        if (!!this.shapes) {
+        this.requestDrawShapes();
+        }
     }
     shapesCanvas: Canvas;
     drawShapes() {
+        console.log('CanvasBase', 'drawShapes')
         const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
         const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
         if (this.shapesCanvas) {

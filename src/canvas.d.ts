@@ -29,6 +29,8 @@ export class Paint {
     public measureText(text: string): number;
     public getTextSize(): number;
     public getTextBounds(text: string, index: number, bounds: number, rect: Rect): void;
+    public getFontMetrics(): FontMetrics;
+    public getFontMetrics(fontMetrics?: FontMetrics): number;
     public setPathEffect(param0: PathEffect);
     public isAntiAlias(): boolean;
     public setStrokeJoin(value: Join): void;
@@ -37,17 +39,18 @@ export class Paint {
     public getColor(): Color;
     public getShader(): any;
     public measureText(text: string, start: number, end: number): number;
+    public setTypeface(newValue: Typeface): Typeface;
     public setStrokeWidth(value: number): void;
     public setStrokeCap(value: Cap): void;
     public isDither(): boolean;
     public setAlpha(value: number): void;
-    // public setTextAlign(param0: android.graphics.Paint.Align): void;
+    public setTextAlign(param0: Align): void;
     public setStyle(value: Style): void;
     public getStrokeMiter(): number;
     // public getMaskFilter(): android.graphics.MaskFilter;
     public setDither(value: boolean): void;
     // public set(param0: android.graphics.Paint): void;
-    // public getTextAlign(): android.graphics.Paint.Align;
+    public getTextAlign(): Align;
     public setAntiAlias(value: boolean): void;
     // public ascent(): number;
     // public getFillPath(param0: android.graphics.Path, param1: android.graphics.Path): boolean;
@@ -60,12 +63,24 @@ export class Paint {
     public clearShadowLayer();
     // public getFontSpacing(): number;
 }
+
+export class StaticLayout {
+    constructor(text: string, paint: Paint, width: number, align, spacingmult, spacingadd, includepad);
+}
+
+export class FontMetrics {
+    ascent?: number;
+    descent?: number;
+    bottom?: number;
+    leading?: number;
+    top?: number;
+}
 export class Canvas {
     constructor(imageOrWidth: any /*  ImageSource | android.graphics.Bitmap | UIImage | number */, height?: number);
 
     clear(); // clear the canvas by filling with transparent color
     release(); // release all data (image and such). Only to be called on destroy
-    getImage(): any //android.graphics.Bitmap | UIImage;
+    getImage(): any; //android.graphics.Bitmap | UIImage;
 
     getDensity(): number;
     setDensity(density: number): void;
@@ -84,6 +99,7 @@ export class Canvas {
     getHeight(): number;
     getWidth(): number;
     restore(): void;
+    restoreToCount(count: number): void;
     save(): number;
 
     drawPaint(apint: Paint): void;
@@ -131,6 +147,7 @@ export class Canvas {
     clipOutRect(rect: Rect): boolean;
     clipPath(path: Path): boolean;
     clipPath(path: Path, op: Op): boolean;
+    setBitmap(image);
     // getSaveCount(): number;
     // setMatrix(param0: android.graphics.Matrix): void;
     // getClipBounds(param0: android.graphics.Rect): boolean;
@@ -142,11 +159,17 @@ export class Canvas {
     // drawPoints(param0: native.Array<number>, param1: number, param2: number, param3: android.graphics.Paint): void;
     drawView(view: View, rect?: Rect);
 }
+export class Typeface extends android.graphics.Typeface {}
 export class Cap extends android.graphics.Paint.Cap {}
 export class Join extends android.graphics.Paint.Join {}
 export class Style extends android.graphics.Paint.Style {}
+export class Align extends android.graphics.Paint.Align {}
 export class Rect {
     public constructor(param0: number, param1: number, param2: number, param3: number);
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
     public inset(param0: number, param1: number): void;
     public union(param0: number, param1: number): void;
     public offsetTo(param0: number, param1: number): void;
@@ -158,6 +181,7 @@ export class Rect {
     public intersect(param0: Rect): boolean;
     public contains(param0: Rect): boolean;
     public set(param0: Rect);
+    public set(param0: number, param1: number, param2: number, param3: number);
     public contains(param0: number, param1: number, param2: number, param3: number): boolean;
     public intersect(param0: number, param1: number, param2: number, param3: number): boolean;
 }
@@ -208,9 +232,13 @@ export class DrawFilter extends android.graphics.DrawFilter {}
 export class Op extends android.graphics.Region.Op {}
 export class Direction extends android.graphics.Path.Direction {}
 export class FillType extends android.graphics.Path.FillType {}
-export class Matrix extends android.graphics.Matrix {}
+export class Matrix extends android.graphics.Matrix {
+    mapRect(rect: Rect);
+}
 export class PathEffect extends android.graphics.PathEffect {}
-export class DashPathEffect extends android.graphics.DashPathEffect {}
+export class DashPathEffect extends android.graphics.DashPathEffect {
+    constructor(intervals: number[], phase: number);
+}
 // declare Paint extends get Canvas() {
 //     return android.graphics.Canvas;
 // },
@@ -225,5 +253,10 @@ export class DashPathEffect extends android.graphics.DashPathEffect {}
 // }
 
 declare class CanvasView extends View {
+    protected onDraw(canvas: Canvas);
     redraw();
+    invalidate();
 }
+
+export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;
+export function releaseImage(image: ImageSource);
