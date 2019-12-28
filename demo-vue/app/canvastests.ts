@@ -1,10 +1,10 @@
 import { Canvas, Cap, Paint, Path, RadialGradient, Rect, Style, TileMode } from 'nativescript-canvas';
-import { Color } from 'tns-core-modules/color/color';
-import { Folder, knownFolders, path } from 'tns-core-modules/file-system/file-system';
-import { fromFile, ImageSource } from 'tns-core-modules/image-source/image-source';
-import { isIOS } from 'tns-core-modules/ui/page/page';
-import { FormattedString, Span } from 'tns-core-modules/text/formatted-string';
-import { Label } from 'tns-core-modules/ui/label';
+import { Color } from '@nativescript/core/color/color';
+import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
+import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
+import { isIOS } from '@nativescript/core/ui/page/page';
+import { FormattedString, Span } from '@nativescript/core/text/formatted-string';
+import { Label } from '@nativescript/core/ui/label';
 
 function isOnUiThread() {
     if (isIOS) {

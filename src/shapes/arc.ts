@@ -1,6 +1,6 @@
 import { Canvas, createRect } from '../canvas';
 import { booleanProperty, lengthProperty, numberProperty, percentLengthProperty } from './shape';
-import { Length, PercentLength, zeroLength } from 'tns-core-modules/ui/styling/style-properties';
+import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
 import Rectangle from './rectangle';
 
 export default class Arc extends Rectangle {

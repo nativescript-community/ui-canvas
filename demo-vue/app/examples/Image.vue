@@ -10,13 +10,13 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from 'tns-core-modules/ui/frame';
+import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { createRect, Paint, Style } from 'nativescript-canvas';
-import { Color } from 'tns-core-modules/color/color';
-import { Folder, knownFolders, path } from 'tns-core-modules/file-system/file-system';
-import { fromFile, ImageSource } from 'tns-core-modules/image-source/image-source';
+import { Color } from '@nativescript/core/color/color';
+import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
+import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
 
 const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp().path, 'images/test.jpg'));
 

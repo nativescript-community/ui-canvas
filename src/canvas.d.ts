@@ -1,6 +1,6 @@
-import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { Color } from 'tns-core-modules/color/color';
-import { View } from 'tns-core-modules/ui/core/view';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Color } from '@nativescript/core/color/color';
+import { View } from '@nativescript/core/ui/core/view';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
 export function parseCap(value: string | number): Cap;

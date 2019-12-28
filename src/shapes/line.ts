@@ -1,8 +1,8 @@
 import { Canvas, Style } from '../canvas';
 import { booleanProperty, lengthProperty, numberProperty, percentLengthProperty } from './shape';
-import { Length, PercentLength, zeroLength } from 'tns-core-modules/ui/styling/style-properties';
+import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
 import Rectangle from './rectangle';
-import { layout } from 'tns-core-modules/ui/core/view';
+import { layout } from '@nativescript/core/ui/core/view';
 
 export default class Line extends Rectangle {
     paintStyle = Style.STROKE;

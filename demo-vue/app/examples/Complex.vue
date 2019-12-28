@@ -15,12 +15,12 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from 'tns-core-modules/ui/frame';
+import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { drawOnImage } from '../canvastests';
-import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { Image } from 'tns-core-modules/ui/image/image';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Image } from '@nativescript/core/ui/image/image';
 
 @Component
 export default class ComplexExample extends Vue {

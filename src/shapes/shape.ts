@@ -1,7 +1,7 @@
-import { Color } from 'tns-core-modules/color/color';
-import { Observable } from 'tns-core-modules/data/observable/observable';
-import { booleanConverter, ViewBase } from 'tns-core-modules/ui/core/view';
-import { Length, PercentLength } from 'tns-core-modules/ui/styling/style-properties';
+import { Color } from '@nativescript/core/color/color';
+import { Observable } from '@nativescript/core/data/observable/observable';
+import { booleanConverter, ViewBase } from '@nativescript/core/ui/core/view';
+import { Length, PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { Canvas, Cap, Join, Paint, parseCap, parseDashEffect, parseJoin, parseType, Style } from '../canvas';
 
 function createGetter(key, options: ShapePropertyOptions) {

@@ -1,9 +1,9 @@
 import { Canvas, Cap, DashPathEffect, Join, Rect, Style } from './canvas';
-import { Property } from 'tns-core-modules/ui/core/properties';
-import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, layout, View, ViewBase } from 'tns-core-modules/ui/core/view';
-import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { Observable, PropertyChangeData } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
+import { Property } from '@nativescript/core/ui/core/properties';
+import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, layout, View, ViewBase } from '@nativescript/core/ui/core/view';
+import { ChangedData, ObservableArray } from '@nativescript/core/data/observable-array/observable-array';
+import { Observable, PropertyChangeData } from '@nativescript/core/data/observable';
+import { screen } from '@nativescript/core/platform';
 import Shape from './shapes/shape';
 
 export function parseCap(value: string | number) {

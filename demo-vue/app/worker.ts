@@ -1,4 +1,4 @@
-import { isIOS } from 'tns-core-modules/ui/page/page';
+import { isIOS } from '@nativescript/core/ui/page/page';
 import { drawOnImage } from './canvastests';
 
 import 'globals';

@@ -1,12 +1,12 @@
-import { Font } from 'tns-core-modules/ui/styling/font';
-import { Color, View } from 'tns-core-modules/ui/core/view';
-import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect } from './canvas';
+import { Font } from '@nativescript/core/ui/styling/font';
+import { Color, View } from '@nativescript/core/ui/core/view';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Canvas as ICanvas, Paint as IPaint, Path as IPath, Rect as IRect, FontMetrics, Typeface } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
 
 export * from './canvas.common';
 
-const  FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
+const FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
 
 const enum MemberType {
     Static,

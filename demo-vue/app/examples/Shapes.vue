@@ -29,13 +29,13 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from 'tns-core-modules/ui/frame';
+import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from 'nativescript-canvas';
-import { Color } from 'tns-core-modules/color/color';
+import { Color } from '@nativescript/core/color/color';
 import * as Anim from '../animation';
-import { screen } from 'tns-core-modules/platform';
+import { screen } from '@nativescript/core/platform';
 
 @Component
 export default class Simple extends Vue {

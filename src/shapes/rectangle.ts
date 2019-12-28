@@ -1,9 +1,9 @@
 import { Canvas, createRect, Rect } from '../canvas';
 import { nsProperty } from '../canvas.common';
 import Shape, { lengthProperty, percentLengthProperty } from './shape';
-import { Length, PercentLength, zeroLength } from 'tns-core-modules/ui/styling/style-properties';
-import { Property } from 'tns-core-modules/ui/core/properties';
-import { layout } from 'tns-core-modules/ui/core/view';
+import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
+import { Property } from '@nativescript/core/ui/core/properties';
+import { layout } from '@nativescript/core/ui/core/view';
 
 export { Rect };
 export default class Rectangle extends Shape {

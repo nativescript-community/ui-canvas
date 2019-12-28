@@ -1,10 +1,11 @@
-import { ImageSource } from 'tns-core-modules/image-source/image-source';
-import { Color } from 'tns-core-modules/color/color';
-import { layout, View } from 'tns-core-modules/ui/core/view';
-import { android as androidApp } from 'tns-core-modules/application';
+import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Color } from '@nativescript/core/color/color';
+import { layout, View } from '@nativescript/core/ui/core/view';
+import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
+import { Font } from '@nativescript/core/ui/styling/font';
 
 export * from './canvas.common';
 
