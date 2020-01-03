@@ -13,54 +13,54 @@ const enum MemberType {
     Instance
 }
 
-function timelineProfileFunctionFactory<F extends Function>(fn: F, name: string, type: MemberType = MemberType.Instance): F {
-    let result;
-    if (type === MemberType.Instance) {
-        result = function() {
-            // const start = time();
-            console.log(name);
-            try {
-                return fn.apply(this, arguments);
-            } finally {
-                // const end = time();
-                // console.log(`Timeline: Modules: ${name} ${this}  (${start}ms. - ${end}ms.)`);
-            }
-        };
-    } else {
-        result = function() {
-            // const start = time();
-            // console.log(`calling method: ${name}`);
-            try {
-                return fn.apply(this, arguments);
-            } finally {
-                // const end = time();
-                // console.log(`Timeline: Modules: ${name}  (${start}ms. - ${end}ms.)`);
-            }
-        };
-    }
-    return result;
-}
-function profile(target?: string | Function | Object, key?, descriptor?: PropertyDescriptor): any {
-    // save a reference to the original method this way we keep the values currently in the
-    // descriptor and don't overwrite what another decorator might have done to the descriptor.
-    if (descriptor === undefined) {
-        descriptor = Object.getOwnPropertyDescriptor(target, key);
-    }
-    const originalMethod = descriptor.value;
+// function timelineProfileFunctionFactory<F extends Function>(fn: F, name: string, type: MemberType = MemberType.Instance): F {
+//     let result;
+//     if (type === MemberType.Instance) {
+//         result = function() {
+//             // const start = time();
+//             console.log(name);
+//             try {
+//                 return fn.apply(this, arguments);
+//             } finally {
+//                 // const end = time();
+//                 // console.log(`Timeline: Modules: ${name} ${this}  (${start}ms. - ${end}ms.)`);
+//             }
+//         };
+//     } else {
+//         result = function() {
+//             // const start = time();
+//             // console.log(`calling method: ${name}`);
+//             try {
+//                 return fn.apply(this, arguments);
+//             } finally {
+//                 // const end = time();
+//                 // console.log(`Timeline: Modules: ${name}  (${start}ms. - ${end}ms.)`);
+//             }
+//         };
+//     }
+//     return result;
+// }
+// function profile(target?: string | Function | Object, key?, descriptor?: PropertyDescriptor): any {
+//     // save a reference to the original method this way we keep the values currently in the
+//     // descriptor and don't overwrite what another decorator might have done to the descriptor.
+//     if (descriptor === undefined) {
+//         descriptor = Object.getOwnPropertyDescriptor(target, key);
+//     }
+//     const originalMethod = descriptor.value;
 
-    let className = '';
-    if (target && target.constructor && target.constructor.name) {
-        className = target.constructor.name + '.';
-    }
+//     let className = '';
+//     if (target && target.constructor && target.constructor.name) {
+//         className = target.constructor.name + '.';
+//     }
 
-    const name = className + key;
+//     const name = className + key;
 
-    // editing the descriptor/value parameter
-    descriptor.value = timelineProfileFunctionFactory(originalMethod, name, MemberType.Instance);
+//     // editing the descriptor/value parameter
+//     descriptor.value = timelineProfileFunctionFactory(originalMethod, name, MemberType.Instance);
 
-    // return edited descriptor as opposed to overwriting the descriptor
-    return descriptor;
-}
+//     // return edited descriptor as opposed to overwriting the descriptor
+//     return descriptor;
+// }
 
 function paint(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
     const originalMethod = descriptor.value as Function; // save a reference to the original method

@@ -256,6 +256,7 @@ declare class CanvasView extends View {
     protected onDraw(canvas: Canvas);
     redraw();
     invalidate();
+    onSizeChanged(w: number, h: number, oldw: number, oldh: number);
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;

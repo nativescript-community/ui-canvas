@@ -66,12 +66,20 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
         }
     }
 }
-let Canvas: new (param0?, param1?) => ICanvas;
+// let Canvas: new (param0?, param1?) => ICanvas;
+export let Canvas: Canvas;
+export interface Canvas extends com.akylas.canvas.Canvas {
+    new (imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number): Canvas;
+    drawView(view: View, rect?: any);
+    getImage(): any;
+    release();
+    clear();
+}
 function initCanvasClass() {
     if (Canvas) {
         return Canvas;
     }
-    class CanvasImpl extends android.graphics.Canvas {
+    class CanvasImpl extends com.akylas.canvas.Canvas {
         _bitmap: android.graphics.Bitmap;
         _shouldReleaseBitmap = false;
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
@@ -165,14 +173,83 @@ function initCanvasClass() {
                 }
             }
         }
+        @profile
         public drawLines(...params) {
-            params[0] = arrayoNativeArray(params[0]);
+            // params[0] = arrayoNativeArray(params[0]);
             // console.log('drawLines', params);
             return super.drawLines.apply(this, params);
         }
     }
     Canvas = CanvasImpl as any;
     return Canvas;
+}
+export let CanvasWrapper: CanvasWrapper;
+export interface CanvasWrapper extends com.akylas.canvas.CanvasWrapper {
+    new (canvas?): CanvasWrapper;
+    drawView(view: View, rect?: any);
+    getImage(): any;
+    release();
+    clear();
+}
+function initCanvasWrapperClass() {
+    if (CanvasWrapper) {
+        return CanvasWrapper;
+    }
+    class CanvasWrapperImpl extends com.akylas.canvas.CanvasWrapper {
+        constructor(canvas) {
+            super(canvas);
+        }
+        release() {
+            if (this.canvas instanceof Canvas) {
+                this.canvas.release();
+            }
+        }
+        clear() {}
+        setBitmap(image: any) {
+            if (image instanceof ImageSource) {
+                image = image.android;
+                // } else {
+                // this._bitmap = image;
+            }
+            // this.setBitmap(image);
+            super.setBitmap(image);
+        }
+
+        drawColor(color: number | Color | string): void {
+            const actualColor = color instanceof Color ? color : new Color(color as any);
+            // console.log('drawColor', actualColor);
+            return super.drawColor(actualColor.android);
+        }
+        @profile
+        drawLines(...params) {
+            // const length = params.length;
+            // const points = params[0];
+            // const paint = params[length - 1] as Paint;
+
+            // const pointLength = points.length / 2;
+            // for (let index = 0; index < pointLength -1; index++) {
+            //     this.canvas.drawLine(points[index], points[index+1], points[index+2], points[index+3], paint)
+
+            // }
+            return super.drawLines.apply(this, params);
+        }
+
+        getWidth() {
+            return layout.toDeviceIndependentPixels(super.getWidth());
+        }
+        getHeight() {
+            return layout.toDeviceIndependentPixels(super.getHeight());
+        }
+
+        public drawView(view: View, rect?: any) {
+            drawViewOnCanvas(this.canvas, view, rect);
+        }
+        getImage() {
+            return null;
+        }
+    }
+    CanvasWrapper = CanvasWrapperImpl as any;
+    return CanvasWrapper;
 }
 
 let Paint: typeof IPaint;
@@ -271,197 +348,121 @@ function initLinearGradientClass() {
     return LinearGradientImpl;
 }
 
-class CanvasWrapper implements ICanvas {
-    canvas: any;
-    setBitmap(image: any) {
-        if (image instanceof ImageSource) {
-            image = image.android;
-            // } else {
-            // this._bitmap = image;
-        }
-        // this.setBitmap(image);
-        this.canvas.setBitmap(image);
-    }
-    release() {
-        this.canvas.release();
-    }
-    clear() {
-        this.canvas.clear();
-    }
-    clipOutRect(...params) {
-        return this.canvas.clipOutRect.apply(this.canvas, params);
-    }
-    drawRoundRect(...params) {
-        return this.canvas.drawRoundRect.apply(this.canvas, params);
-    }
-    drawTextRun(...params) {
-        return this.canvas.drawTextRun.apply(this.canvas, params);
-    }
-    clipPath(...params) {
-        return this.canvas.clipPath.apply(this.canvas, params);
-    }
-    clipOutPath(...params) {
-        return this.canvas.clipOutPath.apply(this.canvas, params);
-    }
-    drawText(...params) {
-        return this.canvas.drawText.apply(this.canvas, params);
-    }
-    drawPoints(...params) {
-        return this.canvas.drawPoints.apply(this.canvas, params);
-    }
-    drawArc(...params) {
-        return this.canvas.drawArc.apply(this.canvas, params);
-    }
-    drawColor(color: number | Color | string): void {
-        const actualColor = color instanceof Color ? color : new Color(color as any);
-        // console.log('drawColor', actualColor);
-        return this.canvas.drawColor(actualColor.android);
-    }
-    drawCircle(...params) {
-        return this.canvas.drawCircle.apply(this.canvas, params);
-    }
-    drawOval(...params) {
-        return this.canvas.drawOval.apply(this.canvas, params);
-    }
-    drawPaint(...params) {
-        return this.canvas.drawPaint.apply(this.canvas, params);
-    }
-    drawRect(...params) {
-        return this.canvas.drawRect.apply(this.canvas, params);
-    }
-    drawPath(...params) {
-        return this.canvas.drawPath.apply(this.canvas, params);
-    }
-    drawLines(...params) {
-        params[0] = arrayoNativeArray(params[0]);
-        // console.log('drawLines', params);
-        return this.canvas.drawLines.apply(this.canvas, params);
-    }
-    drawLine(...params) {
-        return this.canvas.drawLine.apply(this.canvas, params);
-    }
-    drawPosText(...params) {
-        return this.canvas.drawPosText.apply(this.canvas, params);
-    }
-    drawTextOnPath(...params) {
-        return this.canvas.drawTextOnPath.apply(this.canvas, params);
-    }
-    skew(...params) {
-        return this.canvas.skew.apply(this.canvas, params);
-    }
-    translate(...params) {
-        return this.canvas.translate.apply(this.canvas, params);
-    }
-    rotate(...params) {
-        return this.canvas.rotate.apply(this.canvas, params);
-    }
-    scale(...params) {
-        return this.canvas.scale.apply(this.canvas, params);
-    }
-    clipRect(...params) {
-        return this.canvas.clipRect.apply(this.canvas, params);
-    }
-    drawARGB(param0, param1, param2, param3) {
-        return this.canvas.drawARGB(param0, param1, param2, param3);
-    }
-    save() {
-        return this.canvas.save();
-    }
-    restore() {
-        return this.canvas.restore();
-    }
-    restoreToCount(count) {
-        return this.canvas.restoreToCount(count);
-    }
-    setDrawFilter(param0) {
-        return this.canvas.setDrawFilter(param0);
-    }
-    setDensity(param0) {
-        return this.canvas.setDensity(param0);
-    }
-    getWidth() {
-        return layout.toDeviceIndependentPixels(this.canvas.getWidth());
-    }
-    getHeight() {
-        return layout.toDeviceIndependentPixels(this.canvas.getHeight());
-    }
-    getClipBounds() {
-        return this.canvas.getClipBounds();
-    }
-    getDensity() {
-        return this.canvas.getDensity();
-    }
-    getDrawFilter() {
-        return this.canvas.getDrawFilter();
-    }
-    drawPoint(param0, param1, param2) {
-        return this.canvas.drawPoint(param0, param1, param2);
-    }
-    drawRGB(param0, param1, param2) {
-        return this.canvas.drawRGB(param0, param1, param2);
-    }
-    setShadowLayer(radius: number, dx: number, dy: number, color: any) {
-        if (color instanceof Color) {
-        } else {
-            color = new Color(color);
-        }
-        this.canvas.setShadowLayer(radius, dx, dy, color.android);
-    }
-    public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
-        drawBitmapOnCanvas(this.canvas, param0, param1, param2, param3);
-    }
+// class CanvasWrapper implements ICanvas {
+//     canvas: android.graphics.Canvas;
+//     setBitmap(image: any) {
+//         if (image instanceof ImageSource) {
+//             image = image.android;
+//             // } else {
+//             // this._bitmap = image;
+//         }
+//         // this.setBitmap(image);
+//         super.setBitmap(image);
+//     }
 
-    public drawView(view: View, rect?: any) {
-        drawViewOnCanvas(this.canvas, view, rect);
-    }
-    getImage() {
-        return null;
-    }
-}
+//     drawColor(color: number | Color | string): void {
+//         const actualColor = color instanceof Color ? color : new Color(color as any);
+//         // console.log('drawColor', actualColor);
+//         return super.drawColor(actualColor.android);
+//     }
+//     @profile
+//     drawLines(...params) {
+//         // const length = params.length;
+//         // const points = params[0];
+//         // const paint = params[length - 1] as Paint;
 
-let AndroidCanvasView;
+//         // const pointLength = points.length / 2;
+//         // for (let index = 0; index < pointLength -1; index++) {
+//         //     this.canvas.drawLine(points[index], points[index+1], points[index+2], points[index+3], paint)
+
+//         // }
+//         return this.canvas.drawLines.apply(this.canvas, params);
+//     }
+
+//     getWidth() {
+//         return layout.toDeviceIndependentPixels(super.getWidth());
+//     }
+//     getHeight() {
+//         return layout.toDeviceIndependentPixels(super.getHeight());
+//     }
+
+//     public drawView(view: View, rect?: any) {
+//         drawViewOnCanvas(this.canvas, view, rect);
+//     }
+// }
+
+let     AndroidCanvasView;
 function initAndroidCanvasViewClass() {
     if (AndroidCanvasView) {
         return AndroidCanvasView;
     }
     class AndroidCanvasViewImpl extends com.akylas.canvas.CanvasView {
         _owner: WeakRef<CanvasView>;
+        mCanvas: ICanvas;
+        // mBitmap: android.graphics.Bitmap;
         public constructor(owner: CanvasView) {
             super(owner._context);
             this._owner = new WeakRef(owner);
-            this.augmentedCanvas = new CanvasWrapper();
-
+            // initCanvasWrapperClass();
+            // this.mCanvas = new Canvas() as any;
+            // this.mPaint = new android.graphics.Paint();
+            // this.setWillNotDraw(false);
             //default hardware accelerated
             this.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         }
+        // augmentedCanvas: ICanvas;
+
         public __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number) {
-            
+            console.log('onSizeChanged', w, h);
+            // super.onSizeChanged(w, h, oldw, oldh);
+            // if (tiImage != null) {
+            // 	TiDrawableReference ref = TiDrawableReference.fromUrl(proxy, tiImage);
+            // 	tiBitmap = Bitmap.createScaledBitmap(ref.getBitmap(), w, h, true);
+            // } else {
+            // const oldBitmap = this.mBitmap;
+
+            // this.mBitmap = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888);
+            // }
+            if (!this.mCanvas) {
+                this.mCanvas = new Canvas(this.bitmap) as any;
+                this.mCanvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
+            } else {
+                this.mCanvas.setBitmap(this.bitmap);
+            }
+            // this.mCanvas.setBitmap(this.mBitmap);
+            // if (oldBitmap) {
+                // oldBitmap.recycle();
+            // }
             const owner = this._owner && this._owner.get();
             if (owner) {
                 owner.onSizeChanged(w, h, oldw, oldh);
             }
             // tiCanvas = new Canvas(tiBitmap);
         }
-        augmentedCanvas: CanvasWrapper;
         onDraw(canvas: android.graphics.Canvas) {
             const owner = this._owner && this._owner.get();
             super.onDraw(canvas);
-            if (owner) {
+            console.log('onDraw', this.mCanvas);
+            if (owner && this.mCanvas) {
                 const scale = owner.density;
-                // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
-                canvas.setDensity(Math.round(scale * 160));
-                canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
-                this.augmentedCanvas.canvas = canvas;
+                // this.mCanvas.setDensity(Math.round(scale * 160));
+                // if (!this.augmentedCanvas) {
+                //     this.augmentedCanvas = new CanvasWrapper(canvas) as any;
+                // } else {
+                //     (this.augmentedCanvas as any).canvas = canvas;
+                // }
+                // console.log('test');
                 if (owner.shapesCanvas) {
                     const shapeCanvas = owner.shapesCanvas;
                     canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, new android.graphics.Paint());
                 } else if (!owner.cached) {
                     const shapes = owner.shapes;
                     if (shapes && shapes.shapes.length > 0) {
-                        shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.augmentedCanvas));
+                        shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.mCanvas));
                     }
                 }
-                owner.onDraw(this.augmentedCanvas);
+                owner.onDraw(this.mCanvas);
+                canvas.drawBitmap(this.bitmap, 0, 0, this.paint);
             }
         }
     }
@@ -491,7 +492,7 @@ function initClasses() {
     Op = android.graphics.Region.Op;
     Direction = android.graphics.Path.Direction;
     FillType = android.graphics.Path.FillType;
-    Matrix = android.graphics.Matrix;
+    Matrix = com.akylas.canvas.Matrix;
     TileMode = android.graphics.Shader.TileMode;
 }
 
@@ -538,25 +539,4 @@ export function releaseImage(image: ImageSource) {
 }
 
 initClasses();
-export {
-    Canvas,
-    CanvasView,
-    Cap,
-    DashPathEffect,
-    Direction,
-    DrawFilter,
-    FillType,
-    Join,
-    LinearGradient,
-    Matrix,
-    Op,
-    Paint,
-    Path,
-    PathEffect,
-    RadialGradient,
-    Rect,
-    Style,
-    TileMode,
-    FontMetrics,
-    Align
-};
+export { CanvasView, Cap, DashPathEffect, Direction, DrawFilter, FillType, Join, LinearGradient, Matrix, Op, Paint, Path, PathEffect, RadialGradient, Rect, Style, TileMode, FontMetrics, Align };

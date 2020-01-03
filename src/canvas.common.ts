@@ -129,7 +129,6 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
         return result;
     }
 
-
     public _addArrayFromBuilder(name: string, value: any[]) {
         if (name === knownCollections.shapes) {
             this.shapes.push(value);
@@ -139,7 +138,7 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
     public _addChildFromBuilder(name: string, value: any): void {
         console.log('Shapes', '_addChildFromBuilder', name, value);
         // if (value instanceof Shape) {
-            this.shapes.push(value);
+        this.shapes.push(value);
         // }
     }
 
@@ -231,7 +230,7 @@ export abstract class CanvasBase extends View {
     requestDrawShapesThrottled = throttle(() => this.requestDrawShapes(), 5);
     // throttling prevent too fast drawing on multiple properties change
     _onShapesContentsChanged() {
-        console.log('CanvasBase', '_onShapesContentsChanged')
+        console.log('CanvasBase', '_onShapesContentsChanged');
         if (this.nativeViewProtected) {
             if (this.cached) {
                 this.requestDrawShapesThrottled();
@@ -242,7 +241,7 @@ export abstract class CanvasBase extends View {
     }
 
     public _addChildFromBuilder(name: string, value: any): void {
-        console.log('CanvasBase', '_addChildFromBuilder', name)
+        console.log('CanvasBase', '_addChildFromBuilder', name);
         // if (name === CHILD_SHAPES) {
         //     if (!this.shapes) {
         //         const shapes = new Shapes();
@@ -255,7 +254,7 @@ export abstract class CanvasBase extends View {
         if (name === CHILD_SHAPES) {
             this.shapes = value;
         }
-        console.log('CanvasBase done', '_addChildFromBuilder', name)
+        console.log('CanvasBase done', '_addChildFromBuilder', name);
     }
 
     eachChild(callback: (child: ViewBase) => boolean): void {
@@ -264,28 +263,34 @@ export abstract class CanvasBase extends View {
             callback(shapes);
         }
     }
-    _raiseLayoutChangedEvent() {
-        super._raiseLayoutChangedEvent();
-        console.log('_raiseLayoutChangedEvent', !!this.shapes)
+    public onSizeChanged(w: number, h: number, oldw: number, oldh: number) {
         if (!!this.shapes) {
             this.requestDrawShapes();
         }
     }
+    // _raiseLayoutChangedEvent() {
+    //     super._raiseLayoutChangedEvent();
+    //     console.log('_raiseLayoutChangedEvent', !!this.shapes)
+    //     if (!!this.shapes) {
+    //         this.requestDrawShapes();
+    //     }
+    //     this.onSizeChanged();
+    // }
     [shapesProperty.setNative](value: Shapes) {
         this.requestDrawShapes();
     }
     [densityProperty.setNative](value) {
         if (!!this.shapes) {
-        this.requestDrawShapes();
+            this.requestDrawShapes();
         }
     }
     shapesCanvas: Canvas;
     drawShapes() {
-        console.log('CanvasBase', 'drawShapes')
+        console.log('CanvasBase', 'drawShapes');
         const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
         const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
         if (this.shapesCanvas) {
-            this.shapesCanvas.release();
+            // this.shapesCanvas.release();
             this.shapesCanvas = null;
         }
         if (this.shapes && this.shapes.shapes.length > 0 && width > 0 && height > 0) {
