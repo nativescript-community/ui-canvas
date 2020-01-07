@@ -3,6 +3,7 @@ import { Color } from '@nativescript/core/color/color';
 import { View } from '@nativescript/core/ui/core/view';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
+export function createRectF(x: number, y: number, w: number, h: number): RectF;
 export function parseCap(value: string | number): Cap;
 export function parseType(value: string | number): Style;
 export function parseJoin(value: string | number): Join;
@@ -33,6 +34,7 @@ export class Paint {
     public getFontMetrics(fontMetrics?: FontMetrics): number;
     public setPathEffect(param0: PathEffect);
     public isAntiAlias(): boolean;
+    public setFilterBitmap(param0: boolean);
     public setStrokeJoin(value: Join): void;
     // public getTextWidths(param0: native.Array<string>, param1: number, param2: number, param3: native.Array<number>): number;
     public getStrokeJoin(): Join;
@@ -110,7 +112,7 @@ export class Canvas {
 
     drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, src: Rect, dest: Rect, paint: Paint): void;
     drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, x: number, y: number, paint: Paint): void;
-
+    drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, matrix: Matrix, paint: Paint);
     drawRect(left: number, top: number, right: number, bottom: number, paint: Paint): void;
     drawRect(rect: Rect, paint: Paint): void;
     drawRoundRect(left: number, top: number, right: number, bottom: number, rx: number, ry: number, paint: Paint): void;
@@ -185,19 +187,40 @@ export class Rect {
     public contains(param0: number, param1: number, param2: number, param3: number): boolean;
     public intersect(param0: number, param1: number, param2: number, param3: number): boolean;
 }
+export class RectF{
+    public constructor(param0: number, param1: number, param2: number, param3: number);
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    public inset(param0: number, param1: number): void;
+    public union(param0: number, param1: number): void;
+    public offsetTo(param0: number, param1: number): void;
+    public offset(param0: number, param1: number): void;
+    public height(): number;
+    public width(): number;
+    public centerX(): number;
+    public centerY(): number;
+    public intersect(param0: RectF): boolean;
+    public contains(param0: RectF): boolean;
+    public set(param0: RectF);
+    public set(param0: number, param1: number, param2: number, param3: number);
+    public contains(param0: number, param1: number, param2: number, param3: number): boolean;
+    public intersect(param0: number, param1: number, param2: number, param3: number): boolean;
+}
 export class RadialGradient extends android.graphics.RadialGradient {}
 export class LinearGradient extends android.graphics.LinearGradient {}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path {
     isRect(param0: Rect): boolean;
     rMoveTo(param0: number, param1: number): void;
-    arcTo(param0: Rect, param1: number, param2: number, param3: boolean): void;
-    arcTo(param0: Rect, param1: number, param2: number): void;
+    arcTo(param0: RectF, param1: number, param2: number, param3: boolean): void;
+    arcTo(param0: RectF, param1: number, param2: number): void;
     offset(param0: number, param1: number): void;
     rCubicTo(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): void;
     rQuadTo(param0: number, param1: number, param2: number, param3: number): void;
-    addRoundRect(param0: Rect, param1: number, param2: number, param3: Direction): void;
-    addRoundRect(param0: Rect, param1: number[], param2: Direction): void;
+    addRoundRect(param0: RectF, param1: number, param2: number, param3: Direction): void;
+    addRoundRect(param0: RectF, param1: number[], param2: Direction): void;
     offset(param0: number, param1: number, param2: Path): void;
     addPath(param0: Path, param1: Matrix): void;
     addPath(param0: Path, param1: number, param2: number): void;
@@ -206,7 +229,7 @@ export class Path {
     quadTo(param0: number, param1: number, param2: number, param3: number): void;
     transform(param0: Matrix, param1: Path): void;
     reset(): void;
-    addArc(param0: Rect, param1: number, param2: number): void;
+    addArc(param0: RectF, param1: number, param2: number): void;
     addPath(param0: Path): void;
     close(): void;
     addCircle(param0: number, param1: number, param2: number, param3: Direction): void;
@@ -224,9 +247,14 @@ export class Path {
     addRect(param0: number, param1: number, param2: number, param3: number, param4: Direction): void;
     addOval(param0: Rect, param1: Direction): void;
     constructor(param0: Path);
-    addRect(param0: Rect, param1: Direction): void;
+    addRect(param0: RectF, param1: Direction): void;
     isInverseFillType(): boolean;
     set(param0: Path): void;
+
+    addLines(points: number[], length?: number, close?: boolean);
+    setLines(points: number[], length?: number, close?: boolean);
+    addCubicLines(points: number[], length?: number, close?: boolean);
+    setCubicLines(points: number[], length?: number, close?: boolean);
 }
 export class DrawFilter extends android.graphics.DrawFilter {}
 export class Op extends android.graphics.Region.Op {}

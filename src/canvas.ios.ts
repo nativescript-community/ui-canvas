@@ -247,6 +247,19 @@ export class Path implements IPath {
     rMoveTo(param0: number, param1: number): void {
         console.error('Method not implemented.');
     }
+
+    addLines(points: number[], length?: number, close?: boolean) {
+        console.error('Method not implemented.');
+    }
+    setLines(points: number[], length?: number, close?: boolean) {
+        console.error('Method not implemented.');
+    }
+    addCubicLines(points: number[], length?: number, close?: boolean) {
+        console.error('Method not implemented.');
+    }
+    setCubicLines(points: number[], length?: number, close?: boolean) {
+        console.error('Method not implemented.');
+    }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());
         let t = CGAffineTransformMakeTranslation(center.x, center.y);
@@ -396,6 +409,7 @@ export class Path implements IPath {
 }
 
 export class Paint implements IPaint {
+    public setFilterBitmap(param0: boolean) {}
     public setTypeface(newValue: Typeface): Typeface {
         throw new Error('Method not implemented.');
     }

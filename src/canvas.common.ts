@@ -1,4 +1,4 @@
-import { Canvas, Cap, DashPathEffect, Join, Rect, Style } from './canvas';
+import { Canvas, Cap, DashPathEffect, Join, Rect, RectF, Style } from './canvas';
 import { Property } from '@nativescript/core/ui/core/properties';
 import { AddArrayFromBuilder, AddChildFromBuilder, booleanConverter, layout, View, ViewBase } from '@nativescript/core/ui/core/view';
 import { ChangedData, ObservableArray } from '@nativescript/core/data/observable-array/observable-array';
@@ -195,6 +195,10 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
 
 export function createRect(x: number, y: number, w: number, h: number) {
     return new Rect(x, y, x + w, y + h);
+}
+
+export function createRectF(x: number, y: number, w: number, h: number) {
+    return new RectF(x, y, x + w, y + h);
 }
 
 export const shapesProperty = new Property<CanvasBase, Shapes>({ name: 'shapes', valueChanged: onShapesPropertyChanged });

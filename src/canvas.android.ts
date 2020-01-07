@@ -10,16 +10,38 @@ import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
 
-export function arrayoNativeArray(array) {
+function createArrayBuffer(length: number, useInts = false) {
+    let bb: java.nio.ByteBuffer;
+    if (useInts) {
+        bb = java.nio.ByteBuffer.allocateDirect(length);
+    } else {
+        bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+    }
+    // var bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+    const result = (ArrayBuffer as any).from(bb);
+    // result.bb = bb;
+    return result;
+}
+function pointsFromBuffer(buffer: ArrayBuffer, useInts = false) {
+    if (useInts) {
+        return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
+    }
+    const length = buffer.byteLength / 4;
+    const testArray = Array.create('float', length);
+    ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
+    return testArray as number[];
+}
+
+export function arrayoNativeArray(array, useInts = false) {
     if (!Array.isArray(array)) {
         return array;
     }
     const length = array.length;
-    const nNative = Array.create('float', length);
-    for (let i = 0; i < length; i++) {
-        nNative[i] = array[i];
-    }
-    return nNative;
+    const buffer = createArrayBuffer(length, useInts);
+    var arrayBuffer = useInts ? new Int8Array(buffer) : new Float32Array(buffer);
+    arrayBuffer.set(array);
+
+    return pointsFromBuffer(buffer, useInts);
 }
 
 export function parseDashEffect(value: string) {
@@ -30,7 +52,7 @@ export function parseDashEffect(value: string) {
     // for (let i = 0; i < length - 1; i++) {
     //     nNative[i] = array[i];
     // }
-    const result = new DashPathEffect(arrayoNativeArray(array), phase);
+    const result = new DashPathEffect(array, phase);
     return result;
 }
 
@@ -46,7 +68,7 @@ function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1
 }
 function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: android.graphics.Rect) {
     if (!view.nativeView) {
-        const activity = androidApp.foregroundActivity as globalAndroid.app.Activity;
+        const activity = androidApp.foregroundActivity as android.app.Activity;
         (view as any)._setupAsRootView(activity);
         (view as any)._isAddedToNativeVisualTree = true;
         (view as any).callLoaded();
@@ -60,13 +82,13 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
             canvas.save();
             canvas.translate(rect.left, rect.top);
         }
-        (view.nativeView as android.view.View).draw(canvas);
+        (view.nativeView as android.view.View).draw(canvas as any);
         if (rect) {
             canvas.restore();
         }
     }
 }
-let Canvas: new (param0?, param1?) => ICanvas;
+let Canvas: new (imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) => ICanvas;
 function initCanvasClass() {
     if (Canvas) {
         return Canvas;
@@ -76,8 +98,8 @@ function initCanvasClass() {
         _shouldReleaseBitmap = false;
         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
             super();
-            this.setDensity(Math.round(DEFAULT_SCALE * 160));
-
+            // this.setDensity(Math.round(DEFAULT_SCALE * 160));
+            // this.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
             if (imageOrWidth instanceof ImageSource) {
                 this._bitmap = imageOrWidth.android;
             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
@@ -145,7 +167,7 @@ function initCanvasClass() {
 
         public drawView(view: View, rect?: android.graphics.Rect) {
             if (!view.nativeView) {
-                const activity = androidApp.foregroundActivity as globalAndroid.app.Activity;
+                const activity = androidApp.foregroundActivity as android.app.Activity;
                 (view as any)._setupAsRootView(activity);
                 (view as any)._isAddedToNativeVisualTree = true;
                 (view as any).callLoaded();
@@ -175,14 +197,21 @@ function initCanvasClass() {
     return Canvas;
 }
 
-let Paint: typeof IPaint;
-type Paint = new () => IPaint;
+export let Paint: typeof IPaint;
+export interface Paint extends android.graphics.Paint {
+    // tslint:disable-next-line: no-misused-new
+    new (): Paint;
+}
 function initPaintClass() {
     if (Paint) {
         return Paint;
     }
     class PaintImpl extends android.graphics.Paint {
         fontInternal: Font;
+
+        constructor() {
+            super();
+        }
         setColor(color: Color | number | string) {
             // console.log('setColor', color);
             if (color instanceof Color) {
@@ -244,35 +273,80 @@ function createColorParam(param) {
     }
     return new Color(param).android;
 }
-let RadialGradient;
-function initRadialGradientClass() {
-    if (RadialGradient) {
-        return RadialGradient;
+export let DashPathEffect: DashPathEffect;
+export interface DashPathEffect extends android.graphics.DashPathEffect {
+    // tslint:disable-next-line: no-misused-new
+    new (intervals: number[], phase: number): DashPathEffect;
+}
+function initDashPathEffectClass() {
+    if (DashPathEffect) {
+        return DashPathEffect;
     }
-    class RadialGradientImpl extends android.graphics.RadialGradient {
-        public constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {
-            super(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
+    class DashPathEffectImpl extends android.graphics.DashPathEffect {
+        public constructor(intervals: number[], phase: number) {
+            super(arrayoNativeArray(intervals), phase);
         }
     }
-    RadialGradient = RadialGradientImpl;
-    return RadialGradientImpl;
+    DashPathEffect = DashPathEffectImpl as any;
+    return DashPathEffect;
+}
+
+export let Path: Path;
+export interface Path extends com.akylas.canvas.CanvasPath {
+    // tslint:disable-next-line: no-misused-new
+    new (): Path;
+}
+function initPathClass() {
+    if (!Path) {
+        class PathImpl extends com.akylas.canvas.CanvasPath {
+            constructor(path?: com.akylas.canvas.CanvasPath) {
+                path ? super(path) : super()
+            }
+
+            addLines(points: number[], length?: number, close?: boolean) {
+                super.addLines(arrayoNativeArray(points), length, close);
+            }
+            setLines(points: number[], length?: number, close?: boolean) {
+                super.addLines(arrayoNativeArray(points), length, close);
+            }
+            addCubicLines(points: number[], length?: number, close?: boolean) {
+                super.addCubicLines(arrayoNativeArray(points), length, close);
+            }
+            setCubicLines(points: number[], length?: number, close?: boolean) {
+                super.setCubicLines(arrayoNativeArray(points), length, close);
+            }
+        }
+        Path = PathImpl as any;
+    }
+    return Path;
+}
+let RadialGradient;
+function initRadialGradientClass() {
+    if (!RadialGradient) {
+        class RadialGradientImpl extends android.graphics.RadialGradient {
+            public constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {
+                super(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
+            }
+        }
+        RadialGradient = RadialGradientImpl;
+    }
+    return RadialGradient;
 }
 let LinearGradient;
 function initLinearGradientClass() {
-    if (LinearGradient) {
-        return LinearGradient;
-    }
-    class LinearGradientImpl extends android.graphics.LinearGradient {
-        public constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
-            super(param0, param1, param2, param3, createColorParam(param4), param5 instanceof Array ? param5 : createColorParam(param5), param6);
+    if (!LinearGradient) {
+        class LinearGradientImpl extends android.graphics.LinearGradient {
+            public constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
+                super(param0, param1, param2, param3, createColorParam(param4), param5 instanceof Array ? param5 : createColorParam(param5), param6);
+            }
         }
+        LinearGradient = LinearGradientImpl;
     }
-    LinearGradient = LinearGradientImpl;
-    return LinearGradientImpl;
+    return LinearGradient;
 }
 
 class CanvasWrapper implements ICanvas {
-    canvas: any;
+    canvas: android.graphics.Canvas;
     setBitmap(image: any) {
         if (image instanceof ImageSource) {
             image = image.android;
@@ -283,10 +357,10 @@ class CanvasWrapper implements ICanvas {
         this.canvas.setBitmap(image);
     }
     release() {
-        this.canvas.release();
+        // this.canvas.release();
     }
     clear() {
-        this.canvas.clear();
+        // this.canvas.clear();
     }
     clipOutRect(...params) {
         return this.canvas.clipOutRect.apply(this.canvas, params);
@@ -400,13 +474,13 @@ class CanvasWrapper implements ICanvas {
     drawRGB(param0, param1, param2) {
         return this.canvas.drawRGB(param0, param1, param2);
     }
-    setShadowLayer(radius: number, dx: number, dy: number, color: any) {
-        if (color instanceof Color) {
-        } else {
-            color = new Color(color);
-        }
-        this.canvas.setShadowLayer(radius, dx, dy, color.android);
-    }
+    // setShadowLayer(radius: number, dx: number, dy: number, color: any) {
+    //     if (color instanceof Color) {
+    //     } else {
+    //         color = new Color(color);
+    //     }
+    //     this.canvas.setShadowLayer(radius, dx, dy, color.android);
+    // }
     public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
         drawBitmapOnCanvas(this.canvas, param0, param1, param2, param3);
     }
@@ -419,63 +493,62 @@ class CanvasWrapper implements ICanvas {
     }
 }
 
-let AndroidCanvasView;
+let NativeCanvasView;
 function initAndroidCanvasViewClass() {
-    if (AndroidCanvasView) {
-        return AndroidCanvasView;
-    }
-    class AndroidCanvasViewImpl extends com.akylas.canvas.CanvasView {
-        _owner: WeakRef<CanvasView>;
-        public constructor(owner: CanvasView) {
-            super(owner._context);
-            this._owner = new WeakRef(owner);
-            this.augmentedCanvas = new CanvasWrapper();
+    if (!NativeCanvasView) {
+        class NativeCanvasViewImpl extends com.akylas.canvas.CanvasView {
+            _owner: WeakRef<CanvasView>;
+            augmentedCanvas: CanvasWrapper;
+            public constructor(context: android.content.Context, owner: CanvasView) {
+                super(context);
+                this._owner = new WeakRef(owner);
+                this.augmentedCanvas = new CanvasWrapper();
 
-            //default hardware accelerated
-            this.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
-        }
-        public __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number) {
-            
-            const owner = this._owner && this._owner.get();
-            if (owner) {
-                owner.onSizeChanged(w, h, oldw, oldh);
+                //default hardware accelerated
             }
-            // tiCanvas = new Canvas(tiBitmap);
-        }
-        augmentedCanvas: CanvasWrapper;
-        onDraw(canvas: android.graphics.Canvas) {
-            const owner = this._owner && this._owner.get();
-            super.onDraw(canvas);
-            if (owner) {
-                const scale = owner.density;
-                // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
-                canvas.setDensity(Math.round(scale * 160));
-                canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
-                this.augmentedCanvas.canvas = canvas;
-                if (owner.shapesCanvas) {
-                    const shapeCanvas = owner.shapesCanvas;
-                    canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, new android.graphics.Paint());
-                } else if (!owner.cached) {
-                    const shapes = owner.shapes;
-                    if (shapes && shapes.shapes.length > 0) {
-                        shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.augmentedCanvas));
-                    }
+            public __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number) {
+                const owner = this._owner && this._owner.get();
+                if (owner) {
+                    owner.onSizeChanged(w, h, oldw, oldh);
                 }
-                owner.onDraw(this.augmentedCanvas);
+            }
+            onDraw(canvas: android.graphics.Canvas) {
+                const owner = this._owner && this._owner.get();
+                super.onDraw(canvas);
+                if (owner) {
+                    const scale = owner.density;
+                    // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
+                    // canvas.setDensity(Math.round(scale * 160));
+                    // canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
+                    this.augmentedCanvas.canvas = canvas;
+                    const shapeCanvas = owner.shapesCanvas;
+                    if (shapeCanvas) {
+                        canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, new android.graphics.Paint());
+                    } else if (!owner.cached) {
+                        const shapes = owner.shapes;
+                        if (shapes && shapes.shapes.length > 0) {
+                            shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this.augmentedCanvas));
+                        }
+                    }
+                    owner.onDraw(this.augmentedCanvas);
+                }
             }
         }
+        NativeCanvasView = NativeCanvasViewImpl;
     }
-    AndroidCanvasView = AndroidCanvasViewImpl;
-    return AndroidCanvasViewImpl;
+    return NativeCanvasView;
 }
 
-let Cap, Direction, DashPathEffect, DrawFilter, FillType, Join, Matrix, Op, Path, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align;
+let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align;
 
 function initClasses() {
     initCanvasClass();
     initPaintClass();
+    initDashPathEffectClass();
+    initPathClass();
     initRadialGradientClass();
     initLinearGradientClass();
+    console.log('classes init done');
     Align = android.graphics.Paint.Align;
     Cap = android.graphics.Paint.Cap;
     Join = android.graphics.Paint.Join;
@@ -484,8 +557,8 @@ function initClasses() {
     RectF = android.graphics.RectF;
     FontMetrics = android.graphics.Paint.FontMetrics;
 
-    Path = android.graphics.Path;
-    DashPathEffect = android.graphics.DashPathEffect;
+    // Path = android.graphics.Path;
+    // DashPathEffect = android.graphics.DashPathEffect;
     PathEffect = android.graphics.PathEffect;
     DrawFilter = android.graphics.DrawFilter;
     Op = android.graphics.Region.Op;
@@ -507,7 +580,9 @@ class CanvasView extends CanvasBase {
     nativeViewProtected: android.view.View;
     createNativeView() {
         initAndroidCanvasViewClass();
-        return new AndroidCanvasView(this);
+        const view =  new NativeCanvasView(this._context, this);
+        view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        return view;
     }
     redraw() {
         if (this.nativeViewProtected) {
@@ -542,7 +617,6 @@ export {
     Canvas,
     CanvasView,
     Cap,
-    DashPathEffect,
     Direction,
     DrawFilter,
     FillType,
@@ -550,11 +624,10 @@ export {
     LinearGradient,
     Matrix,
     Op,
-    Paint,
-    Path,
     PathEffect,
     RadialGradient,
     Rect,
+    RectF,
     Style,
     TileMode,
     FontMetrics,

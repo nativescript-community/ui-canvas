@@ -1,15 +1,15 @@
 declare module com {
     export module akylas {
         export module canvas {
-            export class Canvas extends globalAndroid.graphics.Canvas {}
-            export class CanvasWrapper extends globalAndroid.graphics.Canvas {
-                canvas: globalAndroid.graphics.Canvas;
-                constructor(canvas: globalAndroid.graphics.Canvas);
+            export class CanvasPath extends globalAndroid.graphics.Path {
+                addLines(points: number[],  length?: number,   close? : boolean)
+                setLines(points: number[],  length?: number,   close? : boolean)
+                addCubicLines(points: number[],  length?: number,   close? : boolean)
+                setCubicLines(points: number[],  length?: number,   close? : boolean)
             }
-            export class Matrix extends globalAndroid.graphics.Matrix {}
+            
             export class CanvasView extends globalAndroid.view.View {
-                bitmap: globalAndroid.graphics.Bitmap;
-                paint: globalAndroid.graphics.Paint;
+                __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number);
             }
         }
     }
