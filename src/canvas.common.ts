@@ -61,6 +61,8 @@ export function parseDashEffect(value: string) {
 declare module '@nativescript/core/ui/core/view' {
     interface View {
         _raiseLayoutChangedEvent();
+        _onSizeChanged();
+
     }
 }
 

@@ -1,3 +1,6 @@
+declare namespace UIBezierPath {
+	 function fromStringWithFont(string: string, font: UIFont): UIBezierPath;
+}
 
 declare function AddDashesToPath(path: UIBezierPath): void;
 

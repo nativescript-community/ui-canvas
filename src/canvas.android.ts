@@ -134,9 +134,15 @@ function initCanvasClass() {
         }
 
         getWidth() {
+            if (this._bitmap) {
+                return super.getWidth();
+            }
             return Math.round(layout.toDeviceIndependentPixels(super.getWidth()));
         }
         getHeight() {
+            if (this._bitmap) {
+                return super.getHeight();
+            }
             return Math.round(layout.toDeviceIndependentPixels(super.getHeight()));
         }
         drawColor(color: number | Color | string): void {
@@ -211,6 +217,7 @@ function initPaintClass() {
 
         constructor() {
             super();
+            super.setTypeface(this.font.getAndroidTypeface());
         }
         setColor(color: Color | number | string) {
             // console.log('setColor', color);
@@ -220,13 +227,29 @@ function initPaintClass() {
                 super.setColor(new Color(color as any).android);
             }
         }
-        setTypeface(newValue: android.graphics.Typeface) {
-            return super.setTypeface(newValue);
+        get font() {
+            if (!this.fontInternal) {
+                 this.fontInternal = Font.default;
+                }
+            return this.fontInternal;
+        }
+        setTypeface(font: Font | android.graphics.Typeface): any {
+            if (font instanceof Font) {
+                this.fontInternal = font;
+            } else {
+                this.fontInternal['_typeface'] = font as android.graphics.Typeface
+            }
+            super.setTypeface(this.font.getAndroidTypeface());
+            return this.fontInternal
             //     let currentFont = this.fontInternal;
             // if (!currentFont || currentFont.fontFamily !== newValue) {
             //     const newFont = currentFont.withFontFamily(newValue);
             //     target.fontInternal = Font.equals(Font.default, newFont) ? unsetValue : newFont;
             // }
+        }
+        setFontFamily(familyName:string) {
+            this.fontInternal = this.font.withFontFamily(familyName);
+            super.setTypeface(this.font.getAndroidTypeface());
         }
         // get color() {
         //     return this.getColor();
@@ -258,6 +281,14 @@ function initPaintClass() {
                 color = new Color(color);
             }
             super.setShadowLayer(radius, dx, dy, color.android);
+        }
+        public getTextBounds(text: string, index: number, bounds: number, rect: android.graphics.Rect): void {
+            // const maximumSize = CGSizeMake(9999, 9999);
+            // const font = this.getTypeface();
+            // const fontMetrics = this.getFontMetrics();
+    // console.log('fontMetrics', fontMetrics.ascent, fontMetrics.bottom, fontMetrics.descent, fontMetrics.leading, fontMetrics.top);
+            // console.log('getTextBounds', text, font.toString());
+            super.getTextBounds(text, index, bounds, rect);
         }
     }
     Paint = PaintImpl as any;
@@ -509,7 +540,7 @@ function initAndroidCanvasViewClass() {
             public __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number) {
                 const owner = this._owner && this._owner.get();
                 if (owner) {
-                    owner.onSizeChanged(w, h, oldw, oldh);
+                    owner.onSizeChanged(layout.toDeviceIndependentPixels(w), layout.toDeviceIndependentPixels(h), oldw, oldh);
                 }
             }
             onDraw(canvas: android.graphics.Canvas) {
@@ -518,8 +549,8 @@ function initAndroidCanvasViewClass() {
                 if (owner) {
                     const scale = owner.density;
                     // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
-                    // canvas.setDensity(Math.round(scale * 160));
-                    // canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
+                    canvas.setDensity(Math.round(scale * 160));
+                    canvas.scale(scale, scale); // always scale to device density to work with dp
                     this.augmentedCanvas.canvas = canvas;
                     const shapeCanvas = owner.shapesCanvas;
                     if (shapeCanvas) {

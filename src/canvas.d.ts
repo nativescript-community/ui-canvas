@@ -1,6 +1,7 @@
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Color } from '@nativescript/core/color/color';
 import { View } from '@nativescript/core/ui/core/view';
+import { Font } from '@nativescript/core/ui/styling/font';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
 export function createRectF(x: number, y: number, w: number, h: number): RectF;
@@ -27,6 +28,7 @@ export class Paint {
     public setStrokeMiter(value: number): void;
     public setARGB(a: number, r: number, g: number, b: number): void;
     // public setMaskFilter(param0: android.graphics.MaskFilter): android.graphics.MaskFilter;
+    public getTextPath(text: string, index: number, bounds: number, x: number, y: number, path: Path): void;
     public measureText(text: string): number;
     public getTextSize(): number;
     public getTextBounds(text: string, index: number, bounds: number, rect: Rect): void;
@@ -41,7 +43,7 @@ export class Paint {
     public getColor(): Color;
     public getShader(): any;
     public measureText(text: string, start: number, end: number): number;
-    public setTypeface(newValue: Typeface): Typeface;
+    public setTypeface(newValue: Font): Font;
     public setStrokeWidth(value: number): void;
     public setStrokeCap(value: Cap): void;
     public isDither(): boolean;
@@ -59,6 +61,7 @@ export class Paint {
     public getStrokeWidth(): number;
     public getStrokeCap(): Cap;
     public setTextSize(value: number): void;
+    public setFontFamily(familyName: string);
     public setShader(value: any): any;
     // public descent(): number;
     public setShadowLayer(radius: number, dx: number, dy: number, color: number | string | Color): void;
@@ -71,11 +74,11 @@ export class StaticLayout {
 }
 
 export class FontMetrics {
-    ascent?: number;
-    descent?: number;
-    bottom?: number;
-    leading?: number;
-    top?: number;
+    ascent: number;
+    descent: number;
+    bottom: number;
+    leading: number;
+    top: number;
 }
 export class Canvas {
     constructor(imageOrWidth: any /*  ImageSource | android.graphics.Bitmap | UIImage | number */, height?: number);
@@ -161,7 +164,7 @@ export class Canvas {
     // drawPoints(param0: native.Array<number>, param1: number, param2: number, param3: android.graphics.Paint): void;
     drawView(view: View, rect?: Rect);
 }
-export class Typeface extends android.graphics.Typeface {}
+// export class Typeface extends android.graphics.Typeface {}
 export class Cap extends android.graphics.Paint.Cap {}
 export class Join extends android.graphics.Paint.Join {}
 export class Style extends android.graphics.Paint.Style {}
@@ -187,7 +190,7 @@ export class Rect {
     public contains(param0: number, param1: number, param2: number, param3: number): boolean;
     public intersect(param0: number, param1: number, param2: number, param3: number): boolean;
 }
-export class RectF{
+export class RectF {
     public constructor(param0: number, param1: number, param2: number, param3: number);
     left: number;
     top: number;
@@ -212,6 +215,7 @@ export class RadialGradient extends android.graphics.RadialGradient {}
 export class LinearGradient extends android.graphics.LinearGradient {}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path {
+    computeBounds(rect: RectF, exact: boolean);
     isRect(param0: Rect): boolean;
     rMoveTo(param0: number, param1: number): void;
     arcTo(param0: RectF, param1: number, param2: number, param3: boolean): void;
