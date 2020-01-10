@@ -34,7 +34,7 @@ import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
-import * as Anim from '../animation';
+import TWEEN from 'nativescript-tween';
 import { screen } from '@nativescript/core/platform';
 
 @Component
@@ -54,16 +54,16 @@ export default class Simple extends Vue {
         this.shapeColor = this.shapeColor === 'blue' ? 'yellow' : 'blue';
     }
     animateRectSize() {
-        new Anim.Animation({ value: 10 })
+        new TWEEN.Tween({ value: 10 })
             .to({ value: 40 }, 5000)
-            .easing(Anim.Easing.Quadratic.Out)
+            .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(obj => {
                 this.shapeLeft = obj.value;
             })
             .start();
     }
     animateArc() {
-        new Anim.Animation({ value: 0 })
+        new TWEEN.Tween({ value: 0 })
             .to({ value: 360 }, 5000)
             .onUpdate(obj => {
                 this.sweepAngle = obj.value;

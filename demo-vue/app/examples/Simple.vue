@@ -14,8 +14,9 @@
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { createRect, Paint, Style } from 'nativescript-canvas';
+import { Canvas, createRect, Paint, Style } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
+import { screen } from '@nativescript/core/platform';
 
 @Component
 export default class Simple extends Vue {
@@ -23,8 +24,13 @@ export default class Simple extends Vue {
     onBack() {
         frameModule.topmost().goBack();
     }
-    onDraw(event: { canvas }) {
+    onDraw(event: { canvas: Canvas }) {
         const canvas = event.canvas;
+
+        // const deviceScale = screen.mainScreen.scale;
+        // canvas.scale(deviceScale, deviceScale); // always scale to device density to work with dp
+        // canvas.setDensity(Math.round(scale * 160));
+        // canvas.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
         console.log('onDraw canvas:', canvas.getWidth(), canvas.getHeight());
 
         const bgPaint = new Paint();

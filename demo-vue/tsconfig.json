@@ -20,6 +20,8 @@
         "baseUrl": ".",
         "paths": {
             "~/*": ["app/*"],
+            "tns-core-modules": ["./node_modules/@nativescript/core"],
+            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
             "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
         }
     },

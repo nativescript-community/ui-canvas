@@ -17,6 +17,7 @@ import { createRect, Paint, Style } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
+import { screen } from '@nativescript/core/platform';
 
 const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp().path, 'images/test.jpg'));
 
@@ -28,6 +29,9 @@ export default class Image extends Vue {
     }
     onDraw(event: { canvas }) {
         const canvas = event.canvas;
+
+        // const deviceScale = screen.mainScreen.scale;
+        // canvas.scale(deviceScale, deviceScale); // always scale to device density to work with dp
         console.log('onDraw canvas:', canvas.getWidth(), canvas.getHeight());
 
         canvas.drawBitmap(iconLocalFile, null, createRect(0, 50, 200, 300), null);

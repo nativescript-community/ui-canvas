@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Can we use your camera?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Requires access to photo library.</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

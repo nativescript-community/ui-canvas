@@ -1,11 +1,11 @@
 <template>
     <Page>
         <ActionBar :title="title">
-            <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack"/>
+            <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack" />
         </ActionBar>
         <GridLayout rows="*,auto">
-            <CanvasView ref="canvas" row="0" backgroundColor="transparent" @draw="onDraw"/>
-            <Button text="animate" row="1" @tap="startAnimation"/>
+            <CanvasView ref="canvas" row="0" backgroundColor="transparent" @draw="onDraw" />
+            <Button text="animate" row="1" @tap="startAnimation" />
         </GridLayout>
     </Page>
 </template>
@@ -14,23 +14,27 @@
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { Canvas, Cap, createRect, Paint, Style } from 'nativescript-canvas';
+import { Canvas, Cap, createRect, createRectF, Paint, Style } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
+import { screen } from '@nativescript/core/platform';
 
-import * as Anim from '../animation';
+import TWEEN from 'nativescript-tween';
 
 @Component
 export default class Animation extends Vue {
     static title: 'Animation Example';
-    currentArcAngle = 0
+    currentArcAngle = 0;
     onBack() {
         frameModule.topmost().goBack();
     }
     onDraw(event: { canvas: Canvas }) {
         const canvas = event.canvas;
-        const w = canvas.getWidth()
-        const h = canvas.getHeight()
-        const width = Math.min(w, h) - 40
+
+        // const deviceScale = screen.mainScreen.scale;
+        // canvas.scale(deviceScale, deviceScale); // always scale to device density to work with dp
+        const w = canvas.getWidth();
+        const h = canvas.getHeight();
+        const width = Math.min(w, h) - 40;
 
         const bgPaint = new Paint();
         bgPaint.setAntiAlias(true);
@@ -40,21 +44,19 @@ export default class Animation extends Vue {
         bgPaint.color = 'yellow';
         bgPaint.setStyle(Style.STROKE);
         bgPaint.setStrokeCap(Cap.ROUND);
-        canvas.drawArc(createRect(20, 20, width, width), 90, this.currentArcAngle, false, bgPaint);
-
+        canvas.drawArc(createRectF(20, 20, width, width), 90, this.currentArcAngle, false, bgPaint);
     }
     startAnimation() {
         const canvas = (this.$refs.canvas as any).nativeView;
         console.log('startAnimation', canvas);
-        new Anim.Animation({ value: 0 })
+        new TWEEN.Tween({ value: 0 })
             .to({ value: 360 }, 5000)
-            .easing(Anim.Easing.Quadratic.Out)
+            .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(obj => {
                 this.currentArcAngle = obj.value;
                 canvas.redraw();
             })
             .start();
-
     }
 }
 </script>

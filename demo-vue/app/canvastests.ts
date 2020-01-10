@@ -1,10 +1,11 @@
-import { Canvas, Cap, Paint, Path, RadialGradient, Rect, Style, TileMode } from 'nativescript-canvas';
+import { Align, Canvas, Cap, Paint, Path, LinearGradient, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, DashPathEffect } from 'nativescript-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
-import { isIOS } from '@nativescript/core/ui/page/page';
+import { layout, isIOS, View } from '@nativescript/core/ui/page/page';
+import { Button } from '@nativescript/core/ui/button';
 import { FormattedString, Span } from '@nativescript/core/text/formatted-string';
-import { Label } from '@nativescript/core/ui/label';
+import { Label } from 'nativescript-htmllabel';
 
 function isOnUiThread() {
     if (isIOS) {
@@ -14,11 +15,7 @@ function isOnUiThread() {
     }
 }
 
-function createRect(x, y, w, h) {
-    return new Rect(x, y, x + w, y + h);
-}
-
-export function drawOnImage(scale = 3, canvas?) {
+export function drawOnImage(scale = 3, canvas?: Canvas) {
     const folder: Folder = knownFolders.currentApp();
 
     const iconLocalFile: ImageSource = fromFile(path.join(folder.path, 'images/test.jpg'));
@@ -27,22 +24,31 @@ export function drawOnImage(scale = 3, canvas?) {
         const imageFromLocalFile: ImageSource = fromFile(folderPath);
         canvas = new Canvas(imageFromLocalFile);
     }
+
     const bgPaint = new Paint();
+
     bgPaint.setColor(new Color('yellow'));
+    bgPaint.setAntiAlias(true);
     bgPaint.strokeWidth = 10;
 
     const textPaint = new Paint();
+    // textPaint.setAntiAlias(true);
     textPaint.color = new Color('red');
     textPaint.setStrokeWidth(3);
-    textPaint.setTextSize(150);
+    textPaint.setAntiAlias(true);
+    textPaint.setFontFamily('Open Sans,OpenSans-Regular');
 
     const width = canvas.getWidth();
     const height = canvas.getHeight();
 
     console.log('drawOnImage', isOnUiThread(), scale, width, height);
+    const padding = 10;
+    const w = width - 4 * padding;
+    const h = height - 4 * padding;
 
-    const hW = width / 2;
-    const hH = height / 2;
+    const hW = w / 2;
+    const hH = h / 2;
+    textPaint.setTextSize(hH / 2);
 
     const x = 0;
     const y = 0;
@@ -50,26 +56,36 @@ export function drawOnImage(scale = 3, canvas?) {
     canvas.scale(scale, scale);
     // rect
     canvas.save();
-    canvas.translate(10, 10);
-    canvas.drawRect(createRect(0, 0, 200, 100), bgPaint);
+    canvas.translate(padding, padding);
+    canvas.drawRect(createRect(0, 0, hW, hH / 2), bgPaint);
     bgPaint.setStyle(Style.STROKE);
-    canvas.drawRect(createRect(0, 120, 200, 100), bgPaint);
+    canvas.drawRect(createRect(0, hH / 2 + 2 * padding, hW, hH / 2), bgPaint);
     canvas.restore();
 
     // roundedrect
     canvas.save();
-    canvas.translate(250, 10);
+    canvas.translate(hW + 3 * padding, padding);
+
     bgPaint.setStyle(Style.FILL);
-    bgPaint.setShadowLayer(30, 0, 2, 'blue');
-    canvas.drawRoundRect(createRect(0, 0, 200, 100), 30, 30, bgPaint);
-    bgPaint.clearShadowLayer();
+    bgPaint.setShader(new LinearGradient(0, 0, 0, hH / 2, 'red' as any, 'green' as any, TileMode.CLAMP));
+    canvas.drawRoundRect(createRectF(0, 0, hW, hH / 2), 30, 30, bgPaint);
+    bgPaint.setShader(null);
     bgPaint.setStyle(Style.STROKE);
-    canvas.drawRoundRect(createRect(0, 120, 200, 100), 30, 30, bgPaint);
+    bgPaint.setShadowLayer(4, 0, 2, 'blue');
+    bgPaint.setPathEffect(new DashPathEffect([6, 4], 0));
+    canvas.drawRoundRect(0, hH / 2 + 2 * padding, hW, hH / 2 + hH / 2 + 2 * padding, 30, 30, bgPaint);
+    bgPaint.clearShadowLayer();
+    bgPaint.setPathEffect(null);
+
+    const paintLine = new Paint();
+    paintLine.setStrokeWidth(10);
+    // paintLine.setStyle(Style.STROKE);
+    canvas.drawLine(0, 0, 100, 10, paintLine);
     canvas.restore();
 
     canvas.save();
 
-    canvas.translate(500, 10);
+    canvas.translate(500, padding);
     bgPaint.color = 'blue';
     bgPaint.setStyle(Style.FILL);
     canvas.drawCircle(0, 50, 50, bgPaint);
@@ -78,25 +94,31 @@ export function drawOnImage(scale = 3, canvas?) {
     canvas.restore();
 
     canvas.save();
-    canvas.translate(700, 10);
+    canvas.translate(700, padding);
     bgPaint.color = 'yellow';
     bgPaint.setStyle(Style.STROKE);
     bgPaint.setStrokeCap(Cap.ROUND);
-    canvas.drawArc(createRect(0, 0, 100, 100), 90, 90, false, bgPaint);
+    canvas.drawArc(createRectF(0, 0, 100, 100), 90, 90, false, bgPaint);
     bgPaint.setStyle(Style.FILL);
-    canvas.drawArc(createRect(100, 0, 100, 100), 90, 90, true, bgPaint);
+    canvas.drawArc(createRectF(100, 0, 100, 100), 90, 90, true, bgPaint);
     canvas.restore();
 
     // text
     canvas.save();
-    canvas.translate(10, 250);
-    canvas.drawText('Filled Text', 0, 150, textPaint);
+    bgPaint.color = 'black';
+    bgPaint.setStrokeWidth(5);
+    canvas.translate(padding, hH / 2 + padding);
+    canvas.drawText('Filled Text', 0, 0, textPaint);
 
     textPaint.setStyle(Style.STROKE);
-    textPaint.setShadowLayer(30, 0, 2, 'blue');
-    canvas.drawText('Stroke Text', 0, 300, textPaint);
-    textPaint.clearShadowLayer();
+    textPaint.setTextAlign(Align.RIGHT);
+    // textPaint.setShadowLayer(30, 0, 2, 'blue');
+    paintLine.setPathEffect(new DashPathEffect([6, 4], 0));
+    canvas.drawLines([width - padding - 100, 100, width - padding, 100], paintLine);
+    canvas.drawText('Stroke Text', width - padding, 100, textPaint);
+    // textPaint.clearShadowLayer();
     canvas.restore();
+    textPaint.setTextAlign(Align.LEFT);
 
     // image
     canvas.save();
@@ -130,7 +152,9 @@ export function drawOnImage(scale = 3, canvas?) {
     customPath.lineTo(mid + half * 0.5, half * 0.84);
     customPath.close();
 
+    bgPaint.setShadowLayer(30, 0, 2, 'red');
     canvas.drawPath(customPath, bgPaint);
+    bgPaint.clearShadowLayer();
     bgPaint.setStyle(Style.STROKE);
     canvas.translate(200, 0);
     canvas.drawPath(customPath, bgPaint);
@@ -138,32 +162,73 @@ export function drawOnImage(scale = 3, canvas?) {
 
     // draw text along path
     customPath.reset();
-    customPath.addArc(createRect(0, 0, 300, 300), 90, 180);
+    customPath.addArc(createRectF(0, 0, 300, 300), 90, 180);
     canvas.save();
-    canvas.translate(300, 600);
-    textPaint.color = 'blue';
-    textPaint.textSize = 30;
-    textPaint.style = Style.STROKE;
+    canvas.translate(300, 100);
+    textPaint.color = 'green';
+
+    textPaint.textSize = 65;
+    textPaint.style = Style.FILL;
+    bgPaint.color = 'blue';
     canvas.drawPath(customPath, bgPaint);
     canvas.drawTextOnPath('text on path', customPath, 0, 0, textPaint);
     canvas.restore();
 
+    canvas.save();
+    canvas.translate(30, 200);
+    const fontMetrics = textPaint.getFontMetrics();
+    console.log('fontMetrics', fontMetrics.descent - fontMetrics.ascent, fontMetrics.ascent, fontMetrics.bottom, fontMetrics.descent, fontMetrics.leading, fontMetrics.top);
+    const rect = new Rect(0, 0, 0, 0);
+    textPaint.getTextBounds('A', 0, 1, rect);
+    console.log('textBounds', rect.top, rect.left, rect.width(), rect.height());
+    canvas.drawRect(rect, bgPaint);
+    canvas.drawText('A', 0,0,textPaint);
+
+    // console.log('getTextBounds', rect.width(), rect.height());
+    // textPaint.getTextBounds('a', 0, 1, rect);
+    // console.log('getTextBounds2', rect.width(), rect.height());
+    // const tpath = new Path();
+    // const rectf = new RectF(0, 0, 0, 0);
+    // textPaint.getTextPath('A', 0, 1, 0.0, 0.0, tpath);
+    // tpath.computeBounds(rectf, true);
+    // console.log('computeBounds', rectf.width(), rectf.height());
+    canvas.restore();
+
+    canvas.save();
+    canvas.translate(30, 280);
+
+
+    // console.log('getTextBounds', rect.width(), rect.height());
+    // textPaint.getTextBounds('a', 0, 1, rect);
+    // console.log('getTextBounds2', rect.width(), rect.height());
+    const tpath = new Path();
+    const rectf = new RectF(0, 0, 0, 0);
+    textPaint.getTextPath('A', 0, 1, 0.0, 0.0, tpath);
+    tpath.computeBounds(rectf, true);
+    canvas.drawRect(rectf, bgPaint);
+    canvas.drawPath(tpath, textPaint);
+    // console.log('computeBounds', rectf.width(), rectf.height());
+    canvas.restore();
+
+
+
     // render {N} view
     canvas.save();
-    canvas.translate(100, 700);
+    canvas.translate(padding, 5 * padding + hH);
     const label = new Label();
     label.backgroundColor = 'brown';
     label.color = new Color('yellow');
     label.textWrap = true;
-    const formattedString = new FormattedString();
-    const firstSpan = new Span();
+    // const formattedString = new FormattedString();
+    // const firstSpan = new Span();
 
-    firstSpan.fontSize = 15;
-    firstSpan.text =
+    label.fontSize = layout.toDeviceIndependentPixels(105 * scale);
+    // label.text = 'test';
+    label.text =
         'Aliquip ex aliquip quis nisi ullamco esse pariatur commodo est amet aute aliquip quis dolor. Excepteur commodo elit consequat ut laborum ea elit cupidatat culpa cupidatat. Id commodo eu magna eu pariatur enim minim mollit. Ea cupidatat aute est Lorem do quis anim non consectetur elit minim occaecat veniam. Esse ex et nisi aute commodo. Nulla irure fugiat aliquip aliquip commodo enim pariatur labore.';
-    formattedString.spans.push(firstSpan);
-    label.formattedText = formattedString;
-    canvas.drawView(label, createRect(0, 0, 100, 300));
+    // formattedString.spans.push(firstSpan);
+    // label.formattedText = formattedString;
+    canvas.drawView(label, createRect(0, 0, hW, hH / 2));
     canvas.restore();
 
     canvas.save();

@@ -5,11 +5,11 @@
 //	compile 'com.android.support:recyclerview-v7:+'
 //}
 
-sourceSets {
-    main {
-        java.srcDirs = ['src/main/java']
-    }
-}
+// sourceSets {
+//     main {
+//         java.srcDirs = ['src/main/java']
+//     }
+// }
 
 android {
   defaultConfig {
