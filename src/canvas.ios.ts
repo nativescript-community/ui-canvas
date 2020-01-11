@@ -4,8 +4,11 @@ import { screen } from '@nativescript/core/platform';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Canvas as ICanvas, Paint as IPaint, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
 import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
+import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
+
+const identity = CGAffineTransformIdentity;
 
 function DEGREES_TO_RADIANS(x) {
     return (Math.PI * x) / 180.0;
@@ -75,13 +78,21 @@ function paint(target: Object, propertyKey: string, descriptor: TypedPropertyDes
     // NOTE: Do not use arrow syntax here. Use a function expression in
     // order to use the correct value of `this` in this method (see notes below)
     descriptor.value = function(...args: any[]) {
-        const paint = args[args.length - 1];
+        let index = args.length - 1;
+        let paint = args[index];
         let actualPaint;
         if (paint instanceof Paint) {
-            actualPaint = this.startApplyPaint(paint);
-            args[args.length - 1] = actualPaint;
+            actualPaint = this.startApplyPaint(paint, true);
+            args[index] = actualPaint;
         } else {
-            actualPaint = this.startApplyPaint();
+            index = args.length - 2;
+            paint = args[index];
+            if (paint instanceof Paint) {
+                actualPaint = this.startApplyPaint(paint, true);
+                args[index] = actualPaint;
+            } else {
+                actualPaint = this.startApplyPaint();
+            }
         }
         const result = originalMethod.apply(this, args);
         this.finishApplyPaint(actualPaint);
@@ -175,14 +186,15 @@ export class Rect implements IRect {
     public inset(dx: number, dy: number): void {
         this.cgRect = CGRectInset(this.cgRect, dx, dy);
     }
-    public union(param0: number, param1: number): void {
+    public union(...params): void {
+        // this.cgRect = CGRectOffset(this.cgRect, dx, dy);
         console.error('Method not implemented:', 'union');
     }
-    public offsetTo(param0: number, param1: number): void {
-        console.error('Method not implemented:', 'offsetTo');
+    public offsetTo(x: number, y: number): void {
+        this.cgRect = CGRectMake(x, y, this._rect.size.width, this._rect.size.height);
     }
-    public offset(param0: number, param1: number): void {
-        console.error('Method not implemented:', 'offset');
+    public offset(dx: number, dy: number): void {
+        this.cgRect = CGRectOffset(this.cgRect, dx, dy);
     }
     public centerX(): number {
         return this.cgRect.origin.x + this.cgRect.size.width / 2;
@@ -190,25 +202,30 @@ export class Rect implements IRect {
     public centerY(): number {
         return this.cgRect.origin.y + this.cgRect.size.height / 2;
     }
-    public intersect(...params) {
-        const length = params.length;
+    public intersect(...args) {
+        const length = args.length;
+        let rect: CGRect;
         if (length === 4) {
-            // param0: number, param1: number, param2: number, param3: number
+            rect = createCGRect(args[0], args[1], args[2], args[3]);
         } else if (length === 1) {
-            // param0: IRect
+            rect = (args[0] as Rect).cgRect;
         }
-        console.error('Method not implemented:', 'intersect');
+        const result = CGRectIntersection(this.cgRect, rect);
+        if (!CGRectIsNull(result)) {
+            this.cgRect = result;
+            return true;
+        }
         return false;
     }
-    public contains(...params) {
-        const length = params.length;
+    public contains(...args) {
+        const length = args.length;
+        let rect: CGRect;
         if (length === 4) {
-            // param0: number, param1: number, param2: number, param3: number
+            rect = createCGRect(args[0], args[1], args[2], args[3]);
         } else if (length === 1) {
-            // param0: IRect
+            rect = (args[0] as Rect).cgRect;
         }
-        console.error('Method not implemented:', 'contains');
-        return false;
+        return CGRectContainsRect(this.cgRect, rect);
     }
     _rect: CGRect;
     left: number;
@@ -250,20 +267,30 @@ export class Matrix implements IMatrix {
     public setRotate(degrees: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(degrees));
         if (px !== 0 || py !== 0) {
-            this.preConcat(CGAffineTransformMakeTranslation(px, py));
-            // this._transform = CGAffineTransformConcat(CGAffineTransformMakeTranslation(px, py), this._transform);
+            this.postConcat(CGAffineTransformMakeTranslation(px, py));
+            this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
         }
     }
+
+    static MSCALE_X = 0;
+    static MSKEW_X = 1;
+    static MTRANS_X = 2;
+    static MSKEW_Y = 3;
+    static MSCALE_Y = 4;
+    static MTRANS_Y = 5;
+    static MPERSP_0 = 6;
+    static MPERSP_1 = 7;
+    static MPERSP_2 = 8;
     public getValues(param: number[]): void {
         if (param) {
             param[0] = this._transform.a;
-            param[1] = this._transform.b;
-            param[2] = 0;
-            param[3] = this._transform.c;
+            param[1] = this._transform.c;
+            param[2] = this._transform.tx;
+            param[3] = this._transform.b;
             param[4] = this._transform.d;
-            param[5] = 0;
-            param[6] = this._transform.tx;
-            param[7] = this._transform.ty;
+            param[5] = this._transform.ty;
+            param[6] = 0;
+            param[7] = 0;
             param[8] = 1;
         }
     }
@@ -272,8 +299,8 @@ export class Matrix implements IMatrix {
     public setScale(sx: number, sy: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeScale(sx, sy);
         if (px !== 0 || py !== 0) {
-            this.preConcat(CGAffineTransformMakeTranslation(px, py));
-            // this._transform = CGAffineTransformConcat(CGAffineTransformMakeTranslation(px, py), this._transform);
+            this.postConcat(CGAffineTransformMakeTranslation(px, py));
+            this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
         }
     }
     // public preScale(param0: number, param1: number, param2: number, param3: number): boolean;
@@ -388,7 +415,8 @@ export class Matrix implements IMatrix {
         this._transform.d = cos;
         // this._transform.transY = sdot(-sin, pivotx, oneMinusCos, pivoty);
         if (px !== 0 || py !== 0) {
-            this.preConcat(CGAffineTransformMakeTranslation(px, py));
+            this.postConcat(CGAffineTransformMakeTranslation(px, py));
+            this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
         }
     }
     public rectStaysRect(): boolean {
@@ -406,7 +434,8 @@ export class Matrix implements IMatrix {
     public setSkew(sx: number, sy: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeSkew(sx, sy);
         if (px !== 0 || py !== 0) {
-            this.preConcat(CGAffineTransformMakeTranslation(px, py));
+            this.postConcat(CGAffineTransformMakeTranslation(px, py));
+            this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
         }
     }
     public reset(): void {
@@ -445,15 +474,13 @@ export class Matrix implements IMatrix {
         return this.preConcat(CGAffineTransformMakeTranslation(tx, ty));
     }
     public setValues(values: number[]): void {
-        this._transform.a = values[0];
-        this._transform.b = values[1];
-        // param[2] = 0;
-        this._transform.c = values[3];
-        this._transform.d = values[4];
-        // param[5] = 0;
-        this._transform.tx = values[6];
-        this._transform.ty = values[7];
-        // param[8] = 1;
+        this._transform = CGAffineTransformMake(values[0], values[3], values[1], values[4], values[2], values[5]);
+        // this._transform.a = values[0];
+        // this._transform.c = values[1];
+        // this._transform.tx = values[2];
+        // this._transform.b = values[3];
+        // this._transform.d = values[4];
+        // this._transform.ty = values[5];
     }
     public invert(output: IMatrix): boolean {
         (output as Matrix)._transform = CGAffineTransformInvert(this._transform);
@@ -491,39 +518,90 @@ export class DashPathEffect extends PathEffect {
 }
 
 export class Path implements IPath {
-    _path: any;
+    private _path: any;
+    private _bPath?: UIBezierPath;
     _fillType: FillType;
+
+    getOrCreateBPath() {
+        if (!this._bPath) {
+            if (this._path) {
+                this._bPath = UIBezierPath.bezierPathWithCGPath(this._path);
+            } else {
+                this._bPath = UIBezierPath.bezierPath();
+            }
+        }
+        return this._bPath;
+    }
+    getCGPath() {
+        if (this._bPath) {
+            return this._bPath.CGPath;
+        }
+        return this._path;
+    }
+    getBPath() {
+        if (this._bPath) {
+            return this._bPath;
+        }
+        return undefined;
+    }
+    setBPath(bPath: UIBezierPath) {
+        this._bPath = bPath;
+        // this._path = this._bPath.CGPath;
+    }
     constructor() {
         this._path = CGPathCreateMutable();
         // this._path = UIBezierPath.bezierPath();
     }
     computeBounds(rect: RectF, exact: boolean) {
-        rect.cgRect = CGPathGetBoundingBox(this._path);
+        if (this._bPath) {
+            rect.cgRect = this._bPath.bounds;
+        } else {
+            rect.cgRect = CGPathGetBoundingBox(this._path);
+        }
         console.log(rect.toString());
     }
 
     isRect(rect: Rect): boolean {
-        return CGPathIsRect(this._path, new interop.Reference(rect.cgRect));
+        return CGPathIsRect(this.getCGPath(), new interop.Reference(rect.cgRect));
     }
-    rMoveTo(param0: number, param1: number): void {
-        console.error('Method not implemented:', 'rMoveTo');
+    getCurrentPoint() {
+        const path = this.getCGPath();
+        if (CGPathIsEmpty(path)) {
+            this.moveTo(0, 0);
+        }
+        return CGPathGetCurrentPoint(this.getCGPath());
     }
-
+    rMoveTo(dx: number, dy: number): void {
+        const currentPoint = this.getCurrentPoint();
+        this.moveTo(dx + currentPoint.x, dy + currentPoint.y);
+    }
+    @profile
     addLines(points: number[], length?: number, close?: boolean) {
         // const pts = args[0] as number[];
         if (points.length <= 0 || points.length % 2 !== 0) {
             console.error('wrong points number');
         }
+        // let starttime = Date.now();
+        // let count = length || points.length;
+        // CGPathMoveToPoint(this._path, null, points[0], points[1]);
+        // // console.log('addLines', count);
+        // for (let index = 2; index < count; index += 2) {
+        //     CGPathAddLineToPoint(this._path, null, points[index], points[index + 1]);
+        // }
+        // if (close === true) {
+        //     CGPathCloseSubpath(this._path);
+        // }
 
-        let count = length || points.length;
-        CGPathMoveToPoint(this._path, null, points[0], points[1]);
-        // console.log('addLines', count);
-        for (let index = 2; index < count ; index+=2) {
-            CGPathAddLineToPoint(this._path, null, points[index], points[index + 1]);
-        }
-        if (close === true) {
-            CGPathCloseSubpath(this._path);
-        }
+        // console.log('test1', Date.now() - starttime);
+        // const path = CGPathCreateMutable();
+        // starttime = Date.now();
+        UIBezierPath.addLinesCountCloseToPath(points, length, close, this._path);
+        // console.log('test2', Date.now() - starttime);
+
+        // const bPath =  UIBezierPath.bezierPath();
+        // starttime = Date.now();
+        // bPath.addLinesCountClose(points, length, close);
+        // console.log('test3', Date.now() - starttime);
     }
     setLines(points: number[], length?: number, close?: boolean) {
         this.reset();
@@ -535,14 +613,16 @@ export class Path implements IPath {
             console.error('wrong points number');
         }
 
-        let count = length || points.length;
-        CGPathMoveToPoint(this._path, null, points[0], points[1]);
-        for (let i = 0; i < (count - 2) / 6; i++) {
-            CGPathAddCurveToPoint(this._path, null, points[2 + 6 * i], points[2 + 6 * i + 1], points[2 + 6 * i + 2], points[2 + 6 * i + 3], points[2 + 6 * i + 4], points[2 + 6 * i + 5]);
-        }
-        if (close === true) {
-            CGPathCloseSubpath(this._path);
-        }
+        // let starttime = Date.now();
+        // let count = length || points.length;
+        // CGPathMoveToPoint(this._path, null, points[0], points[1]);
+        // for (let i = 2; i < count; i += 6) {
+        //     CGPathAddCurveToPoint(this._path, null, points[i], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5]);
+        // }
+        // if (close === true) {
+        //     CGPathCloseSubpath(this._path);
+        // }
+        UIBezierPath.addCubicLinesCountCloseToPath(points, length, close, this._path);
     }
     setCubicLines(points: number[], length?: number, close?: boolean) {
         this.reset();
@@ -550,23 +630,40 @@ export class Path implements IPath {
     }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());
-        let t = CGAffineTransformMakeTranslation(center.x, center.y);
-        t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
-        CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, true);
+        if (this._bPath) {
+            this._bPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, true);
+        } else {
+            let t = CGAffineTransformMakeTranslation(center.x, center.y);
+            t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
+            CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, true);
+        }
     }
     offset(dx: number, dy: number, output?: Path) {
         const t = CGAffineTransformMakeTranslation(dx, dy);
-        if (output) {
-            output._path = CGPathCreateMutableCopyByTransformingPath(this._path, new interop.Reference(t));
+        // if (this._bPath) {
+        // this._bPath.bez
+        if (this._bPath) {
+            if (output) {
+                output._bPath = UIBezierPath.bezierPathWithCGPath(this.getCGPath());
+                output._bPath.applyTransform(t);
+            } else {
+                this._bPath.applyTransform(t);
+            }
         } else {
-            this._path = CGPathCreateMutableCopyByTransformingPath(this._path, new interop.Reference(t));
+            (output || this)._path = CGPathCreateMutableCopyByTransformingPath(this._path, new interop.Reference(t));
         }
     }
-    rCubicTo(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): void {
-        console.error('Method not implemented:', 'rCubicTo');
+    rCubicTo(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number): void {
+        const currentPoint = this.getCurrentPoint();
+        const x = currentPoint.x;
+        const y = currentPoint.y;
+        this.cubicTo(x1 + x, y1 + y, x2 + x, y2 + y, x3 + x, y3 + y);
     }
-    rQuadTo(param0: number, param1: number, param2: number, param3: number): void {
-        console.error('Method not implemented:', 'rQuadTo');
+    rQuadTo(cpx: number, cpy: number, x: number, y: number): void {
+        const currentPoint = this.getCurrentPoint();
+        const dx = currentPoint.x;
+        const dy = currentPoint.y;
+        this.quadTo(cpx + dx, cpy + dy, x + dx, y + dy);
     }
     addRoundRect(...params) {
         // TODO: direction is ignored!
@@ -582,22 +679,36 @@ export class Path implements IPath {
             rx = params[1];
             ry = params[2];
         }
-        CGPathAddRoundedRect(this._path, null, rect, rx, ry);
+        if (this._bPath) {
+            this._bPath.appendPath(UIBezierPath.bezierPathWithRoundedRectByRoundingCornersCornerRadii(rect, UIRectCorner.AllCorners, CGSizeMake(rx, ry)));
+        } else {
+            CGPathAddRoundedRect(this._path, null, rect, rx, ry);
+        }
     }
     addPath(...params) {
         const length = params.length;
         const path = params[0] as Path;
         if (length === 1) {
-            CGPathAddPath(this._path, null, path._path);
+            if (this._bPath) {
+                this._bPath.appendPath(path.getBPath());
+            } else {
+                CGPathAddPath(this._path, null, path._path);
+            }
             // param0: IPath, param1: number, param2: number
         } else if (length === 2) {
             const mat = params[1] as Matrix;
-            CGPathAddPath(this._path, new interop.Reference(mat._transform), path._path);
+            if (this._bPath) {
+                this._bPath.appendPath(path.getBPath());
+            } else {
+                CGPathAddPath(this._path, new interop.Reference(mat._transform), path._path);
+            }
             // param0: IPath, param1: number, param2: number
         } else if (length === 3) {
-            const t = CGAffineTransformMakeTranslation(params[1], params[2]);
-            CGPathAddPath(this._path, new interop.Reference(t), path._path);
-
+            if (this._bPath) {
+            } else {
+                const t = CGAffineTransformMakeTranslation(params[1], params[2]);
+                CGPathAddPath(this._path, new interop.Reference(t), path._path);
+            }
             // param0: IPath, param1: Matrix
         }
     }
@@ -619,7 +730,11 @@ export class Path implements IPath {
         }
     }
     reset(): void {
-        this._path = CGPathCreateMutable();
+        if (this._bPath) {
+            this._bPath.removeAllPoints();
+        } else {
+            this._path = CGPathCreateMutable();
+        }
     }
     addArc(...params): void {
         const length = params.length;
@@ -724,7 +839,8 @@ export class Paint implements IPaint {
         if (x !== 0 || y !== 0) {
             bPath.applyTransform(CGAffineTransformMakeTranslation(x, y));
         }
-        path._path = bPath.CGPath;
+        path.setBPath(bPath);
+        // path._path = bPath.CGPath;
     }
     public setFilterBitmap(param0: boolean) {}
     public setTypeface(font: Font | UIFont): Font {
@@ -799,7 +915,6 @@ export class Paint implements IPaint {
         return result.width;
     }
     public getTextBounds(text: string, start: number, end: number, rect: Rect): void {
-      
         const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
             CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
             NSStringDrawingOptions.UsesDeviceMetrics,
@@ -1211,31 +1326,66 @@ export class Canvas implements ICanvas {
         // drawLines(pts: number[], offset: number, count: number, paint: IPaint): void;
         // drawLines(pts: number[], paint: IPaint): void;
 
-        const pts = args[0] as number[];
-        if (pts.length <= 0 || pts.length % 4 !== 0) {
+        let pts = args[0];
+        if (pts.length <= 0 || pts.length % 2 !== 0) {
             console.error('wrong points number');
         }
 
+        let matrix: Matrix = args[args.length - 1];
+        if (matrix instanceof Matrix) {
+            args.pop();
+        } else {
+            matrix = undefined;
+        }
+
         const length = args.length;
+
         const paint = args[length - 1] as Paint;
-        const oldStyle = paint.style;
+        // const oldStyle = paint.style;
         paint.style = Style.STROKE;
-        const ctx = this.ctx;
+        // const ctx = this.ctx;
         let offset = 0;
         let count = pts.length;
-        let rect: CGRect;
+        // let rect: CGRect;
         if (length === 4) {
             offset = args[1];
             count = args[2];
         }
+        const startTime = Date.now();
 
-        CGContextBeginPath(ctx);
-        CGContextMoveToPoint(ctx, pts[offset], pts[offset + 1]);
-        for (let index = offset + 2; index <= count / 2; index++) {
-            CGContextAddLineToPoint(ctx, pts[index], pts[index + 1]);
+        if (Array.isArray(pts)) {
+            pts = FloatConstructor.from(pts);
         }
-        this._drawPath(paint, ctx);
-        paint.style = oldStyle;
+
+        UIBezierPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
+
+        // const realCount = count / 2
+        // const cgPoints = new FloatConstructor(realCount) as any;
+        console.log('drawPointsCountInContextWithTransform', Date.now() - startTime);
+        // let cgPoint;
+        // for (let index = offset; index <= realCount; index++) {
+        //     cgPoint = CGPointMake(pts[2 * index], pts[2 * index + 1]);
+        //     if (matrix) {
+        //         // cgPoint = CGPointApplyAffineTransform(cgPoint, matrix._transform);
+        //     }
+        //     cgPoints[index] = cgPoint;
+        //     // CGContextAddLineToPoint(ctx, pts[index], pts[index + 1]);
+        // }
+        // console.log('test1', Date.now() - startTime);
+
+        // // CGContextBeginPath(ctx);
+        // CGContextStrokeLineSegments(ctx, cgPoints as any, realCount);
+        // console.log('test2', Date.now() - startTime);
+        // CGContextMoveToPoint(ctx, pts[offset], pts[offset + 1]);
+        // for (let index = offset + 2; index <= count / 2; index++) {
+        //     CGContextAddLineToPoint(ctx, pts[index], pts[index + 1]);
+        // }
+        // this._drawPath(paint, ctx);
+        // paint.style = oldStyle;
+    }
+
+    concat(mat: Matrix) {
+        CGContextConcatCTM(this.ctx, mat._transform);
     }
     @paint
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void {
@@ -1257,10 +1407,10 @@ export class Canvas implements ICanvas {
         const ctx = this.ctx;
         if (path._fillType === FillType.EVEN_ODD) {
             CGContextBeginPath(ctx);
-            CGContextAddPath(ctx, path._path);
+            CGContextAddPath(ctx, path.getCGPath());
             this._drawEOFPath(paint, ctx);
         } else {
-            this._drawPath(paint, ctx, path._path);
+            this._drawPath(paint, ctx, path.getBPath() || path.getCGPath());
         }
     }
     clipOutPath(path: IPath): boolean {
@@ -1270,14 +1420,22 @@ export class Canvas implements ICanvas {
     clipOutRect(...args) {
         // clipOutRect(left: number, top: number, right: number, bottom: number): boolean;
         // clipOutRect(rect: IRect): boolean;
-        // clipOutRect(left: any, top?: any, right?: any, bottom?: any)
+        const ctx = this.ctx;
+        let rect: CGRect;
+        if (length === 4) {
+            rect = createCGRect(args[0], args[1], args[2], args[3]);
+        } else if (length === 1) {
+            rect = (args[0] as Rect).cgRect;
+        }
+        const currentRect = CGContextGetClipBoundingBox(ctx);
+        CGRect;
         console.error('Method not implemented:', 'clipOutRect');
         return false;
     }
     clipPath(...args) {
         const path = args[0] as Path;
         const ctx = this.ctx;
-        CGContextAddPath(ctx, path._path);
+        CGContextAddPath(ctx, path.getCGPath());
         CGContextClip(ctx);
         // clipPath(path: IPath): boolean;
         // clipPath(path: IPath, op: Op): boolean;
@@ -1308,12 +1466,6 @@ export class Canvas implements ICanvas {
             }
         }
     }
-    // getWidth() {
-    //     return layout.toDeviceIndependentPixels(this._width);
-    // }
-    // getHeight() {
-    //     return layout.toDeviceIndependentPixels(this._height);
-    // }
     getWidth() {
         return this._width;
     }
@@ -1368,14 +1520,13 @@ export class Canvas implements ICanvas {
         if (paint.strokeJoin) {
             CGContextSetLineJoin(ctx, paint.strokeJoin as any);
         }
-        // if (!!paint.pathEffect) {
-        //     if (paint.pathEffect instanceof DashPathEffect) {
-        //         const intervals = paint.pathEffect.intervals;
-        //         const length = intervals.length;
-        //         console.log('CGContextSetLineDash', intervals, length, paint.pathEffect.phase);
-        //         CGContextSetLineDash(ctx, paint.pathEffect.phase, FloatConstructor.from(intervals) as any, length);
-        //     }
-        // }
+        if (!!paint.pathEffect) {
+            if (paint.pathEffect instanceof DashPathEffect) {
+                const intervals = paint.pathEffect.intervals;
+                const length = intervals.length;
+                CGContextSetLineDash(ctx, paint.pathEffect.phase, FloatConstructor.from(intervals) as any, length);
+            }
+        }
         if (paint.color) {
             // const color = paint.getColor();
             // const r = color.r / 255;
@@ -1391,14 +1542,13 @@ export class Canvas implements ICanvas {
             CGContextSetFillColorWithColor(ctx, color.CGColor);
         }
 
-        // if (withFont && paint.font) {
-        // const font = paint.font.getUIFont(UIFont.systemFontOfSize( UIFont.labelFontSize)) as UIFont;
-        // console.log('set font', font.fontName, font.familyName, font.pointSize, font.fontDescriptor, font.fontDescriptor.postscriptName);
-        // CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingMacRoman);
-        // CGContextSetCharacterSpacing(ctx, 1.7);
-        // const transform = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
-        // CGContextSetTextMatrix(ctx, transform);
-        // }
+        if (withFont && paint.font) {
+            const font = paint.getUIFont();
+            CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingMacRoman);
+            // CGContextSetCharacterSpacing(ctx, 1.7);
+            const transform = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
+            CGContextSetTextMatrix(ctx, transform);
+        }
         return paint;
     }
     finishApplyPaint(paint) {
@@ -1516,8 +1666,8 @@ export class Canvas implements ICanvas {
             // } else {
             // path = path || CGContextCopyPath(ctx);
             // bPath = UIBezierPath.bezierPathWithCGPath(path);
-        } else if (path) {
-            bPath = UIBezierPath.bezierPathWithCGPath(path);
+            // } else if (path) {
+            // bPath = UIBezierPath.bezierPathWithCGPath(path);
         }
         //  path =CGContextCopyPath(ctx);
         if (paint.shader && !path) {
@@ -1679,6 +1829,7 @@ export class Canvas implements ICanvas {
     }
     @paint
     drawText(...params) {
+        const startTime = Date.now();
         // drawText(text: string, start: number, end: number, x: number, y: number, paint: Paint): void;
         // drawText(char: any[], index: number, count: number, x: number, y: number, paint: Paint): void;
         // drawText(text: string, x: number, y: number, paint: Paint): void;
@@ -1696,49 +1847,20 @@ export class Canvas implements ICanvas {
             x = params[1];
             y = params[2];
         }
-        // CGContextTranslateCTM(ctx, 0.0, this._height);
-        // CGContextScaleCTM(ctx, 1.0, -1.0);
-        // const font = paint.font;
-        // CGContextTranslateCTM(ctx, 0, 2 * y+RECT.size.height);
-
         // const attribs = paint.getDrawTextAttribs();
+        // const nsstring = NSString.stringWithString(text.replace(/\n/g, ' '));
         // const attrString = NSAttributedString.alloc().initWithStringAttributes(text.replace(/\n/g, ' '), attribs);
-        // let offsetx = x;
-        // let offsety = y;
-        // if (paint.align !== Align.LEFT) {
-        //     let size = NSString.stringWithString(text.replace(/\n/g, ' ')).sizeWithAttributes(attribs);
-        //     if (paint.align === Align.RIGHT) {
-        //         offsetx -= size.width;
-        //     } else {
-        //         offsetx -= size.width / 2;
-        //     }
-        // }
-        // CGContextSetTextMatrix(ctx, CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0));
-        // if (paint.style === Style.FILL) {
-        //     CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
-        // } else if (paint.style === Style.STROKE) {
-        //     CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
-        // } else {
-        //     CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
-        // }
-        // CGContextSetTextPosition(ctx, offsetx, offsety);
-        // const displayLine = CTLineCreateWithAttributedString(attrString);
-        // CTLineDraw(displayLine, ctx);
-
-        const attribs = paint.getDrawTextAttribs();
-        const nsstring = NSString.stringWithString(text.replace(/\n/g, ' '));
-        // const attrString = NSAttributedString.alloc().initWithStringAttributes(text.replace(/\n/g, ' '), attribs);
-        let size = nsstring.sizeWithAttributes(attribs);
         let offsetx = x;
-        let offsety = y - paint.getUIFont().ascender;
+        let offsety = y;
         if (paint.align !== Align.LEFT) {
+            let width = paint.measureText(text);
             if (paint.align === Align.RIGHT) {
-                offsetx -= size.width;
+                offsetx -= width;
             } else {
-                offsetx -= size.width / 2;
+                offsetx -= width / 2;
             }
         }
-        UIGraphicsPushContext(ctx);
+        // UIGraphicsPushContext(ctx);
         if (paint.style === Style.FILL) {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
         } else if (paint.style === Style.STROKE) {
@@ -1746,47 +1868,21 @@ export class Canvas implements ICanvas {
         } else {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
         }
-        nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety), attribs);
-        UIGraphicsPopContext();
-
-        // let rect: any;
-        // const boundingBox = CTFontGetBoundingBox(paint.getUIFont());
-        // if (paint.align === Align.LEFT) {
-        //     // rect = CGContextGetClipBoundingBox(ctx)
-        //     rect = CGContextGetClipBoundingBox(ctx)
-        //     rect = CGRectMake(0,0, rect.size.width, y + boundingBox.size.height)
-        //     // rect = CGRectMake(0, 0, layout.toDevicePixels(this.getWidth()) * 2, layout.toDevicePixels(this.getHeight()) * 2);
-        // } else {
-        //     rect = CGContextGetClipBoundingBox(ctx)
-        //     // rect = CGRectMake(0, 0, x, y);
-        // }
-        // const textSize =  attrString.boundingRectWithSizeOptionsContext(CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE), 0, null).size;
-        // const framesetter = CTFramesetterCreateWithAttributedString(attrString);
-        // // Create the Core Text frame using our current view rect bounds.
-        // const path = UIBezierPath.bezierPathWithRect(rect);
-        // // const path = CGPathCreateMutable();
-        // CGPathAddRect(path, null, CGRectMake(rect.origin.x, rect.origin.y-(rect.size.height-textSize.height)/2, rect.size.width, rect.size.height));
-        // const frame = CTFramesetterCreateFrame(framesetter, __CFRangeMake(0, 0), path.CGPath, null);
-
-        // // CGContextSetTextPosition(ctx, x, y);
-        // CTFrameDraw(frame, ctx);
-
-        // CFRelease(displayLine);
-        // NSString.stringWithUTF8String(text).drawAtPointWithFont(CGPointMake(x, y), paint.getUIFont());
-        // const fontSize = ((paint && paint.font) || this._paint.font).fontSize || 20;
-        // CGContextShowTextAtPoint(ctx, x, y, text, text.length);
-        // UIGraphicsGetCurrentContext();
+        // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety), attribs);
+        // UIGraphicsPopContext();
+        CGContextShowTextAtPoint(ctx, offsetx, offsety, text, text.length);
     }
     @paint
     drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
         const ctx = this.ctx;
-        let bPath: UIBezierPath;
+        let bPath = path.getOrCreateBPath();
         if (hOffset !== 0 || vOffset !== 0) {
-            const offsetpath = new Path();
-            path.offset(hOffset, vOffset, offsetpath);
-            bPath = UIBezierPath.bezierPathWithCGPath(offsetpath._path);
-        } else {
-            bPath = UIBezierPath.bezierPathWithCGPath(path._path);
+            bPath.applyTransform(CGAffineTransformMakeTranslation(hOffset, vOffset));
+            // const offsetpath = new Path();
+            // path.offset(hOffset, vOffset, offsetpath);
+            // bPath = UIBezierPath.bezierPathWithCGPath(offsetpath._path);
+            // } else {
+            // bPath =path.getOrCreateBPath();
         }
         if (paint.style === Style.FILL) {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
@@ -1796,10 +1892,9 @@ export class Canvas implements ICanvas {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
         }
         const attribs = paint.getDrawTextAttribs();
-
         const fontStr = NSAttributedString.alloc().initWithStringAttributes(text, attribs);
         UIGraphicsPushContext(ctx);
-        (bPath as any).drawAttributedString(fontStr);
+        bPath.drawAttributedString(fontStr);
         UIGraphicsPopContext();
     }
     drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: IPaint): void {
@@ -1843,19 +1938,7 @@ export class UICustomCanvasView extends UIView {
         view._owner = owner;
         return view;
     }
-    // didMoveToWindow() {
-    // this.contentScaleFactor = 1;
-    // this.layer.contentsScale = 1;
-    // }
-    // setSize(width, height) {
-    //     if (width !== this.bounds.size.width || height !== this.bounds.size.height) {
-    //         if (this._cgContext) {
-    //             this._cgContext.setWidthHeight(width, height);
-    //         }
-    //         this.bounds = CGRectMake(0, 0, width, height);
-    //         console.log('resizing now!', width, height);
-    //     }
-    // }
+
     drawRect(dirtyRect) {
         // only used to trigger drawLayer
     }
@@ -1896,7 +1979,6 @@ export class CanvasView extends CanvasBase {
     }
     _onSizeChanged() {
         super._onSizeChanged();
-        console.log('_onSizeChanged', this.getMeasuredWidth(), this.getMeasuredHeight());
         this.onSizeChanged(layout.toDeviceIndependentPixels(this.getMeasuredWidth()), layout.toDeviceIndependentPixels(this.getMeasuredHeight()), -1, -1);
     }
     redraw() {

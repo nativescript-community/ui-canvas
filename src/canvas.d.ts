@@ -98,7 +98,7 @@ export class Canvas {
     translate(dx: number, dy: number): void;
     skew(sx: number, sy: number): void;
     scale(sx: number, sy: number): void;
-    // isHardwareAccelerated(): boolean;
+    concat(mat: Matrix);
 
     getClipBounds(): Rect;
     getHeight(): number;
@@ -133,8 +133,8 @@ export class Canvas {
     // saveLayer(param0: number, param1: number, param2: number, param3: number, param4: android.graphics.Paint, param5: number): number;
     drawPoints(pts: number[], paint: Paint): void;
     drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void;
-    drawLines(pts: number[], offset: number, count: number, paint: Paint): void;
-    drawLines(pts: number[], paint: Paint): void;
+    drawLines(pts: number[], offset: number, count: number, paint: Paint, mat?:Matrix): void;
+    drawLines(pts: number[], paint: Paint, mat?:Matrix): void;
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void;
 
     drawArc(rect: Rect, startAngle: number, sweepAngle: number, useCenter: boolean, paint: Paint): void;

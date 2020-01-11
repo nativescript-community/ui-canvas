@@ -24,6 +24,13 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 
 @interface UIBezierPath (Elements)
 
++ (void) drawLineSegments: (CGFloat *)points count:(NSUInteger)count inContext:(CGContextRef)context withTransform:(CGAffineTransform)transform;
+- (void) setLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close;
+- (void) addLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close;
+- (void) setCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close;
+- (void) addCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close;
++ (void) addLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path;
++ (void) addCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path;
 @property (nonatomic, readonly) NSArray *elements;
 @property (nonatomic, readonly) NSArray *subpaths;
 

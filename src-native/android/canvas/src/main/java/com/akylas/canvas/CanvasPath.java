@@ -26,10 +26,9 @@ public class CanvasPath extends android.graphics.Path {
    public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length, boolean close) {
        final int l = length / 2;
 
-       Log.d("CanvasPath", "addLines " + l + " " + points[0] + " " + points[1]);
        moveTo(points[0], points[1]);
-       for (int i = 1; i < l; i++) {
-           lineTo(points[2 * i], points[2 * i + 1]);
+       for (int i = 2; i < l; i+=2) {
+           lineTo(points[i], points[i + 1]);
        }
        if (close) {
            close();
@@ -57,9 +56,8 @@ public class CanvasPath extends android.graphics.Path {
    public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int length, boolean close) {
        final int l = (length - 2) / 6;
        moveTo(points[0], points[1]);
-       Log.d("CanvasPath", "addCubicLines " + length + " " + points[0] + " " + points[1]);
-       for (int i = 0; i < l; i++) {
-           cubicTo(points[2 + 6 * i], points[2 + 6 * i + 1], points[2 + 6 * i + 2], points[2 + 6 * i + 3], points[2 + 6 * i + 4], points[2 + 6 * i + 5]);
+       for (int i = 2; i < l; i+=6) {
+           cubicTo(points[i], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5]);
        }
        if (close) {
            close();

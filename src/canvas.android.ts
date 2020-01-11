@@ -195,6 +195,11 @@ function initCanvasClass() {
         }
         public drawLines(...params) {
             params[0] = arrayoNativeArray(params[0]);
+            const last = params[params.length - 1];
+            if (last instanceof android.graphics.Matrix) {
+                (last as android.graphics.Matrix).mapPoints(params[0]);
+                params.pop();
+            }
             // console.log('drawLines', params);
             return super.drawLines.apply(this, params);
         }
@@ -229,25 +234,25 @@ function initPaintClass() {
         }
         get font() {
             if (!this.fontInternal) {
-                 this.fontInternal = Font.default;
-                }
+                this.fontInternal = Font.default;
+            }
             return this.fontInternal;
         }
         setTypeface(font: Font | android.graphics.Typeface): any {
             if (font instanceof Font) {
                 this.fontInternal = font;
             } else {
-                this.fontInternal['_typeface'] = font as android.graphics.Typeface
+                this.fontInternal['_typeface'] = font as android.graphics.Typeface;
             }
             super.setTypeface(this.font.getAndroidTypeface());
-            return this.fontInternal
+            return this.fontInternal;
             //     let currentFont = this.fontInternal;
             // if (!currentFont || currentFont.fontFamily !== newValue) {
             //     const newFont = currentFont.withFontFamily(newValue);
             //     target.fontInternal = Font.equals(Font.default, newFont) ? unsetValue : newFont;
             // }
         }
-        setFontFamily(familyName:string) {
+        setFontFamily(familyName: string) {
             this.fontInternal = this.font.withFontFamily(familyName);
             super.setTypeface(this.font.getAndroidTypeface());
         }
@@ -286,7 +291,7 @@ function initPaintClass() {
             // const maximumSize = CGSizeMake(9999, 9999);
             // const font = this.getTypeface();
             // const fontMetrics = this.getFontMetrics();
-    // console.log('fontMetrics', fontMetrics.ascent, fontMetrics.bottom, fontMetrics.descent, fontMetrics.leading, fontMetrics.top);
+            // console.log('fontMetrics', fontMetrics.ascent, fontMetrics.bottom, fontMetrics.descent, fontMetrics.leading, fontMetrics.top);
             // console.log('getTextBounds', text, font.toString());
             super.getTextBounds(text, index, bounds, rect);
         }
@@ -331,7 +336,7 @@ function initPathClass() {
     if (!Path) {
         class PathImpl extends com.akylas.canvas.CanvasPath {
             constructor(path?: com.akylas.canvas.CanvasPath) {
-                path ? super(path) : super()
+                path ? super(path) : super();
             }
 
             addLines(points: number[], length?: number, close?: boolean) {
@@ -393,6 +398,9 @@ class CanvasWrapper implements ICanvas {
     clear() {
         // this.canvas.clear();
     }
+     concat(mat: android.graphics.Matrix) {
+        return this.canvas.concat(mat);
+     }
     clipOutRect(...params) {
         return this.canvas.clipOutRect.apply(this.canvas, params);
     }
@@ -439,6 +447,11 @@ class CanvasWrapper implements ICanvas {
     }
     drawLines(...params) {
         params[0] = arrayoNativeArray(params[0]);
+        const last = params[params.length - 1];
+        if (last instanceof android.graphics.Matrix) {
+            (last as android.graphics.Matrix).mapPoints(params[0]);
+            params.pop();
+        }
         // console.log('drawLines', params);
         return this.canvas.drawLines.apply(this.canvas, params);
     }
@@ -611,7 +624,7 @@ class CanvasView extends CanvasBase {
     nativeViewProtected: android.view.View;
     createNativeView() {
         initAndroidCanvasViewClass();
-        const view =  new NativeCanvasView(this._context, this);
+        const view = new NativeCanvasView(this._context, this);
         view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         return view;
     }
@@ -644,23 +657,4 @@ export function releaseImage(image: ImageSource) {
 }
 
 initClasses();
-export {
-    Canvas,
-    CanvasView,
-    Cap,
-    Direction,
-    DrawFilter,
-    FillType,
-    Join,
-    LinearGradient,
-    Matrix,
-    Op,
-    PathEffect,
-    RadialGradient,
-    Rect,
-    RectF,
-    Style,
-    TileMode,
-    FontMetrics,
-    Align
-};
+export { Canvas, CanvasView, Cap, Direction, DrawFilter, FillType, Join, LinearGradient, Matrix, Op, PathEffect, RadialGradient, Rect, RectF, Style, TileMode, FontMetrics, Align };

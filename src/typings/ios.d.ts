@@ -1,5 +1,14 @@
 declare namespace UIBezierPath {
 	 function fromStringWithFont(string: string, font: UIFont): UIBezierPath;
+	 function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context:any, _transform: CGAffineTransform)
+	 function addLinesCountCloseToPath(points, length, close, path)
+	 function addCubicLinesCountCloseToPath(points, length, close, path)
+}
+
+declare interface UIBezierPath {
+	drawAttributedString(string: NSAttributedString);
+	addLinesCountClose(pts: any, count: number, close:boolean)
+	addCubicLinesCountClose(pts: any, count: number, close:boolean)
 }
 
 declare function AddDashesToPath(path: UIBezierPath): void;
