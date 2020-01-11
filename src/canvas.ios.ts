@@ -1351,7 +1351,7 @@ export class Canvas implements ICanvas {
             offset = args[1];
             count = args[2];
         }
-        const startTime = Date.now();
+        // const startTime = Date.now();
 
         if (Array.isArray(pts)) {
             pts = FloatConstructor.from(pts);
