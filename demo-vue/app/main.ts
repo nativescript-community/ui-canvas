@@ -1,4 +1,4 @@
-import Vue, { registerElement } from 'nativescript-vue';
+import Vue from 'nativescript-vue';
 import Home from './views/Home.vue';
 
 import CanvasPlugin from 'nativescript-canvas/vue';
