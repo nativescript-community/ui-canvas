@@ -1361,7 +1361,7 @@ export class Canvas implements ICanvas {
 
         // const realCount = count / 2
         // const cgPoints = new FloatConstructor(realCount) as any;
-        console.log('drawPointsCountInContextWithTransform', Date.now() - startTime);
+        // console.log('drawPointsCountInContextWithTransform', Date.now() - startTime);
         // let cgPoint;
         // for (let index = offset; index <= realCount; index++) {
         //     cgPoint = CGPointMake(pts[2 * index], pts[2 * index + 1]);
