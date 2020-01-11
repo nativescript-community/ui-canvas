@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.13](https://github.com/Akylas/nativescript-canvas/compare/v2.1.12...v2.1.13) (2020-01-11)
+
+
+### Bug Fixes
+
+* fixed ios drawLines ([0720ea8](https://github.com/Akylas/nativescript-canvas/commit/0720ea8bcbbf7f600b8d31f55e101855de76ab5f))
+
+
+
+
+
 ## [2.1.12](https://github.com/Akylas/nativescript-canvas/compare/v2.1.11...v2.1.12) (2020-01-11)
 
 
