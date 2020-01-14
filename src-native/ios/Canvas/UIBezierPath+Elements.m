@@ -63,7 +63,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   return outputPath;
 }
 
-@implementation DrawingPath
+@implementation UIDrawingPath
 
 + (void) drawLineSegments: (CGFloat *)points count:(NSUInteger)count inContext:(CGContextRef)context withTransform:(CGAffineTransform)transform {
 //  NSDate *start = [NSDate date];

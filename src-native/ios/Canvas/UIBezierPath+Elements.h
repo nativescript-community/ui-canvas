@@ -22,7 +22,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
  
  */
 
-@interface DrawingPath  : NSObject
+@interface UIDrawingPath  : NSObject
 + (void) drawLineSegments: (CGFloat *)points count:(NSUInteger)count inContext:(CGContextRef)context withTransform:(CGAffineTransform)transform;
 
 @end

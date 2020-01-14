@@ -194,7 +194,7 @@ void DrawWrappedStringInRect(NSString *string, CGRect rect, NSString *fontFace, 
 }
 
 
-@implementation DrawingText
+@implementation UIDrawingText
 
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y font:(UIFont*)font color:(UIColor*)color{
   DrawStringAtPos(string, x, y, font, color);

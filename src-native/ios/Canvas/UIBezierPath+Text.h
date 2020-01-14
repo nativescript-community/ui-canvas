@@ -11,4 +11,5 @@
 @interface UIBezierPath (TextUtilities)
 + (UIBezierPath*) fromString: (NSString *) string withFont:(UIFont *) font;
 - (void) drawAttributedString: (NSAttributedString *) string;
+- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes;
 @end

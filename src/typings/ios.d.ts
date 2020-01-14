@@ -4,18 +4,19 @@ declare namespace UIBezierPath {
 	 function addCubicLinesCountCloseToPath(points, length, close, path)
 }
 
-declare namespace DrawingPath {
+declare namespace UIDrawingPath {
 	function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context:any, _transform: CGAffineTransform)
 }
-declare namespace DrawingText{
+declare namespace UIDrawingText{
 	function drawStringXYFontColor(text: string, x: number, y:number, font: UIFont, color: UIColor)
 	function drawStringXYWithAttributes(text: string, x: number, y:number, attributes: NSDictionary<any, any>)
-	function getTextBounds(text: string, start: number, end: number,attributes:NSDictionary<any, any>): CGRect;
-	function measureText(text: string, start: number, end: number,attributes:NSDictionary<any, any>): number;
+	function getTextBoundsFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): CGRect;
+	function measureTextFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): number;
 }
 
 declare interface UIBezierPath {
 	drawAttributedString(string: NSAttributedString);
+	drawStringWithAttributes(string: string, attributes:NSDictionary<any, any>);
 	addLinesCountClose(pts: any, count: number, close:boolean)
 	addCubicLinesCountClose(pts: any, count: number, close:boolean)
 }

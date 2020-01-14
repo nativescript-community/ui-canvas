@@ -25,7 +25,7 @@ void DrawStringCenteredInRect(NSString *string, UIFont *font, CGRect rect);
 UIFont *FontForWrappedString(NSString *string, NSString *fontFace, CGRect rect, CGFloat tolerance);
 
 
-@interface DrawingText  : NSObject
+@interface UIDrawingText  : NSObject
 
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y font:(UIFont*)font color:(UIColor*)color;
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes;

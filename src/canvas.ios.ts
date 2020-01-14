@@ -928,12 +928,12 @@ export class Paint implements IPaint {
         if (end === undefined) {
             end = text.length;
         }
-        return DrawingText.measureText(text, start, end, this.getDrawTextAttribs());
+        return UIDrawingText.measureTextFromToAttributes(text, start, end, this.getDrawTextAttribs());
         // const result = NSString.stringWithString(text.slice(start, end)).sizeWithFont(this.getUIFont());
         // return result.width;
     }
     public getTextBounds(text: string, start: number, end: number, rect: Rect): void {
-        const cgrect =  DrawingText.getTextBounds(text, start, end, this.getDrawTextAttribs());
+        const cgrect =  UIDrawingText.getTextBoundsFromToAttributes(text, start, end, this.getDrawTextAttribs());
         // const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
         //     CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
         //     NSStringDrawingOptions.UsesDeviceMetrics,
@@ -1378,7 +1378,7 @@ export class Canvas implements ICanvas {
             pts = FloatConstructor.from(pts);
         }
 
-        DrawingPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
+        UIDrawingPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
 
         // const realCount = count / 2
         // const cgPoints = new FloatConstructor(realCount) as any;
@@ -1892,7 +1892,7 @@ export class Canvas implements ICanvas {
         }  
         const font =  paint.getUIFont();
         const color = paint.getUIColor();
-        DrawingText.drawStringXYFontColor(text, offsetx, offsety -font.ascender, font, color);
+        UIDrawingText.drawStringXYFontColor(text, offsetx, offsety -font.ascender, font, color);
         // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety -paint.getUIFont().ascender), attribs);
         // UIGraphicsPopContext();
         // console.log('draw text', text, offsetx, offsety , text, Date.now()-startTime);
@@ -1917,10 +1917,8 @@ export class Canvas implements ICanvas {
         } else {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
         }
-        const attribs = paint.getDrawTextAttribs();
-        const fontStr = NSAttributedString.alloc().initWithStringAttributes(text, attribs);
         UIGraphicsPushContext(ctx);
-        bPath.drawAttributedString(fontStr);
+        bPath.drawStringWithAttributes(text, paint.getDrawTextAttribs());
         UIGraphicsPopContext();
     }
     drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: IPaint): void {

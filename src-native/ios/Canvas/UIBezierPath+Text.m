@@ -11,6 +11,10 @@
 + (UIBezierPath*) fromString: (NSString *) string withFont:(UIFont *) font {
   return BezierPathFromString(string, font);
 }
+
+- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes {
+  [self drawAttributedString:[[NSAttributedString alloc] initWithString:string attributes:attributes]];
+}
 - (void) drawAttributedString: (NSAttributedString *) string
 {
     if (!string) return;
