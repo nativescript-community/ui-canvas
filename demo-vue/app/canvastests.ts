@@ -36,7 +36,6 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     textPaint.color = new Color('red');
     textPaint.setStrokeWidth(3);
     textPaint.setAntiAlias(true);
-    textPaint.setFontFamily('Open Sans,OpenSans-Regular');
 
     const width = canvas.getWidth();
     const height = canvas.getHeight();
@@ -115,6 +114,7 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     // textPaint.setShadowLayer(30, 0, 2, 'blue');
     paintLine.setPathEffect(new DashPathEffect([6, 4], 0));
     canvas.drawLines([width - padding - 100, 100, width - padding, 100], paintLine);
+    // textPaint.setFontFamily('Open Sans,OpenSans-Regular');
     canvas.drawText('Stroke Text', width - padding, 100, textPaint);
     // textPaint.clearShadowLayer();
     canvas.restore();
