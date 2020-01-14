@@ -998,7 +998,6 @@ export class Paint implements IPaint {
     get font() {
         if (!this._font) {
             this._font = Font.default;
-            console.log('creating default font ', Font.default);
         }
         return this._font;
     }
