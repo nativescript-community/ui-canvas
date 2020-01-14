@@ -1943,10 +1943,10 @@ export class Canvas implements ICanvas {
 }
 
 export function createImage(options: { width: number; height: number; scale?: number }) {
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(options.width, options.height), false, options.scale);
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(options.width, options.height), false, options.scale || 0);
     const output = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return new ImageSource(output);
+    return output ? new ImageSource(output) : null;
 }
 export function releaseImage(image: ImageSource) {}
 
