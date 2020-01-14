@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.17](https://github.com/Akylas/nativescript-canvas/compare/v2.1.16...v2.1.17) (2020-01-14)
+
+
+### Bug Fixes
+
+* ccw support on ios ([6be1e69](https://github.com/Akylas/nativescript-canvas/commit/6be1e69b4951190af7340185d0ba7ac5248f9178))
+* fixed createImage on iOS ([0d97c34](https://github.com/Akylas/nativescript-canvas/commit/0d97c3481f6f40ce46046b296bf831271a5515e1))
+* typings fix ([e50aeb5](https://github.com/Akylas/nativescript-canvas/commit/e50aeb52dab22d1c07255c62bbf020c17d4976b7))
+
+
+
+
+
 ## [2.1.16](https://github.com/Akylas/nativescript-canvas/compare/v2.1.15...v2.1.16) (2020-01-14)
 
 
