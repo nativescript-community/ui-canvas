@@ -782,7 +782,13 @@ export class Path implements IPath {
         // CGPathCloseSubpath(this._path);
     }
     addCircle(x: number, y: number, r: number, d: Direction): void {
-        CGPathAddEllipseInRect(this._path, null, CGRectMake(x - r, y - r, 2 * r, 2 * r));
+        if (d === Direction.CW) {
+            CGPathAddEllipseInRect(this._path, null, CGRectMake(x - r, y - r, 2 * r, 2 * r));
+        } else {
+            let t = CGAffineTransformMakeScale(-1, 1);
+            CGPathAddEllipseInRect(this._path, new interop.Reference(t), CGRectMake(x - r, y - r, 2 * r, 2 * r));
+            
+        }
     }
     rewind(): void {
         this.reset();
