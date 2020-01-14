@@ -2014,14 +2014,14 @@ export class CanvasView extends CanvasBase {
         if (this.nativeViewProtected) {
             const layer = this.nativeViewProtected.layer;
             layer.setNeedsDisplay();
-            layer.displayIfNeeded();
+            // layer.displayIfNeeded();
         }
     }
     invalidate() {
         if (this.nativeViewProtected) {
             const layer = this.nativeViewProtected.layer;
             layer.setNeedsDisplay();
-            layer.displayIfNeeded();
+            // layer.displayIfNeeded();
         }
     }
 }
