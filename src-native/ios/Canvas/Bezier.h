@@ -16,3 +16,4 @@
 #import "BezierFunctions.h"
 #import "UIBezierPath+Elements.h"
 #import "UIBezierPath+Text.h"
+#import "Drawing-Text.h"

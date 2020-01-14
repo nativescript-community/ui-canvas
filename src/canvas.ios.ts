@@ -71,8 +71,11 @@ const FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array :
 //     // return edited descriptor as opposed to overwriting the descriptor
 //     return descriptor;
 // }
+interface PaintDecoratorOptions {
+    withFont?: boolean;
+}
 
-function paint(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+function paintPropertyGenerator(target: Object, key: string, descriptor: TypedPropertyDescriptor<any>, options: PaintDecoratorOptions) {
     const originalMethod = descriptor.value as Function; // save a reference to the original method
 
     // NOTE: Do not use arrow syntax here. Use a function expression in
@@ -82,24 +85,38 @@ function paint(target: Object, propertyKey: string, descriptor: TypedPropertyDes
         let paint = args[index];
         let actualPaint;
         if (paint instanceof Paint) {
-            actualPaint = this.startApplyPaint(paint, true);
+            actualPaint = (this as Canvas).startApplyPaint(paint, options.withFont === true);
             args[index] = actualPaint;
         } else {
             index = args.length - 2;
             paint = args[index];
             if (paint instanceof Paint) {
-                actualPaint = this.startApplyPaint(paint, true);
+                actualPaint = (this as Canvas).startApplyPaint(paint, options.withFont === true);
                 args[index] = actualPaint;
             } else {
-                actualPaint = this.startApplyPaint();
+                actualPaint = (this as Canvas).startApplyPaint();
             }
         }
         const result = originalMethod.apply(this, args);
-        this.finishApplyPaint(actualPaint);
+        (this as Canvas).finishApplyPaint(actualPaint);
         return result;
     };
 
     return descriptor;
+}
+function paint(target: any, k?, desc?: TypedPropertyDescriptor<any>): any;
+function paint(options: PaintDecoratorOptions): (target: any, k?, desc?: TypedPropertyDescriptor<any>) => any;
+function paint(...args) {
+    if (args.length === 1) {
+        /// this must be a factory
+        return function(target: any, key?: string, descriptor?: PropertyDescriptor) {
+            return paintPropertyGenerator(target, key, descriptor, args[0] || {});
+        };
+    } else {
+        const options = typeof args[1] === 'string' ? undefined : args[0];
+        const startIndex = !!options ? 1 : 0;
+        return paintPropertyGenerator(args[startIndex], args[startIndex + 1], args[args.length - 1], options || {});
+    }
 }
 
 export enum Style {
@@ -911,17 +928,20 @@ export class Paint implements IPaint {
         if (end === undefined) {
             end = text.length;
         }
-        const result = NSString.stringWithString(text.slice(start, end)).sizeWithFont(this.getUIFont());
-        return result.width;
+        return DrawingText.measureText(text, start, end, this.getDrawTextAttribs());
+        // const result = NSString.stringWithString(text.slice(start, end)).sizeWithFont(this.getUIFont());
+        // return result.width;
     }
     public getTextBounds(text: string, start: number, end: number, rect: Rect): void {
-        const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
-            CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
-            NSStringDrawingOptions.UsesDeviceMetrics,
-            this.getDrawTextAttribs(),
-            null
-        );
-        rect.cgRect = CGRectMake(0, -cgrect.size.height, cgrect.size.width, cgrect.size.height);
+        const cgrect =  DrawingText.getTextBounds(text, start, end, this.getDrawTextAttribs());
+        // const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
+        //     CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
+        //     NSStringDrawingOptions.UsesDeviceMetrics,
+        //     this.getDrawTextAttribs(),
+        //     null
+        // );
+        // rect.cgRect = CGRectMake(0, -cgrect.size.height, cgrect.size.width, cgrect.size.height);
+        rect.cgRect = cgrect;
     }
     public isAntiAlias(): boolean {
         return this.antiAlias;
@@ -978,6 +998,7 @@ export class Paint implements IPaint {
     get font() {
         if (!this._font) {
             this._font = Font.default;
+            console.log('creating default font ', Font.default);
         }
         return this._font;
     }
@@ -988,7 +1009,7 @@ export class Paint implements IPaint {
     }
 
     getUIFont(): UIFont {
-        return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.smallSystemFontSize));
+        return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
         return (this.color as Color).ios as UIColor;
@@ -1094,8 +1115,8 @@ export class Paint implements IPaint {
     getDrawTextAttribs() {
         if (!this._textAttribs) {
             this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys(
-                [this.getUIFont(), kCFBooleanTrue, this.getUIColor()],
-                [NSFontAttributeName, kCTForegroundColorFromContextAttributeName, NSForegroundColorAttributeName]
+                [this.getUIFont(), this.getUIColor()],
+                [NSFontAttributeName, NSForegroundColorAttributeName]
             );
             if (this.align === Align.CENTER) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
@@ -1357,7 +1378,7 @@ export class Canvas implements ICanvas {
             pts = FloatConstructor.from(pts);
         }
 
-        UIBezierPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
+        DrawingPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
 
         // const realCount = count / 2
         // const cgPoints = new FloatConstructor(realCount) as any;
@@ -1483,7 +1504,7 @@ export class Canvas implements ICanvas {
         // CGContextFillRect(this._cgContext);
     }
 
-    startApplyPaint(paint: Paint, withFont = false) {
+    startApplyPaint(paint?: Paint, withFont = false) {
         this.save();
         if (!paint) {
             paint = this._paint;
@@ -1542,13 +1563,14 @@ export class Canvas implements ICanvas {
             CGContextSetFillColorWithColor(ctx, color.CGColor);
         }
 
-        if (withFont && paint.font) {
-            const font = paint.getUIFont();
-            CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingMacRoman);
-            // CGContextSetCharacterSpacing(ctx, 1.7);
-            const transform = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
-            CGContextSetTextMatrix(ctx, transform);
-        }
+        // if (withFont && paint.font) {
+        //     const font = paint.getUIFont();
+        //     console.log('setting context font', font);
+        //     CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingFontSpecific);
+        //     // CGContextSetCharacterSpacing(ctx, 1.7);
+        //     const transform = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
+        //     CGContextSetTextMatrix(ctx, transform);
+        // }
         return paint;
     }
     finishApplyPaint(paint) {
@@ -1829,7 +1851,7 @@ export class Canvas implements ICanvas {
     }
     @paint
     drawText(...params) {
-        const startTime = Date.now();
+        // const startTime = Date.now();
         // drawText(text: string, start: number, end: number, x: number, y: number, paint: Paint): void;
         // drawText(char: any[], index: number, count: number, x: number, y: number, paint: Paint): void;
         // drawText(text: string, x: number, y: number, paint: Paint): void;
@@ -1848,7 +1870,7 @@ export class Canvas implements ICanvas {
             y = params[2];
         }
         // const attribs = paint.getDrawTextAttribs();
-        // const nsstring = NSString.stringWithString(text.replace(/\n/g, ' '));
+        // const nsstring = NSString.stringWithUTF8String(text);
         // const attrString = NSAttributedString.alloc().initWithStringAttributes(text.replace(/\n/g, ' '), attribs);
         let offsetx = x;
         let offsety = y;
@@ -1860,17 +1882,21 @@ export class Canvas implements ICanvas {
                 offsetx -= width / 2;
             }
         }
-        // UIGraphicsPushContext(ctx);
+        UIGraphicsPushContext(ctx);
         if (paint.style === Style.FILL) {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
         } else if (paint.style === Style.STROKE) {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
         } else {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
-        }
-        // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety), attribs);
+        }  
+        const font =  paint.getUIFont();
+        const color = paint.getUIColor();
+        DrawingText.drawStringXYFontColor(text, offsetx, offsety -font.ascender, font, color);
+        // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety -paint.getUIFont().ascender), attribs);
         // UIGraphicsPopContext();
-        CGContextShowTextAtPoint(ctx, offsetx, offsety, text, text.length);
+        // console.log('draw text', text, offsetx, offsety , text, Date.now()-startTime);
+        // CGContextShowTextAtPoint(ctx, offsetx, offsety, text, text.length);
     }
     @paint
     drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void {

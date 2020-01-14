@@ -63,6 +63,37 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   return outputPath;
 }
 
+@implementation DrawingPath
+
++ (void) drawLineSegments: (CGFloat *)points count:(NSUInteger)count inContext:(CGContextRef)context withTransform:(CGAffineTransform)transform {
+//  NSDate *start = [NSDate date];
+  NSUInteger realCount = count - 2;
+  CGPoint p [realCount];
+  CGPoint cur;
+  CGPoint prev;
+  BOOL isIdentity =CGAffineTransformIsIdentity(transform);
+  for (int i = 0; i < realCount; i+=2)
+  {
+    cur =CGPointMake(points[i + 2], points[i + 3]);
+    if (!isIdentity) {
+      cur = CGPointApplyAffineTransform(cur, transform);
+    }
+    if (i == 0) {
+      prev =CGPointMake(points[i], points[i + 1]);
+      if (!isIdentity) {
+        prev = CGPointApplyAffineTransform(cur, transform);
+      }
+    }
+    p[i] =prev;
+    p[i+1]= cur;
+    prev = cur;
+  }
+  CGContextStrokeLineSegments(context, p, realCount);
+//  NSLog(@"drawLineSegments %lu %0.f", (unsigned long)count, round(-[start timeIntervalSinceNow] * 1000));
+}
+
+@end
+
 #pragma mark - Bezier Elements Category -
 
 @implementation UIBezierPath (Elements)
@@ -121,34 +152,6 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   if (close) {
     CGPathCloseSubpath(path);
   }
-}
-
-
-+ (void) drawLineSegments: (CGFloat *)points count:(NSUInteger)count inContext:(CGContextRef)context withTransform:(CGAffineTransform)transform {
-//  NSDate *start = [NSDate date];
-  NSUInteger realCount = count - 2;
-  CGPoint p [realCount];
-  CGPoint cur;
-  CGPoint prev;
-  BOOL isIdentity =CGAffineTransformIsIdentity(transform);
-  for (int i = 0; i < realCount; i+=2)
-  {
-    cur =CGPointMake(points[i + 2], points[i + 3]);
-    if (!isIdentity) {
-      cur = CGPointApplyAffineTransform(cur, transform);
-    }
-    if (i == 0) {
-      prev =CGPointMake(points[i], points[i + 1]);
-      if (!isIdentity) {
-        prev = CGPointApplyAffineTransform(cur, transform);
-      }
-    }
-    p[i] =prev;
-    p[i+1]= cur;
-    prev = cur;
-  }
-  CGContextStrokeLineSegments(context, p, realCount);
-//  NSLog(@"drawLineSegments %lu %0.f", (unsigned long)count, round(-[start timeIntervalSinceNow] * 1000));
 }
 
 // Convert one element to BezierElement and save to array

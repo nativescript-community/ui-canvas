@@ -31,6 +31,25 @@ void DrawStringInRect(NSString *string, CGRect rect, UIFont *font, NSTextAlignme
     [attributedString drawInRect:outputRect];
 }
 
+void DrawStringAtPos(NSString *string, CGFloat x, CGFloat y, UIFont *font, UIColor *color)
+{
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.lineBreakMode = NSLineBreakByWordWrapping;
+    attributes[NSFontAttributeName] = font;
+    attributes[NSForegroundColorAttributeName] = color;
+    attributes[NSParagraphStyleAttributeName] = style;
+  
+    DrawStringAtPosWithAttrs(string, x, y, attributes);
+}
+void DrawStringAtPosWithAttrs(NSString *string, CGFloat x, CGFloat y, NSDictionary* attributes) {
+  CGContextRef context = UIGraphicsGetCurrentContext();
+  if (context == NULL) return;
+  UIGraphicsPushContext(context);
+  [string drawAtPoint:CGPointMake(x, y) withAttributes:attributes];
+  UIGraphicsPopContext();
+}
+
 #pragma mark - Unwrapped
 UIFont *FontForUnwrappedString(NSString *string, NSString *fontFace, CGRect rect)
 {
@@ -173,3 +192,24 @@ void DrawWrappedStringInRect(NSString *string, CGRect rect, NSString *fontFace, 
     dest.size.height = CGFLOAT_MAX;
     [s drawInRect:dest];
 }
+
+
+@implementation DrawingText
+
++ (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y font:(UIFont*)font color:(UIColor*)color{
+  DrawStringAtPos(string, x, y, font, color);
+}
++ (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes{
+  DrawStringAtPosWithAttrs(string, x, y, attributes);
+}
+
++ (CGRect)getTextBounds:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes {
+  
+  CGRect cgrect = [[text substringWithRange:NSMakeRange(from, to - from)] boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesDeviceMetrics attributes:attributes context:NULL];
+  return CGRectMake(0, -cgrect.size.height, cgrect.size.width, cgrect.size.height);
+}
++ (CGFloat)measureText:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes {
+  return [text sizeWithAttributes:attributes].width;
+  
+}
+@end

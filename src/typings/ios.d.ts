@@ -1,8 +1,15 @@
 declare namespace UIBezierPath {
 	 function fromStringWithFont(string: string, font: UIFont): UIBezierPath;
-	 function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context:any, _transform: CGAffineTransform)
 	 function addLinesCountCloseToPath(points, length, close, path)
 	 function addCubicLinesCountCloseToPath(points, length, close, path)
+}
+
+declare namespace DrawingPath {
+	function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context:any, _transform: CGAffineTransform)
+}
+declare namespace DrawingText{
+	function drawStringXYFontColor(text: string, x: number, y:number, font: UIFont, color: UIColor)
+	function drawStringXYWithAttributes(text: string, x: number, y:number, attributes: NSDictionary<any, any>)
 }
 
 declare interface UIBezierPath {
