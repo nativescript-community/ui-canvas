@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.18](https://github.com/Akylas/nativescript-canvas/compare/v2.1.17...v2.1.18) (2020-01-14)
+
+
+### Bug Fixes
+
+* dont call displayIfNeeded(testing) ([9548308](https://github.com/Akylas/nativescript-canvas/commit/95483085591df46bee792ebcfea1b8dd37a6efa8))
+
+
+
+
+
 ## [2.1.17](https://github.com/Akylas/nativescript-canvas/compare/v2.1.16...v2.1.17) (2020-01-14)
 
 
