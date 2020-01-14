@@ -10,6 +10,8 @@ declare namespace DrawingPath {
 declare namespace DrawingText{
 	function drawStringXYFontColor(text: string, x: number, y:number, font: UIFont, color: UIColor)
 	function drawStringXYWithAttributes(text: string, x: number, y:number, attributes: NSDictionary<any, any>)
+	function getTextBounds(text: string, start: number, end: number,attributes:NSDictionary<any, any>): CGRect;
+	function measureText(text: string, start: number, end: number,attributes:NSDictionary<any, any>): number;
 }
 
 declare interface UIBezierPath {
