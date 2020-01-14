@@ -11,11 +11,13 @@ export function parseJoin(value: string | number): Join;
 
 export function parseDashEffect(value: string): DashPathEffect;
 
+type ColorParam = Color | number | string
+
 // export * from './canvas.android'
 
 export class Paint {
-    color: Color | number | string;
-    setColor(color: Color | number | string);
+    color: ColorParam;
+    setColor(color: ColorParam);
 
     strokeWidth: number;
     strokeCap: Cap;
@@ -40,7 +42,7 @@ export class Paint {
     public setStrokeJoin(value: Join): void;
     // public getTextWidths(param0: native.Array<string>, param1: number, param2: number, param3: native.Array<number>): number;
     public getStrokeJoin(): Join;
-    public getColor(): Color;
+    public getColor(): ColorParam;
     public getShader(): any;
     public measureText(text: string, start: number, end: number): number;
     public setTypeface(newValue: Font): Font;
@@ -64,7 +66,7 @@ export class Paint {
     public setFontFamily(familyName: string);
     public setShader(value: any): any;
     // public descent(): number;
-    public setShadowLayer(radius: number, dx: number, dy: number, color: number | string | Color): void;
+    public setShadowLayer(radius: number, dx: number, dy: number, color: ColorParam): void;
     public clearShadowLayer();
     // public getFontSpacing(): number;
 }
@@ -111,7 +113,7 @@ export class Canvas {
 
     drawARGB(a: number, r: number, g: number, b: number): void;
     drawRGB(r: number, g: number, b: number): void;
-    drawColor(color: number | Color): void;
+    drawColor(color: ColorParam): void;
 
     drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, src: Rect, dest: Rect, paint: Paint): void;
     drawBitmap(bitmap: any /* android.graphics.Bitmap | UIImage | ImageSource */, x: number, y: number, paint: Paint): void;
