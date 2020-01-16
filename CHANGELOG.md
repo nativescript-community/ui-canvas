@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.19](https://github.com/Akylas/nativescript-canvas/compare/v2.1.18...v2.1.19) (2020-01-16)
+
+
+### Bug Fixes
+
+* clean up logs ([6bd764a](https://github.com/Akylas/nativescript-canvas/commit/6bd764a830e2b8357aebf1c302d046db09993f8c))
+
+
+
+
+
 ## [2.1.18](https://github.com/Akylas/nativescript-canvas/compare/v2.1.17...v2.1.18) (2020-01-14)
 
 
