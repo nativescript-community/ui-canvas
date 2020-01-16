@@ -343,7 +343,7 @@ function initPathClass() {
                 super.addLines(arrayoNativeArray(points), length, close);
             }
             setLines(points: number[], length?: number, close?: boolean) {
-                super.addLines(arrayoNativeArray(points), length, close);
+                super.setLines(arrayoNativeArray(points), length, close);
             }
             addCubicLines(points: number[], length?: number, close?: boolean) {
                 super.addCubicLines(arrayoNativeArray(points), length, close);
@@ -427,7 +427,6 @@ class CanvasWrapper implements ICanvas {
     }
     drawColor(color: number | Color | string): void {
         const actualColor = color instanceof Color ? color : new Color(color as any);
-        // console.log('drawColor', actualColor);
         return this.canvas.drawColor(actualColor.android);
     }
     drawCircle(...params) {
@@ -452,7 +451,7 @@ class CanvasWrapper implements ICanvas {
             (last as android.graphics.Matrix).mapPoints(params[0]);
             params.pop();
         }
-        // console.log('drawLines', params);
+        
         return this.canvas.drawLines.apply(this.canvas, params);
     }
     drawLine(...params) {
@@ -592,7 +591,6 @@ function initClasses() {
     initPathClass();
     initRadialGradientClass();
     initLinearGradientClass();
-    console.log('classes init done');
     Align = android.graphics.Paint.Align;
     Cap = android.graphics.Paint.Cap;
     Join = android.graphics.Paint.Join;

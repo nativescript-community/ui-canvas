@@ -77,19 +77,19 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
     cur =CGPointMake(points[i + 2], points[i + 3]);
     if (!isIdentity) {
       cur = CGPointApplyAffineTransform(cur, transform);
-    }
+  }
     if (i == 0) {
       prev =CGPointMake(points[i], points[i + 1]);
       if (!isIdentity) {
-        prev = CGPointApplyAffineTransform(cur, transform);
+        prev = CGPointApplyAffineTransform(prev, transform);
       }
     }
     p[i] =prev;
     p[i+1]= cur;
     prev = cur;
   }
+  for ( int i=0; i<realCount; ++i ) NSLog(@"%@", NSStringFromCGPoint(p[i]));
   CGContextStrokeLineSegments(context, p, realCount);
-//  NSLog(@"drawLineSegments %lu %0.f", (unsigned long)count, round(-[start timeIntervalSinceNow] * 1000));
 }
 
 @end

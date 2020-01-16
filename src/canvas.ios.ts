@@ -1382,7 +1382,6 @@ export class Canvas implements ICanvas {
         if (Array.isArray(pts)) {
             pts = FloatConstructor.from(pts);
         }
-
         UIDrawingPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
 
         // const realCount = count / 2
