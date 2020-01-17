@@ -398,9 +398,9 @@ class CanvasWrapper implements ICanvas {
     clear() {
         // this.canvas.clear();
     }
-     concat(mat: android.graphics.Matrix) {
+    concat(mat: android.graphics.Matrix) {
         return this.canvas.concat(mat);
-     }
+    }
     clipOutRect(...params) {
         return this.canvas.clipOutRect.apply(this.canvas, params);
     }
@@ -451,7 +451,7 @@ class CanvasWrapper implements ICanvas {
             (last as android.graphics.Matrix).mapPoints(params[0]);
             params.pop();
         }
-        
+
         return this.canvas.drawLines.apply(this.canvas, params);
     }
     drawLine(...params) {
@@ -555,10 +555,16 @@ function initAndroidCanvasViewClass() {
                     owner.onSizeChanged(layout.toDeviceIndependentPixels(w), layout.toDeviceIndependentPixels(h), oldw, oldh);
                 }
             }
+            frameRatePaint:IPaint
             onDraw(canvas: android.graphics.Canvas) {
                 const owner = this._owner && this._owner.get();
                 super.onDraw(canvas);
                 if (owner) {
+                    const drawFameRate = owner.drawFameRate;
+                    let startTime;
+                    if (drawFameRate) {
+                        startTime = Date.now();
+                    }
                     const scale = owner.density;
                     // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
                     canvas.setDensity(Math.round(scale * 160));
@@ -574,6 +580,16 @@ function initAndroidCanvasViewClass() {
                         }
                     }
                     owner.onDraw(this.augmentedCanvas);
+                    if (drawFameRate) {
+                        const end = Date.now();
+                        if (!this.frameRatePaint) {
+                            this.frameRatePaint = new Paint();
+                            this.frameRatePaint.color = 'blue';
+                            this.frameRatePaint.setTextSize(12);
+                            this.frameRatePaint.setTextSize(12);
+                        }
+                        this.augmentedCanvas.drawText(Math.round(1000 /(end-startTime))+'fps' ,0, 14, this.frameRatePaint);
+                    }
                 }
             }
         }

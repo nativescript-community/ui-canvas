@@ -221,6 +221,8 @@ export abstract class CanvasBase extends View {
     public cached = false;
     public density = DEFAULT_SCALE;
 
+    drawFameRate = false
+
     requestDrawShapes() {
         if (this.cached) {
             this.drawShapes();

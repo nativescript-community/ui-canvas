@@ -592,7 +592,6 @@ export class Path implements IPath {
         const currentPoint = this.getCurrentPoint();
         this.moveTo(dx + currentPoint.x, dy + currentPoint.y);
     }
-    @profile
     addLines(points: number[], length?: number, close?: boolean) {
         // const pts = args[0] as number[];
         if (points.length <= 0 || points.length % 2 !== 0) {
@@ -787,7 +786,6 @@ export class Path implements IPath {
         } else {
             let t = CGAffineTransformMakeScale(-1, 1);
             CGPathAddEllipseInRect(this._path, new interop.Reference(t), CGRectMake(x - r, y - r, 2 * r, 2 * r));
-            
         }
     }
     rewind(): void {
@@ -939,7 +937,7 @@ export class Paint implements IPaint {
         // return result.width;
     }
     public getTextBounds(text: string, start: number, end: number, rect: Rect): void {
-        const cgrect =  UIDrawingText.getTextBoundsFromToAttributes(text, start, end, this.getDrawTextAttribs());
+        const cgrect = UIDrawingText.getTextBoundsFromToAttributes(text, start, end, this.getDrawTextAttribs());
         // const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
         //     CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
         //     NSStringDrawingOptions.UsesDeviceMetrics,
@@ -1119,10 +1117,7 @@ export class Paint implements IPaint {
     _textAttribs: NSMutableDictionary<any, any>;
     getDrawTextAttribs() {
         if (!this._textAttribs) {
-            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys(
-                [this.getUIFont(), this.getUIColor()],
-                [NSFontAttributeName, NSForegroundColorAttributeName]
-            );
+            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont(), this.getUIColor()], [NSFontAttributeName, NSForegroundColorAttributeName]);
             if (this.align === Align.CENTER) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
                 paragraphStyle.alignment = NSTextAlignment.Center;
@@ -1746,7 +1741,6 @@ export class Canvas implements ICanvas {
         // }
 
         if (bPath) {
-            // console.log('_drawPath', !!path, !!paint.shader, !!paint.pathEffect, bPath.lineCapStyle, bPath.lineJoinStyle, bPath.shouldGroupAccessibilityChildren, bPath.usesEvenOddFillRule, bPath.miterLimit, bPath.flatness, bPath.lineWidth, bPath.currentPoint.x, bPath.currentPoint.y);
             bPath.lineWidth = paint.strokeWidth;
             bPath.lineCapStyle = paint.strokeCap as any;
             bPath.lineJoinStyle = paint.strokeJoin as any;
@@ -1893,10 +1887,10 @@ export class Canvas implements ICanvas {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
         } else {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
-        }  
-        const font =  paint.getUIFont();
+        }
+        const font = paint.getUIFont();
         const color = paint.getUIColor();
-        UIDrawingText.drawStringXYFontColor(text, offsetx, offsety -font.ascender, font, color);
+        UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
         // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety -paint.getUIFont().ascender), attribs);
         // UIGraphicsPopContext();
         // console.log('draw text', text, offsetx, offsety , text, Date.now()-startTime);
@@ -1961,20 +1955,23 @@ export class UICustomCanvasView extends UIView {
 
     public static initWithOwner(owner: WeakRef<CanvasView>): UICustomCanvasView {
         const view = UICustomCanvasView.new() as UICustomCanvasView;
-        view.contentMode = UIViewContentMode.Redraw;
-        view.opaque = false;
+        // view.contentMode = UIViewContentMode.Redraw;
+        // view.opaque = false;
         view._owner = owner;
         return view;
     }
 
     drawRect(dirtyRect) {
-        // only used to trigger drawLayer
-    }
-
-    drawLayerInContext(layer: CALayer, context: any) {
-        super.drawLayerInContext(layer, context);
+        let startTime = Date.now();
+        let context = UIGraphicsGetCurrentContext();
         const size = this.bounds.size;
         const owner = this._owner && this._owner.get();
+        if (!owner) {
+            return;
+        }
+        const drawFameRate = owner.drawFameRate;
+        if (drawFameRate) {
+        }
         if (!this._canvas) {
             this._canvas = new Canvas(0, 0);
         }
@@ -1994,7 +1991,19 @@ export class UICustomCanvasView extends UIView {
             }
         }
         owner.onDraw(this._canvas);
+        if (drawFameRate) {
+            const end = Date.now();
+            if (!this.frameRatePaint) {
+                this.frameRatePaint = new Paint();
+                this.frameRatePaint.color = 'blue';
+                this.frameRatePaint.setTextSize(12);
+                this.frameRatePaint.setTextSize(12);
+            }
+            this._canvas.drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint);
+        }
     }
+
+    frameRatePaint: Paint;
 }
 
 export class CanvasView extends CanvasBase {
@@ -2011,16 +2020,12 @@ export class CanvasView extends CanvasBase {
     }
     redraw() {
         if (this.nativeViewProtected) {
-            const layer = this.nativeViewProtected.layer;
-            layer.setNeedsDisplay();
-            // layer.displayIfNeeded();
+            this.nativeViewProtected.setNeedsDisplay();
         }
     }
     invalidate() {
         if (this.nativeViewProtected) {
-            const layer = this.nativeViewProtected.layer;
-            layer.setNeedsDisplay();
-            // layer.displayIfNeeded();
+            this.nativeViewProtected.setNeedsDisplay();
         }
     }
 }
