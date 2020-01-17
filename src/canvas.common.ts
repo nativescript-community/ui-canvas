@@ -138,7 +138,6 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
     }
 
     public _addChildFromBuilder(name: string, value: any): void {
-        console.log('Shapes', '_addChildFromBuilder', name, value);
         // if (value instanceof Shape) {
         this.shapes.push(value);
         // }
@@ -155,7 +154,6 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
     }
 
     private onShapesCollectionChanged(eventData: ChangedData<Shape>) {
-        console.log('onShapesCollectionChanged');
         if (eventData.addedCount > 0) {
             for (let i = 0; i < eventData.addedCount; i++) {
                 const shape = (eventData.object as ObservableArray<Shape>).getItem(eventData.index + i);
@@ -183,10 +181,8 @@ export class Shapes extends ViewBase implements AddArrayFromBuilder, AddChildFro
         }
 
         this.notifyPropertyChange('.', this);
-        console.log('onShapesCollectionChanged done');
     }
     private onPropertyChange(data: PropertyChangeData) {
-        console.log('onPropertyChange', data.propertyName);
         this.notifyPropertyChange(data.propertyName, this);
     }
 
