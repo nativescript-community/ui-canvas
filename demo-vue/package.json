@@ -9,28 +9,28 @@
             "version": "6.3.1"
         },
         "tns-ios": {
-            "version": "6.3.0"
+            "version": "6.4.0-beta.1-v8-2020-01-21-162348-01"
         }
     },
     "dependencies": {
         "@nativescript/core": "^6.3.2",
-        "akylas-nativescript-vue": "^2.1.14",
+        "nativescript-akylas-vue": "2.5.0-alpha.6",
         "nativescript-canvas": "../plugin",
-        "nativescript-htmllabel": "^1.0.0",
+        "nativescript-htmllabel": "^1.0.14",
         "nativescript-perms": "2.0.2",
         "nativescript-theme-core": "~2.0.24",
         "nativescript-tween": "0.0.5",
         "nativescript-vue": "^2.4.0"
     },
     "devDependencies": {
-        "nativescript-akylas-webpack-template": "1.0.11",
-        "nativescript-dev-webpack": "1.4.0",
+        "nativescript-akylas-webpack-template": "1.0.12",
+        "nativescript-dev-webpack": "1.4.1",
         "semver": "7.1.1",
         "tns-platform-declarations": "^6.3.2",
-        "typescript": "^3.7.4",
+        "typescript": "^3.7.5",
         "vue": "^2.6.11",
         "vue-property-decorator": "^8.3.0",
-        "webpack": "^4.41.3",
+        "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10"
     },
     "scripts": {
