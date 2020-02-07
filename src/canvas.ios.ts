@@ -1083,9 +1083,9 @@ export class Paint implements IPaint {
 
     drawShader(ctx) {
         if (this.shader instanceof LinearGradient) {
-            // const color =UIColor.clearColor
-            // CGContextSetFillColorWithColor(ctx, color.CGColor);
-            // CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+            const color = UIColor.clearColor
+            CGContextSetFillColorWithColor(ctx, color.CGColor);
+            CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             const g = this.shader;
             const options = g.tileMode === TileMode.CLAMP ? CGGradientDrawingOptions.kCGGradientDrawsBeforeStartLocation | CGGradientDrawingOptions.kCGGradientDrawsAfterEndLocation : 0;
             // const path = CGContextCopyPath(ctx);
@@ -1098,14 +1098,14 @@ export class Paint implements IPaint {
             CGContextRestoreGState(ctx);
             // CGContextAddPath(ctx, path);
         } else if (this.shader instanceof RadialGradient) {
-            // const color =UIColor.clearColor
-            // CGContextSetFillColorWithColor(ctx, color.CGColor);
-            // CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+            const color =UIColor.clearColor
+            CGContextSetFillColorWithColor(ctx, color.CGColor);
+            CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             const g = this.shader;
             const options = g.tileMode === TileMode.CLAMP ? CGGradientDrawingOptions.kCGGradientDrawsBeforeStartLocation | CGGradientDrawingOptions.kCGGradientDrawsAfterEndLocation : 0;
             if (this.style === Style.STROKE) {
                 CGContextReplacePathWithStrokedPath(ctx);
-            }
+            } 
             // const path = CGContextCopyPath(ctx);
             CGContextSaveGState(ctx);
             CGContextClip(ctx);
@@ -1740,42 +1740,44 @@ export class Canvas implements ICanvas {
         }
         // }
 
-        if (bPath) {
-            bPath.lineWidth = paint.strokeWidth;
-            bPath.lineCapStyle = paint.strokeCap as any;
-            bPath.lineJoinStyle = paint.strokeJoin as any;
-
-            UIGraphicsPushContext(ctx);
-            if (paint.style === Style.FILL) {
-                paint.getUIColor().setFill();
-                bPath.fill();
-            } else if (paint.style === Style.STROKE) {
-                paint.getUIColor().setStroke();
-                bPath.stroke();
-            } else {
-                paint.getUIColor().setStroke();
-                paint.getUIColor().setFill();
-                bPath.fill();
-                bPath.stroke();
-            }
-            UIGraphicsPopContext();
-        } else {
-            if (path) {
-                CGContextAddPath(ctx, path);
-            }
-            if (paint.style === Style.FILL) {
-                // CGContextFillPath(ctx);
-                CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
-            } else if (paint.style === Style.STROKE) {
-                CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
-            } else {
-                CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
-            }
-        }
+        
 
         if (path && paint.shader) {
             CGContextAddPath(ctx, path);
             paint.drawShader(ctx);
+        } else {
+            if (bPath) {
+                bPath.lineWidth = paint.strokeWidth;
+                bPath.lineCapStyle = paint.strokeCap as any;
+                bPath.lineJoinStyle = paint.strokeJoin as any;
+    
+                UIGraphicsPushContext(ctx);
+                if (paint.style === Style.FILL) {
+                    paint.getUIColor().setFill();
+                    bPath.fill();
+                } else if (paint.style === Style.STROKE) {
+                    paint.getUIColor().setStroke();
+                    bPath.stroke();
+                } else {
+                    paint.getUIColor().setStroke();
+                    paint.getUIColor().setFill();
+                    bPath.fill();
+                    bPath.stroke();
+                }
+                UIGraphicsPopContext();
+            } else {
+                if (path) {
+                    CGContextAddPath(ctx, path);
+                }
+                if (paint.style === Style.FILL) {
+                    // CGContextFillPath(ctx);
+                    CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
+                } else if (paint.style === Style.STROKE) {
+                    CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
+                } else {
+                    CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
+                }
+            }
         }
     }
 
