@@ -1,6 +1,6 @@
 dependencies:
   '@nativescript/core': 6.3.2
-  akylas-nativescript-vue: 2.1.14
+  nativescript-akylas-vue: 2.5.0-alpha.6
   nativescript-canvas: 'link:../plugin'
   nativescript-htmllabel: 1.0.14
   nativescript-perms: 2.0.2
@@ -8,11 +8,11 @@ dependencies:
   nativescript-tween: 0.0.5
   nativescript-vue: 2.4.0
 devDependencies:
-  nativescript-akylas-webpack-template: 1.0.11_e0c00d3dce38926ede98ade9a82b9394
-  nativescript-dev-webpack: 1.4.0_typescript@3.7.4
+  nativescript-akylas-webpack-template: 1.0.12_6052345cd8eb27e11248ce3e3f39f362
+  nativescript-dev-webpack: 1.4.1_typescript@3.7.5
   semver: 7.1.1
   tns-platform-declarations: 6.3.2
-  typescript: 3.7.4
+  typescript: 3.7.5
   vue: 2.6.11
   vue-property-decorator: 8.3.0
   webpack: 4.41.5_webpack@4.41.5
@@ -1192,10 +1192,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
-  /akylas-nativescript-vue/2.1.14:
-    dev: false
-    resolution:
-      integrity: sha512-+6ozr0V+66b9w9jJh5zExxiHnTHPbzL6xIA3lL8v6KpIYhPxL3ExDts5pty5rYgjmUEfppJcZxRduSUNtuOeLw==
   /amdefine/1.0.1:
     dev: true
     engines:
@@ -4559,7 +4555,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==
-  /nativescript-akylas-webpack-template/1.0.11_e0c00d3dce38926ede98ade9a82b9394:
+  /nativescript-akylas-vue/2.5.0-alpha.6:
+    dependencies:
+      nativescript-hook: 0.2.5
+    dev: false
+    requiresBuild: true
+    resolution:
+      integrity: sha512-3r1JmOdZ2UwcPhH7fROaxDTuijCcMgUA5I2/m9cai79twloxXIh0t+q3+5YgeHI71fE8lvJVesm/G2SeYFeKvQ==
+  /nativescript-akylas-webpack-template/1.0.12_6052345cd8eb27e11248ce3e3f39f362:
     dependencies:
       '@babel/core': 7.7.7
       '@babel/plugin-syntax-dynamic-import': 7.7.4_@babel+core@7.7.7
@@ -4572,14 +4575,14 @@ packages:
       css-loader: 3.4.1_webpack@4.41.5
       fork-ts-checker-webpack-plugin: 3.1.1
       merge-options: 2.0.0
-      nativescript-dev-webpack: 1.4.0_typescript@3.7.4
+      nativescript-dev-webpack: 1.4.1_typescript@3.7.5
       nativescript-vue-template-compiler: 2.4.0
       nativescript-worker-loader: 0.10.0
       node-sass: 4.13.0
       sass-loader: 8.0.0_node-sass@4.13.0+webpack@4.41.5
       string-replace-loader: 2.2.0_webpack@4.41.5
       terser-webpack-plugin: 2.2.1_webpack@4.41.5
-      ts-loader: 6.2.1_typescript@3.7.4
+      ts-loader: 6.2.1_typescript@3.7.5
       vue-loader: 15.8.3_css-loader@3.4.1+webpack@4.41.5
       webpack: 4.41.5_webpack@4.41.5
       webpack-bugsnag-plugins: github.com/farfromrefug/webpack-bugsnag-plugins/2bc0b9d386b494e39b95f2f39363a83038126f13_webpack@4.41.5
@@ -4592,8 +4595,8 @@ packages:
       nativescript-dev-webpack: 1.3.0
       typescript: '*'
     resolution:
-      integrity: sha512-RGoYu5K4jfnSZm4iGuXAf+FQNa9RcCxUR1zQR2tI/hKsZtgTI9GpqU54Q84Bc8xbEU/ocaTlzANuDagnCGn8OQ==
-  /nativescript-dev-webpack/1.4.0_typescript@3.7.4:
+      integrity: sha512-ZfMU8fs6B8mrGq36S6++9hV+ZgJdHgpV1oJMChLCPziezbUsQNNeo1SLsUtEGvLAEKlwu66T00rfV6N4FJ5gWw==
+  /nativescript-dev-webpack/1.4.1_typescript@3.7.5:
     dependencies:
       '@angular-devkit/core': 8.2.0
       clean-webpack-plugin: 1.0.1
@@ -4620,7 +4623,7 @@ packages:
       tapable: 1.0.0
       terser: 3.17.0
       terser-webpack-plugin: 1.2.3_webpack@4.27.1
-      ts-loader: 5.4.5_typescript@3.7.4
+      ts-loader: 5.4.5_typescript@3.7.5
       webpack: 4.27.1_webpack@4.27.1
       webpack-bundle-analyzer: 3.3.2
       webpack-cli: 3.1.2_webpack@4.27.1
@@ -4631,7 +4634,7 @@ packages:
       typescript: '*'
     requiresBuild: true
     resolution:
-      integrity: sha512-ACa8uz00cIAi6dUUnB+u10a5hZ/XyhDgVFjjv6K1gwJ5FwkHmr64aide5RB4WK7GtMDKr91hu4XjUotUGnta5A==
+      integrity: sha512-G4oe6l8RSnbvBypE+69oFYky+5W7heZTfM4FJHQBgbMOc0gF/Rvymu1HrapGRA5Gqy+00HCBwS/vCi9vyxa0hg==
   /nativescript-hook/0.2.4:
     dependencies:
       glob: 6.0.4
@@ -6000,6 +6003,13 @@ packages:
       node-sass: ^4.0.0
       sass: ^1.3.0
       webpack: ^4.36.0
+    peerDependenciesMeta:
+      fibers:
+        optional: true
+      node-sass:
+        optional: true
+      sass:
+        optional: true
     resolution:
       integrity: sha512-+qeMu563PN7rPdit2+n5uuYVR0SSVwm0JsOUsaJXzgYcClWSlmX0iHDnmeOobPkf5kUglVot3QS6SyLyaQoJ4w==
   /sax/1.2.4:
@@ -6815,14 +6825,14 @@ packages:
     dev: true
     resolution:
       integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==
-  /ts-loader/5.4.5_typescript@3.7.4:
+  /ts-loader/5.4.5_typescript@3.7.5:
     dependencies:
       chalk: 2.4.2
       enhanced-resolve: 4.1.1
       loader-utils: 1.2.3
       micromatch: 3.1.10
       semver: 5.7.1
-      typescript: 3.7.4
+      typescript: 3.7.5
     dev: true
     engines:
       node: '>=6.11.5'
@@ -6830,14 +6840,14 @@ packages:
       typescript: '*'
     resolution:
       integrity: sha512-XYsjfnRQCBum9AMRZpk2rTYSVpdZBpZK+kDh0TeT3kxmQNBDVIeUjdPjY5RZry4eIAb8XHc4gYSUiUWPYvzSRw==
-  /ts-loader/6.2.1_typescript@3.7.4:
+  /ts-loader/6.2.1_typescript@3.7.5:
     dependencies:
       chalk: 2.4.2
       enhanced-resolve: 4.1.1
       loader-utils: 1.2.3
       micromatch: 4.0.2
       semver: 6.3.0
-      typescript: 3.7.4
+      typescript: 3.7.5
     dev: true
     engines:
       node: '>=8.6'
@@ -6883,13 +6893,13 @@ packages:
     dev: true
     resolution:
       integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-  /typescript/3.7.4:
+  /typescript/3.7.5:
     dev: true
     engines:
       node: '>=4.2.0'
     hasBin: true
     resolution:
-      integrity: sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
+      integrity: sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
   /unicode-canonical-property-names-ecmascript/1.0.4:
     dev: true
     engines:
@@ -7481,24 +7491,23 @@ packages:
     peerDependencies:
       webpack: '>=3'
     resolution:
-      registry: 'https://registry.npmjs.org/'
       tarball: 'https://codeload.github.com/farfromrefug/webpack-bugsnag-plugins/tar.gz/2bc0b9d386b494e39b95f2f39363a83038126f13'
     version: 1.4.2
 specifiers:
   '@nativescript/core': ^6.3.2
-  akylas-nativescript-vue: ^2.1.14
-  nativescript-akylas-webpack-template: 1.0.11
+  nativescript-akylas-vue: 2.5.0-alpha.6
+  nativescript-akylas-webpack-template: 1.0.12
   nativescript-canvas: ../plugin
-  nativescript-dev-webpack: 1.4.0
-  nativescript-htmllabel: ^1.0.0
+  nativescript-dev-webpack: 1.4.1
+  nativescript-htmllabel: ^1.0.14
   nativescript-perms: 2.0.2
   nativescript-theme-core: ~2.0.24
   nativescript-tween: 0.0.5
   nativescript-vue: ^2.4.0
   semver: 7.1.1
   tns-platform-declarations: ^6.3.2
-  typescript: ^3.7.4
+  typescript: ^3.7.5
   vue: ^2.6.11
   vue-property-decorator: ^8.3.0
-  webpack: ^4.41.3
+  webpack: ^4.41.5
   webpack-cli: ^3.3.10
