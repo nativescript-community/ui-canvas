@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.24](https://github.com/Akylas/nativescript-canvas/compare/v2.1.23...v2.1.24) (2020-02-07)
+
+
+### Bug Fixes
+
+* **ios:** ignore back color with shader (like android) ([e92cf94](https://github.com/Akylas/nativescript-canvas/commit/e92cf94bc39ff12fd2a0edfe2066ab1387726e34))
+
+
+
+
+
 ## [2.1.23](https://github.com/Akylas/nativescript-canvas/compare/v2.1.22...v2.1.23) (2020-01-17)
 
 
