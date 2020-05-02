@@ -134,7 +134,6 @@ class Canvas {
     }
     get(target: Canvas, name, receiver) {
         const native = this._native;
-        console.log('Canvas', name);
         if (canvasAugmentedMethods.indexOf(name) >= 0 || native[name]) {
             // assume methods live on the prototype
             return function (...args) {
