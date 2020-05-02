@@ -48,7 +48,6 @@ export default class Animation extends Vue {
     }
     startAnimation() {
         const canvas = (this.$refs.canvas as any).nativeView;
-        console.log('startAnimation', canvas);
         new TWEEN.Tween({ value: 0 })
             .to({ value: 360 }, 5000)
             .easing(TWEEN.Easing.Quadratic.Out)
