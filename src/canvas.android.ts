@@ -99,7 +99,6 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
     }
 }
 
-
 const canvasAugmentedMethods = ['clear', 'drawBitmap', 'drawView'];
 class Canvas {
     _native: android.graphics.Canvas;
@@ -135,6 +134,7 @@ class Canvas {
     }
     get(target: Canvas, name, receiver) {
         const native = this._native;
+        console.log('Canvas', name);
         if (canvasAugmentedMethods.indexOf(name) >= 0 || native[name]) {
             // assume methods live on the prototype
             return function (...args) {
@@ -621,22 +621,12 @@ function initClasses() {
 class CanvasView extends CanvasBase {
     augmentedCanvas = new Canvas();
     frameRatePaint: IPaint;
-    shapePaint: android.graphics.Paint;
-    onDraw(canvas: android.graphics.Canvas) {
-        const drawFameRate = this.drawFameRate;
-        let startTime;
-        if (drawFameRate) {
-            startTime = Date.now();
-        }
-        const scale = this.density;
-        // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
-        canvas.setDensity(Math.round(scale * 160));
-        canvas.scale(scale, scale); // always scale to device density to work with dp
-        this.augmentedCanvas._native = canvas;
+    shapePaint: IPaint;
+    onDraw(canvas: ICanvas) {
         const shapeCanvas = this.shapesCanvas;
         if (shapeCanvas) {
             if (!this.shapePaint) {
-                this.shapePaint = new android.graphics.Paint();
+                this.shapePaint = new android.graphics.Paint() as any;
             }
             canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, this.shapePaint);
         } else if (!this.cached) {
@@ -646,17 +636,6 @@ class CanvasView extends CanvasBase {
             }
         }
         this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
-        // this.onDraw(this.augmentedCanvas as any);
-        if (drawFameRate) {
-            const end = Date.now();
-            if (!this.frameRatePaint) {
-                this.frameRatePaint = new Paint() as any;
-                this.frameRatePaint.color = 'blue';
-                this.frameRatePaint.setTextSize(12);
-                this.frameRatePaint.setTextSize(12);
-            }
-            canvas.drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
-        }
     }
     nativeViewProtected: com.akylas.canvas.CanvasView;
     createNativeView() {
@@ -675,7 +654,27 @@ class CanvasView extends CanvasBase {
         });
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
             onDraw: (canvas: android.graphics.Canvas) => {
-                this.onDraw(canvas);
+                const drawFameRate = this.drawFameRate;
+                let startTime;
+                if (drawFameRate) {
+                    startTime = Date.now();
+                }
+                const scale = this.density;
+                // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
+                canvas.setDensity(Math.round(scale * 160));
+                canvas.scale(scale, scale); // always scale to device density to work with dp
+                this.augmentedCanvas._native = canvas;
+                this.onDraw(this.augmentedCanvas as any);
+                if (drawFameRate) {
+                    const end = Date.now();
+                    if (!this.frameRatePaint) {
+                        this.frameRatePaint = new Paint() as any;
+                        this.frameRatePaint.color = 'blue';
+                        this.frameRatePaint.setTextSize(12);
+                        this.frameRatePaint.setTextSize(12);
+                    }
+                    canvas.drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
+                }
             },
         });
     }
