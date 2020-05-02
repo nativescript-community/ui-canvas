@@ -26,8 +26,38 @@ void DrawStringInRect(NSString *string, CGRect rect, UIFont *font, NSTextAlignme
     attributes[NSParagraphStyleAttributeName] = style;
     [attributedString addAttributes:attributes range:range];
     
-    CGRect destRect = [string boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    CGRect destRect = [string boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:attributes context:nil];
+    if (isnan(destRect.size.width)) {
+        destRect.size.width = rect.size.width;
+        // destRect = CGRectMake();
+    }
     CGRect outputRect = RectCenteredInRect(destRect, rect);
+    [attributedString drawInRect:outputRect];
+}
+
+void DrawAttributedStringInRect(NSAttributedString *string, CGRect rect, UIFont *font, NSTextAlignment alignment, UIColor *color)
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context == NULL) return;
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:string];
+    NSRange range = NSMakeRange(0, attributedString.length);
+    
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.alignment = alignment;
+    style.lineBreakMode = NSLineBreakByWordWrapping;
+    attributes[NSFontAttributeName] = font;
+    attributes[NSForegroundColorAttributeName] = color;
+    attributes[NSParagraphStyleAttributeName] = style;
+    [attributedString addAttributes:attributes range:range];
+    
+    CGRect destRect = [attributedString boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+    if (isnan(destRect.size.width)) {
+        destRect.size.width = rect.size.width;
+    }
+    CGRect outputRect = RectCenteredInRect(destRect, rect);
+    outputRect.origin = rect.origin;
     [attributedString drawInRect:outputRect];
 }
 
@@ -35,19 +65,63 @@ void DrawStringAtPos(NSString *string, CGFloat x, CGFloat y, UIFont *font, UICol
 {
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    style.lineBreakMode = NSLineBreakByWordWrapping;
+    // style.lineBreakMode = NSLineBreakByWordWrapping;
     attributes[NSFontAttributeName] = font;
     attributes[NSForegroundColorAttributeName] = color;
     attributes[NSParagraphStyleAttributeName] = style;
   
     DrawStringAtPosWithAttrs(string, x, y, attributes);
 }
+void DrawAttributedStringAtPos(NSAttributedString *string, CGFloat x, CGFloat y, UIFont *font, UIColor *color)
+{
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    // style.lineBreakMode = NSLineBreakByWordWrapping;
+    attributes[NSFontAttributeName] = font;
+    attributes[NSForegroundColorAttributeName] = color;
+    attributes[NSParagraphStyleAttributeName] = style;
+  
+    DrawAttributedStringAtPosWithAttrs(string, x, y, attributes);
+}
+// void DrawAttributedStringInRect(NSAttributedString *string, CGFloat x, CGFloat y, CGFloat w, CGFloat h, UIFont *font, UIColor *color)
+// {
+//     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+//     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+//     // style.lineBreakMode = NSLineBreakByWordWrapping;
+//     attributes[NSFontAttributeName] = font;
+//     attributes[NSForegroundColorAttributeName] = color;
+//     attributes[NSParagraphStyleAttributeName] = style;
+  
+//     DrawAttributedStringInRectWithAttrs(string, x, y,w,h, attributes);
+// }
 void DrawStringAtPosWithAttrs(NSString *string, CGFloat x, CGFloat y, NSDictionary* attributes) {
   CGContextRef context = UIGraphicsGetCurrentContext();
   if (context == NULL) return;
   UIGraphicsPushContext(context);
   [string drawAtPoint:CGPointMake(x, y) withAttributes:attributes];
   UIGraphicsPopContext();
+}
+void DrawAttributedStringAtPosWithAttrs(NSAttributedString *string, CGFloat x, CGFloat y, NSDictionary* attributes) {
+  NSMutableAttributedString* result = [[NSMutableAttributedString alloc] initWithAttributedString:string];
+  NSRange range = NSMakeRange(0, string.length);
+  [result addAttributes:attributes range:range];
+  CGContextRef context = UIGraphicsGetCurrentContext();
+  if (context == NULL) return;
+  UIGraphicsPushContext(context);
+  [result drawAtPoint:CGPointMake(x, y)];
+  UIGraphicsPopContext();
+}
+void DrawAttributedStringInRectWithAttrs(NSAttributedString *string, CGRect rect, NSDictionary* attributes) {
+   CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context == NULL) return;
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:string];
+    NSRange range = NSMakeRange(0, string.length);
+    [attributedString addAttributes:attributes range:range];
+    
+    CGRect destRect = [string boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    CGRect outputRect = RectCenteredInRect(destRect, rect);
+    [attributedString drawInRect:outputRect];
 }
 
 #pragma mark - Unwrapped
@@ -199,8 +273,18 @@ void DrawWrappedStringInRect(NSString *string, CGRect rect, NSString *fontFace, 
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y font:(UIFont*)font color:(UIColor*)color{
   DrawStringAtPos(string, x, y, font, color);
 }
++ (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y font:(UIFont*)font color:(UIColor*)color{
+    DrawAttributedStringAtPos(string, x, y, font, color);
+}
++ (void) drawAttributedStringInRect: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y width:(CGFloat)width height:(CGFloat)height font:(UIFont*)font alignment:(NSTextAlignment)alignment  color:(UIColor*)color{
+    
+    DrawAttributedStringInRect(string, CGRectMake(x, y, width, height), font, alignment, color);
+}
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes{
   DrawStringAtPosWithAttrs(string, x, y, attributes);
+}
++ (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes{
+    DrawAttributedStringAtPosWithAttrs(string, x, y, attributes);
 }
 
 + (CGRect)getTextBounds:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes {

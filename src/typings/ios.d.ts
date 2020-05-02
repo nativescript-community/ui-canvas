@@ -9,7 +9,11 @@ declare namespace UIDrawingPath {
 }
 declare namespace UIDrawingText{
 	function drawStringXYFontColor(text: string, x: number, y:number, font: UIFont, color: UIColor)
+	function drawAttributedStringXYFontColor(text: NSAttributedString, x: number, y:number, font: UIFont, color: UIColor)
+	function drawAttributedStringInRectXYWidthHeightFontAlignmentColor(text: NSAttributedString, x: number, y:number, w: number, h:number, font: UIFont, alignment:NSTextAlignment, color: UIColor)
+
 	function drawStringXYWithAttributes(text: string, x: number, y:number, attributes: NSDictionary<any, any>)
+	function drawAttributedStringXYWithAttributes(text: NSAttributedString, x: number, y:number, attributes: NSDictionary<any, any>)
 	function getTextBoundsFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): CGRect;
 	function measureTextFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): number;
 }

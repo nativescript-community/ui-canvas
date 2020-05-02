@@ -11,7 +11,7 @@ export function parseJoin(value: string | number): Join;
 
 export function parseDashEffect(value: string): DashPathEffect;
 
-type ColorParam = Color | number | string
+type ColorParam = Color | number | string;
 
 // export * from './canvas.android'
 
@@ -64,15 +64,21 @@ export class Paint {
     public getStrokeCap(): Cap;
     public setTextSize(value: number): void;
     public setFontFamily(familyName: string);
+    public setFontWeight(weight: string);
+    public getFontFamily(): string;
     public setShader(value: any): any;
     // public descent(): number;
     public setShadowLayer(radius: number, dx: number, dy: number, color: ColorParam): void;
     public clearShadowLayer();
     // public getFontSpacing(): number;
+    public setXfermode(param0: PorterDuffXfermode): PorterDuffXfermode;
+    public getXfermode(): PorterDuffXfermode;
 }
 
-export class StaticLayout {
-    constructor(text: string, paint: Paint, width: number, align, spacingmult, spacingadd, includepad);
+// export class StaticLayout {
+// }
+export class StaticLayout extends android.text.StaticLayout {
+    constructor(text: any, paint: Paint, width: number, align, spacingmult, spacingadd, includepad);
 }
 
 export class FontMetrics {
@@ -135,8 +141,8 @@ export class Canvas {
     // saveLayer(param0: number, param1: number, param2: number, param3: number, param4: android.graphics.Paint, param5: number): number;
     drawPoints(pts: number[], paint: Paint): void;
     drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void;
-    drawLines(pts: number[], offset: number, count: number, paint: Paint, mat?:Matrix): void;
-    drawLines(pts: number[], paint: Paint, mat?:Matrix): void;
+    drawLines(pts: number[], offset: number, count: number, paint: Paint, mat?: Matrix): void;
+    drawLines(pts: number[], paint: Paint, mat?: Matrix): void;
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void;
 
     drawArc(rect: Rect, startAngle: number, sweepAngle: number, useCenter: boolean, paint: Paint): void;
@@ -167,10 +173,14 @@ export class Canvas {
     drawView(view: View, rect?: Rect);
 }
 // export class Typeface extends android.graphics.Typeface {}
+export class LayoutAlignment extends android.text.Layout.Alignment {}
 export class Cap extends android.graphics.Paint.Cap {}
 export class Join extends android.graphics.Paint.Join {}
 export class Style extends android.graphics.Paint.Style {}
 export class Align extends android.graphics.Paint.Align {}
+export class PorterDuff extends android.graphics.PorterDuff {}
+export class PorterDuffMode extends android.graphics.PorterDuff.Mode {}
+export class PorterDuffXfermode extends android.graphics.PorterDuffXfermode {}
 export class Rect {
     public constructor(param0: number, param1: number, param2: number, param3: number);
     left: number;
@@ -291,7 +301,7 @@ declare class CanvasView extends View {
     redraw();
     invalidate();
     onSizeChanged(w: number, h: number, oldw: number, oldh: number);
-    drawFameRate:boolean
+    drawFameRate: boolean;
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;

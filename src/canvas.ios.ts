@@ -1,9 +1,8 @@
 import { Font } from '@nativescript/core/ui/styling/font';
 import { layout, Color, View } from '@nativescript/core/ui/core/view';
-import { screen } from '@nativescript/core/platform';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { Canvas as ICanvas, Paint as IPaint, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
-import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
+import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode,Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
+import { CanvasBase } from './canvas.common';
 import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
@@ -17,6 +16,18 @@ function CGAffineTransformMakeSkew(sx, sy) {
     return CGAffineTransformMake(1, DEGREES_TO_RADIANS(sx), DEGREES_TO_RADIANS(sy), 1, 0, 0);
 }
 const FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
+
+function applyAttributesToNSAttributedString(text: NSAttributedString, attrs: NSMutableDictionary<any, any>) {
+    if (!attrs) {
+        return text;
+    }
+    const result = NSMutableAttributedString.alloc().initWithAttributedString(text);
+    const range = { location: 0, length: result.length } as NSRange;
+    attrs.enumerateKeysAndObjectsUsingBlock((p1: KeyType, p2: any) => {
+        result.addAttributeValueRange(p1, p2, range);
+    });
+    return result;
+}
 
 // const enum MemberType {
 //     Static,
@@ -80,7 +91,7 @@ function paintPropertyGenerator(target: Object, key: string, descriptor: TypedPr
 
     // NOTE: Do not use arrow syntax here. Use a function expression in
     // order to use the correct value of `this` in this method (see notes below)
-    descriptor.value = function(...args: any[]) {
+    descriptor.value = function (...args: any[]) {
         let index = args.length - 1;
         let paint = args[index];
         let actualPaint;
@@ -109,7 +120,7 @@ function paint(options: PaintDecoratorOptions): (target: any, k?, desc?: TypedPr
 function paint(...args) {
     if (args.length === 1) {
         /// this must be a factory
-        return function(target: any, key?: string, descriptor?: PropertyDescriptor) {
+        return function (target: any, key?: string, descriptor?: PropertyDescriptor) {
             return paintPropertyGenerator(target, key, descriptor, args[0] || {});
         };
     } else {
@@ -122,39 +133,39 @@ function paint(...args) {
 export enum Style {
     FILL,
     STROKE,
-    FILL_AND_STROKE
+    FILL_AND_STROKE,
 }
 export enum Cap {
     ROUND = CGLineCap.kCGLineCapRound,
     SQUARE = CGLineCap.kCGLineCapSquare,
-    BUT = CGLineCap.kCGLineCapButt
+    BUT = CGLineCap.kCGLineCapButt,
 }
 
 export enum Join {
     BEVEL = CGLineJoin.kCGLineJoinBevel,
     MITER = CGLineJoin.kCGLineJoinMiter,
-    ROUND = CGLineJoin.kCGLineJoinRound
+    ROUND = CGLineJoin.kCGLineJoinRound,
 }
 export enum Align {
     LEFT = 0,
     RIGHT = 1,
-    CENTER = 2
+    CENTER = 2,
 }
 
 export enum Direction {
     CCW,
-    CW
+    CW,
 }
 export enum TileMode {
     CLAMP,
     MIRROR,
-    REPEAT
+    REPEAT,
 }
 export enum FillType {
     EVEN_ODD,
     INVERSE_EVEN_ODD,
     INVERSE_WINDING,
-    WINDING
+    WINDING,
 }
 
 export enum Op {
@@ -163,7 +174,34 @@ export enum Op {
     REPLACE,
     REVERSE_DIFFERENCE,
     UNION,
-    XOR
+    XOR,
+}
+
+export enum LayoutAlignment {
+    ALIGN_NORMAL,
+    ALIGN_CENTER,
+    ALIGN_OPPOSITE,
+}
+
+export enum PorterDuffMode {
+    ADD = CGBlendMode.kCGBlendModeNormal,
+    CLEAR = CGBlendMode.kCGBlendModeClear,
+    DARKEN = CGBlendMode.kCGBlendModeDarken,
+    DST = CGBlendMode.kCGBlendModeNormal,
+    DST_ATOP = CGBlendMode.kCGBlendModeDestinationAtop,
+    DST_IN= CGBlendMode.kCGBlendModeDestinationIn,
+    DST_OUT= CGBlendMode.kCGBlendModeDestinationOut,
+    DST_OVER= CGBlendMode.kCGBlendModeDestinationOver,
+    LIGHTEN= CGBlendMode.kCGBlendModeLighten,
+    MULTIPLY= CGBlendMode.kCGBlendModeMultiply,
+    OVERLAY= CGBlendMode.kCGBlendModeOverlay,
+    SCREEN= CGBlendMode.kCGBlendModeScreen,
+    SRC= CGBlendMode.kCGBlendModeNormal,
+    SRC_ATOP= CGBlendMode.kCGBlendModeSourceAtop,
+    SRC_IN= CGBlendMode.kCGBlendModeSourceIn,
+    SRC_OUT= CGBlendMode.kCGBlendModeSourceOut,
+    SRC_OVER= CGBlendMode.kCGBlendModeNormal,
+    XOR= CGBlendMode.kCGBlendModeXOR,
 }
 
 function createCGRect(l, t, r, b) {
@@ -462,7 +500,7 @@ export class Matrix implements IMatrix {
         return [
             [this._transform.a, this._transform.c, this._transform.tx],
             [this._transform.b, this._transform.d, this._transform.ty],
-            [0, 0, 1]
+            [0, 0, 1],
         ].toString();
     }
     public setTranslate(tx: number, ty: number): void {
@@ -909,7 +947,7 @@ export class Paint implements IPaint {
             radius: radius / 1,
             dx,
             dy,
-            color: new Color(color.a / 1, color.r, color.g, color.b)
+            color: new Color(color.a / 1, color.r, color.g, color.b),
         };
     }
     public clearShadowLayer() {
@@ -1010,6 +1048,14 @@ export class Paint implements IPaint {
         this._font = this.font.withFontFamily(familyName);
         this._textAttribs = null;
     }
+    getFontFamily() {
+        return this.font.fontFamily || this.getUIFont().familyName;
+    }
+
+    setFontWeight(weight: string) {
+        this._font = this.font.withFontWeight(weight);
+        this._textAttribs = null;
+    }
 
     getUIFont(): UIFont {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
@@ -1060,6 +1106,16 @@ export class Paint implements IPaint {
         this.pathEffect = param0;
     }
 
+    xfermode: IPorterDuffXfermode;
+    public setXfermode(param0: IPorterDuffXfermode): IPorterDuffXfermode {
+        this.xfermode = param0;
+        return param0;
+    }
+    public getXfermode(): IPorterDuffXfermode{
+        return this.xfermode;
+
+    }
+
     public getFontMetrics(fontMetrics?: FontMetrics): any {
         let returnFontMetrics = false;
         if (!fontMetrics) {
@@ -1083,7 +1139,7 @@ export class Paint implements IPaint {
 
     drawShader(ctx) {
         if (this.shader instanceof LinearGradient) {
-            const color = UIColor.clearColor
+            const color = UIColor.clearColor;
             CGContextSetFillColorWithColor(ctx, color.CGColor);
             CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             const g = this.shader;
@@ -1098,14 +1154,14 @@ export class Paint implements IPaint {
             CGContextRestoreGState(ctx);
             // CGContextAddPath(ctx, path);
         } else if (this.shader instanceof RadialGradient) {
-            const color =UIColor.clearColor
+            const color = UIColor.clearColor;
             CGContextSetFillColorWithColor(ctx, color.CGColor);
             CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             const g = this.shader;
             const options = g.tileMode === TileMode.CLAMP ? CGGradientDrawingOptions.kCGGradientDrawsBeforeStartLocation | CGGradientDrawingOptions.kCGGradientDrawsAfterEndLocation : 0;
             if (this.style === Style.STROKE) {
                 CGContextReplacePathWithStrokedPath(ctx);
-            } 
+            }
             // const path = CGContextCopyPath(ctx);
             CGContextSaveGState(ctx);
             CGContextClip(ctx);
@@ -1521,7 +1577,7 @@ export class Canvas implements ICanvas {
 
         const ctx = this._cgContext;
         paint.currentContext = ctx;
-        CGContextSetAlpha(ctx, paint.alpha);
+        CGContextSetAlpha(ctx, paint.alpha / 255);
         CGContextSetShouldAntialias(ctx, paint.antiAlias);
         CGContextSetShouldSmoothFonts(ctx, paint.antiAlias);
 
@@ -1562,6 +1618,10 @@ export class Canvas implements ICanvas {
             CGContextSetFillColorWithColor(ctx, color.CGColor);
         }
 
+        if (paint.xfermode) {
+            CGContextSetBlendMode( ctx, (paint.xfermode as PorterDuffXfermode).mode);
+        }
+
         // if (withFont && paint.font) {
         //     const font = paint.getUIFont();
         //     console.log('setting context font', font);
@@ -1574,8 +1634,9 @@ export class Canvas implements ICanvas {
     }
     finishApplyPaint(paint) {
         paint.currentContext = null;
-        const ctx = this._cgContext;
-        CGContextSetLineDash(ctx, 0, null, 0);
+        // const ctx = this._cgContext;
+        // CGContextSetBlendMode( ctx, CGBlendMode.kCGBlendModeNormal);
+        // CGContextSetLineDash(ctx, 0, null, 0);
         this.restore();
     }
 
@@ -1740,8 +1801,6 @@ export class Canvas implements ICanvas {
         }
         // }
 
-        
-
         if (path && paint.shader) {
             CGContextAddPath(ctx, path);
             paint.drawShader(ctx);
@@ -1750,7 +1809,7 @@ export class Canvas implements ICanvas {
                 bPath.lineWidth = paint.strokeWidth;
                 bPath.lineCapStyle = paint.strokeCap as any;
                 bPath.lineJoinStyle = paint.strokeJoin as any;
-    
+
                 UIGraphicsPushContext(ctx);
                 if (paint.style === Style.FILL) {
                     paint.getUIColor().setFill();
@@ -1892,14 +1951,19 @@ export class Canvas implements ICanvas {
         }
         const font = paint.getUIFont();
         const color = paint.getUIColor();
-        UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
+        if (text instanceof NSAttributedString) {
+            UIDrawingText.drawAttributedStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
+        } else {
+            UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
+        }
         // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety -paint.getUIFont().ascender), attribs);
-        // UIGraphicsPopContext();
+        UIGraphicsPopContext();
         // console.log('draw text', text, offsetx, offsety , text, Date.now()-startTime);
         // CGContextShowTextAtPoint(ctx, offsetx, offsety, text, text.length);
     }
+
     @paint
-    drawTextOnPath(text: string, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
+    drawTextOnPath(text: string | NSAttributedString, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
         const ctx = this.ctx;
         let bPath = path.getOrCreateBPath();
         if (hOffset !== 0 || vOffset !== 0) {
@@ -1918,7 +1982,11 @@ export class Canvas implements ICanvas {
             CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
         }
         UIGraphicsPushContext(ctx);
-        bPath.drawStringWithAttributes(text, paint.getDrawTextAttribs());
+        if (text instanceof NSAttributedString) {
+            bPath.drawAttributedString(applyAttributesToNSAttributedString(text, paint.getDrawTextAttribs()));
+        } else {
+            bPath.drawStringWithAttributes(text, paint.getDrawTextAttribs());
+        }
         UIGraphicsPopContext();
     }
     drawTextRun(text: string, start: number, end: number, contextStart: number, contextEnd: number, x: number, y: number, isRtl: boolean, paint: IPaint): void {
@@ -1989,7 +2057,7 @@ export class UICustomCanvasView extends UIView {
         } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
             if (shapes.shapes.length > 0) {
-                shapes.shapes.forEach(s => s.drawMyShapeOnCanvas(this._canvas));
+                shapes.shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas));
             }
         }
         owner.onDraw(this._canvas);
@@ -1998,7 +2066,6 @@ export class UICustomCanvasView extends UIView {
             if (!this.frameRatePaint) {
                 this.frameRatePaint = new Paint();
                 this.frameRatePaint.color = 'blue';
-                this.frameRatePaint.setTextSize(12);
                 this.frameRatePaint.setTextSize(12);
             }
             this._canvas.drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint);
@@ -2038,11 +2105,11 @@ export class LinearGradient {
     get gradient() {
         if (!this._gradient) {
             if (Array.isArray(this.colors)) {
-                const cgColors = this.colors.map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
+                const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             } else {
-                const cgColors = [this.colors, this.stops].map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
+                const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             }
@@ -2062,11 +2129,11 @@ export class RadialGradient {
     get gradient() {
         if (!this._gradient) {
             if (Array.isArray(this.colors)) {
-                const cgColors = this.colors.map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
+                const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             } else {
-                const cgColors = [this.colors, this.stops].map(c => (c instanceof Color ? c : new Color(c)).ios.CGColor);
+                const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
                 CFRetain(this._gradient);
             }
@@ -2078,5 +2145,68 @@ export class RadialGradient {
             CFRelease(this._gradient);
             this._gradient = undefined;
         }
+    }
+}
+export class PorterDuffXfermode {
+    constructor(public mode?: number) {}
+    
+}
+
+export class StaticLayout {
+    rect: CGRect;
+    public constructor(private text: any, private paint: Paint, private width: number, private align: LayoutAlignment, private spacingmult, private spacingadd, private includepad) {}
+    draw(canvas: Canvas) {
+        let text: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithAttributedString(this.text);
+        const paragraphStyle = NSMutableParagraphStyle.alloc().init();
+        switch (this.align) {
+            case LayoutAlignment.ALIGN_CENTER:
+                paragraphStyle.alignment = NSTextAlignment.Center;
+                break;
+            case LayoutAlignment.ALIGN_NORMAL:
+                paragraphStyle.alignment = NSTextAlignment.Left;
+                break;
+            case LayoutAlignment.ALIGN_OPPOSITE:
+                paragraphStyle.alignment = NSTextAlignment.Right;
+                break;
+        }
+        text.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, { location: 0, length: text.length });
+        const ctx = canvas.ctx;
+        const paint = this.paint;
+
+        if (paint.style === Style.FILL) {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
+        } else if (paint.style === Style.STROKE) {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
+        } else {
+            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
+        }
+        // const font = paint.getUIFont();
+        const color = paint.getUIColor();
+        CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+        CGContextSetFillColorWithColor(ctx, color.CGColor);
+        UIGraphicsPushContext(ctx);
+        // the issue here is that the font supplied by the paint is not used because it would override
+        // all the fonts in the NSAttributedString
+        text.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+        UIGraphicsPopContext();
+    }
+
+    getBounds() {
+        if (!this.rect) {
+            let text = this.text;
+            if (typeof text === 'string') {
+                text = NSAttributedString.alloc().initWithStringAttributes(text, this.paint.getDrawTextAttribs());
+            } else if (this.text instanceof NSAttributedString) {
+                text = applyAttributesToNSAttributedString(text, this.paint.getDrawTextAttribs());
+            }
+            this.rect = (text as NSAttributedString).boundingRectWithSizeOptionsContext(CGSizeMake(this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+        }
+        return this.rect;
+    }
+    getWidth() {
+        return Math.round(isNaN(this.getBounds().size.width) ? this.width : this.getBounds().size.width);
+    }
+    getHeight() {
+        return Math.round(this.getBounds().size.height);
     }
 }
