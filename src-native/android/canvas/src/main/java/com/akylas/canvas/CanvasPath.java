@@ -23,6 +23,9 @@ public class CanvasPath extends android.graphics.Path {
    public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length) {
        addLines(points, length, false);
    }
+   public void addPath(CanvasPath path) {
+       super.addPath(path);
+   }
    public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length, boolean close) {
        final int l = length / 2;
 
