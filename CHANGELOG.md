@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.27](https://github.com/Akylas/nativescript-canvas/compare/v2.1.26...v2.1.27) (2020-05-02)
+
+
+### Bug Fixes
+
+* **android:** path fix ([27b6f6a](https://github.com/Akylas/nativescript-canvas/commit/27b6f6aca5b6cf246602ea2324fb3eaa1a2d6b55))
+
+
+
+
+
 ## [2.1.26](https://github.com/Akylas/nativescript-canvas/compare/v2.1.25...v2.1.26) (2020-05-02)
 
 **Note:** Version bump only for package nativescript-canvas
