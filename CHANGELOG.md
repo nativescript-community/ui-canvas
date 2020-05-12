@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.28](https://github.com/Akylas/nativescript-canvas/compare/v2.1.27...v2.1.28) (2020-05-12)
+
+
+### Bug Fixes
+
+* **ios:** fixed default paint alpha ([3ac529d](https://github.com/Akylas/nativescript-canvas/commit/3ac529db201760304db2da949f1af030a4846de3))
+
+
+
+
+
 ## [2.1.27](https://github.com/Akylas/nativescript-canvas/compare/v2.1.26...v2.1.27) (2020-05-02)
 
 
