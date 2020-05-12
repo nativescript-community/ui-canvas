@@ -931,7 +931,7 @@ export class Paint implements IPaint {
     strokeJoin: Join = Join.BEVEL;
     antiAlias = false;
     dither = false;
-    alpha = 1;
+    alpha = 255;
     currentContext: any;
     shadowLayer?: {
         radius: number;
