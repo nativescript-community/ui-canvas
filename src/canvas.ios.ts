@@ -1,7 +1,7 @@
 import { Font } from '@nativescript/core/ui/styling/font';
 import { layout, Color, View } from '@nativescript/core/ui/core/view';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode,Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
+import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
 import { CanvasBase } from './canvas.common';
 import { profile } from '@nativescript/core/profiling/profiling';
 
@@ -19,7 +19,10 @@ const FloatConstructor = interop.sizeof(interop.types.id) === 4 ? Float32Array :
 
 function applyAttributesToNSAttributedString(text: NSAttributedString, attrs: NSMutableDictionary<any, any>) {
     if (!attrs) {
-        return text;
+        if (text instanceof NSMutableAttributedString) {
+            return text;
+        }
+        return NSMutableAttributedString.alloc().initWithAttributedString(text);
     }
     const result = NSMutableAttributedString.alloc().initWithAttributedString(text);
     const range = { location: 0, length: result.length } as NSRange;
@@ -189,19 +192,19 @@ export enum PorterDuffMode {
     DARKEN = CGBlendMode.kCGBlendModeDarken,
     DST = CGBlendMode.kCGBlendModeNormal,
     DST_ATOP = CGBlendMode.kCGBlendModeDestinationAtop,
-    DST_IN= CGBlendMode.kCGBlendModeDestinationIn,
-    DST_OUT= CGBlendMode.kCGBlendModeDestinationOut,
-    DST_OVER= CGBlendMode.kCGBlendModeDestinationOver,
-    LIGHTEN= CGBlendMode.kCGBlendModeLighten,
-    MULTIPLY= CGBlendMode.kCGBlendModeMultiply,
-    OVERLAY= CGBlendMode.kCGBlendModeOverlay,
-    SCREEN= CGBlendMode.kCGBlendModeScreen,
-    SRC= CGBlendMode.kCGBlendModeNormal,
-    SRC_ATOP= CGBlendMode.kCGBlendModeSourceAtop,
-    SRC_IN= CGBlendMode.kCGBlendModeSourceIn,
-    SRC_OUT= CGBlendMode.kCGBlendModeSourceOut,
-    SRC_OVER= CGBlendMode.kCGBlendModeNormal,
-    XOR= CGBlendMode.kCGBlendModeXOR,
+    DST_IN = CGBlendMode.kCGBlendModeDestinationIn,
+    DST_OUT = CGBlendMode.kCGBlendModeDestinationOut,
+    DST_OVER = CGBlendMode.kCGBlendModeDestinationOver,
+    LIGHTEN = CGBlendMode.kCGBlendModeLighten,
+    MULTIPLY = CGBlendMode.kCGBlendModeMultiply,
+    OVERLAY = CGBlendMode.kCGBlendModeOverlay,
+    SCREEN = CGBlendMode.kCGBlendModeScreen,
+    SRC = CGBlendMode.kCGBlendModeNormal,
+    SRC_ATOP = CGBlendMode.kCGBlendModeSourceAtop,
+    SRC_IN = CGBlendMode.kCGBlendModeSourceIn,
+    SRC_OUT = CGBlendMode.kCGBlendModeSourceOut,
+    SRC_OVER = CGBlendMode.kCGBlendModeNormal,
+    XOR = CGBlendMode.kCGBlendModeXOR,
 }
 
 function createCGRect(l, t, r, b) {
@@ -1061,7 +1064,7 @@ export class Paint implements IPaint {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
-        return (this.color as Color).ios as UIColor;
+        return (this._color as Color).ios as UIColor;
     }
 
     public getTextSize(): number {
@@ -1111,9 +1114,8 @@ export class Paint implements IPaint {
         this.xfermode = param0;
         return param0;
     }
-    public getXfermode(): IPorterDuffXfermode{
+    public getXfermode(): IPorterDuffXfermode {
         return this.xfermode;
-
     }
 
     public getFontMetrics(fontMetrics?: FontMetrics): any {
@@ -1619,7 +1621,7 @@ export class Canvas implements ICanvas {
         }
 
         if (paint.xfermode) {
-            CGContextSetBlendMode( ctx, (paint.xfermode as PorterDuffXfermode).mode);
+            CGContextSetBlendMode(ctx, (paint.xfermode as PorterDuffXfermode).mode);
         }
 
         // if (withFont && paint.font) {
@@ -2149,14 +2151,27 @@ export class RadialGradient {
 }
 export class PorterDuffXfermode {
     constructor(public mode?: number) {}
-    
 }
 
 export class StaticLayout {
     rect: CGRect;
-    public constructor(private text: any, private paint: Paint, private width: number, private align: LayoutAlignment, private spacingmult, private spacingadd, private includepad) {}
-    draw(canvas: Canvas) {
-        let text: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithAttributedString(this.text);
+    nsAttributedString: NSAttributedString;
+    public constructor(private text: any, private paint: Paint, private width: number, private align: LayoutAlignment, private spacingmult, private spacingadd, private includepad) {
+        if (text instanceof NSAttributedString) {
+            this.nsAttributedString = text;
+            // } else if (!(text instanceof NSMutableAttributedString)) {
+            //     text = NSMutableAttributedString.alloc().initWithStringAttributes(text, this.paint.getDrawTextAttribs());
+        } else if (!(text instanceof NSAttributedString)) {
+            this.nsAttributedString = NSAttributedString.alloc().initWithString(text);
+        }
+    }
+    toDraw: NSMutableAttributedString;
+    createAttributedStringToDraw() {
+        if (this.toDraw) {
+            return;
+        }
+        let nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
+
         const paragraphStyle = NSMutableParagraphStyle.alloc().init();
         switch (this.align) {
             case LayoutAlignment.ALIGN_CENTER:
@@ -2169,44 +2184,48 @@ export class StaticLayout {
                 paragraphStyle.alignment = NSTextAlignment.Right;
                 break;
         }
-        text.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, { location: 0, length: text.length });
-        const ctx = canvas.ctx;
-        const paint = this.paint;
+        const fullRange = { location: 0, length: nsAttributedString.length };
+        nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
+        this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
+            nsAttributedString.addAttributesRange(attributes, range);
+        });
 
-        if (paint.style === Style.FILL) {
-            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFill);
-        } else if (paint.style === Style.STROKE) {
-            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextStroke);
-        } else {
-            CGContextSetTextDrawingMode(ctx, CGTextDrawingMode.kCGTextFillStroke);
-        }
-        // const font = paint.getUIFont();
-        const color = paint.getUIColor();
-        CGContextSetStrokeColorWithColor(ctx, color.CGColor);
-        CGContextSetFillColorWithColor(ctx, color.CGColor);
+        
+        this.toDraw = nsAttributedString;
+        let height;
+        this.toDraw.enumerateAttributeInRangeOptionsUsingBlock('verticalTextAligment', fullRange, 0, (value, range)=>{
+            if (value) {
+                if (!height) {
+                    height = this.getHeight();
+                }
+                const font:UIFont = this.toDraw.attributeAtIndexEffectiveRange(NSFontAttributeName, range.location, null);
+                const fontHeight = font.lineHeight;
+                this.toDraw.addAttributeValueRange(NSBaselineOffsetAttributeName, Math.round(height/2 - fontHeight/2),  range);
+            }
+        });
+    }
+    draw(canvas: Canvas) {
+        const ctx = canvas.ctx;
+        this.createAttributedStringToDraw();
+
         UIGraphicsPushContext(ctx);
-        // the issue here is that the font supplied by the paint is not used because it would override
-        // all the fonts in the NSAttributedString
-        text.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+        this.toDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         UIGraphicsPopContext();
     }
 
     getBounds() {
         if (!this.rect) {
-            let text = this.text;
-            if (typeof text === 'string') {
-                text = NSAttributedString.alloc().initWithStringAttributes(text, this.paint.getDrawTextAttribs());
-            } else if (this.text instanceof NSAttributedString) {
-                text = applyAttributesToNSAttributedString(text, this.paint.getDrawTextAttribs());
-            }
-            this.rect = (text as NSAttributedString).boundingRectWithSizeOptionsContext(CGSizeMake(this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+            this.createAttributedStringToDraw();
+            this.rect = this.toDraw.boundingRectWithSizeOptionsContext(CGSizeMake(this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         }
         return this.rect;
     }
     getWidth() {
-        return Math.round(isNaN(this.getBounds().size.width) ? this.width : this.getBounds().size.width);
+        const result = this.getBounds().size.width;
+        return Math.round(isNaN(result) ? this.width : result);
     }
     getHeight() {
-        return Math.round(this.getBounds().size.height);
+        const result = this.getBounds().size.height;
+        return Math.round(result);
     }
 }

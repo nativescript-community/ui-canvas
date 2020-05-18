@@ -503,6 +503,7 @@ export class LinearGradient {
 export class StaticLayout {
     _native: android.text.StaticLayout;
     constructor(text: any, paint: android.graphics.Paint, width: number, align, spacingmult, spacingadd, includepad) {
+        paint = paint['_native'] || paint;
         this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
         return new Proxy(this, this);
     }
