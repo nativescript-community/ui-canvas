@@ -371,6 +371,10 @@ export class Paint {
     set fontFamily(familyName: string) {
         this.setFontFamily(familyName);
     }
+    setFont(font: Font) {
+        this.fontInternal = font;
+        this._native.setTypeface(this.font.getAndroidTypeface());
+    }
     setFontWeight(weight: string) {
         this.fontInternal = this.font.withFontWeight(weight);
         this._native.setTypeface(this.font.getAndroidTypeface());
@@ -396,8 +400,19 @@ export class Paint {
     set textSize(value: number) {
         this._native.setTextSize(value);
     }
+    public setTypeface(font: Font | android.graphics.Typeface): Font {
+        if (font instanceof Font) {
+            this.fontInternal = font;
+        } else if (font) {
+            this.fontInternal['_typeface'] = font as android.graphics.Typeface;
+        } else {
+            this.fontInternal = null;
+        }
+        this._native.setTypeface(this.fontInternal.getAndroidTypeface());
+        return this.fontInternal;
+    }
     set typeface(typeface) {
-        this._native.setTypeface(typeface);
+        this.setTypeface(typeface);
     }
 }
 
