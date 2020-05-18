@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.29](https://github.com/Akylas/nativescript-canvas/compare/v2.1.28...v2.1.29) (2020-05-18)
+
+
+### Bug Fixes
+
+* more parity on StaticLayout ([795b89a](https://github.com/Akylas/nativescript-canvas/commit/795b89a29502bd82b69561f8d2d611a7a3cb1bd0))
+* **android:** paint font fixes ([2be5000](https://github.com/Akylas/nativescript-canvas/commit/2be50001fbcc607f3d86f0ecc8961eb0303516d7))
+
+
+
+
+
 ## [2.1.28](https://github.com/Akylas/nativescript-canvas/compare/v2.1.27...v2.1.28) (2020-05-12)
 
 
