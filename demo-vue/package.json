@@ -13,25 +13,24 @@
         }
     },
     "dependencies": {
-        "@nativescript/core": "^6.3.2",
-        "nativescript-akylas-vue": "2.5.0-alpha.6",
+        "@nativescript/core": "^6.5.1",
         "nativescript-canvas": "../plugin",
-        "nativescript-htmllabel": "^1.0.14",
-        "nativescript-perms": "2.0.2",
+        "nativescript-htmllabel": "^1.0.32",
+        "nativescript-perms": "2.0.6",
         "nativescript-theme-core": "~2.0.24",
-        "nativescript-tween": "0.0.5",
-        "nativescript-vue": "^2.4.0"
+        "nativescript-tween": "0.0.6",
+        "nativescript-vue": "^2.6.1"
     },
     "devDependencies": {
-        "nativescript-akylas-webpack-template": "1.0.12",
-        "nativescript-dev-webpack": "1.4.1",
-        "semver": "7.1.1",
-        "tns-platform-declarations": "^6.3.2",
-        "typescript": "^3.7.5",
+        "nativescript-akylas-webpack-template": "1.0.15",
+        "nativescript-dev-webpack": "1.5.1",
+        "semver": "7.3.2",
+        "tns-platform-declarations": "^6.5.1",
+        "typescript": "^3.9.2",
         "vue": "^2.6.11",
-        "vue-property-decorator": "^8.3.0",
-        "webpack": "^4.41.5",
-        "webpack-cli": "^3.3.10"
+        "vue-property-decorator": "^8.4.2",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.11"
     },
     "scripts": {
         "tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"

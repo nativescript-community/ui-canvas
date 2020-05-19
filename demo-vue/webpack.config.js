@@ -7,7 +7,6 @@ module.exports = env => {
         development = false,
     } = env;
     let aliases = {
-        'nativescript-vue': 'nativescript-akylas-vue',
         vue: 'nativescript-vue'
     }
     const projectRoot = __dirname;
