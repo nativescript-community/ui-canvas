@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/Akylas/nativescript-canvas/compare/v2.1.29...v3.0.0) (2020-05-19)
+
+
+### Features
+
+* removed Shapes (put your shapes direcly under the CanvasView) ([3275298](https://github.com/Akylas/nativescript-canvas/commit/32752981789e58bb2030b3f012c0884ac99e8789))
+
+
+
+
+
 ## [2.1.29](https://github.com/Akylas/nativescript-canvas/compare/v2.1.28...v2.1.29) (2020-05-18)
 
 
