@@ -2,12 +2,14 @@ import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Color } from '@nativescript/core/color/color';
 import { View } from '@nativescript/core/ui/core/view';
 import { Font } from '@nativescript/core/ui/styling/font';
+import Shape from './shapes/shape';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
 export function createRectF(x: number, y: number, w: number, h: number): RectF;
 export function parseCap(value: string | number): Cap;
 export function parseType(value: string | number): Style;
 export function parseJoin(value: string | number): Join;
+export function parseShadow(value: string): Join;
 
 export function parseDashEffect(value: string): DashPathEffect;
 
@@ -298,6 +300,8 @@ export class DashPathEffect extends android.graphics.DashPathEffect {
 
 declare class CanvasView extends View {
     protected onDraw(canvas: Canvas);
+    addShape(shape:Shape);
+    removeShape(shape:Shape);
     redraw();
     invalidate();
     onSizeChanged(w: number, h: number, oldw: number, oldh: number);

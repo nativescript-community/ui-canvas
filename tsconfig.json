@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "moduleResolution": "node",
         "declaration": true,
         "removeComments": false,
         "noLib": false,
@@ -20,13 +21,18 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "outDir": "./plugin",
-        "rootDir": "src",
         "paths": {
-            "nativescript-canvas": ["./src"],
-            "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
+            "tns-core-modules": ["./node_modules/@nativescript/core"],
+            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
+            "nativescript-canvas": ["src/canvas"],
+            "nativescript-canvas/*": ["src/*"],
+            "*": ["node_modules/*"]
         }
     },
-    "include": ["src/**/*.ts", "references.d.ts", "src/references.d.ts"],
-    "exclude": ["node_modules", ".git", "dist"],
-    "compileOnSave": false
+    "include": ["src/**/*", "src/**/*.ts", "./references.d.ts", "./src/references.d.ts"],
+    "exclude": ["platforms"],
+    "compileOnSave": false,
+    "angularCompilerOptions": {
+        "skipTemplateCodegen": true
+    }
 }

@@ -1,5 +1,4 @@
 import { Canvas, createRect, createRectF, Rect, RectF } from '../canvas';
-import { nsProperty } from '../canvas.common';
 import Shape, { lengthProperty, percentLengthProperty } from './shape';
 import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
 import { Property } from '@nativescript/core/ui/core/properties';

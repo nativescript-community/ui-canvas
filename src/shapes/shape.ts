@@ -1,15 +1,16 @@
 import { Color } from '@nativescript/core/color/color';
-import { Observable } from '@nativescript/core/data/observable/observable';
-import { booleanConverter, ViewBase } from '@nativescript/core/ui/core/view';
+import { booleanConverter, Observable } from '@nativescript/core/ui/core/view';
 import { Length, PercentLength } from '@nativescript/core/ui/styling/style-properties';
-import { Canvas, Cap, Join, Paint, parseCap, parseDashEffect, parseJoin, parseType, Style } from '../canvas';
+import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
+import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
 
 function createGetter(key, options: ShapePropertyOptions) {
-    return function() {
+    const realKey = '_' + key.toString().toLowerCase();
+    return function () {
         if (options.paintGetterName && this.paint[options.paintGetterName]) {
             return this.paint[options.paintGetterName]();
         } else {
-            return this.style[key];
+            return this[realKey];
         }
     };
 }
@@ -23,31 +24,35 @@ export interface ShapePropertyOptions {
     converter?: Function;
     paintGetterName?: string;
     paintSetterName?: string;
+    nonPaintProp?: boolean;
     paintSetter?: (paint: Paint, value: any) => void;
 }
 function createSetter(key, options: ShapePropertyOptions) {
-    return function(newVal) {
+    const realKey = '_' + key.toString().toLowerCase();
+    const nativeSetter = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
+    return function (newVal) {
+        const oldValue = this[realKey];
         const actualVal = options.converter ? options.converter(newVal) : newVal;
-        this.style[key] = actualVal;
-        // console.log('set', key, newVal, actualVal, options);
-        if (options.paintSetter) {
-            options.paintSetter(this.paint, actualVal);
-        } else if (options.paintSetterName) {
-            if (this.paint[options.paintSetterName]) {
-                this.paint[options.paintSetterName](actualVal);
-            }
-        } else {
-            if ((this.paint && this.paint.hasOwnProperty(key)) || hasSetter(this.paint, key)) {
-                this.paint[key] = actualVal;
+        this[realKey] = actualVal;
+        if (options.nonPaintProp !== true) {
+            if (options.paintSetter) {
+                options.paintSetter(this.paint, actualVal);
+            } else if (options.paintSetterName) {
+                if (this.paint[options.paintSetterName]) {
+                    this.paint[options.paintSetterName](actualVal);
+                }
             } else {
-                const setter = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
-                // console.log('test', setter, !!this.paint[setter]);
-                if (this.paint[setter]) {
-                    this.paint[setter](actualVal);
+                if ((this.paint && this.paint.hasOwnProperty(key)) || hasSetter(this.paint, key)) {
+                    this.paint[key] = actualVal;
+                } else {
+                    if (this.paint[nativeSetter]) {
+                        this.paint[nativeSetter](actualVal);
+                    }
                 }
             }
         }
-        this.notify({ object: this, eventName: Observable.propertyChangeEvent, propertyName: key, value: actualVal });
+        
+        this.notifyPropertyChange(key, actualVal , oldValue);
     };
 }
 
@@ -56,19 +61,27 @@ function shapePropertyGenerator(target: Object, key: string | symbol, options?: 
         get: createGetter(key, options),
         set: createSetter(key, options),
         enumerable: true,
-        configurable: true
+        configurable: true,
+    });
+
+    // for svelte!
+    Object.defineProperty(target, key.toString().toLowerCase(), {
+        get: createGetter(key, options),
+        set: createSetter(key, options),
+        enumerable: true,
+        configurable: true,
     });
 }
-export function shapeProperty(target: any, k?, desc?: PropertyDescriptor): any;
-export function shapeProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
-export function shapeProperty(converter, ...args) {
-    const options = args[0];
-    if (typeof options === 'object' && (!!options.converter || !!options.paintGetterName || !!options.paintSetterName)) {
+// export function shapeProperty(target: any, k?, desc?: PropertyDescriptor): any;
+// export function shapeProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
+export function shapeProperty(converter, args) {
+    if (args.length === 1 && typeof args[0] === 'object') {
+        const options = args[0];
         // factory
         if (!options.converter) {
             options.converter = converter;
         }
-        return function(target: any, key?: string, descriptor?: PropertyDescriptor) {
+        return function (target: any, key?: string, descriptor?: PropertyDescriptor) {
             return shapePropertyGenerator(target, key, options);
         };
     } else {
@@ -79,32 +92,32 @@ export function shapeProperty(converter, ...args) {
 export function stringProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function stringProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function stringProperty(...args) {
-    return shapeProperty(undefined, ...args);
+    return shapeProperty(undefined, args);
 }
 export function colorProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function colorProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function colorProperty(...args) {
-    return shapeProperty(v => new Color(v), ...args);
+    return shapeProperty((v) => new Color(v), args);
 }
 export function lengthProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function lengthProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function lengthProperty(...args) {
-    return shapeProperty(v => Length.parse(v), ...args);
+    return shapeProperty((v) => Length.parse(v), args);
 }
 export function percentLengthProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function percentLengthProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function percentLengthProperty(...args) {
-    return shapeProperty(v => PercentLength.parse(v), ...args);
+    return shapeProperty((v) => PercentLength.parse(v), args);
 }
 export function numberProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function numberProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function numberProperty(...args) {
-    return shapeProperty(v => parseFloat(v), ...args);
+    return shapeProperty((v) => parseFloat(v), args);
 }
 export function booleanProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function booleanProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function booleanProperty(...args) {
-    return shapeProperty(v => booleanConverter(v), ...args);
+    return shapeProperty((v) => booleanConverter(v), args);
 }
 
 export interface Shadow {
@@ -114,20 +127,6 @@ export interface Shadow {
     color: Color;
 }
 
-function parseShadow(value: string) {
-    if (value === 'none') {
-        return null;
-    }
-    const args = value.split(' ');
-    const hasRadius = args.length === 4;
-    return {
-        radius: hasRadius ? Length.parse(args[2]) : 3,
-        dx: Length.toDevicePixels(Length.parse(args[0])),
-        dy: Length.toDevicePixels(Length.parse(args[1])),
-        color: new Color(args[hasRadius ? 3 : 2])
-    };
-}
-
 function applyShadow(paint: Paint, shadow: Shadow) {
     if (shadow) {
         paint.setShadowLayer(shadow.radius, shadow.dx, shadow.dy, shadow.color);
@@ -135,28 +134,41 @@ function applyShadow(paint: Paint, shadow: Shadow) {
         paint.clearShadowLayer();
     }
 }
-export default abstract class Shape extends ViewBase {
-    paint = new Paint();
+export default abstract class Shape extends Observable {
+    _paint: Paint;
+    _parent: WeakRef<CanvasView>;
+    get paint() {
+        if (!this._paint) {
+            this._paint = new Paint();
+        }
+        return this._paint;
+    }
+    id: string;
+    // paint = new Paint();
     @colorProperty fillColor: Color;
     @colorProperty strokeColor: Color;
     @colorProperty color: Color;
     @lengthProperty strokeWidth: number;
     @stringProperty({ converter: parseDashEffect, paintSetterName: 'setPathEffect' }) dash: string;
-    @numberProperty({ converter: parseType, paintSetterName: 'setStyle' }) paintStyle: Style;
+    @numberProperty({ converter: parseType, paintSetterName: 'setStyle', toto: 'test', tata: () => 'test' }) paintStyle: Style;
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;
     @numberProperty textSize: number;
     // alias for textSize
-    @numberProperty({ paintGetterName: 'getTextSize', paintSetterName: 'setTextSize' }) fontSize: number;
+    @numberProperty({ paintSetterName: 'setTextSize' }) fontSize: number;
     @booleanProperty({ paintGetterName: 'isAntiAlias', paintSetterName: 'setAntiAlias' }) antiAlias: boolean;
     @colorProperty({
         converter: parseShadow,
-        paintSetter: applyShadow
+        paintSetter: applyShadow,
     })
     shadow: Shadow;
-    abstract drawOnCanvas(canvas: Canvas);
+    abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
 
-    drawMyShapeOnCanvas(canvas: Canvas) {
+    toString() {
+        return this.constructor.name;
+    }
+
+    drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView) {
         const paint = this.paint;
         // console.log('drawMyShapeOnCanvas', paint.getColor(), this.strokeColor, this.fillColor);
         if (this.strokeColor || this.fillColor) {
@@ -166,7 +178,7 @@ export default abstract class Shape extends ViewBase {
                 paint.setStyle(Style.FILL);
                 paint.setColor(this.fillColor);
                 // paint.color = this.fillColor;
-                this.drawOnCanvas(canvas);
+                this.drawOnCanvas(canvas, parent);
                 paint.setStyle(oldStyle);
                 paint.setColor(oldColor);
             }
@@ -177,7 +189,7 @@ export default abstract class Shape extends ViewBase {
                 }
                 paint.setStyle(Style.STROKE);
                 paint.setColor(this.strokeColor);
-                this.drawOnCanvas(canvas);
+                this.drawOnCanvas(canvas, parent);
                 paint.setStyle(oldStyle);
                 paint.setColor(oldColor);
                 if (clearShadow) {
@@ -185,7 +197,7 @@ export default abstract class Shape extends ViewBase {
                 }
             }
         } else {
-            this.drawOnCanvas(canvas);
+            this.drawOnCanvas(canvas, parent);
         }
     }
 }

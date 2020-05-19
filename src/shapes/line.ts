@@ -1,11 +1,14 @@
 import { Canvas, Style } from '../canvas';
-import { booleanProperty, lengthProperty, numberProperty, percentLengthProperty } from './shape';
-import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
+import { percentLengthProperty } from './shape';
+import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import Rectangle from './rectangle';
 import { layout } from '@nativescript/core/ui/core/view';
 
 export default class Line extends Rectangle {
-    paintStyle = Style.STROKE;
+    constructor() {
+        super();
+        this.paintStyle = Style.STROKE;
+    }
     drawOnCanvas(canvas: Canvas) {
         const availableWidth = layout.toDevicePixels(canvas.getWidth());
         const availableHeight = layout.toDevicePixels(canvas.getHeight());
@@ -13,7 +16,7 @@ export default class Line extends Rectangle {
             layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startX, 0, availableWidth)),
             layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startY, 0, availableHeight)),
             layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopX, 0, availableWidth)),
-            layout.toDeviceIndependentPixels( PercentLength.toDevicePixels(this.stopY, 0, availableHeight)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopY, 0, availableHeight)),
             this.paint
         );
     }

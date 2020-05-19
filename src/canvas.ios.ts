@@ -2058,8 +2058,8 @@ export class UICustomCanvasView extends UIView {
             CGContextDrawImage(context, viewport, image);
         } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
-            if (shapes.shapes.length > 0) {
-                shapes.shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas));
+            if (shapes.length > 0) {
+                shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner as any));
             }
         }
         owner.onDraw(this._canvas);
@@ -2190,7 +2190,6 @@ export class StaticLayout {
             nsAttributedString.addAttributesRange(attributes, range);
         });
 
-        
         this.toDraw = nsAttributedString;
         let height;
         this.toDraw.enumerateAttributeInRangeOptionsUsingBlock('verticalTextAligment', fullRange, 0, (value, range)=>{

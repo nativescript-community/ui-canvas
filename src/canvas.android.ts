@@ -4,7 +4,7 @@ import { layout, View } from '@nativescript/core/ui/core/view';
 import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
-import { CanvasBase, DEFAULT_SCALE } from './canvas.common';
+import { CanvasBase, DEFAULT_SCALE, hardwareAcceleratedProperty } from './canvas.common';
 import { Font } from '@nativescript/core/ui/styling/font';
 import { profile } from '@nativescript/core/profiling/profiling';
 
@@ -645,9 +645,9 @@ class CanvasView extends CanvasBase {
             }
             canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, this.shapePaint);
         } else if (!this.cached) {
-            const shapes = this.shapes;
-            if (shapes && shapes.shapes.length > 0) {
-                shapes.shapes.forEach((s) => s.drawMyShapeOnCanvas(this.augmentedCanvas as any));
+            const shapes = this._shapes;
+            if (shapes && shapes.length > 0) {
+                shapes.forEach((s) => s.drawMyShapeOnCanvas(this.augmentedCanvas as any, this as any));
             }
         }
         this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
@@ -659,6 +659,10 @@ class CanvasView extends CanvasBase {
         // const view = new NativeCanvasView(this._context, this);
         view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         return view;
+    }
+
+    [hardwareAcceleratedProperty.setNative](value) {
+        this.nativeViewProtected.setLayerType(value ? android.view.View.LAYER_TYPE_HARDWARE : android.view.View.LAYER_TYPE_SOFTWARE, null);
     }
     initNativeView() {
         super.initNativeView();
