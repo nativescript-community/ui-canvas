@@ -26,7 +26,7 @@ The android API is actually a direct subclass with some Additions
 
 ## Plain NativeScript
 
-<span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:mdc="nativescript-canvas"` on the Page element_
+<span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:cv="nativescript-canvas"` on the Page element_
 
 ### XML
 
