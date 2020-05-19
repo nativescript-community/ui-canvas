@@ -12,6 +12,13 @@ Be sure to run a new build after adding plugins to avoid any issues.
 ---
 
 
+### Migration 
+
+#### 2.x => 3.x
+
+The `Shapes` component was removed, simply put your shapes directly under the `CanvasView`
+
+
 ### Usage
 
 The nativescript Canvas is based on the [Android Canvas](https://developer.android.com/reference/android/graphics/Canvas) class.
