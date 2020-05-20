@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/Akylas/nativescript-canvas/compare/v3.0.1...v3.0.2) (2020-05-20)
+
+
+### Bug Fixes
+
+* **android:** StaticLayout correctly get updated paint ([f0bdfc3](https://github.com/Akylas/nativescript-canvas/commit/f0bdfc3f5b414670e580c4bcfda035f3f7becba3))
+
+
+
+
+
 ## [3.0.1](https://github.com/Akylas/nativescript-canvas/compare/v3.0.0...v3.0.1) (2020-05-20)
 
 
