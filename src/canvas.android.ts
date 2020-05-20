@@ -551,7 +551,7 @@ export class StaticLayout {
         return this._native;
     }
     constructor(text: any, paint: android.graphics.Paint, width: number, align, spacingmult, spacingadd, includepad) {
-        paint = paint['_native'] || paint;
+        paint = paint['_native'] ? (paint as any).getNative() : paint;
         this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
         return new Proxy(this, this);
     }
