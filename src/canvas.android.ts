@@ -5,7 +5,7 @@ import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, DEFAULT_SCALE, hardwareAcceleratedProperty } from './canvas.common';
-import { Font } from '@nativescript/core/ui/styling/font';
+import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
@@ -102,6 +102,9 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
 const canvasAugmentedMethods = ['clear', 'drawBitmap', 'drawView'];
 class Canvas {
     _native: android.graphics.Canvas;
+    getNative() {
+        return this._native;
+    }
     _bitmap: android.graphics.Bitmap;
     _shouldReleaseBitmap = false;
     constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number, height?: number) {
@@ -141,7 +144,7 @@ class Canvas {
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
-                        args[index] = element._native;
+                        args[index] = element.getNative();
                     }
                 }
                 if (methodName === 'setBitmap') {
@@ -314,9 +317,21 @@ class Canvas {
 export class Paint {
     _native: android.graphics.Paint;
     fontInternal: Font;
+    _needsFontUpdate = true;
+    getNative() {
+        if (this._needsFontUpdate) {
+            // const startTime = Date.now();
+            this._needsFontUpdate = false;
+            const font = this.font;
+            const nTypeface = font.getAndroidTypeface();
+            this._native.setTypeface(nTypeface);
+            // console.log('[Paint]', 'setTypeface', font.fontFamily, nTypeface, Date.now() - startTime, 'ms');
+        }
+        return this._native;
+    }
     constructor() {
         const native = (this._native = new android.graphics.Paint());
-        native.setTypeface(this.font.getAndroidTypeface());
+        // native.setTypeface(this.font.getAndroidTypeface());
         return new Proxy(this, {
             get: function (target, name, receiver) {
                 if (native[name]) {
@@ -326,7 +341,7 @@ export class Paint {
                         for (let index = 0; index < args.length; index++) {
                             const element = args[index];
                             if (element && element._native) {
-                                args[index] = element._native;
+                                args[index] = element.getNative();
                             }
                         }
                         if (methodName === 'setShadowLayer') {
@@ -339,7 +354,8 @@ export class Paint {
                             } else {
                                 this.fontInternal['_typeface'] = args[0] as android.graphics.Typeface;
                             }
-                            native.setTypeface(this.font.getAndroidTypeface());
+                            this._needsFontUpdate = true;
+                            // native.setTypeface(this.font.getAndroidTypeface());
                             return this.fontInternal;
                         }
                         return native[methodName](...args);
@@ -365,22 +381,41 @@ export class Paint {
         return this.getFontFamily();
     }
     setFontFamily(familyName: string) {
-        this.fontInternal = this.font.withFontFamily(familyName);
-        this._native.setTypeface(this.font.getAndroidTypeface());
+        if (this.font.fontFamily !== familyName) {
+            this.fontInternal = this.font.withFontFamily(familyName);
+            this._needsFontUpdate = true;
+        }
     }
     set fontFamily(familyName: string) {
         this.setFontFamily(familyName);
     }
     setFont(font: Font) {
         this.fontInternal = font;
-        this._native.setTypeface(this.font.getAndroidTypeface());
+        this._needsFontUpdate = true;
+        // this._native.setTypeface(this.font.getAndroidTypeface());
     }
-    setFontWeight(weight: string) {
-        this.fontInternal = this.font.withFontWeight(weight);
-        this._native.setTypeface(this.font.getAndroidTypeface());
+    set font(font: Font) {
+        this.setFont(font);
     }
-    set fontWeight(weight: string) {
+    set fontWeight(weight: FontWeight) {
         this.setFontWeight(weight);
+    }
+    setFontWeight(weight: FontWeight) {
+        if (this.font.fontWeight !== weight) {
+            this.fontInternal = this.font.withFontWeight(weight);
+            this._needsFontUpdate = true;
+        }
+        // this._native.setTypeface(this.font.getAndroidTypeface());
+    }
+    set fontStyle(style: FontStyle) {
+        this.setFontStyle(style);
+    }
+    setFontStyle(style: FontStyle) {
+        if (this.font.fontStyle !== style) {
+            this.fontInternal = this.font.withFontStyle(style);
+            this._needsFontUpdate = true;
+        }
+        // this._native.setTypeface(this.font.getAndroidTypeface());
     }
     set color(color) {
         (this as any).setColor(color);
@@ -408,7 +443,8 @@ export class Paint {
         } else {
             this.fontInternal = null;
         }
-        this._native.setTypeface(this.fontInternal.getAndroidTypeface());
+        this._needsFontUpdate = true;
+        // this._native.setTypeface(this.fontInternal.getAndroidTypeface());
         return this.fontInternal;
     }
     set typeface(typeface) {
@@ -418,6 +454,9 @@ export class Paint {
 
 export class DashPathEffect {
     _native: android.graphics.DashPathEffect;
+    getNative() {
+        return this._native;
+    }
     constructor(intervals: number[], phase: number) {
         this._native = new android.graphics.DashPathEffect(arrayoNativeArray(intervals), phase);
         return new Proxy(this, this);
@@ -437,6 +476,9 @@ export class DashPathEffect {
 
 export class Path {
     _native: com.akylas.canvas.CanvasPath;
+    getNative() {
+        return this._native;
+    }
     constructor(path?: com.akylas.canvas.CanvasPath) {
         this._native = path ? new com.akylas.canvas.CanvasPath(path) : new com.akylas.canvas.CanvasPath();
         return new Proxy(this, this);
@@ -449,7 +491,7 @@ export class Path {
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
-                        args[index] = element._native;
+                        args[index] = element.getNative();
                     }
                 }
                 if (methodName === 'addLines' || methodName === 'setLines' || methodName === 'addCubicLines' || methodName === 'setCubicLines') {
@@ -483,6 +525,9 @@ export class RadialGradient {
 
 export class LinearGradient {
     _native: android.graphics.LinearGradient;
+    getNative() {
+        return this._native;
+    }
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
         this._native = new android.graphics.LinearGradient(param0, param1, param2, param3, createColorParam(param4), param5 instanceof Array ? param5 : createColorParam(param5), param6);
         return new Proxy(this, this);
@@ -502,6 +547,9 @@ export class LinearGradient {
 
 export class StaticLayout {
     _native: android.text.StaticLayout;
+    getNative() {
+        return this._native;
+    }
     constructor(text: any, paint: android.graphics.Paint, width: number, align, spacingmult, spacingadd, includepad) {
         paint = paint['_native'] || paint;
         this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
@@ -515,7 +563,7 @@ export class StaticLayout {
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
-                        args[index] = element._native;
+                        args[index] = element.getNative();
                     }
                 }
                 return native[methodName](...args);

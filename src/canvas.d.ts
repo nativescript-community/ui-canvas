@@ -1,7 +1,7 @@
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Color } from '@nativescript/core/color/color';
 import { View } from '@nativescript/core/ui/core/view';
-import { Font } from '@nativescript/core/ui/styling/font';
+import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
@@ -26,6 +26,10 @@ export class Paint {
     strokeJoin: Join;
     style: Style;
     textSize: number;
+    fontFamily: string;
+    fontWeight: FontWeight;
+    fontStyle: FontStyle;
+    font: Font;
 
     public getAlpha(): number;
     public getStyle(): Style;
@@ -66,7 +70,8 @@ export class Paint {
     public getStrokeCap(): Cap;
     public setTextSize(value: number): void;
     public setFontFamily(familyName: string);
-    public setFontWeight(weight: string);
+    public setFontWeight(weight: FontWeight);
+    public setFontStyle(style: FontStyle);
     public getFontFamily(): string;
     public setShader(value: any): any;
     // public descent(): number;

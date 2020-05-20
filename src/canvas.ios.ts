@@ -1,4 +1,4 @@
-import { Font } from '@nativescript/core/ui/styling/font';
+import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
 import { layout, Color, View } from '@nativescript/core/ui/core/view';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
@@ -1051,12 +1051,28 @@ export class Paint implements IPaint {
         this._font = this.font.withFontFamily(familyName);
         this._textAttribs = null;
     }
+    set fontFamily(familyName: string) {
+        this.setFontFamily(familyName);
+    }
+    get fontFamily() {
+        return this.getFontFamily();
+    }
     getFontFamily() {
         return this.font.fontFamily || this.getUIFont().familyName;
     }
 
-    setFontWeight(weight: string) {
+    set fontWeight(weight: FontWeight) {
+        this.setFontWeight(weight);
+    }
+    setFontWeight(weight: FontWeight) {
         this._font = this.font.withFontWeight(weight);
+        this._textAttribs = null;
+    }
+    set fontStyle(style: FontStyle) {
+        this.setFontStyle(style);
+    }
+    setFontStyle(style: FontStyle) {
+        this._font = this.font.withFontStyle(style);
         this._textAttribs = null;
     }
 

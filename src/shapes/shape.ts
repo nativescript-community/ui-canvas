@@ -51,8 +51,8 @@ function createSetter(key, options: ShapePropertyOptions) {
                 }
             }
         }
-        
-        this.notifyPropertyChange(key, actualVal , oldValue);
+
+        this.notifyPropertyChange(key, actualVal, oldValue);
     };
 }
 
@@ -139,11 +139,20 @@ export default abstract class Shape extends Observable {
     _parent: WeakRef<CanvasView>;
     get paint() {
         if (!this._paint) {
+            // const startTime = Date.now();
             this._paint = new Paint();
+            // this.log('create paint', Date.now() - startTime, 'ms');
         }
         return this._paint;
     }
+    log(...args) {
+        return console.log(this.toString(), ...args);
+    } 
+
     id: string;
+    toString() {
+        return `[${this.constructor.name}]${this.id ? `<${this.id}>` : ''}`;
+    }
     // paint = new Paint();
     @colorProperty fillColor: Color;
     @colorProperty strokeColor: Color;
@@ -163,10 +172,6 @@ export default abstract class Shape extends Observable {
     })
     shadow: Shadow;
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
-
-    toString() {
-        return this.constructor.name;
-    }
 
     drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView) {
         const paint = this.paint;
