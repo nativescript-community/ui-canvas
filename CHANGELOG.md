@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/Akylas/nativescript-canvas/compare/v3.0.0...v3.0.1) (2020-05-20)
+
+
+### Bug Fixes
+
+* some perfs improvements and new props ([8e20a54](https://github.com/Akylas/nativescript-canvas/commit/8e20a548776ccfad461b837d5ed8cb9371c53a2d))
+
+
+
+
+
 # [3.0.0](https://github.com/Akylas/nativescript-canvas/compare/v2.1.29...v3.0.0) (2020-05-19)
 
 
