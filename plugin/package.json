@@ -4,6 +4,7 @@
     "description": "Nativescript Canvas plugin.",
     "main": "./canvas",
     "module": "./canvas.mjs",
+    "sideEffects": false,
     "typings": "./canvas.d.ts",
     "nativescript": {
         "platforms": {
