@@ -4,9 +4,8 @@ import { layout, View, CSSType } from '@nativescript/core/ui/core/view';
 import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
-import { CanvasBase, DEFAULT_SCALE, hardwareAcceleratedProperty } from './canvas.common';
+import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
-import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
 
@@ -194,125 +193,6 @@ class Canvas {
         }
     }
 }
-// let Canvas: new (imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) => ICanvas;
-// function initCanvasClass() {
-//     if (Canvas) {
-//         return Canvas;
-//     }
-//     class CanvasImpl extends android.graphics.Canvas {
-//         _bitmap: android.graphics.Bitmap;
-//         _shouldReleaseBitmap = false;
-//         constructor(imageOrWidth: ImageSource | android.graphics.Bitmap | number, height?: number) {
-//             super();
-//             // this.setDensity(Math.round(DEFAULT_SCALE * 160));
-//             // this.scale(DEFAULT_SCALE, DEFAULT_SCALE); // always scale to device density
-//             if (imageOrWidth instanceof ImageSource) {
-//                 this._bitmap = imageOrWidth.android;
-//             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
-//                 this._bitmap = imageOrWidth;
-//             } else {
-//                 this._shouldReleaseBitmap = true;
-//                 // console.log('create canvas with size', imageOrWidth, height);
-//                 // const options = new android.graphics.BitmapFactory.Options();
-//                 // options.inMutable = true;
-//                 // (options as any).outConfig = android.graphics.Bitmap.Config.ARGB_8888;
-//                 // console.log('create canvas with size about to create bitmap');
-//                 this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
-//                 // console.log('create canvas with size created bitmap', this._bitmap);
-//             }
-//             if (!this._bitmap.isMutable()) {
-//                 this._shouldReleaseBitmap = true;
-//                 this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
-//             }
-//             this.setBitmap(this._bitmap);
-//         }
-
-//         getImage() {
-//             return this._bitmap;
-//         }
-//         // setBitmap(image) {
-//         //     if (image instanceof ImageSource) {
-//         //         this._bitmap = image.android;
-//         //     } else {
-//         //         this._bitmap = image;
-//         //     }
-//         //     super.setBitmap(this._bitmap);
-//         // }
-
-//         getWidth() {
-//             if (this._bitmap) {
-//                 return super.getWidth();
-//             }
-//             return Math.round(layout.toDeviceIndependentPixels(super.getWidth()));
-//         }
-//         getHeight() {
-//             if (this._bitmap) {
-//                 return super.getHeight();
-//             }
-//             return Math.round(layout.toDeviceIndependentPixels(super.getHeight()));
-//         }
-//         drawColor(color: number | Color | string): void {
-//             const actualColor = color instanceof Color ? color : new Color(color as any);
-//             super.drawColor(actualColor.android);
-//         }
-//         clear() {
-//             this.drawColor('transparent');
-//         }
-//         release() {
-//             if (this._shouldReleaseBitmap && this._bitmap) {
-//                 this._bitmap.recycle();
-//                 this._bitmap = null;
-//             }
-//         }
-
-//         // override to allow the use of ImageSource
-//         public drawBitmap(param0: any, param1: any, param2: any, param3?: any) {
-//             if (param0 instanceof ImageSource) {
-//                 param0 = param0.android;
-//             }
-//             if (!param3 && (param2 === undefined || param2 instanceof Paint)) {
-//                 super.drawBitmap(param0, param1, param2);
-//             } else {
-//                 super.drawBitmap(param0, param1, param2, param3);
-//             }
-//         }
-
-//         public drawView(view: View, rect?: android.graphics.Rect) {
-//             if (!view.nativeView) {
-//                 const activity = androidApp.foregroundActivity as android.app.Activity;
-//                 (view as any)._setupAsRootView(activity);
-//                 (view as any)._isAddedToNativeVisualTree = true;
-//                 (view as any).callLoaded();
-//             }
-//             if (view.nativeView) {
-//                 if (rect) {
-//                     // Lay the view out with the known dimensions
-//                     view.layout(0, 0, rect.width(), rect.height());
-
-//                     // Translate the canvas so the view is drawn at the proper coordinates
-//                     this.save();
-//                     this.translate(rect.left, rect.top);
-//                 }
-//                 (view.nativeView as android.view.View).draw(this);
-//                 if (rect) {
-//                     this.restore();
-//                 }
-//             }
-//         }
-//         public drawLines(...params) {
-//             params[0] = arrayoNativeArray(params[0]);
-//             const last = params[params.length - 1];
-//             if (last instanceof android.graphics.Matrix) {
-//                 (last as android.graphics.Matrix).mapPoints(params[0]);
-//                 params.pop();
-//             }
-//             // console.log('drawLines', params);
-//             return super.drawLines.apply(this, params);
-//         }
-//     }
-//     Canvas = CanvasImpl as any;
-//     return Canvas;
-// }
 
 export class Paint {
     _native: android.graphics.Paint;
@@ -573,87 +453,6 @@ export class StaticLayout {
         }
     }
 }
-
-// class CanvasWrapper {
-//     _native: android.graphics.Canvas;
-//     constructor(canvas?: android.graphics.Canvas) {
-//         this._native = canvas;
-//         const proxy = new Proxy(this, this);
-//         return proxy;
-//     }
-//     get(target, name, receiver) {
-//         const native = this._native;
-//         if (native[name]) {
-//             // assume methods live on the prototype
-//             return function (...args) {
-//                 var methodName = name;
-//                 for (let index = 0; index < args.length; index++) {
-//                     const element = args[index];
-//                     if (element && element._native) {
-//                         args[index] = element._native;
-//                     }
-//                 }
-//                 if (methodName === 'setBitmap') {
-//                     if (args[0] instanceof ImageSource) {
-//                         args[0] = args[0].android;
-//                     }
-//                 } else if (methodName === 'drawColor') {
-//                     args[0] = createColorParam(args[0]);
-//                 } else if (methodName === 'drawLines') {
-//                     args[0] = arrayoNativeArray(args[0]);
-//                     const last = args[args.length - 1];
-//                     if (last instanceof android.graphics.Matrix) {
-//                         (last as android.graphics.Matrix).mapPoints(args[0]);
-//                         args.pop();
-//                     }
-//                 } else if (methodName === 'getWidth' || methodName === 'getHeight') {
-//                     return layout.toDeviceIndependentPixels(native[methodName]());
-//                 } else if (methodName === 'drawBitmap') {
-//                     return drawBitmapOnCanvas(native, args[0], args[1], args[2], args[3]);
-//                 } else if (methodName === 'drawView') {
-//                     return drawViewOnCanvas(native, args[0], args[1]);
-//                 }
-//                 return native[methodName](...args);
-//                 // we now have access to both methodName and arguments
-//             };
-//         } else {
-//             // assume instance vars like on the target
-//             return Reflect.get(target, name, receiver);
-//         }
-//     }
-// }
-
-// let NativeCanvasView;
-// function initAndroidCanvasViewClass() {
-//     if (!NativeCanvasView) {
-//         class NativeCanvasViewImpl extends com.akylas.canvas.CanvasView {
-//             _owner: WeakRef<CanvasView>;
-//             augmentedCanvas: any;
-//             public constructor(context: android.content.Context, owner: CanvasView) {
-//                 super(context);
-//                 this._owner = new WeakRef(owner);
-//                 this.augmentedCanvas = new Canvas();
-//                 //default hardware accelerated
-//             }
-//             public __sizeChangedImpl(w: number, h: number, oldw: number, oldh: number) {
-//                 const owner = this._owner && this._owner.get();
-//                 if (owner) {
-//                     owner.onSizeChanged(layout.toDeviceIndependentPixels(w), layout.toDeviceIndependentPixels(h), oldw, oldh);
-//                 }
-//             }
-//             frameRatePaint: IPaint;
-//             onDraw(canvas: android.graphics.Canvas) {
-//                 const owner = this._owner && this._owner.get();
-//                 super.onDraw(canvas);
-//                 if (owner) {
-//                 }
-//             }
-//         }
-//         NativeCanvasView = NativeCanvasViewImpl;
-//     }
-//     return NativeCanvasView;
-// }
-
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;
 let PorterDuffMode, PorterDuffXfermode;
 function initClasses() {
