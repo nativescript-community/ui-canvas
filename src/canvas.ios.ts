@@ -1,5 +1,5 @@
 import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
-import { layout, Color, View } from '@nativescript/core/ui/core/view';
+import { layout, Color, View, CSSType } from '@nativescript/core/ui/core/view';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
 import { CanvasBase } from './canvas.common';
@@ -2093,6 +2093,7 @@ export class UICustomCanvasView extends UIView {
     frameRatePaint: Paint;
 }
 
+@CSSType('CanvasView')
 export class CanvasView extends CanvasBase {
     onDraw(canvas: Canvas) {
         this.notify({ eventName: 'draw', object: this, canvas: canvas });

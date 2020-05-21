@@ -1,6 +1,6 @@
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Color } from '@nativescript/core/color/color';
-import { layout, View } from '@nativescript/core/ui/core/view';
+import { layout, View, CSSType } from '@nativescript/core/ui/core/view';
 import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
@@ -681,6 +681,7 @@ function initClasses() {
 //         setOnLayoutChangeListener();
 //     }
 // }
+@CSSType('CanvasView')
 class CanvasView extends CanvasBase {
     augmentedCanvas = new Canvas();
     frameRatePaint: IPaint;
