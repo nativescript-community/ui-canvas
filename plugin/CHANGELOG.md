@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.5](https://github.com/Akylas/nativescript-canvas/compare/v3.0.4...v3.0.5) (2020-05-21)
+
+
+### Bug Fixes
+
+* sideEffects for tree shacking ([86f2347](https://github.com/Akylas/nativescript-canvas/commit/86f234736d1e87a4c619a2190119b3fcc4f6c534))
+
+
+
+
+
 ## [3.0.4](https://github.com/Akylas/nativescript-canvas/compare/v3.0.3...v3.0.4) (2020-05-21)
 
 **Note:** Version bump only for package nativescript-canvas
