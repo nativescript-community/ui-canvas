@@ -11,10 +11,9 @@ demo*/typings
 *.framework
 **/*.js.map
 src/**/*.js
-plugin/**/*.js
 plugin/**/*.d.ts
 bin
-build
+build/
 Pods
 !plugin/platforms
 /plugin/platforms/android/nativescript_*.aar

@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "tsc": "cp src/canvas.d.ts plugin && tsc -skipLibCheck -d",
-        "build.plugin.esm": "tsc -skipLibCheck --target es2015 --removeComments --outDir build/esm",
+        "build.plugin.esm": "tsc -skipLibCheck --target es2015 --module esnext --removeComments --outDir build/esm",
         "build.plugin": " \\cp README.md plugin/ && rm -f .tsbuildinfo && npm run tsc && npm run build.plugin.esm && node ./build.esm.js",
         "clean": "rimraf ./plugin/**/*.d.ts ./plugin/**/*.js ./plugin/**/*.js.map plugin/node_modules plugin/package-lock.json",
         "build.android": "bash src-native/android/build.sh",
