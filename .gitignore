@@ -21,3 +21,5 @@ Pods
 *.xcuserdatad
 /plugin/README.md
 *.aar
+plugin/**/*js.map
+plugin/**/*js
