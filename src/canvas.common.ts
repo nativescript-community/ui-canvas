@@ -90,6 +90,7 @@ export abstract class CanvasBase extends View {
     public addShape(shape: Shape) {
         this.getOrCreateShapes().push(shape);
     }
+    
     public removeShape(shape: Shape) {
         if (this._shapes) {
             const index = this._shapes.indexOf(shape);
@@ -111,6 +112,11 @@ export abstract class CanvasBase extends View {
             this.addShape(value);
         }
         // we ignore any other kind of view.
+    }
+    public _removeView(view: any) {
+        if (view instanceof Shape) {
+            this.removeShape(view);
+        }
     }
 
     private onShapesCollectionChanged(eventData: ChangedData<Shape>) {
