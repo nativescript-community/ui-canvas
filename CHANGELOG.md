@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.7](https://github.com/Akylas/nativescript-canvas/compare/v3.0.6...v3.0.7) (2020-05-24)
+
+
+### Bug Fixes
+
+* override _removeView to prevent crash ([5b33531](https://github.com/Akylas/nativescript-canvas/commit/5b33531e7326d797a467927ea1b87f1926770e08))
+
+
+
+
+
 ## [3.0.6](https://github.com/Akylas/nativescript-canvas/compare/v3.0.5...v3.0.6) (2020-05-21)
 
 **Note:** Version bump only for package nativescript-canvas
