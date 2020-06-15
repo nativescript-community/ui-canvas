@@ -99,14 +99,14 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 @implementation UIBezierPath (Elements)
 
 
-- (void) setLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close {
+- (void) setLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close {
   [self removeAllPoints];
-  [self addLines:points count:count close:close];
+  [self addLines:points offset:offset count:count close:close];
 }
 
-- (void) addLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close{
-  [self moveToPoint:(CGPoint)CGPointMake(points[0], points[1])];
-  for (int i = 2; i < count; i+=2)
+- (void) addLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close{
+  [self moveToPoint:(CGPoint)CGPointMake(points[offset], points[offset+1])];
+  for (int i = offset + 2; i < count; i+=2)
   {
     [self addLineToPoint:(CGPoint)CGPointMake(points[i], points[i + 1])];
   }
@@ -115,9 +115,9 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   }
 }
 
-+ (void) addLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path{
-  CGPathMoveToPoint(path, NULL, points[0], points[1]);
-  for (int i = 2; i < count; i+=2)
++ (void) addLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path{
+  CGPathMoveToPoint(path, NULL, points[offset], points[offset+1]);
+  for (int i = offset +2; i < count; i+=2)
   {
     CGPathAddLineToPoint(path, NULL, points[i], points[i + 1]);
   }
@@ -126,14 +126,14 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   }
 }
 
-- (void) setCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close {
+- (void) setCubicLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close {
   [self removeAllPoints];
-  [self addCubicLines:points count:count close:close];
+  [self addCubicLines:points offset:offset count:count close:close];
 }
 
-- (void) addCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close {
-  [self moveToPoint:(CGPoint)CGPointMake(points[0], points[1])];
-  for (int i = 2; i < count; i+=6)
+- (void) addCubicLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close {
+  [self moveToPoint:(CGPoint)CGPointMake(points[offset], points[offset+1])];
+  for (int i = offset+2; i < count; i+=6)
   {
     [self addCurveToPoint:CGPointMake(points[i], points[i + 1]) controlPoint1:CGPointMake(points[i + 2], points[i + 3]) controlPoint2:CGPointMake(points[i + 4], points[i + 5])];
   }
@@ -143,9 +143,9 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 }
 
 
-+ (void) addCubicLines: (CGFloat *)points count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path {
-  CGPathMoveToPoint(path, NULL, points[0], points[1]);
-  for (int i = 2; i < count; i+=6)
++ (void) addCubicLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path {
+  CGPathMoveToPoint(path, NULL, points[offset], points[offset+1]);
+  for (int i = offset + 2; i < count; i+=6)
   {
     CGPathAddCurveToPoint(path, NULL, points[i], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5]);
   }

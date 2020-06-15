@@ -538,9 +538,8 @@ class CanvasView extends CanvasBase {
                         this.frameRatePaint = new Paint() as any;
                         this.frameRatePaint.color = 'blue';
                         this.frameRatePaint.setTextSize(12);
-                        this.frameRatePaint.setTextSize(12);
                     }
-                    canvas.drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
+                    (this.augmentedCanvas as any).drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
                 }
             },
         });

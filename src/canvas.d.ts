@@ -274,10 +274,10 @@ export class Path {
     isInverseFillType(): boolean;
     set(param0: Path): void;
 
-    addLines(points: number[], length?: number, close?: boolean);
-    setLines(points: number[], length?: number, close?: boolean);
-    addCubicLines(points: number[], length?: number, close?: boolean);
-    setCubicLines(points: number[], length?: number, close?: boolean);
+    addLines(points: number[], offset?:number, length?: number, close?: boolean);
+    setLines(points: number[], offset?:number, length?: number, close?: boolean);
+    addCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
+    setCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
 }
 export class DrawFilter extends android.graphics.DrawFilter {}
 export class Op extends android.graphics.Region.Op {}

@@ -1,7 +1,7 @@
 declare namespace UIBezierPath {
 	 function fromStringWithFont(string: string, font: UIFont): UIBezierPath;
-	 function addLinesCountCloseToPath(points, length, close, path)
-	 function addCubicLinesCountCloseToPath(points, length, close, path)
+	 function addLinesOffsetCountCloseToPath(points, offset, length, close, path)
+	 function addCubicLinesOffsetCountCloseToPath(points, offset, length, close, path)
 }
 
 declare namespace UIDrawingPath {

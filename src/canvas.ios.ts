@@ -633,7 +633,7 @@ export class Path implements IPath {
         const currentPoint = this.getCurrentPoint();
         this.moveTo(dx + currentPoint.x, dy + currentPoint.y);
     }
-    addLines(points: number[], length?: number, close?: boolean) {
+    addLines(points: number[], offset?: number, length?: number, close?: boolean) {
         // const pts = args[0] as number[];
         if (points.length <= 0 || points.length % 2 !== 0) {
             console.error('wrong points number');
@@ -649,10 +649,9 @@ export class Path implements IPath {
         //     CGPathCloseSubpath(this._path);
         // }
 
-        // console.log('test1', Date.now() - starttime);
         // const path = CGPathCreateMutable();
         // starttime = Date.now();
-        UIBezierPath.addLinesCountCloseToPath(points, length, close, this._path);
+        UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this._path);
         // console.log('test2', Date.now() - starttime);
 
         // const bPath =  UIBezierPath.bezierPath();
@@ -660,11 +659,11 @@ export class Path implements IPath {
         // bPath.addLinesCountClose(points, length, close);
         // console.log('test3', Date.now() - starttime);
     }
-    setLines(points: number[], length?: number, close?: boolean) {
+    setLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
-        this.addLines(points, length, close);
+        this.addLines(points, offset, length, close);
     }
-    addCubicLines(points: number[], length?: number, close?: boolean) {
+    addCubicLines(points: number[], offset?: number, length?: number, close?: boolean) {
         // const pts = args[0] as number[];
         if (points.length < 8) {
             console.error('wrong points number');
@@ -679,11 +678,11 @@ export class Path implements IPath {
         // if (close === true) {
         //     CGPathCloseSubpath(this._path);
         // }
-        UIBezierPath.addCubicLinesCountCloseToPath(points, length, close, this._path);
+        UIBezierPath.addCubicLinesOffsetCountCloseToPath(points, offset, length, close, this._path);
     }
-    setCubicLines(points: number[], length?: number, close?: boolean) {
+    setCubicLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
-        this.addCubicLines(points, length, close);
+        this.addCubicLines(points, offset, length, close);
     }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());

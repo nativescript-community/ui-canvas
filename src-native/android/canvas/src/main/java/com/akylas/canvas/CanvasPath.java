@@ -18,19 +18,22 @@ public class CanvasPath extends android.graphics.Path {
    }
 
    public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points) {
-       addLines(points, points.length, false);
+       addLines(points, 0, points.length, false);
    }
-   public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length) {
-       addLines(points, length, false);
+   public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset) {
+       addLines(points, offset, points.length - offset, false);
+   }
+   public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset, int length) {
+       addLines(points,  offset, length, false);
    }
    public void addPath(CanvasPath path) {
        super.addPath(path);
    }
-   public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length, boolean close) {
-       final int l = length ;
+   public void addLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset, int length, boolean close) {
+       final int l = offset + length ;
 
-       moveTo(points[0], points[1]);
-       for (int i = 2; i < l; i+=2) {
+       moveTo(points[offset], points[offset + 1]);
+       for (int i = offset + 2; i < l; i+=2) {
            lineTo(points[i], points[i + 1]);
        }
        if (close) {
@@ -38,28 +41,34 @@ public class CanvasPath extends android.graphics.Path {
        }
    }
    public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points) {
-       setLines(points, points.length, false);
+       setLines(points, 0, points.length, false);
    }
-   public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length) {
-       setLines(points, length, false);
+   public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset) {
+       setLines(points, offset, points.length - offset, false);
    }
-   public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int length, boolean close) {
+   public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset, int length) {
+       setLines(points, offset, length, false);
+   }
+   public void setLines(@Size(multiple = 2, min = 4) @NonNull float[] points, int offset, int length, boolean close) {
        reset();
-       addLines(points, length, close);
+       addLines(points,offset, length, close);
    }
 
    public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points) {
-       addCubicLines(points, points.length, false);
+       addCubicLines(points, 0, points.length, false);
    }
 
-   public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int length) {
-       addCubicLines(points, length, false);
+   public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int offset) {
+       addCubicLines(points, offset, points.length - offset, false);
+   }
+   public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int offset, int length) {
+       addCubicLines(points, offset, length, false);
    }
 
-   public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int length, boolean close) {
+   public void addCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int offset, int length, boolean close) {
        final int l = length;
-       moveTo(points[0], points[1]);
-       for (int i = 2; i < l; i+=6) {
+       moveTo(points[offset], points[offset + 1]);
+       for (int i = offset + 2; i < l; i+=6) {
            cubicTo(points[i], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5]);
        }
        if (close) {
@@ -67,14 +76,14 @@ public class CanvasPath extends android.graphics.Path {
        }
    }
    public void setCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points) {
-       setCubicLines(points, points.length, false);
+       setCubicLines(points, 0, points.length, false);
    }
-   public void setCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int length) {
-       setCubicLines(points, length, false);
+   public void setCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int offset, int length) {
+       setCubicLines(points, offset, length, false);
    }
-   public void setCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int length, boolean close) {
+   public void setCubicLines(@Size(multiple = 2, min = 8) @NonNull float[] points, int offset, int length, boolean close) {
        reset();
-       addCubicLines(points, length, close);
+       addCubicLines(points, offset, length, close);
    }
     
 }
