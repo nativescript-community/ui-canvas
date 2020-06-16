@@ -232,7 +232,7 @@ export class Paint {
                             if (args[0] instanceof Font) {
                                 this.fontInternal = args[0];
                             } else {
-                                this.fontInternal['_typeface'] = args[0] as android.graphics.Typeface;
+                                this.font['_typeface'] = args[0] as android.graphics.Typeface;
                             }
                             this._needsFontUpdate = true;
                             // native.setTypeface(this.font.getAndroidTypeface());
