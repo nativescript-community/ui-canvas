@@ -1,6 +1,6 @@
 {
     "name": "nativescript-canvas",
-    "version": "3.0.9",
+    "version": "3.0.10",
     "description": "Nativescript Canvas plugin.",
     "main": "./canvas",
     "sideEffects": false,
@@ -27,5 +27,5 @@
     "license": "Apache-2.0",
     "homepage": "https://github.com/Akylas/nativescript-canvas",
     "readmeFilename": "README.md",
-    "gitHead": "76ad985b8f3b001a0377e031bf5bbab8beae1a49"
+    "gitHead": "a1f853cec62ac3a7986af8121169926df2ff5d6a"
 }
