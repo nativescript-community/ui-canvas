@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.9](https://github.com/Akylas/nativescript-canvas/compare/v3.0.8...v3.0.9) (2020-07-22)
+
+
+### Bug Fixes
+
+* disable esm build for now as we will do it differently ([4f22024](https://github.com/Akylas/nativescript-canvas/commit/4f22024f8af2fce20f8711cb609be598087e07cb))
+* **android:** crash while setting typeface ([7e22adf](https://github.com/Akylas/nativescript-canvas/commit/7e22adf633f7b43d1dc44481cf26c975bcfd4264))
+* **android:** use StaticLayout builder when possible ([0a7efdc](https://github.com/Akylas/nativescript-canvas/commit/0a7efdce566fda3f08e29fb4f467343bd62583ed))
+
+
+
+
+
 ## [3.0.8](https://github.com/Akylas/nativescript-canvas/compare/v3.0.7...v3.0.8) (2020-06-15)
 
 **Note:** Version bump only for package nativescript-canvas
