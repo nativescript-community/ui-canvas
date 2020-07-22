@@ -1,13 +1,17 @@
-import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { Color } from '@nativescript/core/color/color';
-import { layout, View, CSSType } from '@nativescript/core/ui/core/view';
+import { ImageSource } from '@nativescript/core/image-source';
+import { Color } from '@nativescript/core/color';
+import { View, CSSType } from '@nativescript/core/ui/core/view';
+import { layout } from '@nativescript/core/utils/utils';
 import { android as androidApp } from '@nativescript/core/application';
 
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import lazy from '@nativescript/core/utils/lazy';
 
 export * from './canvas.common';
+
+const isPostLVar = lazy(() => android.os.Build.VERSION.SDK_INT >= 24);
 
 function createArrayBuffer(length: number, useInts = false) {
     let bb: java.nio.ByteBuffer;
@@ -430,9 +434,26 @@ export class StaticLayout {
     getNative() {
         return this._native;
     }
-    constructor(text: any, paint: android.graphics.Paint, width: number, align, spacingmult, spacingadd, includepad) {
+    constructor(text: any, paint: android.graphics.Paint, width: number, align = LayoutAlignment.ALIGN_NORMAL, spacingmult = 1, spacingadd = 0, includepad = true) {
         paint = paint['_native'] ? (paint as any).getNative() : paint;
-        this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
+        if (isPostLVar()) {
+            this._native = android.text.StaticLayout.Builder.obtain(
+                text,
+                0,
+                typeof text.length === 'function' ? text.length() : text.length,
+                paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint),
+                width
+            )
+                .setAlignment(align)
+                .setBreakStrategy(android.text.Layout.BREAK_STRATEGY_SIMPLE)
+                .setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_NONE)
+                // .setUseLineSpacingFromFallbacks(true)
+                .setLineSpacing(spacingadd, spacingmult)
+                .setIncludePad(includepad)
+                .build();
+        } else {
+            this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
+        }
         return new Proxy(this, this);
     }
     get(target, name, receiver) {
