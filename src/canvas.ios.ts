@@ -1,9 +1,9 @@
 import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
-import { layout, Color, View, CSSType } from '@nativescript/core/ui/core/view';
-import { ImageSource } from '@nativescript/core/image-source/image-source';
+import { Color, View, CSSType } from '@nativescript/core/ui/core/view';
+import { layout } from '@nativescript/core/utils/utils';
+import { ImageSource } from '@nativescript/core/image-source';
 import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
 import { CanvasBase } from './canvas.common';
-import { profile } from '@nativescript/core/profiling/profiling';
 
 export * from './canvas.common';
 

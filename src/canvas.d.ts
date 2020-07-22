@@ -274,10 +274,10 @@ export class Path {
     isInverseFillType(): boolean;
     set(param0: Path): void;
 
-    addLines(points: number[], offset?:number, length?: number, close?: boolean);
-    setLines(points: number[], offset?:number, length?: number, close?: boolean);
-    addCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
-    setCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
+    addLines(points: number[], offset?: number, length?: number, close?: boolean);
+    setLines(points: number[], offset?: number, length?: number, close?: boolean);
+    addCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
+    setCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
 }
 export class DrawFilter extends android.graphics.DrawFilter {}
 export class Op extends android.graphics.Region.Op {}
@@ -304,13 +304,17 @@ export class DashPathEffect extends android.graphics.DashPathEffect {
 // }
 
 declare class CanvasView extends View {
+    cached: boolean;
+    hardwareAccelerated: boolean;
+    density: number;
+    drawFameRate: boolean;
+
     protected onDraw(canvas: Canvas);
-    addShape(shape:Shape);
-    removeShape(shape:Shape);
+    addShape(shape: Shape);
+    removeShape(shape: Shape);
     redraw();
     invalidate();
     onSizeChanged(w: number, h: number, oldw: number, oldh: number);
-    drawFameRate: boolean;
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;

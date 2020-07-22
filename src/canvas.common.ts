@@ -1,9 +1,10 @@
 import { Canvas, Cap, DashPathEffect, Join, Rect, RectF, Style } from './canvas';
 import { Property } from '@nativescript/core/ui/core/properties';
-import { Color } from '@nativescript/core/color';
-import { Length } from '@nativescript/core/ui/styling/style-properties';
-import { booleanConverter, layout, View, Observable } from '@nativescript/core/ui/core/view';
-import { ObservableArray, ChangedData } from '@nativescript/core/data/observable-array/observable-array';
+import { View } from '@nativescript/core/ui/core/view';
+import { booleanConverter } from '@nativescript/core/ui/core/view-base';
+import { Observable } from '@nativescript/core/data/observable';
+import { layout } from '@nativescript/core/utils/utils';
+import { ObservableArray, ChangedData } from '@nativescript/core/data/observable-array';
 import { screen } from '@nativescript/core/platform';
 import Shape from './shapes/shape';
 
@@ -47,6 +48,7 @@ export abstract class CanvasBase extends View {
     }
     public cached = false;
     public density = DEFAULT_SCALE;
+    public hardwareAccelerated = true;
 
     drawFameRate = false;
 

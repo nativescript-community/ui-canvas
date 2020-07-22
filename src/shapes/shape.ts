@@ -1,8 +1,9 @@
-import { Color } from '@nativescript/core/color/color';
-import { booleanConverter, Observable } from '@nativescript/core/ui/core/view';
+import { Color } from '@nativescript/core/color';
+import { Observable } from '@nativescript/core/data/observable';
 import { Length, PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
+import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 
 function createGetter(key, options: ShapePropertyOptions) {
     const realKey = '_' + key.toString().toLowerCase();
