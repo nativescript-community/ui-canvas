@@ -1,4 +1,4 @@
-import { isIOS } from '@nativescript/core/ui/page/page';
+import { isIOS } from '@nativescript/core/ui/page';
 import { drawOnImage } from './canvastests';
 
 import 'globals';

@@ -1,8 +1,8 @@
 import { Align, Canvas, Cap, Paint, Path, LinearGradient, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, DashPathEffect } from 'nativescript-canvas';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
-import { layout, isIOS, View } from '@nativescript/core/ui/page/page';
+import { layout, isIOS, View } from '@nativescript/core/ui/page';
 import { Button } from '@nativescript/core/ui/button';
 import { FormattedString, Span } from '@nativescript/core/text/formatted-string';
 import { Label } from 'nativescript-htmllabel';
