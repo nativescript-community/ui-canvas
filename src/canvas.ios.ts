@@ -1,8 +1,8 @@
-import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
-import { Color, View, CSSType } from '@nativescript/core/ui/core/view';
+import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import { CSSType, Color, View } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';
 import { ImageSource } from '@nativescript/core/image-source';
-import { Canvas as ICanvas, Paint as IPaint, PorterDuffXfermode as IPorterDuffXfermode, Matrix as IMatrix, Path as IPath, Rect as IRect, RectF as IRectF, FontMetrics as IFontMetrics } from './canvas';
+import { Canvas as ICanvas, FontMetrics as IFontMetrics, Matrix as IMatrix, Paint as IPaint, Path as IPath, PorterDuffXfermode as IPorterDuffXfermode, Rect as IRect, RectF as IRectF } from './canvas';
 import { CanvasBase } from './canvas.common';
 
 export * from './canvas.common';
@@ -824,7 +824,7 @@ export class Path implements IPath {
         if (d === Direction.CW) {
             CGPathAddEllipseInRect(this._path, null, CGRectMake(x - r, y - r, 2 * r, 2 * r));
         } else {
-            let t = CGAffineTransformMakeScale(-1, 1);
+            const t = CGAffineTransformMakeScale(-1, 1);
             CGPathAddEllipseInRect(this._path, new interop.Reference(t), CGRectMake(x - r, y - r, 2 * r, 2 * r));
         }
     }
@@ -908,7 +908,7 @@ export class Paint implements IPaint {
         if (font instanceof Font) {
             this._font = font;
         } else if (font) {
-            this._font['_uiFont'] = font as UIFont;
+            this._font['_uiFont'] = font;
         } else {
             this._font = null;
         }
@@ -1079,7 +1079,7 @@ export class Paint implements IPaint {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
-        return (this._color as Color).ios as UIColor;
+        return this._color.ios as UIColor;
     }
 
     public getTextSize(): number {
@@ -1521,7 +1521,6 @@ export class Canvas implements ICanvas {
             rect = (args[0] as Rect).cgRect;
         }
         const currentRect = CGContextGetClipBoundingBox(ctx);
-        CGRect;
         console.error('Method not implemented:', 'clipOutRect');
         return false;
     }
@@ -1685,10 +1684,9 @@ export class Canvas implements ICanvas {
         this._width = w;
         this._height = h;
         let context = null;
-        let colorSpace;
         const scaleFactor = this._scale;
         const bitmapBytesPerRow = w * 4 * scaleFactor; // 1
-        colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB); // 2
+        const colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB); // 2
         context = CGBitmapContextCreate(
             null, // 4
             w * scaleFactor,
@@ -1949,9 +1947,9 @@ export class Canvas implements ICanvas {
         // const nsstring = NSString.stringWithUTF8String(text);
         // const attrString = NSAttributedString.alloc().initWithStringAttributes(text.replace(/\n/g, ' '), attribs);
         let offsetx = x;
-        let offsety = y;
+        const offsety = y;
         if (paint.align !== Align.LEFT) {
-            let width = paint.measureText(text);
+            const width = paint.measureText(text);
             if (paint.align === Align.RIGHT) {
                 offsetx -= width;
             } else {
@@ -1982,7 +1980,7 @@ export class Canvas implements ICanvas {
     @paint
     drawTextOnPath(text: string | NSAttributedString, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
         const ctx = this.ctx;
-        let bPath = path.getOrCreateBPath();
+        const bPath = path.getOrCreateBPath();
         if (hOffset !== 0 || vOffset !== 0) {
             bPath.applyTransform(CGAffineTransformMakeTranslation(hOffset, vOffset));
             // const offsetpath = new Path();
@@ -2049,8 +2047,8 @@ export class UICustomCanvasView extends UIView {
     }
 
     drawRect(dirtyRect) {
-        let startTime = Date.now();
-        let context = UIGraphicsGetCurrentContext();
+        const startTime = Date.now();
+        const context = UIGraphicsGetCurrentContext();
         const size = this.bounds.size;
         const owner = this._owner && this._owner.get();
         if (!owner) {
@@ -2095,7 +2093,7 @@ export class UICustomCanvasView extends UIView {
 @CSSType('CanvasView')
 export class CanvasView extends CanvasBase {
     onDraw(canvas: Canvas) {
-        this.notify({ eventName: 'draw', object: this, canvas: canvas });
+        this.notify({ eventName: 'draw', object: this, canvas });
     }
     nativeViewProtected: UICustomCanvasView;
     createNativeView() {
@@ -2186,7 +2184,7 @@ export class StaticLayout {
         if (this.toDraw) {
             return;
         }
-        let nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
+        const nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
 
         const paragraphStyle = NSMutableParagraphStyle.alloc().init();
         switch (this.align) {
@@ -2208,14 +2206,14 @@ export class StaticLayout {
 
         this.toDraw = nsAttributedString;
         let height;
-        this.toDraw.enumerateAttributeInRangeOptionsUsingBlock('verticalTextAligment', fullRange, 0, (value, range)=>{
+        this.toDraw.enumerateAttributeInRangeOptionsUsingBlock('verticalTextAligment', fullRange, 0, (value, range) => {
             if (value) {
                 if (!height) {
                     height = this.getHeight();
                 }
-                const font:UIFont = this.toDraw.attributeAtIndexEffectiveRange(NSFontAttributeName, range.location, null);
+                const font: UIFont = this.toDraw.attributeAtIndexEffectiveRange(NSFontAttributeName, range.location, null);
                 const fontHeight = font.lineHeight;
-                this.toDraw.addAttributeValueRange(NSBaselineOffsetAttributeName, Math.round(height/2 - fontHeight/2),  range);
+                this.toDraw.addAttributeValueRange(NSBaselineOffsetAttributeName, Math.round(height / 2 - fontHeight / 2), range);
             }
         });
     }

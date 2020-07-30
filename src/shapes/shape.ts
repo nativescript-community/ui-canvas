@@ -1,9 +1,7 @@
-import { Color } from '@nativescript/core/color';
-import { Observable } from '@nativescript/core/data/observable';
-import { Length, PercentLength } from '@nativescript/core/ui/styling/style-properties';
+import { Color, Length, Observable, PercentLength } from '@nativescript/core';
+import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
-import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 
 function createGetter(key, options: ShapePropertyOptions) {
     const realKey = '_' + key.toString().toLowerCase();
@@ -148,7 +146,7 @@ export default abstract class Shape extends Observable {
     }
     log(...args) {
         return console.log(this.toString(), ...args);
-    } 
+    }
 
     id: string;
     toString() {

@@ -1,8 +1,8 @@
+import { Length } from '@nativescript/core/ui/styling/style-properties';
+import { layout } from '@nativescript/core/utils/utils';
 import { Canvas } from '../canvas';
-import { stringProperty } from './shape';
-import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
 import Rectangle from './rectangle';
-import { layout } from '@nativescript/core/ui/core/view';
+import { stringProperty } from './shape';
 
 export default class Text extends Rectangle {
     drawOnCanvas(canvas: Canvas) {

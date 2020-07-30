@@ -1,8 +1,8 @@
-import { Canvas, Style } from '../canvas';
-import { percentLengthProperty } from './shape';
+import { layout } from '@nativescript/core/utils/utils';
 import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
+import { Canvas, Style } from '../canvas';
 import Rectangle from './rectangle';
-import { layout } from '@nativescript/core/ui/core/view';
+import { percentLengthProperty } from './shape';
 
 export default class Line extends Rectangle {
     constructor() {

@@ -1,15 +1,33 @@
-import { ImageSource } from '@nativescript/core/image-source';
-import { Color } from '@nativescript/core/color';
-import { View, CSSType } from '@nativescript/core/ui/core/view';
-import { layout } from '@nativescript/core/utils/utils';
+import { CSSType, Color, Font, ImageSource, View } from '@nativescript/core';
+import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import { android as androidApp } from '@nativescript/core/application';
-
+import lazy from '@nativescript/core/utils/lazy';
+import { layout } from '@nativescript/core/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
-import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
-import lazy from '@nativescript/core/utils/lazy';
 
 export * from './canvas.common';
+export {
+    Canvas,
+    CanvasView,
+    Cap,
+    Direction,
+    DrawFilter,
+    FillType,
+    Join,
+    Matrix,
+    Op,
+    PathEffect,
+    Rect,
+    RectF,
+    Style,
+    TileMode,
+    FontMetrics,
+    Align,
+    LayoutAlignment,
+    PorterDuffMode,
+    PorterDuffXfermode,
+};
 
 const isPostLVar = lazy(() => android.os.Build.VERSION.SDK_INT >= 24);
 
@@ -41,7 +59,7 @@ export function arrayoNativeArray(array, useInts = false) {
     }
     const length = array.length;
     const buffer = createArrayBuffer(length, useInts);
-    var arrayBuffer = useInts ? new Int8Array(buffer) : new Float32Array(buffer);
+    const arrayBuffer = useInts ? new Int8Array(buffer) : new Float32Array(buffer);
     arrayBuffer.set(array);
 
     return pointsFromBuffer(buffer, useInts);
@@ -81,7 +99,7 @@ function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1
 }
 function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: android.graphics.Rect) {
     if (!view.nativeView) {
-        const activity = androidApp.foregroundActivity as android.app.Activity;
+        const activity = androidApp.foregroundActivity;
         (view as any)._setupAsRootView(activity);
         (view as any)._isAddedToNativeVisualTree = true;
         (view as any).callLoaded();
@@ -95,7 +113,7 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
             canvas.save();
             canvas.translate(rect.left, rect.top);
         }
-        (view.nativeView as android.view.View).draw(canvas as any);
+        view.nativeView.draw(canvas as any);
         if (rect) {
             canvas.restore();
         }
@@ -143,7 +161,7 @@ class Canvas {
         if (canvasAugmentedMethods.indexOf(name) >= 0 || native[name]) {
             // assume methods live on the prototype
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
@@ -160,7 +178,7 @@ class Canvas {
                     args[0] = arrayoNativeArray(args[0]);
                     const last = args[args.length - 1];
                     if (last instanceof android.graphics.Matrix) {
-                        (last as android.graphics.Matrix).mapPoints(args[0]);
+                        last.mapPoints(args[0]);
                         args.pop();
                     }
                 } else if (methodName === 'getWidth' || methodName === 'getHeight') {
@@ -217,11 +235,11 @@ export class Paint {
         const native = (this._native = new android.graphics.Paint());
         // native.setTypeface(this.font.getAndroidTypeface());
         return new Proxy(this, {
-            get: function (target, name, receiver) {
+            get(target, name, receiver) {
                 if (native[name]) {
                     // assume methods live on the prototype
                     return function (...args) {
-                        var methodName = name;
+                        const methodName = name;
                         for (let index = 0; index < args.length; index++) {
                             const element = args[index];
                             if (element && element._native) {
@@ -258,11 +276,17 @@ export class Paint {
         }
         return this.fontInternal;
     }
+    set font(font: Font) {
+        this.setFont(font);
+    }
     getFontFamily() {
         return this.font.fontFamily;
     }
     get fontFamily() {
         return this.getFontFamily();
+    }
+    set fontFamily(familyName: string) {
+        this.setFontFamily(familyName);
     }
     setFontFamily(familyName: string) {
         if (this.font.fontFamily !== familyName) {
@@ -270,16 +294,10 @@ export class Paint {
             this._needsFontUpdate = true;
         }
     }
-    set fontFamily(familyName: string) {
-        this.setFontFamily(familyName);
-    }
     setFont(font: Font) {
         this.fontInternal = font;
         this._needsFontUpdate = true;
         // this._native.setTypeface(this.font.getAndroidTypeface());
-    }
-    set font(font: Font) {
-        this.setFont(font);
     }
     set fontWeight(weight: FontWeight) {
         this.setFontWeight(weight);
@@ -323,7 +341,7 @@ export class Paint {
         if (font instanceof Font) {
             this.fontInternal = font;
         } else if (font) {
-            this.fontInternal['_typeface'] = font as android.graphics.Typeface;
+            this.fontInternal['_typeface'] = font;
         } else {
             this.fontInternal = null;
         }
@@ -349,7 +367,7 @@ export class DashPathEffect {
         const native = this._native;
         if (native[name]) {
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 return native[methodName](...args);
             };
         } else {
@@ -371,7 +389,7 @@ export class Path {
         const native = this._native;
         if (native[name]) {
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
@@ -398,7 +416,7 @@ export class RadialGradient {
         const native = this._native;
         if (native[name]) {
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 return native[methodName](...args);
             };
         } else {
@@ -420,7 +438,7 @@ export class LinearGradient {
         const native = this._native;
         if (native[name]) {
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 return native[methodName](...args);
             };
         } else {
@@ -460,7 +478,7 @@ export class StaticLayout {
         const native = this._native;
         if (native[name]) {
             return function (...args) {
-                var methodName = name;
+                const methodName = name;
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
                     if (element && element._native) {
@@ -588,35 +606,13 @@ class CanvasView extends CanvasBase {
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: android.graphics.Bitmap.Config }) {
-    ImageSource.fromData;
     return new ImageSource(android.graphics.Bitmap.createBitmap(options.width, options.height, options.config || android.graphics.Bitmap.Config.ARGB_4444));
 }
 export function releaseImage(image: ImageSource) {
     if (image.android) {
-        (image.android as android.graphics.Bitmap).recycle();
+        image.android.recycle();
         image.setNativeSource(null);
     }
 }
 
 initClasses();
-export {
-    Canvas,
-    CanvasView,
-    Cap,
-    Direction,
-    DrawFilter,
-    FillType,
-    Join,
-    Matrix,
-    Op,
-    PathEffect,
-    Rect,
-    RectF,
-    Style,
-    TileMode,
-    FontMetrics,
-    Align,
-    LayoutAlignment,
-    PorterDuffMode,
-    PorterDuffXfermode,
-};

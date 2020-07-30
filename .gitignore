@@ -22,3 +22,4 @@ Pods
 *.aar
 plugin/**/*js.map
 plugin/**/*js
+/pnpm-lock.yaml

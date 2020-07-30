@@ -1,8 +1,7 @@
-import { Canvas, createRect, createRectF, Rect, RectF } from '../canvas';
-import Shape, { lengthProperty, percentLengthProperty } from './shape';
 import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
-import { Property } from '@nativescript/core/ui/core/properties';
-import { layout } from '@nativescript/core/ui/core/view';
+import { layout } from '@nativescript/core/utils/utils';
+import { Canvas, Rect, RectF, createRectF } from '../canvas';
+import Shape, { lengthProperty, percentLengthProperty } from './shape';
 
 export { Rect, RectF };
 export default class Rectangle extends Shape {

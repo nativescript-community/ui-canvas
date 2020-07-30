@@ -1,17 +1,13 @@
-import { Canvas, Cap, DashPathEffect, Join, Rect, RectF, Style } from './canvas';
-import { Property } from '@nativescript/core/ui/core/properties';
-import { View } from '@nativescript/core/ui/core/view';
+import { ChangedData, Observable, ObservableArray, Property, View } from '@nativescript/core';
+import { Screen } from '@nativescript/core/platform';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
-import { Observable } from '@nativescript/core/data/observable';
 import { layout } from '@nativescript/core/utils/utils';
-import { ObservableArray, ChangedData } from '@nativescript/core/data/observable-array';
-import { screen } from '@nativescript/core/platform';
+import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';
 
 declare module '@nativescript/core/ui/core/view' {
     interface View {
         _raiseLayoutChangedEvent();
-        _onSizeChanged();
     }
 }
 
@@ -39,7 +35,7 @@ function throttle(fn, limit) {
         }
     };
 }
-export const DEFAULT_SCALE = screen.mainScreen.scale;
+export const DEFAULT_SCALE = Screen.mainScreen.scale;
 export abstract class CanvasBase extends View {
     protected _shapes: ObservableArray<Shape>;
 
@@ -92,7 +88,7 @@ export abstract class CanvasBase extends View {
     public addShape(shape: Shape) {
         this.getOrCreateShapes().push(shape);
     }
-    
+
     public removeShape(shape: Shape) {
         if (this._shapes) {
             const index = this._shapes.indexOf(shape);
@@ -180,7 +176,7 @@ export abstract class CanvasBase extends View {
         }
     }
     invalidate() {
-        this.redraw(); 
+        this.redraw();
     }
     abstract redraw();
     protected abstract onDraw(canvas: Canvas);

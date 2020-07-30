@@ -1,7 +1,6 @@
-import { Canvas, createRect } from '../canvas';
-import { booleanProperty, lengthProperty, numberProperty, percentLengthProperty } from './shape';
-import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
+import { Canvas } from '../canvas';
 import Rectangle from './rectangle';
+import { booleanProperty, numberProperty } from './shape';
 
 export default class Arc extends Rectangle {
     drawOnCanvas(canvas: Canvas) {
