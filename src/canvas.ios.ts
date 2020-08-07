@@ -2034,6 +2034,7 @@ export function createImage(options: { width: number; height: number; scale?: nu
 }
 export function releaseImage(image: ImageSource) {}
 
+@NativeClass
 export class UICustomCanvasView extends UIView {
     _canvas: Canvas; // CGContextRef;
     public _owner: WeakRef<CanvasView>;
@@ -2072,7 +2073,7 @@ export class UICustomCanvasView extends UIView {
         } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
             if (shapes.length > 0) {
-                shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner as any));
+                shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner));
             }
         }
         owner.onDraw(this._canvas);

@@ -1,6 +1,4 @@
-import { ChangedData, Observable, ObservableArray, Property, View } from '@nativescript/core';
-import { Screen } from '@nativescript/core/platform';
-import { booleanConverter } from '@nativescript/core/ui/core/view-base';
+import { ChangedData, Observable, ObservableArray, Property, Screen, View, booleanConverter } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';
 import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';

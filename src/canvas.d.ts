@@ -1,7 +1,7 @@
-import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { Color } from '@nativescript/core/color/color';
-import { View } from '@nativescript/core/ui/core/view';
-import { Font, FontWeight, FontStyle } from '@nativescript/core/ui/styling/font';
+/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
+/* eslint-disable @typescript-eslint/unified-signatures */
+import { Color, ImageSource, View } from '@nativescript/core';
+import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
@@ -309,7 +309,7 @@ declare class CanvasView extends View {
     density: number;
     drawFameRate: boolean;
 
-    protected onDraw(canvas: Canvas);
+    onDraw(canvas: Canvas);
     addShape(shape: Shape);
     removeShape(shape: Shape);
     redraw();
