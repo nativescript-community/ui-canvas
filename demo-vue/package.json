@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@nativescript/core": "^6.5.1",
-        "nativescript-canvas": "../plugin",
+        "nativescript-canvas": "latest",
         "nativescript-htmllabel": "^1.0.32",
         "nativescript-perms": "2.0.6",
         "nativescript-theme-core": "~2.0.24",
