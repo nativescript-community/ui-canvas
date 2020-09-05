@@ -46,15 +46,15 @@ import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color/color';
 import TWEEN from 'nativescript-tween';
-import { screen } from '@nativescript/core/platform';
+import { Screen } from '@nativescript/core/platform';
 
 @Component
 export default class Simple extends Vue {
     shapeColor = 'blue';
     shapeLeft = 10;
     sweepAngle = 0;
-    arcWidth = Math.min(screen.mainScreen.widthDIPs, screen.mainScreen.heightDIPs) - 40;
-    density = screen.mainScreen.scale;
+    arcWidth = Math.min(Screen.mainScreen.widthDIPs, Screen.mainScreen.heightDIPs) - 40;
+    density = Screen.mainScreen.scale;
     antiAlias = true;
     hardwareAccelerated = true;
     static title: 'Shapes Example';

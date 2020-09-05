@@ -51,14 +51,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/@nativescript-community/ui-canvas.git"
+        "url": "git+https://github.com/nativescript-community/ui-canvas.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/@nativescript-community/ui-canvas/issues"
+        "url": "https://github.com/nativescript-community/ui-canvas/issues"
     },
-    "homepage": "https://github.com/@nativescript-community/ui-canvas#readme",
+    "homepage": "https://github.com/nativescript-community/ui-canvas#readme",
     "watch": {
         "build.android": {
             "patterns": [

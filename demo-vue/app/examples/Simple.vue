@@ -16,7 +16,7 @@ import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color/color';
-import { screen } from '@nativescript/core/platform';
+import { Screen } from '@nativescript/core/platform';
 
 @Component
 export default class Simple extends Vue {

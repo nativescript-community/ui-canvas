@@ -17,7 +17,7 @@ import { createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
-import { screen } from '@nativescript/core/platform';
+import { Screen } from '@nativescript/core/platform';
 
 const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp().path, 'images/test.jpg'));
 

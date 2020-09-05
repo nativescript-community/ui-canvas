@@ -24,7 +24,7 @@ import { drawOnImage } from '../canvastests';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Image } from '@nativescript/core/ui/image/image';
 import { Canvas, Cap, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
-import { screen, isIOS } from '@nativescript/core/platform';
+import { Screen } from '@nativescript/core/platform';
 
 @Component
 export default class ComplexExample extends Vue {
@@ -33,7 +33,7 @@ export default class ComplexExample extends Vue {
         frameModule.topmost().goBack();
     }
     postMessageToWorker(type, data?) {
-        if (frameModule.isIOS) {
+        if (global.isIOS) {
             // the clone makes the UI slow! No solution right now
             const nativeDict = NSMutableDictionary.dictionaryWithObjectForKey(type, 'type');
             if (data) {
