@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Volumes/data/dev/nativescript/nativescript-canvas.new/src-native/ios/Canvas.xcodeproj">
+      location = "self:/Volumes/data/dev/nativescript/@nativescript-community/ui-canvas.new/src-native/ios/Canvas.xcodeproj">
    </FileRef>
 </Workspace>

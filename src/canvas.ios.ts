@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import { CSSType, Color, View } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';

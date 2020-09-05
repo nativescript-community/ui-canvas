@@ -2,7 +2,7 @@
     "description": "NativeScript canvas Demo for Vue",
     "license": "SEE LICENSE IN LICENSE.md",
     "readme": "README.md",
-    "repository": "http://www.github.com/Akylas/nativescript-canvas.git",
+    "repository": "http://www.github.com/Akylas/@nativescript-community/ui-canvas.git",
     "nativescript": {
         "id": "org.nativescript.demovuecanvas",
         "tns-android": {
@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@nativescript/core": "^6.5.1",
-        "nativescript-canvas": "latest",
+        "@nativescript-community/ui-canvas": "latest",
         "nativescript-htmllabel": "^1.0.32",
         "nativescript-perms": "2.0.6",
         "nativescript-theme-core": "~2.0.24",

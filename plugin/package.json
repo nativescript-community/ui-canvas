@@ -22,10 +22,10 @@
         "email": "martin@akylas.fr"
     },
     "bugs": {
-        "url": "https://github.com/Akylas/nativescript-canvas/issues"
+        "url": "https://github.com/Akylas/@nativescript-community/ui-canvas/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/Akylas/nativescript-canvas",
+    "homepage": "https://github.com/Akylas/@nativescript-community/ui-canvas",
     "readmeFilename": "README.md",
     "gitHead": "a1f853cec62ac3a7986af8121169926df2ff5d6a"
 }

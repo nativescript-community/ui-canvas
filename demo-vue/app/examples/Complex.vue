@@ -23,7 +23,7 @@ import { Component } from 'vue-property-decorator';
 import { drawOnImage } from '../canvastests';
 import { ImageSource } from '@nativescript/core/image-source/image-source';
 import { Image } from '@nativescript/core/ui/image/image';
-import { Canvas, Cap, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from 'nativescript-canvas';
+import { Canvas, Cap, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
 import { screen, isIOS } from '@nativescript/core/platform';
 
 @Component

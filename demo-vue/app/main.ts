@@ -1,7 +1,7 @@
 import Vue from 'nativescript-vue';
 import Home from './views/Home.vue';
 
-import CanvasPlugin from 'nativescript-canvas/vue';
+import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
 Vue.use(CanvasPlugin);
 
 // for (const comp of getExamples()) {

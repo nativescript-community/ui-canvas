@@ -118,7 +118,7 @@ export abstract class CanvasBase extends View {
     private onShapesCollectionChanged(eventData: ChangedData<Shape>) {
         if (eventData.addedCount > 0) {
             for (let i = 0; i < eventData.addedCount; i++) {
-                const shape = (eventData.object as ObservableArray<Shape>).getItem(eventData.index + i);
+                const shape = (eventData.object as ObservableArray<any>).getItem(eventData.index + i);
                 // Then attach handlers - we skip the first nofitication because
                 // we raise change for the whole instance.
                 shape._parent = new WeakRef(this as any);

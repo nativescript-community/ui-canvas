@@ -1,11 +1,11 @@
-[![npm](https://img.shields.io/npm/v/nativescript-canvas.svg)](https://www.npmjs.com/package/nativescript-canvas)
-[![npm](https://img.shields.io/npm/dt/nativescript-canvas.svg?label=npm%20downloads)](https://www.npmjs.com/package/nativescript-canvas)
-[![GitHub forks](https://img.shields.io/github/forks/Akylas/nativescript-canvas.svg)](https://github.com/Akylas/nativescript-canvas/network)
-[![GitHub stars](https://img.shields.io/github/stars/Akylas/nativescript-canvas.svg)](https://github.com/Akylas/nativescript-canvas/stargazers)
+[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-canvas.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
+[![npm](https://img.shields.io/npm/dt/@nativescript-community/ui-canvas.svg?label=npm%20downloads)](https://www.npmjs.com/package/@nativescript-community/ui-canvas)
+[![GitHub forks](https://img.shields.io/github/forks/@nativescript-community/ui-canvas.svg)](https://github.com/@nativescript-community/ui-canvas/network)
+[![GitHub stars](https://img.shields.io/github/stars/@nativescript-community/ui-canvas.svg)](https://github.com/@nativescript-community/ui-canvas/stargazers)
 
 ## Installation
 
-* `tns plugin add nativescript-canvas`
+* `tns plugin add @nativescript-community/ui-canvas`
 
 Be sure to run a new build after adding plugins to avoid any issues.
 
@@ -26,12 +26,12 @@ The android API is actually a direct subclass with some Additions
 
 ## Plain NativeScript
 
-<span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:cv="nativescript-canvas"` on the Page element_
+<span style="color:red">IMPORTANT: </span>_Make sure you include `xmlns:cv="@nativescript-community/ui-canvas"` on the Page element_
 
 ### XML
 
 ```XML
-<Page xmlns:cv="nativescript-canvas">
+<Page xmlns:cv="@nativescript-community/ui-canvas">
     <StackLayout horizontalAlignment="center">
         <cv:CanvasView width="100" height="100" draw="draw"/>
    </StackLayout>
@@ -42,7 +42,7 @@ The android API is actually a direct subclass with some Additions
 
 ```typescript
 import { registerElement } from 'nativescript-angular/element-registry';
-import { CanvasView } from 'nativescript-canvas';
+import { CanvasView } from '@nativescript-community/ui-canvas';
 registerElement('CanvasView', () => CanvasView);
 ```
 
@@ -54,7 +54,7 @@ registerElement('CanvasView', () => CanvasView);
 
 ```javascript
 import Vue from 'nativescript-vue';
-import CanvasPlugin from 'nativescript-canvas/vue';
+import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
 
 Vue.use(CanvasPlugin);
 ```

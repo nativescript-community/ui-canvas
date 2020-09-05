@@ -1,4 +1,4 @@
-import { Align, Canvas, Cap, Paint, Path, LinearGradient, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, DashPathEffect } from 'nativescript-canvas';
+import { Align, Canvas, Cap, Paint, Path, LinearGradient, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, DashPathEffect } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';

@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 import { Color, Length, Observable, PercentLength } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';

@@ -11,7 +11,7 @@ module.exports = env => {
     }
     const projectRoot = __dirname;
     if (development) {
-        aliases['nativescript-canvas'] = resolve(projectRoot, '..', 'src');
+        aliases['@nativescript-community/ui-canvas'] = resolve(projectRoot, '..', 'src');
 
     }
     
@@ -24,7 +24,7 @@ module.exports = env => {
     });
     if (development) {
         config.plugins.push(
-            new webpack.ContextReplacementPlugin(/nativescript-canvas/, resolve(projectRoot, '..', 'src'))
+            new webpack.ContextReplacementPlugin(/@nativescript-community/ui-canvas/, resolve(projectRoot, '..', 'src'))
         );
     }
     return config;

@@ -14,7 +14,7 @@
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { Canvas, Cap, createRect, createRectF, Paint, Style } from 'nativescript-canvas';
+import { Canvas, Cap, createRect, createRectF, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { screen } from '@nativescript/core/platform';
 

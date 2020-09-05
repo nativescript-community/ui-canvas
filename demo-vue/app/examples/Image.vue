@@ -13,7 +13,7 @@
 import * as frameModule from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { createRect, Paint, Style } from 'nativescript-canvas';
+import { createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
 import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
