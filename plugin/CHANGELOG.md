@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.6](https://github.com/Akylas/nativescript-canvas/compare/v4.0.5...v4.0.6) (2020-09-07)
+
+
+### Bug Fixes
+
+* **android:** plugin not building ([d2bae49](https://github.com/Akylas/nativescript-canvas/commit/d2bae4960f43242f4f4081330d979afbd3170e91))
+
+
+
+
+
 ## [4.0.5](https://github.com/Akylas/nativescript-canvas/compare/v4.0.4...v4.0.5) (2020-09-06)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
