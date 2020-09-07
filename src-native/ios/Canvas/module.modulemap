@@ -1,6 +1,0 @@
-framework module Canvas {
-  umbrella header "Bezier.h"
-
-  export *
-  module * { export * }
-}
