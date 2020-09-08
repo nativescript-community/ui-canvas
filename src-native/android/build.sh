@@ -27,10 +27,10 @@ if [ ! -d $PLUGIN_TARGET_SUBDIR ]; then
     mkdir $PLUGIN_TARGET_SUBDIR
 fi
 
-cp -R "$BUILD_OUTPUT_DIR/$PROJECT_NAME-release.aar" $PLUGIN_TARGET_SUBDIR
+# cp -R "$BUILD_OUTPUT_DIR/$PROJECT_NAME-release.aar" $PLUGIN_TARGET_SUBDIR
 
-echo "force livesync" > "$PLUGIN_TARGET_SUBDIR/sync"
+# echo "force livesync" > "$PLUGIN_TARGET_SUBDIR/sync"
 
-echo "Android library was copied to $PLUGIN_TARGET_SUBDIR"
+# echo "Android library was copied to $PLUGIN_TARGET_SUBDIR"
 
 cd $CURRENT_DIR
