@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.9](https://github.com/nativescript-community/ui-canvas/compare/v4.0.8...v4.0.9) (2020-09-08)
+
+
+### Bug Fixes
+
+* **ios:** another fix ([259b20c](https://github.com/nativescript-community/ui-canvas/commit/259b20c2ce5fb26fbec3e805e871b81920a2ba61))
+* **ios:** missing compile flag ([105a43f](https://github.com/nativescript-community/ui-canvas/commit/105a43fd22cc0394de57500d5195ac0719fc50d4))
+
+
+
+
+
 ## [4.0.8](https://github.com/nativescript-community/ui-canvas/compare/v4.0.7...v4.0.8) (2020-09-08)
 
 
