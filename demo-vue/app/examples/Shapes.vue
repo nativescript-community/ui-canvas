@@ -40,11 +40,11 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core';
 import TWEEN from 'nativescript-tween';
 import { Screen } from '@nativescript/core/platform';
 
@@ -60,7 +60,7 @@ export default class Simple extends Vue {
     static title: 'Shapes Example';
     mounted() {}
     onBack() {
-        frameModule.topmost().goBack();
+        Frame.topmost().goBack();
     }
     changeColor() {
         this.shapeColor = this.shapeColor === 'blue' ? 'yellow' : 'blue';

@@ -3,36 +3,24 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "readme": "README.md",
     "repository": "http://www.github.com/Akylas/@nativescript-community/ui-canvas.git",
-    "nativescript": {
-        "id": "org.nativescript.demovuecanvas",
-        "tns-android": {
-            "version": "6.3.1"
-        },
-        "tns-ios": {
-            "version": "6.4.0-beta.1-v8-2020-01-21-162348-01"
-        }
-    },
+    "main": "main.js",
     "dependencies": {
-        "@nativescript/core": "^6.5.1",
-        "@nativescript-community/ui-canvas": "latest",
-        "nativescript-htmllabel": "^1.0.32",
-        "nativescript-perms": "2.0.6",
-        "nativescript-theme-core": "~2.0.24",
-        "nativescript-tween": "0.0.6",
-        "nativescript-vue": "^2.6.1"
+        "@nativescript-community/perms": "2.1.0",
+        "@nativescript-community/ui-canvas": "file:../plugin",
+        "@nativescript/core": "7.0.3",
+        "@nativescript/webpack": "3.0.4",
+        "nativescript-tween": "0.0.10",
+        "nativescript-vue": "^2.8.1"
     },
     "devDependencies": {
-        "nativescript-akylas-webpack-template": "1.0.15",
-        "nativescript-dev-webpack": "1.5.1",
-        "semver": "7.3.2",
-        "tns-platform-declarations": "^6.5.1",
-        "typescript": "^3.9.2",
-        "vue": "^2.6.11",
-        "vue-property-decorator": "^8.4.2",
-        "webpack": "^4.43.0",
-        "webpack-cli": "^3.3.11"
-    },
-    "scripts": {
-        "tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
+        "@babel/core": "^7.11.6",
+        "tns-ios": "6.5.2",
+        "@nativescript/types": "7.0.3",
+        "babel-loader": "^8.1.0",
+        "nativescript-vue-template-compiler": "2.8.1",
+        "typescript": "^3.9.7",
+        "vue": "^2.6.12",
+        "vue-loader": "^15.9.3",
+        "vue-property-decorator": "^8.5.1"
     }
 }

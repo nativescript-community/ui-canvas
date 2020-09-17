@@ -1,4 +1,3 @@
-import { isIOS } from '@nativescript/core/ui/page';
 import { drawOnImage } from './canvastests';
 
 import 'globals';
@@ -6,7 +5,7 @@ import 'globals';
 const context: Worker = self as any;
 
 function isOnUiThread() {
-    if (isIOS) {
+    if (global.isIOS) {
         return NSOperationQueue.currentQueue === NSOperationQueue.mainQueue;
     } else {
         return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
@@ -29,8 +28,8 @@ function valueFromPointerNumber(type, value) {
 }
 
 context.onmessage = function(msg) {
-    if (isIOS) {
-        const dict = valueFromPointerNumber(NSDictionary, msg.data.value.dictionaryPtr) as NSDictionary<string, any>;
+    if (global.isIOS) {
+        const dict = valueFromPointerNumber(NSDictionary, msg.data.value.dictionaryPtr) as any as NSDictionary<any, any>;
         const type = dict.objectForKey('type') as string;
         console.log('onmessage', type);
 
@@ -48,7 +47,7 @@ context.onmessage = function(msg) {
 };
 
 function sendMessageBack(type, data?) {
-    if (isIOS) {
+    if (global.isIOS) {
         const nativeDict = NSMutableDictionary.dictionaryWithObjectForKey(type, 'type');
         if (data) {
             nativeDict.setValueForKey(data, 'data');

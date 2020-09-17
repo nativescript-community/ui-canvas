@@ -10,13 +10,13 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { createRect, Paint, Style } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color/color';
-import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
-import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
+import { Color } from '@nativescript/core/color';
+import { Folder, knownFolders, path } from '@nativescript/core/file-system';
+import { fromFile, ImageSource } from '@nativescript/core/image-source';
 import { Screen } from '@nativescript/core/platform';
 
 const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp().path, 'images/test.jpg'));
@@ -25,7 +25,7 @@ const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp()
 export default class Image extends Vue {
     static title: 'Image Example';
     onBack() {
-        frameModule.topmost().goBack();
+        Frame.topmost().goBack();
     }
     onDraw(event: { canvas }) {
         const canvas = event.canvas;

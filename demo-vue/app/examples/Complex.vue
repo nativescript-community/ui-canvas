@@ -15,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame';
 import * as app from '@nativescript/core/application';
-import * as perms from 'nativescript-perms';
+import * as perms from '@nativescript-community/perms';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { drawOnImage } from '../canvastests';
-import { ImageSource } from '@nativescript/core/image-source/image-source';
-import { Image } from '@nativescript/core/ui/image/image';
+import { ImageSource } from '@nativescript/core/image-source';
+import { Image } from '@nativescript/core/ui/image';
 import { Canvas, Cap, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
 import { Screen } from '@nativescript/core/platform';
 
@@ -30,7 +30,7 @@ import { Screen } from '@nativescript/core/platform';
 export default class ComplexExample extends Vue {
     static title: 'Text fields sample';
     onBack() {
-        frameModule.topmost().goBack();
+        Frame.topmost().goBack();
     }
     postMessageToWorker(type, data?) {
         if (global.isIOS) {
@@ -53,7 +53,7 @@ export default class ComplexExample extends Vue {
             .then(() => perms.request('photo'))
             .then(() => {
                 console.log('saveToAlbum', imageSource.width, imageSource.height);
-                if (isIOS) {
+                if (global.isIOS) {
                     // var res = false;
                     // if (!imageSource) {
                     //     return res;

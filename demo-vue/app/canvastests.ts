@@ -1,14 +1,14 @@
-import { Align, Canvas, Cap, Paint, Path, LinearGradient, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, DashPathEffect } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Cap, DashPathEffect, LinearGradient, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color';
-import { Folder, knownFolders, path } from '@nativescript/core/file-system/file-system';
-import { fromFile, ImageSource } from '@nativescript/core/image-source/image-source';
-import { layout, isIOS, View } from '@nativescript/core/ui/page';
+import { Folder, knownFolders, path } from '@nativescript/core/file-system';
+import { ImageSource } from '@nativescript/core/image-source';
 import { Button } from '@nativescript/core/ui/button';
-import { FormattedString, Span } from '@nativescript/core/text/formatted-string';
-import { Label } from 'nativescript-htmllabel';
+import { FormattedString } from '@nativescript/core/text/formatted-string';
+import { Span } from '@nativescript/core/text/span';
+import { Label, Utils } from '@nativescript/core';
 
 function isOnUiThread() {
-    if (isIOS) {
+    if (global.isIOS) {
         return NSOperationQueue.currentQueue === NSOperationQueue.mainQueue;
     } else {
         return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
@@ -18,10 +18,10 @@ function isOnUiThread() {
 export function drawOnImage(scale = 3, canvas?: Canvas) {
     const folder: Folder = knownFolders.currentApp();
 
-    const iconLocalFile: ImageSource = fromFile(path.join(folder.path, 'images/test.jpg'));
+    const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'images/test.jpg'));
     if (!canvas) {
         const folderPath: string = path.join(folder.path, 'images/test.jpg');
-        const imageFromLocalFile: ImageSource = fromFile(folderPath);
+        const imageFromLocalFile: ImageSource = ImageSource.fromFileSync(folderPath);
         canvas = new Canvas(imageFromLocalFile);
     }
 
@@ -222,7 +222,7 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     // const formattedString = new FormattedString();
     // const firstSpan = new Span();
 
-    label.fontSize = layout.toDeviceIndependentPixels(105 * scale);
+    label.fontSize = Utils.layout.toDeviceIndependentPixels(105 * scale);
     // label.text = 'test';
     label.text =
         'Aliquip ex aliquip quis nisi ullamco esse pariatur commodo est amet aute aliquip quis dolor. Excepteur commodo elit consequat ut laborum ea elit cupidatat culpa cupidatat. Id commodo eu magna eu pariatur enim minim mollit. Ea cupidatat aute est Lorem do quis anim non consectetur elit minim occaecat veniam. Esse ex et nisi aute commodo. Nulla irure fugiat aliquip aliquip commodo enim pariatur labore.';

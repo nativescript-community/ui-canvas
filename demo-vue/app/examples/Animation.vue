@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import * as frameModule from '@nativescript/core/ui/frame';
+import { Frame } from '@nativescript/core/ui/frame';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, Cap, createRect, createRectF, Paint, Style } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color/color';
+import { Color } from '@nativescript/core/color';
 import { Screen } from '@nativescript/core/platform';
 
 import TWEEN from 'nativescript-tween';
@@ -25,7 +25,7 @@ export default class Animation extends Vue {
     static title: 'Animation Example';
     currentArcAngle = 0;
     onBack() {
-        frameModule.topmost().goBack();
+        Frame.topmost().goBack();
     }
     onDraw(event: { canvas: Canvas }) {
         const canvas = event.canvas;
