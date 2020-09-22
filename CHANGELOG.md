@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.11](https://github.com/nativescript-community/ui-canvas/compare/v4.0.10...v4.0.11) (2020-09-22)
+
+
+### Bug Fixes
+
+* **ios:** default to transparent background ([b562742](https://github.com/nativescript-community/ui-canvas/commit/b562742f3affa035753a6c101f470e1d7d0dca80))
+* Add missing 'draw' method declaration for 'StaticLayout' class ([4eb6eae](https://github.com/nativescript-community/ui-canvas/commit/4eb6eaeb5f4f43eeff5bb8e00cf24a9074ed474e))
+* Method 'draw' is actually void. ([5c4c65d](https://github.com/nativescript-community/ui-canvas/commit/5c4c65de71b0c8f9823274915a34d781082e334c))
+
+
+
+
+
 ## [4.0.10](https://github.com/nativescript-community/ui-canvas/compare/v4.0.9...v4.0.10) (2020-09-17)
 
 
