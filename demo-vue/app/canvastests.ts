@@ -127,6 +127,19 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     canvas.drawBitmap(iconLocalFile, null, createRect(150, 0, 200, 300), null);
     canvas.restore();
 
+    // arc path
+    canvas.save();
+    canvas.translate(300, 120);
+    bgPaint.color = 'orange';
+    const arcPath = new Path();
+
+    arcPath.arcTo(new RectF(18.0, 25.640625, 282.0, 289.64062), 536.2781166253037, 93.72188337469629);
+    arcPath.lineTo(150, 157.640625);
+    arcPath.close();
+    canvas.drawPath(arcPath, bgPaint);
+
+    canvas.restore();
+
     // custom path
     canvas.save();
     canvas.translate(500, 120);
@@ -182,7 +195,7 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     textPaint.getTextBounds('A', 0, 1, rect);
     console.log('textBounds', rect.top, rect.left, rect.width(), rect.height());
     canvas.drawRect(rect, bgPaint);
-    canvas.drawText('A', 0,0,textPaint);
+    canvas.drawText('A', 0, 0, textPaint);
 
     // console.log('getTextBounds', rect.width(), rect.height());
     // textPaint.getTextBounds('a', 0, 1, rect);
@@ -197,7 +210,6 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     canvas.save();
     canvas.translate(30, 280);
 
-
     // console.log('getTextBounds', rect.width(), rect.height());
     // textPaint.getTextBounds('a', 0, 1, rect);
     // console.log('getTextBounds2', rect.width(), rect.height());
@@ -209,8 +221,6 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     canvas.drawPath(tpath, textPaint);
     // console.log('computeBounds', rectf.width(), rectf.height());
     canvas.restore();
-
-
 
     // render {N} view
     canvas.save();
