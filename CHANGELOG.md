@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.12](https://github.com/nativescript-community/ui-canvas/compare/v4.0.11...v4.0.12) (2020-09-22)
+
+
+### Bug Fixes
+
+* **ios:** arcTo fix ([a44c2f5](https://github.com/nativescript-community/ui-canvas/commit/a44c2f58822a73d954d5c5de07df8860f5aa0ce6))
+
+
+
+
+
 ## [4.0.11](https://github.com/nativescript-community/ui-canvas/compare/v4.0.10...v4.0.11) (2020-09-22)
 
 
