@@ -2099,7 +2099,9 @@ export class CanvasView extends CanvasBase {
     }
     nativeViewProtected: UICustomCanvasView;
     createNativeView() {
-        return UICustomCanvasView.initWithOwner(new WeakRef(this));
+        const view = UICustomCanvasView.initWithOwner(new WeakRef(this));
+        view.backgroundColor = UIColor.clearColor;
+        return view;
     }
     _onSizeChanged() {
         super._onSizeChanged();
