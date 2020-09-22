@@ -86,6 +86,7 @@ export class Paint {
 // }
 export class StaticLayout extends android.text.StaticLayout {
     constructor(text: any, paint: Paint, width: number, align, spacingmult, spacingadd, includepad);
+    public draw(canvas: Canvas): void;
 }
 
 export class FontMetrics {
