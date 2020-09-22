@@ -687,12 +687,14 @@ export class Path implements IPath {
     }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());
+        let t = CGAffineTransformMakeTranslation(center.x, center.y);
+        t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
         if (this._bPath) {
-            this._bPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, true);
+            this._bPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            this._bPath.applyTransform(t);
         } else {
-            let t = CGAffineTransformMakeTranslation(center.x, center.y);
-            t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
-            CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, true);
+
+            CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, ((startAngle) * Math.PI) / 180, (((startAngle) + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
         }
     }
     offset(dx: number, dy: number, output?: Path) {
