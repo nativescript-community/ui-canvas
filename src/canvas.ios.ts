@@ -1081,7 +1081,7 @@ export class Paint implements IPaint {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
-        return this._color.ios as UIColor;
+        return this._color && this._color.ios as UIColor;
     }
 
     public getTextSize(): number {
@@ -1192,7 +1192,12 @@ export class Paint implements IPaint {
     _textAttribs: NSMutableDictionary<any, any>;
     getDrawTextAttribs() {
         if (!this._textAttribs) {
-            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont(), this.getUIColor()], [NSFontAttributeName, NSForegroundColorAttributeName]);
+            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
+            const color = this.getUIColor();
+            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
+            if (color) {
+                this._textAttribs.setObjectForKey(color, NSForegroundColorAttributeName);
+            }
             if (this.align === Align.CENTER) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
                 paragraphStyle.alignment = NSTextAlignment.Center;
