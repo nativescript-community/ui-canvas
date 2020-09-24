@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.13](https://github.com/nativescript-community/ui-canvas/compare/v4.0.12...v4.0.13) (2020-09-24)
+
+
+### Bug Fixes
+
+* **ios:** crash when setting color to null ([10ddb59](https://github.com/nativescript-community/ui-canvas/commit/10ddb59eb5ebbab51ed3b76f60433b1fd93ec9e9))
+
+
+
+
+
 ## [4.0.12](https://github.com/nativescript-community/ui-canvas/compare/v4.0.11...v4.0.12) (2020-09-22)
 
 
