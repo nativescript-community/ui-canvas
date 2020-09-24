@@ -693,8 +693,7 @@ export class Path implements IPath {
             this._bPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
             this._bPath.applyTransform(t);
         } else {
-
-            CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, ((startAngle) * Math.PI) / 180, (((startAngle) + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            CGPathAddArc(this._path, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
         }
     }
     offset(dx: number, dy: number, output?: Path) {
@@ -1106,7 +1105,7 @@ export class Paint implements IPaint {
         if (color instanceof Color) {
             this._color = color;
         } else {
-            this._color = new Color(color as any);
+            this._color = !!color ? new Color(color as any) : null;
         }
     }
     setColor(color: Color | number | string) {
