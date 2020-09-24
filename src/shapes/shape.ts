@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Color, Length, Observable, PercentLength } from '@nativescript/core';
+import { Color, Length, Observable, PercentLength, Visibility } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
@@ -171,9 +171,14 @@ export default abstract class Shape extends Observable {
         paintSetter: applyShadow,
     })
     shadow: Shadow;
+    @stringProperty({ nonPaintProp:true }) visibility: Visibility = 'visible';
+
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
 
     drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView) {
+        if (this.visibility!== 'visible') {
+            return;
+        }
         const paint = this.paint;
         // console.log('drawMyShapeOnCanvas', paint.getColor(), this.strokeColor, this.fillColor);
         if (this.strokeColor || this.fillColor) {
