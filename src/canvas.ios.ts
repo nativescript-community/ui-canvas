@@ -1104,8 +1104,10 @@ export class Paint implements IPaint {
     set color(color: Color | number | string) {
         if (color instanceof Color) {
             this._color = color;
+        } else if (!!color){
+            this._color = new Color(color as any);
         } else {
-            this._color = !!color ? new Color(color as any) : null;
+            this._color = undefined;
         }
     }
     setColor(color: Color | number | string) {
