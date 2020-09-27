@@ -80,11 +80,11 @@ export function parseDashEffect(value: string) {
 function createColorParam(param) {
     if (param instanceof Array) {
         return param.map(createColorParam);
-    }
-    if (param instanceof Color) {
+    } else if (param instanceof Color) {
         return param.android;
+    } else if(param) {
+        return new Color(param).android;
     }
-    return new Color(param).android;
 }
 
 function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
@@ -249,6 +249,9 @@ export class Paint {
                         if (methodName === 'setShadowLayer') {
                             args[3] = createColorParam(args[3]);
                         } else if (methodName === 'setColor') {
+                            if (!args[0])  {
+                                return;
+                            }
                             args[0] = createColorParam(args[0]);
                         } else if (methodName === 'setTypeface') {
                             if (args[0] instanceof Font) {
