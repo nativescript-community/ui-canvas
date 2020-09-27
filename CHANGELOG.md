@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.16](https://github.com/nativescript-community/ui-canvas/compare/v4.0.15...v4.0.16) (2020-09-27)
+
+
+### Bug Fixes
+
+* **android:** null collor handling ([c4f8bbe](https://github.com/nativescript-community/ui-canvas/commit/c4f8bbe5b3c4915b8991bb75fb9570f12ac2205b))
+* **ios:** wrong parameters order ([ec654b9](https://github.com/nativescript-community/ui-canvas/commit/ec654b9d861c33e9301bab216d14e32b595808bf))
+* handle null color ([33825b0](https://github.com/nativescript-community/ui-canvas/commit/33825b0df4e5ad0f05c1c85197a9240c2b68deba))
+
+
+
+
+
 ## [4.0.15](https://github.com/nativescript-community/ui-canvas/compare/v4.0.14...v4.0.15) (2020-09-24)
 
 
