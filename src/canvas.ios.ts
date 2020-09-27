@@ -432,12 +432,7 @@ export class Matrix implements IMatrix {
         return this.preConcat(mat);
     }
     public postTranslate(tx: number, ty: number): boolean {
-        if (this._transform = identity) {
-            this._transform = CGAffineTransformMakeTranslation(tx, ty);
-            return true;
-        } else {
-            return this.postConcat(CGAffineTransformMakeTranslation(tx, ty));
-        }
+        return this.postConcat(CGAffineTransformMakeTranslation(tx, ty));
     }
     // public setSinCos(param0: number, param1: number, param2: number, param3: number): void;
     // public setSinCos(param0: number, param1: number): void;
