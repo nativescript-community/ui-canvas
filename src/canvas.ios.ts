@@ -500,12 +500,11 @@ export class Matrix implements IMatrix {
     public reset(): void {
         this._transform = CGAffineTransformIdentity;
     }
+    public toString(): string {
+        return this.toShortString();
+    }
     public toShortString(): string {
-        return [
-            [this._transform.a, this._transform.c, this._transform.tx],
-            [this._transform.b, this._transform.d, this._transform.ty],
-            [0, 0, 1],
-        ].toString();
+        return `Matrix{[${this._transform.a}, ${this._transform.c}, ${this._transform.tx}],[${this._transform.b}, ${this._transform.d}, ${this._transform.ty}],[0, 0, 1]}`;
     }
     public setTranslate(tx: number, ty: number): void {
         this._transform = CGAffineTransformMakeTranslation(tx, ty);
