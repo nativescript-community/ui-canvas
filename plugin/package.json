@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-canvas",
-    "version": "4.0.16",
+    "version": "4.0.17",
     "description": "Nativescript Canvas plugin.",
     "main": "./canvas",
     "sideEffects": false,

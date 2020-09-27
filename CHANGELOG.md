@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.17](https://github.com/nativescript-community/ui-canvas/compare/v4.0.16...v4.0.17) (2020-09-27)
+
+
+### Bug Fixes
+
+* **ios:** rollback on broken change ([7916b06](https://github.com/nativescript-community/ui-canvas/commit/7916b0618c7a1c3e705ea626b3d9a1310184f9ee))
+
+
+
+
+
 ## [4.0.16](https://github.com/nativescript-community/ui-canvas/compare/v4.0.15...v4.0.16) (2020-09-27)
 
 
