@@ -135,7 +135,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
   [self moveToPoint:(CGPoint)CGPointMake(points[offset], points[offset+1])];
   for (int i = offset+2; i < count; i+=6)
   {
-    [self addCurveToPoint:CGPointMake(points[i], points[i + 1]) controlPoint1:CGPointMake(points[i + 2], points[i + 3]) controlPoint2:CGPointMake(points[i + 4], points[i + 5])];
+    [self addCurveToPoint:CGPointMake(points[i + 4], points[i + 5]) controlPoint1:CGPointMake(points[i], points[i + 1]) controlPoint2:CGPointMake(points[i + 2], points[i + 3])];
   }
   if (close) {
     [self closePath];
