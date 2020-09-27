@@ -315,14 +315,11 @@ export class Matrix implements IMatrix {
     _transform: CGAffineTransform;
     constructor() {
         this._transform = CGAffineTransformIdentity;
-        // this._path = UIBezierPath.bezierPath();
     }
     mapRect(rect: Rect) {
         const cgRect = CGRectApplyAffineTransform(rect.cgRect, this._transform);
         return new Rect(cgRect);
     }
-    // public setRotate(param0: number, param1: number, param2: number): void;
-    // public setRotate(param0: number): void;
     public setRotate(degrees: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(degrees));
         if (px !== 0 || py !== 0) {
@@ -353,8 +350,6 @@ export class Matrix implements IMatrix {
             param[8] = 1;
         }
     }
-    // public setScale(param0: number, param1: number): void;
-    // public setScale(param0: number, param1: number, param2: number, param3: number): void;
     public setScale(sx: number, sy: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeScale(sx, sy);
         if (px !== 0 || py !== 0) {
@@ -362,8 +357,6 @@ export class Matrix implements IMatrix {
             this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
         }
     }
-    // public preScale(param0: number, param1: number, param2: number, param3: number): boolean;
-    // public preScale(param0: number, param1: number): boolean;
     public preScale(sx: number, sy: number, px?: number, py?: number): boolean {
         const mat = new Matrix();
         mat.setScale(sy, sy, px, py);
@@ -373,36 +366,22 @@ export class Matrix implements IMatrix {
         this._transform = CGAffineTransformConcat((mat1 as Matrix)._transform, (mat2 as Matrix)._transform);
         return true;
     }
-    // public postSkew(param0: number, param1: number): boolean;
-    // public postSkew(param0: number, param1: number, param2: number, param3: number): boolean;
     public postSkew(sx: number, sy: number, px?: number, py?: number) {
         const mat = new Matrix();
         mat.setSkew(sy, sy, px, py);
         return this.postConcat(mat);
     }
 
-    // postConcat(mat1: CGAffineTransform, mat2: CGAffineTransform) {
-    // return CGAffineTransformConcat(mat1, mat2);
-    // }
-    // public postScale(param0: number, param1: number): boolean;
-    // public postScale(param0: number, param1: number, param2: number, param3: number): boolean;
     public postScale(sx: number, sy: number, px?: number, py?: number) {
         const mat = new Matrix();
         mat.setScale(sx, sy, px, py);
         return this.postConcat(mat);
-        // this._transform = CGAffineTransformConcat(this._transform, mat._transform);
-        // return true;
     }
-    // public preSkew(param0: number, param1: number, param2: number, param3: number): boolean;
-    // public preSkew(param0: number, param1: number): boolean;
     public preSkew(sx: number, sy: number, px?: number, py?: number) {
         const mat = new Matrix();
         mat.setSkew(sy, sy, px, py);
         return this.preConcat(mat);
     }
-    // public mapPoints(param0: native.Array<number>, param1: native.Array<number>): void;
-    // public mapPoints(param0: native.Array<number>, param1: number, param2: native.Array<number>, param3: number, param4: number): void;
-    // public mapPoints(param0: native.Array<number>): void;
     public mapPoints(...args) {
         let src: number[];
         let dstIndex: number,
@@ -419,10 +398,8 @@ export class Matrix implements IMatrix {
         }
         src = src || pts;
         pointCount = Math.floor(pointCount || src.length);
-        // console.log('mapPoints', src, pointCount, srcIndex, dstIndex);
         for (let index = 0; index < pointCount; index += 2) {
             const cgPoint = CGPointApplyAffineTransform(CGPointMake(src[index + srcIndex], src[index + srcIndex + 1]), this._transform);
-            // console.log('mapPoint', src[2*index + srcIndex], src[2*index + srcIndex + 1], cgPoint.x, cgPoint.y);
             pts[index + dstIndex] = cgPoint.x;
             pts[index + dstIndex + 1] = cgPoint.y;
         }
@@ -437,8 +414,6 @@ export class Matrix implements IMatrix {
         console.error('Method not implemented:', 'setPolyToPoly');
         return false;
     }
-    // public postRotate(param0: number, param1: number, param2: number): boolean;
-    // public postRotate(param0: number): boolean;
     public postRotate(degrees: number, px?: number, py?: number) {
         const mat = new Matrix();
         mat.setRotate(degrees, px, py);
@@ -451,28 +426,27 @@ export class Matrix implements IMatrix {
     public set(mat: IMatrix): void {
         this._transform = CGAffineTransformConcat(CGAffineTransformIdentity, (mat as Matrix)._transform);
     }
-    // public preRotate(param0: number): boolean;
-    // public preRotate(param0: number, param1: number, param2: number): boolean;
     public preRotate(degrees: number, px?: number, py?: number) {
         const mat = new Matrix();
         mat.setRotate(degrees, px, py);
         return this.preConcat(mat);
     }
     public postTranslate(tx: number, ty: number): boolean {
-        return this.postConcat(CGAffineTransformMakeTranslation(tx, ty));
-        // this._transform = CGAffineTransformConcat(this._transform, CGAffineTransformMakeTranslation(tx, ty));
+        if (this._transform = identity) {
+            this._transform = CGAffineTransformMakeTranslation(tx, ty);
+            return true;
+        } else {
+            return this.postConcat(CGAffineTransformMakeTranslation(tx, ty));
+        }
     }
     // public setSinCos(param0: number, param1: number, param2: number, param3: number): void;
     // public setSinCos(param0: number, param1: number): void;
     public setSinCos(sin: number, cos: number, px = 0, py = 0) {
         this._transform = CGAffineTransformIdentity;
-        // const oneMinusCos = 1-cos;
         this._transform.a = cos;
         this._transform.b = -sin;
-        // this._transform.transX = sdot(sin, pivoty, oneMinusCos, pivotx);
         this._transform.c = sin;
         this._transform.d = cos;
-        // this._transform.transY = sdot(-sin, pivotx, oneMinusCos, pivoty);
         if (px !== 0 || py !== 0) {
             this.postConcat(CGAffineTransformMakeTranslation(px, py));
             this.preConcat(CGAffineTransformMakeTranslation(-px, -py));
@@ -525,9 +499,9 @@ export class Matrix implements IMatrix {
     public isIdentity(): boolean {
         return CGAffineTransformIsIdentity(this._transform);
     }
-    public toString(): string {
-        return NSStringFromCGAffineTransform(this._transform);
-    }
+    // public toString(): string {
+    //     return NSStringFromCGAffineTransform(this._transform);
+    // }
     public preTranslate(tx: number, ty: number): boolean {
         return this.preConcat(CGAffineTransformMakeTranslation(tx, ty));
     }
@@ -616,7 +590,6 @@ export class Path implements IPath {
         } else {
             rect.cgRect = CGPathGetBoundingBox(this._path);
         }
-        console.log(rect.toString());
     }
 
     isRect(rect: Rect): boolean {
@@ -1318,13 +1291,11 @@ export class Canvas implements ICanvas {
         this.restoreCount--;
     }
     restoreToCount(count): void {
-        // console.log('restoreToCount', count), this.restoreCount;
         while (this.restoreCount >= count) {
             this.restore();
         }
     }
     save(): number {
-        // console.log('save', this.restoreCount);
         this.restoreCount++;
         CGContextSaveGState(this.ctx);
         return this.restoreCount;
@@ -1597,7 +1568,6 @@ export class Canvas implements ICanvas {
                 this.needsApplyDefaultPaint = true;
             }
         }
-        // console.log('applyPaint', paint, paint === this._paint, withFont);
 
         const ctx = this._cgContext;
         paint.currentContext = ctx;
@@ -1628,15 +1598,6 @@ export class Canvas implements ICanvas {
             }
         }
         if (paint.color) {
-            // const color = paint.getColor();
-            // const r = color.r / 255;
-            // const g = color.g / 255;
-            // const b = color.b / 255;
-            // const a = color.a / 255;
-            // console.log('apply color', color, r, g, b ,a);
-            // CGContextSetRGBFillColor(ctx, r, g, b, a);
-            // CGContextSetRGBStrokeColor(ctx, r, g, b, a);
-
             const color = paint.getUIColor();
             CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             CGContextSetFillColorWithColor(ctx, color.CGColor);
@@ -1646,29 +1607,16 @@ export class Canvas implements ICanvas {
             CGContextSetBlendMode(ctx, (paint.xfermode as PorterDuffXfermode).mode);
         }
 
-        // if (withFont && paint.font) {
-        //     const font = paint.getUIFont();
-        //     console.log('setting context font', font);
-        //     CGContextSelectFont(ctx, font.fontDescriptor.postscriptName, font.pointSize, CGTextEncoding.kCGEncodingFontSpecific);
-        //     // CGContextSetCharacterSpacing(ctx, 1.7);
-        //     const transform = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
-        //     CGContextSetTextMatrix(ctx, transform);
-        // }
         return paint;
     }
     finishApplyPaint(paint) {
         paint.currentContext = null;
-        // const ctx = this._cgContext;
-        // CGContextSetBlendMode( ctx, CGBlendMode.kCGBlendModeNormal);
-        // CGContextSetLineDash(ctx, 0, null, 0);
         this.restore();
     }
 
     _createContextFromImage(source: UIImage) {
         const w = source.size.width;
         const h = source.size.height;
-        // this._width = layout.toDeviceIndependentPixels(w);
-        // this._height = layout.toDeviceIndependentPixels(h);
         this._width = w;
         this._height = h;
         const rect = CGRectMake(0, 0, w, h);
@@ -1712,7 +1660,6 @@ export class Canvas implements ICanvas {
     @paint
     fillRect(x: number, y: number, w: number, h: number, paint?: Paint) {
         const ctx = this.ctx;
-        // const color = paint.getColor();
         CGContextBeginPath(ctx);
         CGContextAddRect(ctx, createCGRect(x, y, w, h));
         this._drawPath(paint, ctx);
@@ -1768,61 +1715,21 @@ export class Canvas implements ICanvas {
         if (path instanceof UIBezierPath) {
             bPath = path;
             path = bPath.CGPath;
-            // } else {
-            // path = path || CGContextCopyPath(ctx);
-            // bPath = UIBezierPath.bezierPathWithCGPath(path);
-            // } else if (path) {
-            // bPath = UIBezierPath.bezierPathWithCGPath(path);
         }
-        //  path =CGContextCopyPath(ctx);
         if (paint.shader && !path) {
             path = CGContextCopyPath(ctx);
         }
-        // const bPath = UIBezierPath.bezierPathWithCGPath(path);
-        // if (!!paint.pathEffect) {
         if (paint.pathEffect instanceof DashPathEffect) {
-            // if (!path) {
-            //     path = CGContextCopyPath(ctx);
-            // }
             if (!bPath) {
                 if (!path) {
                     path = CGContextCopyPath(ctx);
                 }
                 bPath = UIBezierPath.bezierPathWithCGPath(path);
             }
-            // const intervals = paint.pathEffect.intervals;
-            // const length = intervals.length;
-            // const buffer = interop.alloc(length * interop.sizeof(interop.types.float));
-            // const reference = new interop.Reference(interop.types.float, buffer);
-            // for (let i = 0; i < length; i++) {
-            //     reference[i] = intervals[i];
-            // }
-
-            // const view = new Float32Array(length);
-            // for (let i = 0; i < length; i++) {
-            //     view[i] = intervals[i];
-            // }
-            // const intervals = paint.pathEffect.intervals;
-            // const outerPtr = interop.alloc(interop.sizeof(interop.Pointer));
-            // const outerRef = new interop.Reference(interop.types.id, outerPtr);
-            // outerRef.value = intervals;
             const intervals = paint.pathEffect.intervals;
             const length = intervals.length;
-            // const newPath = CGPathCreateCopyByDashingPath(path, null, paint.pathEffect.phase, FloatConstructor.from(intervals) as any, length);
-            // CGContextBeginPath(ctx);
-            // CGContextAddPath(ctx, newPath);
-
-            // const bPath = UIBezierPath.bezierPathWithCGPath(path);
             bPath.setLineDashCountPhase(FloatConstructor.from(intervals) as any, length, paint.pathEffect.phase);
-            // CGContextAddPath(ctx, bPath.CGPath);
-
-            // return;
-            // console.log('CGContextSetLineDash2', paint.pathEffect.phase, view, length);
-
-            // console.log('CGContextSetLineDash', intervals, length, paint.pathEffect.phase);
-            // CGContextSetLineDash(ctx, paint.pathEffect.phase, FloatConstructor.from(intervals) as any, length);
         }
-        // }
 
         if (path && paint.shader) {
             CGContextAddPath(ctx, path);
