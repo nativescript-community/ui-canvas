@@ -97,7 +97,7 @@ export function stringProperty(...args) {
 export function colorProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function colorProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function colorProperty(...args) {
-    return shapeProperty((v) => new Color(v), args);
+    return shapeProperty((v) => (v ? new Color(v) : null), args);
 }
 export function lengthProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function lengthProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
@@ -171,12 +171,12 @@ export default abstract class Shape extends Observable {
         paintSetter: applyShadow,
     })
     shadow: Shadow;
-    @stringProperty({ nonPaintProp:true }) visibility: Visibility = 'visible';
+    @stringProperty({ nonPaintProp: true }) visibility: Visibility = 'visible';
 
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
 
     drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView) {
-        if (this.visibility!== 'visible') {
+        if (this.visibility !== 'visible') {
             return;
         }
         const paint = this.paint;
