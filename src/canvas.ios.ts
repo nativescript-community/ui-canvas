@@ -2138,7 +2138,9 @@ export class StaticLayout {
         this.toDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         UIGraphicsPopContext();
     }
-
+    getPaint() {
+        return this.paint;
+    }
     getBounds() {
         if (!this.rect) {
             this.createAttributedStringToDraw();
