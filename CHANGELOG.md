@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.18](https://github.com/nativescript-community/ui-canvas/compare/v4.0.17...v4.0.18) (2020-10-02)
+
+
+### Bug Fixes
+
+* github stats not being visualized ([4df3939](https://github.com/nativescript-community/ui-canvas/commit/4df3939d4d911ac60db358998d4fe05300c592a6))
+
+
+### Features
+
+* borderRadius for Rectangle ([a0356a4](https://github.com/nativescript-community/ui-canvas/commit/a0356a4ac354db277e58ab1b215c7c08a9bd182c))
+
+
+
+
+
 ## [4.0.17](https://github.com/nativescript-community/ui-canvas/compare/v4.0.16...v4.0.17) (2020-09-27)
 
 
