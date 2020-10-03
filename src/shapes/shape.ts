@@ -159,7 +159,7 @@ export default abstract class Shape extends Observable {
     @colorProperty color: Color;
     @lengthProperty strokeWidth: number;
     @stringProperty({ converter: parseDashEffect, paintSetterName: 'setPathEffect' }) dash: string;
-    @numberProperty({ converter: parseType, paintSetterName: 'setStyle', toto: 'test', tata: () => 'test' }) paintStyle: Style;
+    @numberProperty({ converter: parseType, paintSetterName: 'setStyle' }) paintStyle: Style;
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;
     @numberProperty textSize: number;
