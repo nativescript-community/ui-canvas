@@ -33,59 +33,6 @@ function applyAttributesToNSAttributedString(text: NSAttributedString, attrs: NS
     return result;
 }
 
-// const enum MemberType {
-//     Static,
-//     Instance
-// }
-
-// function timelineProfileFunctionFactory<F extends Function>(fn: F, name: string, type: MemberType = MemberType.Instance): F {
-//     let result;
-//     if (type === MemberType.Instance) {
-//         result = function() {
-//             // const start = time();
-//             console.log(name);
-//             try {
-//                 return fn.apply(this, arguments);
-//             } finally {
-//                 // const end = time();
-//                 // console.log(`Timeline: Modules: ${name} ${this}  (${start}ms. - ${end}ms.)`);
-//             }
-//         };
-//     } else {
-//         result = function() {
-//             // const start = time();
-//             // console.log(`calling method: ${name}`);
-//             try {
-//                 return fn.apply(this, arguments);
-//             } finally {
-//                 // const end = time();
-//                 // console.log(`Timeline: Modules: ${name}  (${start}ms. - ${end}ms.)`);
-//             }
-//         };
-//     }
-//     return result;
-// }
-// function profile(target?: string | Function | Object, key?, descriptor?: PropertyDescriptor): any {
-//     // save a reference to the original method this way we keep the values currently in the
-//     // descriptor and don't overwrite what another decorator might have done to the descriptor.
-//     if (descriptor === undefined) {
-//         descriptor = Object.getOwnPropertyDescriptor(target, key);
-//     }
-//     const originalMethod = descriptor.value;
-
-//     let className = '';
-//     if (target && target.constructor && target.constructor.name) {
-//         className = target.constructor.name + '.';
-//     }
-
-//     const name = className + key;
-
-//     // editing the descriptor/value parameter
-//     descriptor.value = timelineProfileFunctionFactory(originalMethod, name, MemberType.Instance);
-
-//     // return edited descriptor as opposed to overwriting the descriptor
-//     return descriptor;
-// }
 interface PaintDecoratorOptions {
     withFont?: boolean;
 }
@@ -1048,7 +995,7 @@ export class Paint implements IPaint {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
-        return this._color && this._color.ios as UIColor;
+        return this._color && (this._color.ios as UIColor);
     }
 
     public getTextSize(): number {
@@ -1071,7 +1018,7 @@ export class Paint implements IPaint {
     set color(color: Color | number | string) {
         if (color instanceof Color) {
             this._color = color;
-        } else if (!!color){
+        } else if (!!color) {
             this._color = new Color(color as any);
         } else {
             this._color = undefined;
