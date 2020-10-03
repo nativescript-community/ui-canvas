@@ -1983,7 +1983,7 @@ export class UICustomCanvasView extends UIView {
         } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
             if (shapes.length > 0) {
-                shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner));
+                shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner, size.width, size.height));
             }
         }
         owner.onDraw(this._canvas);
