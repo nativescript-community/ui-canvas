@@ -5,7 +5,7 @@ import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
 
 function createGetter(key, options: ShapePropertyOptions) {
-    const realKey = '_' + key.toString().toLowerCase();
+    const realKey = '_' + key.toString();
     return function () {
         if (options.paintGetterName && this.paint[options.paintGetterName]) {
             return this.paint[options.paintGetterName]();
@@ -28,7 +28,7 @@ export interface ShapePropertyOptions {
     paintSetter?: (paint: Paint, value: any) => void;
 }
 function createSetter(key, options: ShapePropertyOptions) {
-    const realKey = '_' + key.toString().toLowerCase();
+    const realKey = '_' + key.toString();
     const nativeSetter = 'set' + key.charAt(0).toUpperCase() + key.slice(1);
     return function (newVal) {
         const oldValue = this[realKey];
