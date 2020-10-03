@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.19](https://github.com/nativescript-community/ui-canvas/compare/v4.0.18...v4.0.19) (2020-10-03)
+
+
+### Bug Fixes
+
+* store keys correctly ([be70ad6](https://github.com/nativescript-community/ui-canvas/commit/be70ad654b4efd24c883d12e02c33ba410ee89f8))
+
+
+### Features
+
+* horizontal and verticalAlignment basic support for shapes ([308f3e6](https://github.com/nativescript-community/ui-canvas/commit/308f3e60bcb26e57b6f89e513a5b97e673ce8335))
+* ios StaticLayout getPaint ([bf65637](https://github.com/nativescript-community/ui-canvas/commit/bf65637a30813a8e3e1a53b62446c6fe4952bfd7))
+* ios StaticLayout supports shadows…. ([ccec4dc](https://github.com/nativescript-community/ui-canvas/commit/ccec4dcecd567ee13f1265101bba55e49411f3e6))
+
+
+
+
+
 ## [4.0.18](https://github.com/nativescript-community/ui-canvas/compare/v4.0.17...v4.0.18) (2020-10-02)
 
 
