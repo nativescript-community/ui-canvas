@@ -2113,30 +2113,20 @@ export class StaticLayout {
         }
         const fullRange = { location: 0, length: nsAttributedString.length };
         nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
+        this.toDraw = nsAttributedString;
         this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
             nsAttributedString.addAttributesRange(attributes, range);
         });
-
-        this.toDraw = nsAttributedString;
-        let height;
-        this.toDraw.enumerateAttributeInRangeOptionsUsingBlock('verticalTextAligment', fullRange, 0, (value, range) => {
-            if (value) {
-                if (!height) {
-                    height = this.getHeight();
-                }
-                const font: UIFont = this.toDraw.attributeAtIndexEffectiveRange(NSFontAttributeName, range.location, null);
-                const fontHeight = font.lineHeight;
-                this.toDraw.addAttributeValueRange(NSBaselineOffsetAttributeName, Math.round(height / 2 - fontHeight / 2), range);
-            }
-        });
     }
     draw(canvas: Canvas) {
+        canvas.startApplyPaint(this.paint);
         const ctx = canvas.ctx;
         this.createAttributedStringToDraw();
 
         UIGraphicsPushContext(ctx);
         this.toDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         UIGraphicsPopContext();
+        canvas.finishApplyPaint(this.paint);
     }
     getPaint() {
         return this.paint;
@@ -2149,11 +2139,19 @@ export class StaticLayout {
         return this.rect;
     }
     getWidth() {
-        const result = this.getBounds().size.width;
-        return Math.round(isNaN(result) ? this.width : result);
+        if (this.width) {
+            return this.width;
+        }
+        let result = this.getBounds().size.width;
+        if (isNaN(result)) {
+            result = this.width;
+        } else {
+            result = Math.max(result, this.width);
+        }
+        return result;
     }
     getHeight() {
         const result = this.getBounds().size.height;
-        return Math.round(result);
+        return result;
     }
 }
