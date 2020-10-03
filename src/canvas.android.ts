@@ -536,8 +536,10 @@ class CanvasView extends CanvasBase {
             canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, this.shapePaint);
         } else if (!this.cached) {
             const shapes = this._shapes;
+            const width = canvas.getWidth();
+            const height = canvas.getHeight();
             if (shapes && shapes.length > 0) {
-                shapes.forEach((s) => s.drawMyShapeOnCanvas(this.augmentedCanvas as any, this as any));
+                shapes.forEach((s) => s.drawMyShapeOnCanvas(this.augmentedCanvas as any, this as any, width, height));
             }
         }
         this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });

@@ -169,7 +169,7 @@ export abstract class CanvasBase extends View {
         if (this._shapes && this._shapes.length > 0 && width > 0 && height > 0) {
             const canvas = (this.shapesCanvas = new Canvas(width, height));
             canvas.setDensity(this.density);
-            this._shapes.forEach((s) => s.drawMyShapeOnCanvas(canvas, this as any));
+            this._shapes.forEach((s) => s.drawMyShapeOnCanvas(canvas, this as any, width, height));
             this.redraw();
         }
     }

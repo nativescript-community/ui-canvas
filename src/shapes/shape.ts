@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Color, Length, Observable, PercentLength, Visibility } from '@nativescript/core';
+import { Color, HorizontalAlignment, Length, Observable, PercentLength, Utils, VerticalAlignment, Visibility } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
@@ -172,13 +172,47 @@ export default abstract class Shape extends Observable {
     })
     shadow: Shadow;
     @stringProperty({ nonPaintProp: true }) visibility: Visibility = 'visible';
+    @stringProperty({ nonPaintProp: true }) horizontalAlignment: HorizontalAlignment & 'middle';
+    @stringProperty({ nonPaintProp: true }) verticalAlignment: VerticalAlignment & 'center';
+    protected handleAlignment = false;
 
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
 
-    drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView) {
+    drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView, width: number, height: number) {
         if (this.visibility !== 'visible') {
             return;
         }
+        if (!this.handleAlignment) {
+            const paddingLeft = parent.effectivePaddingLeft + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
+            const paddingRight = parent.effectivePaddingRight + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
+
+            const paddingTop = parent.effectivePaddingTop + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
+            const paddingBottom = parent.effectivePaddingBottom + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
+            canvas.save();
+            if (paddingLeft > 0) {
+                canvas.translate(paddingLeft, 0);
+            }
+            if (paddingRight > 0) {
+                canvas.translate(-paddingRight, 0);
+            }
+            if (paddingTop > 0) {
+                canvas.translate(0, paddingTop);
+            }
+            if (paddingBottom > 0) {
+                canvas.translate(0, -paddingBottom);
+            }
+            if (this.horizontalAlignment === 'right') {
+                canvas.translate(width, 0);
+            } else if (this.horizontalAlignment === 'center' || this.horizontalAlignment === 'middle') {
+                canvas.translate(width / 2, 0);
+            }
+            if (this.verticalAlignment === 'bottom') {
+                canvas.translate(0, height);
+            } else if (this.verticalAlignment === 'center' || this.verticalAlignment === 'middle') {
+                canvas.translate(0, height / 2);
+            }
+        }
+
         const paint = this.paint;
         // console.log('drawMyShapeOnCanvas', paint.getColor(), this.strokeColor, this.fillColor);
         if (this.strokeColor || this.fillColor) {
@@ -208,6 +242,9 @@ export default abstract class Shape extends Observable {
             }
         } else {
             this.drawOnCanvas(canvas, parent);
+        }
+        if (!this.handleAlignment) {
+            canvas.restore();
         }
     }
 }
