@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.20](https://github.com/nativescript-community/ui-canvas/compare/v4.0.19...v4.0.20) (2020-10-06)
+
+
+### Bug Fixes
+
+* **android:** ensure we draw fonts correctly ([77d999d](https://github.com/nativescript-community/ui-canvas/commit/77d999d2fa28ad85692610ca6db86738b27a0f8e))
+
+
+
+
+
 ## [4.0.19](https://github.com/nativescript-community/ui-canvas/compare/v4.0.18...v4.0.19) (2020-10-03)
 
 
