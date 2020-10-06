@@ -233,6 +233,7 @@ export class Paint {
     }
     constructor() {
         const native = (this._native = new android.graphics.Paint());
+        native.setLinearText(true); // ensure we are drawing fonts correctly
         // native.setTypeface(this.font.getAndroidTypeface());
         return new Proxy(this, {
             get(target, name, receiver) {
