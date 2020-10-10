@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/unified-signatures */
-import { Color, ImageSource, View } from '@nativescript/core';
+import { Color, ImageSource, ObservableArray, View } from '@nativescript/core';
 import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
@@ -309,6 +309,8 @@ declare class CanvasView extends View {
     hardwareAccelerated: boolean;
     density: number;
     drawFameRate: boolean;
+
+    shapes: ObservableArray<Shape>;
 
     onDraw(canvas: Canvas);
     addShape(shape: Shape);
