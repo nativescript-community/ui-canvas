@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.22](https://github.com/nativescript-community/ui-canvas/compare/v4.0.21...v4.0.22) (2020-10-14)
+
+
+### Features
+
+* callDrawBeforeShapes property ([05f5e3a](https://github.com/nativescript-community/ui-canvas/commit/05f5e3a9b23d3dedab54782a43c6fe927ab6e4b5))
+
+
+
+
+
 ## [4.0.21](https://github.com/nativescript-community/ui-canvas/compare/v4.0.20...v4.0.21) (2020-10-10)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
