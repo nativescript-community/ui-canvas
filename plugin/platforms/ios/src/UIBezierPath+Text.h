@@ -10,6 +10,6 @@
 #import "UIBezierPath+Elements.h"
 @interface UIBezierPath (TextUtilities)
 + (UIBezierPath*) fromString: (NSString *) string withFont:(UIFont *) font;
-- (void) drawAttributedString: (NSAttributedString *) string;
-- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes;
+- (void) drawAttributedString: (NSAttributedString *) string withAlignment:(NSTextAlignment) alignment;
+- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes withAlignment:(NSTextAlignment) alignment;
 @end

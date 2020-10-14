@@ -12,10 +12,10 @@
   return BezierPathFromString(string, font);
 }
 
-- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes {
-  [self drawAttributedString:[[NSAttributedString alloc] initWithString:string attributes:attributes]];
+- (void) drawString: (NSString *) string withAttributes:(NSDictionary*)attributes withAlignment:(NSTextAlignment) alignment {
+  [self drawAttributedString:[[NSAttributedString alloc] initWithString:string attributes:attributes] withAlignment:alignment];
 }
-- (void) drawAttributedString: (NSAttributedString *) string
+- (void) drawAttributedString: (NSAttributedString *) string withAlignment:(NSTextAlignment) alignment
 {
     if (!string) return;
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -45,7 +45,7 @@
         CGPoint targetPoint = [self pointAtPercent:percentConsumed withSlope:&slope];
         
         // Accommodate the forward progress
-        glyphDistance += bounding.size.width / 2;         
+        glyphDistance += bounding.size.width / 2; 
         if (percentConsumed >= 1.0f) break;
 
         // Calculate the rotation

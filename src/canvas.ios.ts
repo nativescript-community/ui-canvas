@@ -10,6 +10,15 @@ export * from './canvas.common';
 
 const identity = CGAffineTransformIdentity;
 
+function NSTextAlignmentFromAlign(align: Align) {
+    if (align === Align.CENTER) {
+        return NSTextAlignment.Center;
+    } else if (align === Align.RIGHT) {
+        return NSTextAlignment.Right;
+    }
+    return NSTextAlignment.Left;
+}
+
 function DEGREES_TO_RADIANS(x) {
     return (Math.PI * x) / 180.0;
 }
@@ -1855,9 +1864,9 @@ export class Canvas implements ICanvas {
         }
         UIGraphicsPushContext(ctx);
         if (text instanceof NSAttributedString) {
-            bPath.drawAttributedString(applyAttributesToNSAttributedString(text, paint.getDrawTextAttribs()));
+            bPath.drawAttributedStringWithAlignment(applyAttributesToNSAttributedString(text, paint.getDrawTextAttribs()), NSTextAlignmentFromAlign(paint.getTextAlign()));
         } else {
-            bPath.drawStringWithAttributes(text, paint.getDrawTextAttribs());
+            bPath.drawStringWithAttributesWithAlignment(text, paint.getDrawTextAttribs(), NSTextAlignmentFromAlign(paint.getTextAlign()));
         }
         UIGraphicsPopContext();
     }

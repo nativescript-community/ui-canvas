@@ -1,28 +1,29 @@
 declare namespace UIBezierPath {
-	 function fromStringWithFont(string: string, font: UIFont): UIBezierPath;
-	 function addLinesOffsetCountCloseToPath(points, offset, length, close, path)
-	 function addCubicLinesOffsetCountCloseToPath(points, offset, length, close, path)
+    function fromStringWithFont(str: string, font: UIFont): UIBezierPath;
+    function addLinesOffsetCountCloseToPath(points, offset, length, close, path);
+    function addCubicLinesOffsetCountCloseToPath(points, offset, length, close, path);
 }
 
 declare namespace UIDrawingPath {
-	function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context:any, _transform: CGAffineTransform)
+    function drawLineSegmentsCountInContextWithTransform(pts: any, count: number, context: any, _transform: CGAffineTransform);
 }
-declare namespace UIDrawingText{
-	function drawStringXYFontColor(text: string, x: number, y:number, font: UIFont, color: UIColor)
-	function drawAttributedStringXYFontColor(text: NSAttributedString, x: number, y:number, font: UIFont, color: UIColor)
-	function drawAttributedStringInRectXYWidthHeightFontAlignmentColor(text: NSAttributedString, x: number, y:number, w: number, h:number, font: UIFont, alignment:NSTextAlignment, color: UIColor)
+declare namespace UIDrawingText {
+    function drawStringXYFontColor(text: string, x: number, y: number, font: UIFont, color: UIColor);
+    function drawAttributedStringXYFontColor(text: NSAttributedString, x: number, y: number, font: UIFont, color: UIColor);
+    function drawAttributedStringInRectXYWidthHeightFontAlignmentColor(text: NSAttributedString, x: number, y: number, w: number, h: number, font: UIFont, alignment: NSTextAlignment, color: UIColor);
 
-	function drawStringXYWithAttributes(text: string, x: number, y:number, attributes: NSDictionary<any, any>)
-	function drawAttributedStringXYWithAttributes(text: NSAttributedString, x: number, y:number, attributes: NSDictionary<any, any>)
-	function getTextBoundsFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): CGRect;
-	function measureTextFromToAttributes(text: string, start: number, end: number,attributes:NSDictionary<any, any>): number;
+    function drawStringXYWithAttributes(text: string, x: number, y: number, attributes: NSDictionary<any, any>);
+    function drawAttributedStringXYWithAttributes(text: NSAttributedString, x: number, y: number, attributes: NSDictionary<any, any>);
+    function getTextBoundsFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): CGRect;
+    function measureTextFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): number;
 }
 
+// eslint-disable-next-line no-redeclare
 declare interface UIBezierPath {
-	drawAttributedString(string: NSAttributedString);
-	drawStringWithAttributes(string: string, attributes:NSDictionary<any, any>);
-	addLinesCountClose(pts: any, count: number, close:boolean)
-	addCubicLinesCountClose(pts: any, count: number, close:boolean)
+    drawAttributedStringWithAlignment(str: NSAttributedString, alignment: NSTextAlignment);
+    drawStringWithAttributesWithAlignment(str: string, attributes: NSDictionary<any, any>, alignment: NSTextAlignment);
+    addLinesCountClose(pts: any, count: number, close: boolean);
+    addCubicLinesCountClose(pts: any, count: number, close: boolean);
 }
 
 declare function AddDashesToPath(path: UIBezierPath): void;
@@ -38,37 +39,36 @@ declare function AspectScaleFit(sourceSize: CGSize, destRect: CGRect): number;
 declare function BevelPath(p: UIBezierPath, color: UIColor, r: number, theta: number): void;
 
 declare class BezierElement extends NSObject implements NSCopying {
+    static alloc(): BezierElement; // inherited from NSObject
 
-	static alloc(): BezierElement; // inherited from NSObject
+    static elementWithPathElement(element: CGPathElement): BezierElement;
 
-	static elementWithPathElement(element: CGPathElement): BezierElement;
+    static new(): BezierElement; // inherited from NSObject
 
-	static new(): BezierElement; // inherited from NSObject
+    controlPoint1: CGPoint;
 
-	controlPoint1: CGPoint;
+    controlPoint2: CGPoint;
 
-	controlPoint2: CGPoint;
+    elementType: CGPathElementType;
 
-	elementType: CGPathElementType;
+    point: CGPoint;
 
-	point: CGPoint;
+    readonly stringValue: string;
 
-	readonly stringValue: string;
+    addToPath(path: UIBezierPath): void;
 
-	addToPath(path: UIBezierPath): void;
+    copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
 
-	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+    elementByApplyingBlock(block: (p1: CGPoint) => CGPoint): BezierElement;
 
-	elementByApplyingBlock(block: (p1: CGPoint) => CGPoint): BezierElement;
-
-	showTheCode(): void;
+    showTheCode(): void;
 }
 
 declare function BezierInflectedShape(numberOfInflections: number, percentInflection: number): UIBezierPath;
 
-declare function BezierPathFromString(string: string, font: UIFont): UIBezierPath;
+declare function BezierPathFromString(str: string, font: UIFont): UIBezierPath;
 
-declare function BezierPathFromStringWithFontFace(string: string, fontFace: string): UIBezierPath;
+declare function BezierPathFromStringWithFontFace(str: string, fontFace: string): UIBezierPath;
 
 declare function BezierPathWithElements(elements: NSArray<any>): UIBezierPath;
 
