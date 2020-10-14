@@ -1919,6 +1919,9 @@ export class UICustomCanvasView extends UIView {
             this._canvas = new Canvas(0, 0);
         }
         this._canvas.setContext(context, size.width, size.height);
+        if (owner.callDrawBeforeShapes) {
+            owner.onDraw(this._canvas);
+        }
         // this._canvas.scale(1 / owner.density, 1 / owner.density);
         // this._canvas.setDensity(owner.density);
         if (owner.shapesCanvas) {
@@ -1933,7 +1936,9 @@ export class UICustomCanvasView extends UIView {
                 shapes.forEach((s) => s.drawMyShapeOnCanvas(this._canvas, owner, size.width, size.height));
             }
         }
-        owner.onDraw(this._canvas);
+        if (!owner.callDrawBeforeShapes) {
+            owner.onDraw(this._canvas);
+        }
         if (drawFameRate) {
             const end = Date.now();
             if (!this.frameRatePaint) {

@@ -530,6 +530,9 @@ class CanvasView extends CanvasBase {
     shapePaint: IPaint;
     onDraw(canvas: ICanvas) {
         const shapeCanvas = this.shapesCanvas;
+        if (this.callDrawBeforeShapes) {
+            this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
+        }
         if (shapeCanvas) {
             if (!this.shapePaint) {
                 this.shapePaint = new android.graphics.Paint() as any;
@@ -543,7 +546,9 @@ class CanvasView extends CanvasBase {
                 shapes.forEach((s) => s.drawMyShapeOnCanvas(this.augmentedCanvas as any, this as any, width, height));
             }
         }
-        this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
+        if (!this.callDrawBeforeShapes) {
+            this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
+        }
     }
     nativeViewProtected: com.akylas.canvas.CanvasView;
     createNativeView() {

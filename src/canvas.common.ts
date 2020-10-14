@@ -19,6 +19,7 @@ export function createRectF(x: number, y: number, w: number, h: number) {
 
 export const cachedProperty = new Property<CanvasBase, boolean>({ name: 'cached', defaultValue: false, valueConverter: booleanConverter });
 export const hardwareAcceleratedProperty = new Property<CanvasBase, boolean>({ name: 'hardwareAccelerated', defaultValue: true, valueConverter: booleanConverter });
+export const callDrawBeforeShapesProperty = new Property<CanvasBase, boolean>({ name: 'callDrawBeforeShapes', defaultValue: false, valueConverter: booleanConverter });
 export const densityProperty = new Property<CanvasBase, number>({ name: 'density', valueConverter: parseFloat });
 
 function throttle(fn, limit) {
@@ -36,6 +37,8 @@ function throttle(fn, limit) {
 export const DEFAULT_SCALE = Screen.mainScreen.scale;
 export abstract class CanvasBase extends View {
     protected _shapes: ObservableArray<Shape>;
+
+    callDrawBeforeShapes = false;
 
     get shapes() {
         return this._shapes;
@@ -182,4 +185,5 @@ export abstract class CanvasBase extends View {
 
 cachedProperty.register(CanvasBase);
 hardwareAcceleratedProperty.register(CanvasBase);
+callDrawBeforeShapesProperty.register(CanvasBase);
 densityProperty.register(CanvasBase);
