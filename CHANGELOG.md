@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.23](https://github.com/nativescript-community/ui-canvas/compare/v4.0.22...v4.0.23) (2020-10-15)
+
+
+### Bug Fixes
+
+* fix text being something else that string ([a017910](https://github.com/nativescript-community/ui-canvas/commit/a0179100247ba394f897a530d4389411d77abf3c))
+
+
+
+
+
 ## [4.0.22](https://github.com/nativescript-community/ui-canvas/compare/v4.0.21...v4.0.22) (2020-10-14)
 
 
