@@ -2049,8 +2049,8 @@ export class StaticLayout {
             this.nsAttributedString = text;
             // } else if (!(text instanceof NSMutableAttributedString)) {
             //     text = NSMutableAttributedString.alloc().initWithStringAttributes(text, this.paint.getDrawTextAttribs());
-        } else if (!(text instanceof NSAttributedString)) {
-            this.nsAttributedString = NSAttributedString.alloc().initWithString(text);
+        } else {
+            this.nsAttributedString = NSAttributedString.alloc().initWithString(text +' ' );
         }
     }
     toDraw: NSMutableAttributedString;

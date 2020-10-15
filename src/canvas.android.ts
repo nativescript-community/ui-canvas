@@ -458,6 +458,9 @@ export class StaticLayout {
     }
     constructor(text: any, paint: android.graphics.Paint, width: number, align = LayoutAlignment.ALIGN_NORMAL, spacingmult = 1, spacingadd = 0, includepad = true) {
         paint = paint['_native'] ? (paint as any).getNative() : paint;
+        if (!(text instanceof java.lang.CharSequence) && !(typeof text === 'string')) {
+            text = text + '';
+        }
         if (isPostLVar()) {
             this._native = android.text.StaticLayout.Builder.obtain(
                 text,
