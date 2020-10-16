@@ -56,7 +56,7 @@ export default class Simple extends Vue {
     arcWidth = Math.min(Screen.mainScreen.widthDIPs, Screen.mainScreen.heightDIPs) - 40;
     density = Screen.mainScreen.scale;
     antiAlias = true;
-    hardwareAccelerated = true;
+    hardwareAccelerated = false;
     static title: 'Shapes Example';
     mounted() {}
     onBack() {

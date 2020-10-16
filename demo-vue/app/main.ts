@@ -8,7 +8,7 @@ Vue.use(CanvasPlugin);
 //     console.log('registering example', comp.component.name);
 //     Vue.component(comp.component.name, comp);
 // }
-Vue.config.silent = false;
+Vue.config.silent = true;
 Vue.config['debug'] = true;
 
 Vue.config.errorHandler = (e, vm, info) => {
@@ -21,7 +21,5 @@ Vue.config.warnHandler = function(msg, vm, trace) {
 console.log('registering all, ready to start');
 
 new Vue({
-    render: h => {
-        return h('frame', [h(Home)]);
-    }
+    render: h => h('frame', [h(Home)])
 }).$start();
