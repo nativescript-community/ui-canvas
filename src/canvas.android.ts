@@ -29,7 +29,13 @@ export {
     PorterDuffXfermode,
 };
 
-const isPostLVar = lazy(() => android.os.Build.VERSION.SDK_INT >= 24);
+let SDK_INT = -1;
+function getSDK() {
+    if (SDK_INT === -1) {
+        SDK_INT = android.os.Build.VERSION.SDK_INT;
+    }
+    return SDK_INT;
+}
 
 function createArrayBuffer(length: number, useInts = false) {
     let bb: java.nio.ByteBuffer;
@@ -461,7 +467,7 @@ export class StaticLayout {
         if (!(text instanceof java.lang.CharSequence) && !(typeof text === 'string')) {
             text = text + '';
         }
-        if (isPostLVar()) {
+        if (getSDK() >=24) {
             this._native = android.text.StaticLayout.Builder.obtain(
                 text,
                 0,
@@ -555,11 +561,20 @@ class CanvasView extends CanvasBase {
     }
     nativeViewProtected: com.akylas.canvas.CanvasView;
     createNativeView() {
-        // initAndroidCanvasViewClass();
         const view = new com.akylas.canvas.CanvasView(this._context);
-        // const view = new NativeCanvasView(this._context, this);
-        view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        if (getSDK() >= 28) {
+            view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+        }
         return view;
+    }
+    [hardwareAcceleratedProperty.getDefault](value) {
+        if (getSDK() >= 28) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     [hardwareAcceleratedProperty.setNative](value) {

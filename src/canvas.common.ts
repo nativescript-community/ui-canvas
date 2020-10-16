@@ -17,10 +17,11 @@ export function createRectF(x: number, y: number, w: number, h: number) {
     return new RectF(x, y, x + w, y + h);
 }
 
+export const DEFAULT_SCALE = Screen.mainScreen.scale;
 export const cachedProperty = new Property<CanvasBase, boolean>({ name: 'cached', defaultValue: false, valueConverter: booleanConverter });
-export const hardwareAcceleratedProperty = new Property<CanvasBase, boolean>({ name: 'hardwareAccelerated', defaultValue: true, valueConverter: booleanConverter });
+export const hardwareAcceleratedProperty = new Property<CanvasBase, boolean>({ name: 'hardwareAccelerated', valueConverter: booleanConverter });
 export const callDrawBeforeShapesProperty = new Property<CanvasBase, boolean>({ name: 'callDrawBeforeShapes', defaultValue: false, valueConverter: booleanConverter });
-export const densityProperty = new Property<CanvasBase, number>({ name: 'density', valueConverter: parseFloat });
+export const densityProperty = new Property<CanvasBase, number>({ name: 'density', defaultValue:DEFAULT_SCALE, valueConverter: parseFloat });
 
 function throttle(fn, limit) {
     let waiting = false;
@@ -34,7 +35,6 @@ function throttle(fn, limit) {
         }
     };
 }
-export const DEFAULT_SCALE = Screen.mainScreen.scale;
 export abstract class CanvasBase extends View {
     protected _shapes: ObservableArray<Shape>;
 
@@ -43,9 +43,9 @@ export abstract class CanvasBase extends View {
     get shapes() {
         return this._shapes;
     }
-    public cached = false;
-    public density = DEFAULT_SCALE;
-    public hardwareAccelerated = true;
+    public cached;
+    public density;
+    public hardwareAccelerated ;
 
     drawFameRate = false;
 
