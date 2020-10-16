@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.25](https://github.com/nativescript-community/ui-canvas/compare/v4.0.24...v4.0.25) (2020-10-16)
+
+
+### Bug Fixes
+
+* enable HWAcc on android >= 28 by default ([eef69c0](https://github.com/nativescript-community/ui-canvas/commit/eef69c059ed821d4e0d04ba6d3d6b468817d58a6))
+
+
+
+
+
 ## [4.0.24](https://github.com/nativescript-community/ui-canvas/compare/v4.0.23...v4.0.24) (2020-10-16)
 
 
