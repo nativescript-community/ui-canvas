@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.24](https://github.com/nativescript-community/ui-canvas/compare/v4.0.23...v4.0.24) (2020-10-16)
+
+
+### Bug Fixes
+
+* color properties to handle Color ([f54b689](https://github.com/nativescript-community/ui-canvas/commit/f54b68985678fa8f7ede053d44cad97dbe368c9e))
+
+
+
+
+
 ## [4.0.23](https://github.com/nativescript-community/ui-canvas/compare/v4.0.22...v4.0.23) (2020-10-15)
 
 
