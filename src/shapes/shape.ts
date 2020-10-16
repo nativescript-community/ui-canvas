@@ -97,7 +97,7 @@ export function stringProperty(...args) {
 export function colorProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function colorProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
 export function colorProperty(...args) {
-    return shapeProperty((v) => (v ? new Color(v) : null), args);
+    return shapeProperty((v) => (v instanceof Color ? v : v ? new Color(v) : null), args);
 }
 export function lengthProperty(target: any, k?, desc?: PropertyDescriptor): any;
 export function lengthProperty(options: ShapePropertyOptions): (target: any, k?, desc?: PropertyDescriptor) => any;
