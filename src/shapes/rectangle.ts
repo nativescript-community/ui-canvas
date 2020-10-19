@@ -13,8 +13,7 @@ export default class Rectangle extends Shape {
             canvas.drawRect(this.getRect(canvas), this.paint);
         }
     }
-    @percentLengthProperty width: PercentLength;
-    @percentLengthProperty height: PercentLength;
+
     @lengthProperty left: Length = zeroLength;
     @lengthProperty top: Length = zeroLength;
     @numberProperty borderRadius: number;

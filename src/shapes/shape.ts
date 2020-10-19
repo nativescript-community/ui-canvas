@@ -174,15 +174,29 @@ export default abstract class Shape extends Observable {
     @stringProperty({ nonPaintProp: true }) visibility: Visibility = 'visible';
     @stringProperty({ nonPaintProp: true }) horizontalAlignment: HorizontalAlignment & 'middle';
     @stringProperty({ nonPaintProp: true }) verticalAlignment: VerticalAlignment & 'center';
+
+    @percentLengthProperty width: PercentLength;
+    @percentLengthProperty height: PercentLength;
+
     protected handleAlignment = false;
 
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
+
+    getWidth(availableWidth: number, availableHeight: number) {
+        return this.width? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)) : 0;
+    }
+    getHeight(availableWidth: number, availableHeight: number) {
+        return this.height? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight)) : 0;
+
+    }
 
     drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView, width: number, height: number) {
         if (this.visibility !== 'visible') {
             return;
         }
         if (!this.handleAlignment) {
+            const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
+            const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
             const paddingLeft = parent.effectivePaddingLeft + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
             const paddingRight = parent.effectivePaddingRight + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
 
@@ -202,14 +216,18 @@ export default abstract class Shape extends Observable {
                 canvas.translate(0, -paddingBottom);
             }
             if (this.horizontalAlignment === 'right') {
-                canvas.translate(width, 0);
+                const sWidth = this.getWidth(availableWidth, availableHeight);
+                canvas.translate(width - sWidth, 0);
             } else if (this.horizontalAlignment === 'center' || this.horizontalAlignment === 'middle') {
-                canvas.translate(width / 2, 0);
+                const sWidth = this.getWidth(availableWidth, availableHeight);
+                canvas.translate(width / 2 - sWidth/2, 0);
             }
             if (this.verticalAlignment === 'bottom') {
-                canvas.translate(0, height);
+                const sHeight = this.getHeight(availableWidth, availableHeight);
+                canvas.translate(0, height - sHeight);
             } else if (this.verticalAlignment === 'center' || this.verticalAlignment === 'middle') {
-                canvas.translate(0, height / 2);
+                const sHeight = this.getHeight(availableWidth, availableHeight);
+                canvas.translate(0, height / 2 - sHeight/2);
             }
         }
 
