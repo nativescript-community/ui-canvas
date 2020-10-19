@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.26](https://github.com/nativescript-community/ui-canvas/compare/v4.0.25...v4.0.26) (2020-10-19)
+
+
+### Features
+
+* shapes support getWidth and getHeight for alignment ([6352a88](https://github.com/nativescript-community/ui-canvas/commit/6352a883ebdc87ff0aac2b9c40e5414ce150b125))
+
+
+
+
+
 ## [4.0.25](https://github.com/nativescript-community/ui-canvas/compare/v4.0.24...v4.0.25) (2020-10-16)
 
 
