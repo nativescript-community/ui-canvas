@@ -273,8 +273,8 @@ export class Matrix implements IMatrix {
         this._transform = CGAffineTransformIdentity;
     }
     mapRect(rect: Rect) {
-        const cgRect = CGRectApplyAffineTransform(rect.cgRect, this._transform);
-        return new Rect(cgRect);
+        rect.cgRect = CGRectApplyAffineTransform(rect.cgRect, this._transform);
+        return true;
     }
     public setRotate(degrees: number, px: number = 0, py: number = 0) {
         this._transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(degrees));
