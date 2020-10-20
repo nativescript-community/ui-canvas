@@ -196,7 +196,9 @@ class Canvas {
                     return native.drawColor(android.graphics.Color.TRANSPARENT);
                     // return drawBitmapOnCanvas(native, args[0], args[1], args[2], args[3]);
                 } else if (methodName === 'drawBitmap') {
-                    return drawBitmapOnCanvas(native, args[0], args[1], args[2], args[3]);
+                    if (args[0] instanceof ImageSource) {
+                        args[0] = args[0].android;
+                    }
                 } else if (methodName === 'drawView') {
                     return drawViewOnCanvas(native, args[0], args[1]);
                 }
