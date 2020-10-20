@@ -75,10 +75,6 @@ export function parseDashEffect(value: string) {
     const array = value.split(' ').map(parseFloat);
     const length = array.length;
     const phase = array[length - 1];
-    // const nNative = Array.create('float', length - 1);
-    // for (let i = 0; i < length - 1; i++) {
-    //     nNative[i] = array[i];
-    // }
     const result = new DashPathEffect(array, phase);
     return result;
 }
@@ -135,7 +131,6 @@ class Canvas {
     _bitmap: android.graphics.Bitmap;
     _shouldReleaseBitmap = false;
     constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number, height?: number) {
-        // if no args must be a canvas wrapper
         if (imageOrWidth) {
             if (imageOrWidth instanceof ImageSource) {
                 this._bitmap = imageOrWidth.android;
@@ -143,19 +138,12 @@ class Canvas {
                 this._bitmap = imageOrWidth;
             } else {
                 this._shouldReleaseBitmap = true;
-                // console.log('create canvas with size', imageOrWidth, height);
-                // const options = new android.graphics.BitmapFactory.Options();
-                // options.inMutable = true;
-                // (options as any).outConfig = android.graphics.Bitmap.Config.ARGB_8888;
-                // console.log('create canvas with size about to create bitmap');
                 this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
-                // console.log('create canvas with size created bitmap', this._bitmap);
             }
             if (!this._bitmap.isMutable()) {
                 this._shouldReleaseBitmap = true;
                 this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
             }
-            // this.setBitmap(this._bitmap);
             this._native = new android.graphics.Canvas(this._bitmap);
         }
 
@@ -165,7 +153,6 @@ class Canvas {
     get(target: Canvas, name, receiver) {
         const native = this._native;
         if (canvasAugmentedMethods.indexOf(name) >= 0 || native[name]) {
-            // assume methods live on the prototype
             return function (...args) {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
@@ -189,12 +176,10 @@ class Canvas {
                     }
                 } else if (methodName === 'getWidth' || methodName === 'getHeight') {
                     if (!target._bitmap) {
-                        // return super.getWidth();
                         return layout.toDeviceIndependentPixels(native[methodName]());
                     }
                 } else if (methodName === 'clear') {
                     return native.drawColor(android.graphics.Color.TRANSPARENT);
-                    // return drawBitmapOnCanvas(native, args[0], args[1], args[2], args[3]);
                 } else if (methodName === 'drawBitmap') {
                     if (args[0] instanceof ImageSource) {
                         args[0] = args[0].android;
@@ -203,10 +188,8 @@ class Canvas {
                     return drawViewOnCanvas(native, args[0], args[1]);
                 }
                 return native[methodName](...args);
-                // we now have access to both methodName and arguments
             };
         } else {
-            // assume instance vars like on the target
             return Reflect.get(target, name, receiver);
         }
     }
@@ -230,23 +213,19 @@ export class Paint {
     _needsFontUpdate = true;
     getNative() {
         if (this._needsFontUpdate) {
-            // const startTime = Date.now();
             this._needsFontUpdate = false;
             const font = this.font;
             const nTypeface = font.getAndroidTypeface();
             this._native.setTypeface(nTypeface);
-            // console.log('[Paint]', 'setTypeface', font.fontFamily, nTypeface, Date.now() - startTime, 'ms');
         }
         return this._native;
     }
     constructor() {
         const native = (this._native = new android.graphics.Paint());
         native.setLinearText(true); // ensure we are drawing fonts correctly
-        // native.setTypeface(this.font.getAndroidTypeface());
         return new Proxy(this, {
             get(target, name, receiver) {
                 if (native[name]) {
-                    // assume methods live on the prototype
                     return function (...args) {
                         const methodName = name;
                         for (let index = 0; index < args.length; index++) {
@@ -269,14 +248,11 @@ export class Paint {
                                 this.font['_typeface'] = args[0] as android.graphics.Typeface;
                             }
                             this._needsFontUpdate = true;
-                            // native.setTypeface(this.font.getAndroidTypeface());
                             return this.fontInternal;
                         }
                         return native[methodName](...args);
-                        // we now have access to both methodName and arguments
                     };
                 } else {
-                    // assume instance vars like on the target
                     return Reflect.get(target, name, receiver);
                 }
             },
@@ -420,6 +396,9 @@ export class Path {
 }
 export class RadialGradient {
     _native: android.graphics.LinearGradient;
+    getNative() {
+        return this._native;
+    }
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {
         this._native = new android.graphics.RadialGradient(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
         return new Proxy(this, this);
@@ -529,11 +508,6 @@ function initClasses() {
     PorterDuffXfermode = android.graphics.PorterDuffXfermode;
 }
 
-// declare module '@nativescript/core/ui/core/view' {
-//     interface View {
-//         setOnLayoutChangeListener();
-//     }
-// }
 @CSSType('CanvasView')
 class CanvasView extends CanvasBase {
     augmentedCanvas = new Canvas();
@@ -597,7 +571,6 @@ class CanvasView extends CanvasBase {
                     startTime = Date.now();
                 }
                 const scale = this.density;
-                // console.log('set canvas density', scale, Math.round(scale * 160), canvas.isHardwareAccelerated() );
                 canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(scale, scale); // always scale to device density to work with dp
                 this.augmentedCanvas._native = canvas;
@@ -629,11 +602,6 @@ class CanvasView extends CanvasBase {
             this.nativeViewProtected.invalidate();
         }
     }
-    // public initNativeView() {
-    //     super.initNativeView();
-    //     // needed to update the cache canvas size on size change
-    //     this.setOnLayoutChangeListener();
-    // }
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: android.graphics.Bitmap.Config }) {
