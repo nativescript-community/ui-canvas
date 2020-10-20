@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.28](https://github.com/nativescript-community/ui-canvas/compare/v4.0.27...v4.0.28) (2020-10-20)
+
+
+### Bug Fixes
+
+* ios mapRect fix ([0d95c7e](https://github.com/nativescript-community/ui-canvas/commit/0d95c7eba19e23bbd3d715fbac0aae23fc39b05b))
+
+
+
+
+
 ## [4.0.27](https://github.com/nativescript-community/ui-canvas/compare/v4.0.26...v4.0.27) (2020-10-20)
 
 
