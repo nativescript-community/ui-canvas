@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.27](https://github.com/nativescript-community/ui-canvas/compare/v4.0.26...v4.0.27) (2020-10-20)
+
+
+### Bug Fixes
+
+* android fix for call drawBitmap ([efae572](https://github.com/nativescript-community/ui-canvas/commit/efae57256b2d512439de7fd30b1899169f504e97))
+
+
+
+
+
 ## [4.0.26](https://github.com/nativescript-community/ui-canvas/compare/v4.0.25...v4.0.26) (2020-10-19)
 
 
