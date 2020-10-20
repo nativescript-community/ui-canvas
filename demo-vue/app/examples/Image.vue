@@ -4,7 +4,7 @@
             <NavigationButton text="Back" android.systemIcon="ic_menu_back" @tap="onBack"></NavigationButton>
         </ActionBar>
         <StackLayout>
-            <CanvasView width="100%" height="100%" @draw="onDraw"/>
+            <CanvasView width="100%" height="100%" @draw="onDraw" />
         </StackLayout>
     </Page>
 </template>
@@ -16,10 +16,10 @@ import { Component } from 'vue-property-decorator';
 import { createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
-import { fromFile, ImageSource } from '@nativescript/core/image-source';
+import { ImageSource } from '@nativescript/core/image-source';
 import { Screen } from '@nativescript/core/platform';
 
-const iconLocalFile: ImageSource = fromFile(path.join( knownFolders.currentApp().path, 'images/test.jpg'));
+const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(knownFolders.currentApp().path, 'images/test.jpg'));
 
 @Component
 export default class Image extends Vue {

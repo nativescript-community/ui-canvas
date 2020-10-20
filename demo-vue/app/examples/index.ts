@@ -5,27 +5,25 @@ import Shapes from './Shapes.vue';
 import Image from './Image.vue';
 
 export { Complex, Simple, Animation, Shapes };
-export const getExamples = () => {
-    return [
-        {
-            name: 'Complex',
-            component: Complex
-        },
-        {
-            name: 'Simple',
-            component: Simple
-        },
-        {
-            name: 'Animation',
-            component: Animation
-        },
-        {
-            name: 'Shapes',
-            component: Shapes
-        },
-        {
-            name: 'Image',
-            component: Image
-        }
-    ];
-};
+export const getExamples = () => [
+    {
+        name: 'Complex',
+        component: Complex
+    },
+    {
+        name: 'Simple',
+        component: Simple
+    },
+    {
+        name: 'Animation',
+        component: Animation
+    },
+    {
+        name: 'Shapes',
+        component: Shapes
+    },
+    {
+        name: 'Image',
+        component: Image
+    }
+];

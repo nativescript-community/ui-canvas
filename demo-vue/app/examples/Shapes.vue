@@ -45,7 +45,7 @@ import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { Canvas, createRect, Paint, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
-import TWEEN from 'nativescript-tween';
+import TWEEN from '@nativescript-community/tween';
 import { Screen } from '@nativescript/core/platform';
 
 @Component
@@ -72,7 +72,7 @@ export default class Simple extends Vue {
             .onUpdate(obj => {
                 this.shapeLeft = obj.value;
             })
-            .start();
+            .start(0);
     }
     animateArc() {
         new TWEEN.Tween({ value: 0 })
@@ -80,7 +80,7 @@ export default class Simple extends Vue {
             .onUpdate(obj => {
                 this.sweepAngle = obj.value;
             })
-            .start();
+            .start(0);
     }
 
     onDraw(event: { canvas: Canvas }) {

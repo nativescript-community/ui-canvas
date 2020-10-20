@@ -18,7 +18,7 @@ import { Canvas, Cap, createRect, createRectF, Paint, Style } from '@nativescrip
 import { Color } from '@nativescript/core/color';
 import { Screen } from '@nativescript/core/platform';
 
-import TWEEN from 'nativescript-tween';
+import TWEEN from '@nativescript-community/tween';
 
 @Component
 export default class Animation extends Vue {
@@ -55,7 +55,7 @@ export default class Animation extends Vue {
                 this.currentArcAngle = obj.value;
                 canvas.redraw();
             })
-            .start();
+            .start(0);
     }
 }
 </script>

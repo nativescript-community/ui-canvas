@@ -1,11 +1,8 @@
 import { Align, Canvas, Cap, DashPathEffect, LinearGradient, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
+import { Label, Utils } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
 import { ImageSource } from '@nativescript/core/image-source';
-import { Button } from '@nativescript/core/ui/button';
-import { FormattedString } from '@nativescript/core/text/formatted-string';
-import { Span } from '@nativescript/core/text/span';
-import { Label, Utils } from '@nativescript/core';
 
 function isOnUiThread() {
     if (global.isIOS) {
@@ -14,11 +11,11 @@ function isOnUiThread() {
         return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
     }
 }
+const folder: Folder = knownFolders.currentApp();
+const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'images/test.jpg'));
 
 export function drawOnImage(scale = 3, canvas?: Canvas) {
-    const folder: Folder = knownFolders.currentApp();
 
-    const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'images/test.jpg'));
     if (!canvas) {
         const folderPath: string = path.join(folder.path, 'images/test.jpg');
         const imageFromLocalFile: ImageSource = ImageSource.fromFileSync(folderPath);
@@ -122,9 +119,9 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
 
     // image
     canvas.save();
-    canvas.translate(10, 600);
+    // canvas.translate(10, 600);
     // canvas.drawBitmap(iconLocalFile, 0, 0, null);
-    canvas.drawBitmap(iconLocalFile, null, createRect(150, 0, 200, 300), null);
+    canvas.drawBitmap(iconLocalFile, null, createRect(0, 0, 200, 300), null);
     canvas.restore();
 
     // arc path

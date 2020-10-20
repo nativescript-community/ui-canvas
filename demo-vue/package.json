@@ -5,17 +5,16 @@
     "repository": "http://www.github.com/Akylas/@nativescript-community/ui-canvas.git",
     "main": "main.js",
     "dependencies": {
-        "@akylas/nativescript": "7.0.3-alpha.4",
+        "@nativescript/core": "7.0.3",
         "@nativescript-community/perms": "2.1.1",
         "@nativescript-community/ui-canvas": "file:../plugin",
-        "@nativescript/webpack": "3.0.4",
-        "nativescript-tween": "0.0.10",
+        "@nativescript/webpack": "3.0.7",
+        "@nativescript-community/tween": "0.0.12",
         "nativescript-vue": "^2.8.1"
     },
     "devDependencies": {
         "@babel/core": "^7.11.6",
         "@nativescript/android": "7.0.0",
-        "@nativescript/core": "7.0.3",
         "@nativescript/types": "7.0.3",
         "babel-loader": "^8.1.0",
         "nativescript-vue-template-compiler": "2.8.1",
