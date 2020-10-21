@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.29](https://github.com/nativescript-community/ui-canvas/compare/v4.0.28...v4.0.29) (2020-10-21)
+
+
+### Bug Fixes
+
+* ios fix for color and alpha to behave like android ([1c294a2](https://github.com/nativescript-community/ui-canvas/commit/1c294a28c46f6a192e10ad5f1a1ecb1aabc9aee6))
+* some font fixes and optimizations ([6dc1392](https://github.com/nativescript-community/ui-canvas/commit/6dc1392bda9bb51e159223253415ce9717412946))
+
+
+
+
+
 ## [4.0.28](https://github.com/nativescript-community/ui-canvas/compare/v4.0.27...v4.0.28) (2020-10-20)
 
 
