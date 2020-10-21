@@ -1042,9 +1042,16 @@ export class Paint implements IPaint {
         } else {
             this._color = undefined;
         }
-    }
-    setColor(color: Color | number | string) {
-        this.color = color as any;
+        if (this._color) {
+            // on android setColor sets the alpha too
+            const c = this._color;
+            this.alpha = c.a;
+            // we want to ignore color alpha because on android it is not used but
+            // on ios it will add up
+            this._color = new Color(255, c.r, c.g, c.b);
+        } else {
+            this.alpha = 255;
+        }
 
     }
     getColor(): Color {
