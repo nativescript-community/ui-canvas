@@ -5,6 +5,7 @@ const Plugin = {
         Vue.registerElement('Arc', () => require('../shapes/arc').default, {});
         Vue.registerElement('Text', () => require('../shapes/text').default, {});
         Vue.registerElement('Line', () => require('../shapes/line').default, {});
+        Vue.registerElement('Circle', () => require('../shapes/circle').default, {});
     }
 };
 
