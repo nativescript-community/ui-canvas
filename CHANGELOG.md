@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.30](https://github.com/nativescript-community/ui-canvas/compare/v4.0.29...v4.0.30) (2020-10-21)
+
+
+### Features
+
+* shape circle ([bb61b7a](https://github.com/nativescript-community/ui-canvas/commit/bb61b7aab7697b3c4b18ff9191d2a0383baa856e))
+
+
+
+
+
 ## [4.0.29](https://github.com/nativescript-community/ui-canvas/compare/v4.0.28...v4.0.29) (2020-10-21)
 
 
