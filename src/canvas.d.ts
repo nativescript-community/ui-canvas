@@ -30,6 +30,8 @@ export class Paint {
     fontWeight: FontWeight;
     fontStyle: FontStyle;
     font: Font;
+    getFont(): Font
+    setFont(font: Font)
 
     public getAlpha(): number;
     public getStyle(): Style;

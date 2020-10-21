@@ -258,11 +258,19 @@ export class Paint {
             },
         });
     }
-    get font() {
+    setFont(font: Font) {
+        this.fontInternal = font;
+        this._native.setTextSize(font.fontSize);
+        this._needsFontUpdate = true;
+    }
+    getFont() {
         if (!this.fontInternal) {
             this.fontInternal = Font.default;
         }
         return this.fontInternal;
+    }
+    get font() {
+        return this.getFont();
     }
     set font(font: Font) {
         this.setFont(font);
@@ -281,11 +289,6 @@ export class Paint {
             this.fontInternal = this.font.withFontFamily(familyName);
             this._needsFontUpdate = true;
         }
-    }
-    setFont(font: Font) {
-        this.fontInternal = font;
-        this._needsFontUpdate = true;
-        // this._native.setTypeface(this.font.getAndroidTypeface());
     }
     set fontWeight(weight: FontWeight) {
         this.setFontWeight(weight);

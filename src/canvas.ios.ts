@@ -850,7 +850,6 @@ export class Paint implements IPaint {
     _color: Color = new Color('black');
     style: Style = Style.FILL;
     align: Align = Align.LEFT;
-    // _textSize = 16;
     _font: Font;
     strokeWidth = 0;
     strokeMiter = 0;
@@ -963,12 +962,20 @@ export class Paint implements IPaint {
     constructor() {
         // this.font = Font.default;
     }
-
-    get font() {
+    setFont(font: Font) {
+        this._font = font;
+    }
+    getFont() {
         if (!this._font) {
             this._font = Font.default;
         }
         return this._font;
+    }
+    get font() {
+        return this.getFont();
+    }
+    set font(font: Font) {
+        this.setFont(font);
     }
 
     setFontFamily(familyName: string) {
@@ -1008,23 +1015,26 @@ export class Paint implements IPaint {
     }
 
     public getTextSize(): number {
-        return this.textSize;
+        return this._font ? this._font.fontSize : UIFont.labelFontSize;
     }
 
     set textSize(textSize) {
-        this._font = this.font.withFontSize(textSize);
-        this._textAttribs = null;
+        this.setTextSize(textSize);
     }
     get textSize() {
-        return this._font ? this._font.fontSize : UIFont.labelFontSize;
+        return this.getTextSize();
     }
     setTextSize(textSize) {
-        this.textSize = textSize;
+        this._font = this.font.withFontSize(textSize);
+        this._textAttribs = null;
     }
     get color(): Color | number | string {
         return this._color;
     }
     set color(color: Color | number | string) {
+        this.setColor(color);
+    }
+    setColor(color: Color | number | string) {
         if (color instanceof Color) {
             this._color = color;
         } else if (!!color) {
@@ -1035,6 +1045,7 @@ export class Paint implements IPaint {
     }
     setColor(color: Color | number | string) {
         this.color = color as any;
+
     }
     getColor(): Color {
         return this._color;
