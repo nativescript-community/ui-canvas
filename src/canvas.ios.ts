@@ -830,6 +830,9 @@ export class Paint implements IPaint {
     }
     public setFilterBitmap(param0: boolean) {}
     public setTypeface(font: Font | UIFont): Font {
+        if (this.font === font) {
+            return this._font;
+        }
         if (font instanceof Font) {
             this._font = font;
         } else if (font) {
@@ -963,7 +966,11 @@ export class Paint implements IPaint {
         // this.font = Font.default;
     }
     setFont(font: Font) {
+        if (font === this._font) {
+            return;
+        }
         this._font = font;
+        this._textAttribs = null;
     }
     getFont() {
         if (!this._font) {
@@ -979,6 +986,9 @@ export class Paint implements IPaint {
     }
 
     setFontFamily(familyName: string) {
+        if (this._font && this._font.fontFamily === familyName) {
+            return;
+        }
         this._font = this.font.withFontFamily(familyName);
         this._textAttribs = null;
     }
@@ -993,6 +1003,9 @@ export class Paint implements IPaint {
     }
 
     set fontWeight(weight: FontWeight) {
+        if (this._font && this._font.fontWeight === weight) {
+            return;
+        }
         this.setFontWeight(weight);
     }
     setFontWeight(weight: FontWeight) {
@@ -1003,6 +1016,9 @@ export class Paint implements IPaint {
         this.setFontStyle(style);
     }
     setFontStyle(style: FontStyle) {
+        if (this._font && this._font.fontStyle === style) {
+            return;
+        }
         this._font = this.font.withFontStyle(style);
         this._textAttribs = null;
     }
@@ -1025,6 +1041,9 @@ export class Paint implements IPaint {
         return this.getTextSize();
     }
     setTextSize(textSize) {
+        if (this._font && this._font.fontSize === textSize) {
+            return;
+        }
         this._font = this.font.withFontSize(textSize);
         this._textAttribs = null;
     }
