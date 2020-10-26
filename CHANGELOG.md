@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.31](https://github.com/nativescript-community/ui-canvas/compare/v4.0.30...v4.0.31) (2020-10-26)
+
+
+### Bug Fixes
+
+* ios prevent native font from being “reset” when not necessary ([95eb8ac](https://github.com/nativescript-community/ui-canvas/commit/95eb8ac88896a88cee9a82633d979a1a5cc4e448))
+
+
+
+
+
 ## [4.0.30](https://github.com/nativescript-community/ui-canvas/compare/v4.0.29...v4.0.30) (2020-10-21)
 
 
