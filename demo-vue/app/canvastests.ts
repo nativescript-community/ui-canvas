@@ -69,7 +69,7 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     bgPaint.setStyle(Style.STROKE);
     bgPaint.setShadowLayer(4, 0, 2, 'blue');
     bgPaint.setPathEffect(new DashPathEffect([6, 4], 0));
-    canvas.drawRoundRect(0, hH / 2 + 2 * padding, hW, hH / 2 + hH / 2 + 2 * padding, 30, 30, bgPaint);
+    canvas.drawRoundRect(createRectF(0, hH / 2 + 2 * padding, hW, hH / 2 + hH / 2 + 2 * padding), 30, 30, bgPaint);
     bgPaint.clearShadowLayer();
     bgPaint.setPathEffect(null);
 

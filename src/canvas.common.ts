@@ -23,6 +23,8 @@ export const hardwareAcceleratedProperty = new Property<CanvasBase, boolean>({ n
 export const callDrawBeforeShapesProperty = new Property<CanvasBase, boolean>({ name: 'callDrawBeforeShapes', defaultValue: false, valueConverter: booleanConverter });
 export const densityProperty = new Property<CanvasBase, number>({ name: 'density', defaultValue:DEFAULT_SCALE, valueConverter: parseFloat });
 
+export * from './shapes';
+
 function throttle(fn, limit) {
     let waiting = false;
     return (...args) => {
@@ -36,6 +38,9 @@ function throttle(fn, limit) {
     };
 }
 export abstract class CanvasBase extends View {
+    // Declare events as static variables, so that they can be set in NativeScript Core XML
+    public static drawEvent = 'draw';
+
     protected _shapes: ObservableArray<Shape>;
 
     callDrawBeforeShapes = false;
@@ -45,7 +50,7 @@ export abstract class CanvasBase extends View {
     }
     public cached;
     public density;
-    public hardwareAccelerated ;
+    public hardwareAccelerated;
 
     drawFameRate = false;
 
