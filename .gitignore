@@ -6,7 +6,6 @@ hooks
 package-lock.json
 .DS_Store
 npm-debug.log.*
-demo*/app/**/*.js
 demo*/typings
 *.framework
 **/*.js.map
