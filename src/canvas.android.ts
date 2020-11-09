@@ -328,9 +328,16 @@ export class Paint {
     set textSize(value: number) {
         this._native.setTextSize(value);
     }
+    get textSize() {
+        return this.getTextSize();
+    }
+    public getTextSize(): number {
+        return this._native.getTextSize();
+    }
     public setTypeface(font: Font | android.graphics.Typeface): Font {
         if (font instanceof Font) {
-            this.fontInternal = font;
+            this.setFont(font);
+            return this.fontInternal;;
         } else if (font) {
             this.fontInternal['_typeface'] = font;
         } else {

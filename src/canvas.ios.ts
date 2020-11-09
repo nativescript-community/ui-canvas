@@ -829,20 +829,7 @@ export class Paint implements IPaint {
         // path._path = bPath.CGPath;
     }
     public setFilterBitmap(param0: boolean) {}
-    public setTypeface(font: Font | UIFont): Font {
-        if (this.font === font) {
-            return this._font;
-        }
-        if (font instanceof Font) {
-            this._font = font;
-        } else if (font) {
-            this._font['_uiFont'] = font;
-        } else {
-            this._font = null;
-        }
-        this._textAttribs = null;
-        return this._font;
-    }
+
     public setTextAlign(align: Align): void {
         this.align = align;
         this._textAttribs = null;
@@ -971,6 +958,21 @@ export class Paint implements IPaint {
         }
         this._font = font;
         this._textAttribs = null;
+    }
+    public setTypeface(font: Font | UIFont): Font {
+        if (this.font === font) {
+            return this._font;
+        }
+        if (font instanceof Font) {
+            this.setFont(font);
+            return this._font;
+        } else if (font) {
+            this._font['_uiFont'] = font;
+        } else {
+            this._font = null;
+        }
+        this._textAttribs = null;
+        return this._font;
     }
     getFont() {
         if (!this._font) {
