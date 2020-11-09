@@ -1,9 +1,10 @@
 {
+    "name": "demovuecanvas",
     "description": "NativeScript canvas Demo for Vue",
     "license": "SEE LICENSE IN LICENSE.md",
     "readme": "README.md",
     "repository": "http://www.github.com/Akylas/@nativescript-community/ui-canvas.git",
-    "main": "main.js",
+    "main": "main",
     "dependencies": {
         "@nativescript/core": "7.0.13",
         "@nativescript-community/perms": "2.1.1",
