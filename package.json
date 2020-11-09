@@ -17,7 +17,7 @@
         "plugin.watch.android": "npm i && npm-watch build.android",
         "plugin.watch.ios": "npm i && npm-watch build.ios",
         "plugin.watch": "npm run plugin.watch.tsc & npm run plugin.watch.android & npm run plugin.watch.ios",
-        "publish": "ts-patch install && npm run build.native && npm run build && lerna publish --github-release",
+        "publish": "ts-patch install && npm run build.native && npm run build && lerna publish --create-release=github",
         "commitmsg": "commitlint -e $GIT_PARAMS"
     },
     "devDependencies": {
