@@ -1495,9 +1495,33 @@ export class Canvas implements ICanvas {
     }
     clipPath(...args) {
         const path = args[0] as Path;
+        const op = args[1] as Op;
         const ctx = this.ctx;
-        CGContextAddPath(ctx, path.getCGPath());
-        CGContextClip(ctx);
+        if (op !== undefined) {
+            const cgPath  = ctx.path;
+            let clipPath = cgPath ? UIBezierPath.bezierPathWithCGPath(cgPath) : UIBezierPath.bezierPathWithRect(CGRectMake(0, 0, this._width, this._height));
+            if (op === Op.DIFFERENCE) {
+                clipPath.appendPath(path.getOrCreateBPath().bezierPathByReversingPath());
+
+            } else if (op === Op.REVERSE_DIFFERENCE) {
+                clipPath = clipPath.bezierPathByReversingPath();
+                clipPath.appendPath(path.getOrCreateBPath());
+            } else if (op === Op.UNION) {
+                clipPath.appendPath(path.getOrCreateBPath());
+            } else if (op === Op.REPLACE) {
+                CGContextResetClip(ctx);
+                clipPath = path.getOrCreateBPath();
+            } else if (op === Op.INTERSECT) {
+                console.error('clipPath Op.INTERSECT not implemented yet');
+            } else if (op === Op.XOR) {
+                console.error('clipPath Op.INTERSECT not implemented yet');
+            }
+            CGContextAddPath(ctx, clipPath.CGPath);
+            CGContextClip(ctx);
+        } else {
+            CGContextAddPath(ctx, path.getCGPath());
+            CGContextClip(ctx);
+        }
         // clipPath(path: IPath): boolean;
         // clipPath(path: IPath, op: Op): boolean;
         // clipPath(path: any, op?: any)
