@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.33](https://github.com/nativescript-community/ui-canvas/compare/v4.0.32...v4.0.33) (2020-11-10)
+
+
+### Bug Fixes
+
+* ios basic support for clipPath Ops ([672fe4e](https://github.com/nativescript-community/ui-canvas/commit/672fe4ea7c4939cf274ddf5b3303bd7c65c316e9))
+
+
+
+
+
 ## [4.0.32](https://github.com/nativescript-community/ui-canvas/compare/v4.0.31...v4.0.32) (2020-11-09)
 
 
