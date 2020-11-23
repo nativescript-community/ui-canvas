@@ -1,7 +1,7 @@
 {
     "name": "@nativescript-community/ui-canvas",
     "version": "4.0.33",
-    "description": "Nativescript Canvas plugin.",
+    "description": "Implement Canvas into your NativeScript apps.",
     "main": "./canvas",
     "sideEffects": false,
     "typings": "./canvas.d.ts",
@@ -15,17 +15,21 @@
         "NativeScript",
         "JavaScript",
         "Android",
-        "iOS"
+        "iOS",
+        "Vue"
     ],
     "author": {
         "name": "Martin Guillon",
         "email": "martin@akylas.fr"
     },
     "bugs": {
-        "url": "https://github.com/Akylas/@nativescript-community/ui-canvas/issues"
+        "url": "https://github.com/nativescript-community/ui-canvas/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nativescript-community/ui-canvas"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/Akylas/@nativescript-community/ui-canvas",
     "readmeFilename": "README.md",
     "gitHead": "a1f853cec62ac3a7986af8121169926df2ff5d6a"
 }
