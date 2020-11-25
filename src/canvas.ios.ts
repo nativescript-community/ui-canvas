@@ -169,15 +169,54 @@ function createCGRect(l, t, r, b) {
 }
 
 export class Rect implements IRect {
+    _rect: CGRect;
+    _left: number;
+    _top: number;
+    _right: number;
+    _bottom: number;
+
+    private updateCGRect() {
+        this.cgRect = createCGRect(this._left, this._top, this._right, this._bottom);
+
+    }
+
+    get left() {
+        return this._left;
+    }
+    set left(value: number) {
+        this._left = value;
+        this.updateCGRect();
+    }
+    get top() {
+        return this._top;
+    }
+    set top(value: number) {
+        this._top = value;
+        this.updateCGRect();
+    }
+    get right() {
+        return this._right;
+    }
+    set right(value: number) {
+        this._right = value;
+        this.updateCGRect();
+    }
+    get bottom() {
+        return this._bottom;
+    }
+    set bottom(value: number) {
+        this._bottom = value;
+        this.updateCGRect();
+    }
     get cgRect() {
         return this._rect;
     }
     set cgRect(rect: CGRect) {
         this._rect = rect;
-        this.left = this._rect.origin.x;
-        this.top = this._rect.origin.y;
-        this.right = this.left + this._rect.size.width;
-        this.bottom = this.top + this._rect.size.height;
+        this._left = this._rect.origin.x;
+        this._top = this._rect.origin.y;
+        this._right = this._left + this._rect.size.width;
+        this._bottom = this._top + this._rect.size.height;
     }
 
     // public set(rect: Rect) {
@@ -191,11 +230,11 @@ export class Rect implements IRect {
                 this.cgRect = args[0];
             }
         } else {
-            // const l = (this.left = args[0]);
-            // const t = (this.top = args[1]);
-            // const r = (this.right = args[2]);
-            // const b = (this.bottom = args[3]);
-            this.cgRect = createCGRect(args[0], args[1], args[2], args[3]);
+            this._left = args[0];
+            this._top = args[1];
+            this._right = args[2];
+            this._bottom = args[3];
+            this.updateCGRect();
         }
     }
     public inset(dx: number, dy: number): void {
@@ -242,11 +281,6 @@ export class Rect implements IRect {
         }
         return CGRectContainsRect(this.cgRect, rect);
     }
-    _rect: CGRect;
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
     constructor(...args) {
         this.set.apply(this, args);
     }
