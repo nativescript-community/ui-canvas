@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.35](https://github.com/nativescript-community/ui-canvas/compare/v4.0.34...v4.0.35) (2020-11-25)
+
+
+### Bug Fixes
+
+* ios allow changing rect top,left,bottom,right ([7d6a102](https://github.com/nativescript-community/ui-canvas/commit/7d6a102569696720e9821d802ff795ac152a4bb5))
+
+
+
+
+
 ## [4.0.34](https://github.com/nativescript-community/ui-canvas/compare/v4.0.33...v4.0.34) (2020-11-23)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
