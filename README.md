@@ -63,7 +63,7 @@ Vue.use(CanvasPlugin);
 <CanvasView  width="100" height="100" @draw="draw"/>
 ```
 
-##draw Method 
+## Draw Method 
 ```typescript
 function draw(event: { canvas: Canvas }) {
     const paint = new Paint();
