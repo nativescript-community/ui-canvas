@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "setup": "ts-patch install",
+        "prepare": "npm run setup",
         "tsc": "cp src/canvas.d.ts plugin && tsc -skipLibCheck -d",
         "build.plugin": "cp README.md plugin/ && rm -f .tsbuildinfo && npm run tsc",
         "clean": "rimraf ./plugin/**/*.d.ts ./plugin/**/*.js ./plugin/**/*.js.map plugin/node_modules plugin/package-lock.json",
