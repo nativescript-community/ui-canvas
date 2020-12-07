@@ -298,7 +298,6 @@ export class Paint {
             this.fontInternal = this.font.withFontWeight(weight);
             this._needsFontUpdate = true;
         }
-        // this._native.setTypeface(this.font.getAndroidTypeface());
     }
     set fontStyle(style: FontStyle) {
         this.setFontStyle(style);
@@ -308,7 +307,6 @@ export class Paint {
             this.fontInternal = this.font.withFontStyle(style);
             this._needsFontUpdate = true;
         }
-        // this._native.setTypeface(this.font.getAndroidTypeface());
     }
     set color(color) {
         (this as any).setColor(color);
@@ -344,7 +342,6 @@ export class Paint {
             this.fontInternal = null;
         }
         this._needsFontUpdate = true;
-        // this._native.setTypeface(this.fontInternal.getAndroidTypeface());
         return this.fontInternal;
     }
     set typeface(typeface) {
