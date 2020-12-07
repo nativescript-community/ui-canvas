@@ -222,7 +222,7 @@ UIColor *NoiseColor()
     if (noise)
         return [UIColor colorWithPatternImage:noise];
     
-    srandom(time(0));
+    srandom((int)time(0));
     
     CGSize size = CGSizeMake(128, 128);
     UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);

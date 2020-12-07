@@ -6,8 +6,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>;
-#import <QuartzCore/QuartzCore.h>;
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 // Block for transforming points
 typedef CGPoint (^PathBlock)(CGPoint point);
 
