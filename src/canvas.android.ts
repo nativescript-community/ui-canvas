@@ -463,6 +463,8 @@ export class StaticLayout {
                 paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint),
                 width
             )
+                .setBreakStrategy(android.text.Layout.BREAK_STRATEGY_SIMPLE)
+                .setAlignment(align)
                 .setLineSpacing(spacingadd, spacingmult)
                 .setIncludePad(includepad);
             if (getSDK() >=26) {
