@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.37](https://github.com/nativescript-community/ui-canvas/compare/v4.0.36...v4.0.37) (2020-12-10)
+
+
+### Bug Fixes
+
+* regression in last version on android ([375a79b](https://github.com/nativescript-community/ui-canvas/commit/375a79b71a395a47c8d7cf1b7918ee300dff11af))
+
+
+
+
+
 ## [4.0.36](https://github.com/nativescript-community/ui-canvas/compare/v4.0.35...v4.0.36) (2020-12-10)
 
 
