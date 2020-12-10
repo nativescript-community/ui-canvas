@@ -456,20 +456,19 @@ export class StaticLayout {
             text = text + '';
         }
         if (getSDK() >=24) {
-            this._native = android.text.StaticLayout.Builder.obtain(
+            let builder = android.text.StaticLayout.Builder.obtain(
                 text,
                 0,
                 typeof text.length === 'function' ? text.length() : text.length,
                 paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint),
                 width
             )
-                .setAlignment(align)
-                .setBreakStrategy(android.text.Layout.BREAK_STRATEGY_SIMPLE)
-                .setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_NONE)
-                // .setUseLineSpacingFromFallbacks(true)
                 .setLineSpacing(spacingadd, spacingmult)
-                .setIncludePad(includepad)
-                .build();
+                .setIncludePad(includepad);
+            if (getSDK() >=26) {
+                builder = builder.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_NONE);
+            }
+            this._native = builder.build();
         } else {
             this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
         }
