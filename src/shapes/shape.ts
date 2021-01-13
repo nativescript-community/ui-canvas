@@ -197,22 +197,21 @@ export default abstract class Shape extends Observable {
         if (!this.handleAlignment) {
             const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
             const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
-            const paddingLeft = parent.effectivePaddingLeft + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
-            const paddingRight = parent.effectivePaddingRight + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
-
-            const paddingTop = parent.effectivePaddingTop + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
-            const paddingBottom = parent.effectivePaddingBottom + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
+            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
+            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight )+ Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
+            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
+            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
             canvas.save();
             if (paddingLeft > 0) {
                 canvas.translate(paddingLeft, 0);
             }
-            if (paddingRight > 0) {
+            if (this.horizontalAlignment && this.horizontalAlignment !== 'left' && paddingRight > 0) {
                 canvas.translate(-paddingRight, 0);
             }
             if (paddingTop > 0) {
                 canvas.translate(0, paddingTop);
             }
-            if (paddingBottom > 0) {
+            if (this.verticalAlignment && this.verticalAlignment !== 'top' && paddingBottom > 0) {
                 canvas.translate(0, -paddingBottom);
             }
             if (this.horizontalAlignment === 'right') {
