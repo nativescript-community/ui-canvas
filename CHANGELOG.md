@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.38](https://github.com/nativescript-community/ui-canvas/compare/v4.0.37...v4.0.38) (2021-01-13)
+
+
+### Bug Fixes
+
+* shape padding handling ([b83db37](https://github.com/nativescript-community/ui-canvas/commit/b83db37d4f61702248546c6acc9c25fad5e87b60))
+
+
+
+
+
 ## [4.0.37](https://github.com/nativescript-community/ui-canvas/compare/v4.0.36...v4.0.37) (2020-12-10)
 
 
