@@ -12,16 +12,25 @@ export default class Line extends Rectangle {
     drawOnCanvas(canvas: Canvas) {
         const availableWidth = layout.toDevicePixels(canvas.getWidth());
         const availableHeight = layout.toDevicePixels(canvas.getHeight());
+        const marginLeft = this.marginLeft?layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.marginLeft, 0, availableWidth)):0;
+        const marginTop = this.marginTop?layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.marginTop, 0, availableHeight)):0;
+        const marginRight = this.marginRight?layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.marginRight, 0, availableWidth)):0;
+        const marginBottom = this.marginBottom?layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.marginBottom, 0, availableHeight)):0;
         canvas.drawLine(
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startX, 0, availableWidth)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startY, 0, availableHeight)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopX, 0, availableWidth)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopY, 0, availableHeight)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startX, 0, availableWidth)) + marginLeft,
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.startY, 0, availableHeight)) + marginTop,
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopX, 0, availableWidth)) - marginRight - marginLeft,
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.stopY, 0, availableHeight)) - marginBottom - marginTop,
             this.paint
         );
     }
-    @percentLengthProperty startX: PercentLength = 0;
-    @percentLengthProperty startY: PercentLength = 0;
-    @percentLengthProperty stopX: PercentLength = 0;
-    @percentLengthProperty stopY: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) startX: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) startY: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) stopX: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) stopY: PercentLength = 0;
+
+    @percentLengthProperty({ nonPaintProp: true }) marginLeft: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginRight: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginTop: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginBottom: PercentLength;
 }
