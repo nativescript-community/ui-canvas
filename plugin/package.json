@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-canvas",
-    "version": "4.0.38",
+    "version": "4.0.39",
     "description": "Implement Canvas into your NativeScript apps.",
     "main": "./canvas",
     "sideEffects": false,
