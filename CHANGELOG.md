@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.40](https://github.com/nativescript-community/ui-canvas/compare/v4.0.39...v4.0.40) (2021-01-23)
+
+
+### Features
+
+* BitmapShader ([b18fa4a](https://github.com/nativescript-community/ui-canvas/commit/b18fa4a770ef9e0b5326e2d9754ee3dabb9e5929))
+* shape padding support ([d9fda2c](https://github.com/nativescript-community/ui-canvas/commit/d9fda2c1e313b98ee1d9dddf52c384b9198cbcb9))
+
+
+
+
+
 ## [4.0.39](https://github.com/nativescript-community/ui-canvas/compare/v4.0.38...v4.0.39) (2021-01-19)
 
 
