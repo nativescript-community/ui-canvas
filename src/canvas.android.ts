@@ -445,6 +445,31 @@ export class LinearGradient {
     }
 }
 
+export class BitmapShader {
+    _native: android.graphics.BitmapShader;
+    getNative() {
+        return this._native;
+    }
+    constructor(bitmap: any, tileX: any, tileY: any) {
+        if (bitmap instanceof ImageSource) {
+            bitmap = bitmap.android;
+        }
+        this._native = new android.graphics.BitmapShader(bitmap, tileX, tileY);
+        return new Proxy(this, this);
+    }
+    get(target, name, receiver) {
+        const native = this._native;
+        if (native[name]) {
+            return function (...args) {
+                const methodName = name;
+                return native[methodName](...args);
+            };
+        } else {
+            return Reflect.get(target, name, receiver);
+        }
+    }
+}
+
 export class StaticLayout {
     _native: android.text.StaticLayout;
     getNative() {

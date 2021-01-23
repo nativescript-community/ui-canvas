@@ -88,7 +88,7 @@ export class Paint {
 // }
 export class StaticLayout extends android.text.StaticLayout {
     constructor(text: any, paint: Paint, width: number, align, spacingmult, spacingadd, includepad);
-    public draw(canvas: Canvas): void;
+    public draw(canvas: any, param1?: Path, param2?: Paint, param3: number): void;
 }
 
 export class FontMetrics {
@@ -235,6 +235,7 @@ export class RectF {
 }
 export class RadialGradient extends android.graphics.RadialGradient {}
 export class LinearGradient extends android.graphics.LinearGradient {}
+export class BitmapShader extends android.graphics.BitmapShader {}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path {
     computeBounds(rect: RectF, exact: boolean);

@@ -1185,6 +1185,25 @@ export class Paint implements IPaint {
             CGContextDrawRadialGradient(ctx, g.gradient, CGPointMake(g.centerX, g.centerY), 0, CGPointMake(g.centerX, g.centerY), g.radius, options);
             CGContextRestoreGState(ctx);
             // CGContextAddPath(ctx, path);
+        } else if (this.shader instanceof BitmapShader) {
+            const color = UIColor.clearColor;
+            CGContextSetFillColorWithColor(ctx, color.CGColor);
+            CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+            const g = this.shader;
+            const source: UIImage = g.image;
+
+            const w = source.size.width;
+            const h = source.size.height;
+            const rect = CGRectMake(0, 0, w, h);
+
+            // draw original image
+            CGContextSaveGState(ctx);
+            CGContextClip(ctx);
+            CGContextTranslateCTM(ctx, 0, source.size.height);
+            CGContextScaleCTM(ctx, 1.0, -1.0);
+            CGContextDrawImage(ctx, rect, source.CGImage);
+            CGContextRestoreGState(ctx);
+            // CGContextAddPath(ctx, path);
         }
     }
     _textAttribs: NSMutableDictionary<any, any>;
@@ -1780,7 +1799,14 @@ export class Canvas implements ICanvas {
         }
 
         if (path && paint.shader) {
-            CGContextAddPath(ctx, path);
+            if (paint.style === Style.STROKE) {
+                const cgStrokedPath = CGPathCreateCopyByStrokingPath(path, null,
+                    paint.strokeWidth, paint.strokeCap as any, paint.strokeJoin as any, 0);
+                CGContextAddPath(ctx, cgStrokedPath);
+            } else {
+                CGContextAddPath(ctx, path);
+
+            }
             paint.drawShader(ctx);
         } else {
             if (bPath) {
@@ -2132,6 +2158,17 @@ export class RadialGradient {
             CFRelease(this._gradient);
             this._gradient = undefined;
         }
+    }
+}
+export class BitmapShader {
+    constructor(public bitmap: any, public tileX: any, public tileY: any) {}
+    get image() {
+        if (this.bitmap instanceof ImageSource) {
+            return this.bitmap.ios;
+        }
+        return this.bitmap;
+    }
+    release() {
     }
 }
 export class PorterDuffXfermode {
