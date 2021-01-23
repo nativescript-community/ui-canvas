@@ -175,8 +175,12 @@ export default abstract class Shape extends Observable {
     @stringProperty({ nonPaintProp: true }) horizontalAlignment: HorizontalAlignment & 'middle';
     @stringProperty({ nonPaintProp: true }) verticalAlignment: VerticalAlignment & 'center';
 
-    @percentLengthProperty width: PercentLength;
-    @percentLengthProperty height: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) width: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) height: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) paddingLeft: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) paddingRight: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) paddingBottom: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) paddingTop: PercentLength;
 
     protected handleAlignment = false;
 
@@ -197,10 +201,10 @@ export default abstract class Shape extends Observable {
         if (!this.handleAlignment) {
             const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
             const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
-            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
-            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight )+ Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
-            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
-            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
+            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingLeft, 0, availableWidth)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
+            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight ) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingRight, 0, availableWidth))+ Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
+            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingTop, 0, availableHeight)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
+            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingBottom, 0, availableHeight)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
             canvas.save();
             if (paddingLeft > 0) {
                 canvas.translate(paddingLeft, 0);
