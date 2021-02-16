@@ -14,6 +14,7 @@ public class CanvasView extends View {
    }
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         if (sizeChangedListener != null) {
             sizeChangedListener.onSizeChanged(w, h, oldw, oldh);
         }
