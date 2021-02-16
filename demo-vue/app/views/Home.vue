@@ -4,7 +4,7 @@
         <StackLayout>
             <ListView ref="listView" for="example in examples" rowHeight="50" @itemTap="goToExample">
                 <v-template name="default">
-                    <StackLayout padding="10" class="item" orientation="horizontal">
+                    <StackLayout padding="10" class="item" orientation="horizontal" @tap="goToExample({ item: example })">
                         <Label :text="example.name" fontSize="17" verticalAlignment="center" />
                     </StackLayout>
                 </v-template>
