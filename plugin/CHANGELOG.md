@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.42](https://github.com/nativescript-community/ui-canvas/compare/v4.0.41...v4.0.42) (2021-02-16)
+
+
+### Bug Fixes
+
+* **android:** call super.onSizeChanged ([1d176af](https://github.com/nativescript-community/ui-canvas/commit/1d176af1b79bc24e636190c20d8ddc6c68966379))
+
+
+
+
+
 ## [4.0.41](https://github.com/nativescript-community/ui-canvas/compare/v4.0.40...v4.0.41) (2021-02-12)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
