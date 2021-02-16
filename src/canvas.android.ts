@@ -600,6 +600,7 @@ class CanvasView extends CanvasBase {
                     startTime = Date.now();
                 }
                 const scale = this.density;
+                canvas.save();
                 // canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(scale, scale); // always scale to device density to work with dp
                 this.augmentedCanvas._native = canvas;
@@ -613,6 +614,7 @@ class CanvasView extends CanvasBase {
                     }
                     (this.augmentedCanvas as any).drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
                 }
+                canvas.restore();
             },
         });
     }
