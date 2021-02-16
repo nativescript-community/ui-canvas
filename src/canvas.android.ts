@@ -579,11 +579,7 @@ class CanvasView extends CanvasBase {
         return view;
     }
     [hardwareAcceleratedProperty.getDefault](value) {
-        if (getSDK() >= 28) {
-            return true;
-        } else {
-            return false;
-        }
+        return getSDK() >= 28;
     }
 
     [hardwareAcceleratedProperty.setNative](value) {
@@ -604,7 +600,7 @@ class CanvasView extends CanvasBase {
                     startTime = Date.now();
                 }
                 const scale = this.density;
-                canvas.setDensity(Math.round(scale * 160));
+                // canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(scale, scale); // always scale to device density to work with dp
                 this.augmentedCanvas._native = canvas;
                 this.onDraw(this.augmentedCanvas as any);
