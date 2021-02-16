@@ -1,6 +1,6 @@
 /* eslint-disable no-redeclare */
 import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
-import { CSSType, Color, View } from '@nativescript/core';
+import { CSSType, Color, View, backgroundColorProperty } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';
 import { ImageSource } from '@nativescript/core/image-source';
 import { Canvas as ICanvas, FontMetrics as IFontMetrics, Matrix as IMatrix, Paint as IPaint, Path as IPath, PorterDuffXfermode as IPorterDuffXfermode, Rect as IRect, RectF as IRectF } from './canvas';
@@ -2094,6 +2094,7 @@ export class CanvasView extends CanvasBase {
     createNativeView() {
         const view = UICustomCanvasView.initWithOwner(new WeakRef(this));
         view.backgroundColor = UIColor.clearColor;
+        this.style['css:background-color'] = 'transparent';
         return view;
     }
     _onSizeChanged() {
