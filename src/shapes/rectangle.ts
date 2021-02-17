@@ -17,29 +17,19 @@ export default class Rectangle extends Shape {
     @lengthProperty left: Length = zeroLength;
     @lengthProperty top: Length = zeroLength;
     @numberProperty borderRadius: number;
-
-    // getRect(canvas: Canvas) {
-    //     const availableWidth = layout.toDevicePixels(canvas.getWidth());
-    //     const availableHeight = layout.toDevicePixels(canvas.getHeight());
-    //     const rect = createRect(
-    //         layout.toDeviceIndependentPixels(Length.toDevicePixels(this.left)),
-    //         layout.toDeviceIndependentPixels(Length.toDevicePixels(this.top)),
-    //         layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
-    //         layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
-    //     );
-    //     // console.log('getRect', availableWidth, availableHeight, this.left, this.top, this.width, this.height, rect);
-    //     return rect;
-    // }
     getRect(canvas: Canvas) {
         const availableWidth = layout.toDevicePixels(canvas.getWidth());
         const availableHeight = layout.toDevicePixels(canvas.getHeight());
+        const marginLeft = this.marginLeft ? PercentLength.toDevicePixels(this.marginLeft, 0, availableWidth) : 0;
+        const marginTop = this.marginTop ? PercentLength.toDevicePixels(this.marginTop, 0, availableHeight) : 0;
+        const marginRight = this.marginRight ? PercentLength.toDevicePixels(this.marginRight, 0, availableWidth) : 0;
+        const marginBottom = this.marginBottom ? PercentLength.toDevicePixels(this.marginBottom, 0, availableHeight) : 0;
         const rect = createRectF(
-            layout.toDeviceIndependentPixels(Length.toDevicePixels(this.left)),
-            layout.toDeviceIndependentPixels(Length.toDevicePixels(this.top)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
+            layout.toDeviceIndependentPixels(marginLeft + Length.toDevicePixels(this.left)),
+            layout.toDeviceIndependentPixels(marginTop + Length.toDevicePixels(this.top)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth) - marginLeft - marginRight),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight) - marginTop - marginBottom)
         );
-        // console.log('getRect', availableWidth, availableHeight, this.left, this.top, this.width, this.height, rect);
         return rect;
     }
 }

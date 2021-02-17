@@ -4,6 +4,50 @@ import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
 
+function parseThickness(value: string) {
+    if (typeof value === 'string') {
+        const arr = value.split(/[ ,]+/);
+
+        let top: string;
+        let right: string;
+        let bottom: string;
+        let left: string;
+
+        if (arr.length === 1) {
+            top = arr[0];
+            right = arr[0];
+            bottom = arr[0];
+            left = arr[0];
+        } else if (arr.length === 2) {
+            top = arr[0];
+            bottom = arr[0];
+            right = arr[1];
+            left = arr[1];
+        } else if (arr.length === 3) {
+            top = arr[0];
+            right = arr[1];
+            left = arr[1];
+            bottom = arr[2];
+        } else if (arr.length === 4) {
+            top = arr[0];
+            right = arr[1];
+            bottom = arr[2];
+            left = arr[3];
+        } else {
+            throw new Error('Expected 1, 2, 3 or 4 parameters. Actual: ' + value);
+        }
+
+        return {
+            top,
+            right,
+            bottom,
+            left,
+        };
+    } else {
+        return value;
+    }
+}
+
 function createGetter(key, options: ShapePropertyOptions) {
     const realKey = '_' + key.toString();
     return function () {
@@ -177,10 +221,17 @@ export default abstract class Shape extends Observable {
 
     @percentLengthProperty({ nonPaintProp: true }) width: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) height: PercentLength;
+
+
     @percentLengthProperty({ nonPaintProp: true }) paddingLeft: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingRight: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingBottom: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingTop: PercentLength;
+
+    @percentLengthProperty({ nonPaintProp: true }) marginLeft: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginRight: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginTop: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) marginBottom: PercentLength;
 
     protected handleAlignment = false;
 
@@ -201,10 +252,10 @@ export default abstract class Shape extends Observable {
         if (!this.handleAlignment) {
             const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
             const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
-            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingLeft, 0, availableWidth)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderLeftWidth);
-            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight ) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingRight, 0, availableWidth))+ Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderRightWidth);
-            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingTop, 0, availableHeight)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderTopWidth);
-            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom) + Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.paddingBottom, 0, availableHeight)) + Utils.layout.toDeviceIndependentPixels(parent.effectiveBorderBottomWidth);
+            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft + PercentLength.toDevicePixels(this.paddingLeft, 0, availableWidth) + parent.effectiveBorderLeftWidth);
+            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight  +PercentLength.toDevicePixels(this.paddingRight, 0, availableWidth)+ parent.effectiveBorderRightWidth);
+            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop + PercentLength.toDevicePixels(this.paddingTop, 0, availableHeight)+ parent.effectiveBorderTopWidth);
+            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom + PercentLength.toDevicePixels(this.paddingBottom, 0, availableHeight) + parent.effectiveBorderBottomWidth);
             canvas.save();
             if (paddingLeft > 0) {
                 canvas.translate(paddingLeft, 0);
