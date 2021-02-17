@@ -80,16 +80,16 @@ export abstract class CanvasBase extends View {
             }
         }
     }
-    public toString(): string {
-        let result = super.toString();
-        if (this._shapes) {
-            for (let i = 0, length = this._shapes.length; i < length; i++) {
-                result += this._shapes.getItem(i).toString();
-            }
-        }
+    // public toString(): string {
+    //     let result = super.toString();
+    //     if (this._shapes) {
+    //         for (let i = 0, length = this._shapes.length; i < length; i++) {
+    //             result += this._shapes.getItem(i).toString();
+    //         }
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 
     public addShape(shape: Shape) {
         this.getOrCreateShapes().push(shape);
