@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.44](https://github.com/nativescript-community/ui-canvas/compare/v4.0.43...v4.0.44) (2021-02-17)
+
+
+### Features
+
+* margin support for rectangle ([f6fdbd4](https://github.com/nativescript-community/ui-canvas/commit/f6fdbd41d962065ac4b41a26cfc632cd8f77edf3))
+
+
+
+
+
 ## [4.0.43](https://github.com/nativescript-community/ui-canvas/compare/v4.0.42...v4.0.43) (2021-02-16)
 
 
