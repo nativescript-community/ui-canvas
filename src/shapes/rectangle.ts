@@ -14,21 +14,17 @@ export default class Rectangle extends Shape {
         }
     }
 
-    @lengthProperty left: Length = zeroLength;
-    @lengthProperty top: Length = zeroLength;
+    @percentLengthProperty left: PercentLength = 0;
+    @percentLengthProperty top: PercentLength = 0;
     @numberProperty borderRadius: number;
     getRect(canvas: Canvas) {
         const availableWidth = layout.toDevicePixels(canvas.getWidth());
         const availableHeight = layout.toDevicePixels(canvas.getHeight());
-        const marginLeft = this.marginLeft ? PercentLength.toDevicePixels(this.marginLeft, 0, availableWidth) : 0;
-        const marginTop = this.marginTop ? PercentLength.toDevicePixels(this.marginTop, 0, availableHeight) : 0;
-        const marginRight = this.marginRight ? PercentLength.toDevicePixels(this.marginRight, 0, availableWidth) : 0;
-        const marginBottom = this.marginBottom ? PercentLength.toDevicePixels(this.marginBottom, 0, availableHeight) : 0;
         const rect = createRectF(
-            layout.toDeviceIndependentPixels(marginLeft + Length.toDevicePixels(this.left)),
-            layout.toDeviceIndependentPixels(marginTop + Length.toDevicePixels(this.top)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth) - marginLeft - marginRight),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight) - marginTop - marginBottom)
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
         );
         return rect;
     }

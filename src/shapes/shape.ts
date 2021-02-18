@@ -222,67 +222,93 @@ export default abstract class Shape extends Observable {
     @percentLengthProperty({ nonPaintProp: true }) width: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) height: PercentLength;
 
-
     @percentLengthProperty({ nonPaintProp: true }) paddingLeft: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingRight: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingBottom: PercentLength;
     @percentLengthProperty({ nonPaintProp: true }) paddingTop: PercentLength;
 
-    @percentLengthProperty({ nonPaintProp: true }) marginLeft: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) marginRight: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) marginTop: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) marginBottom: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) translateX: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) translateY: PercentLength = 0;
+    @numberProperty({ nonPaintProp: true }) rotate: number = 0;
+    @numberProperty({ nonPaintProp: true }) scaleX: number = 1;
+    @numberProperty({ nonPaintProp: true }) scaleY: number = 1;
 
     protected handleAlignment = false;
 
     abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
 
     getWidth(availableWidth: number, availableHeight: number) {
-        return this.width? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)) : 0;
+        return this.width ? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)) : 0;
     }
     getHeight(availableWidth: number, availableHeight: number) {
-        return this.height? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight)) : 0;
-
+        return this.height ? Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight)) : 0;
     }
 
     drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView, width: number, height: number) {
         if (this.visibility !== 'visible') {
             return;
         }
+
+        const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
+        const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
+        let dx = 0;
+        let dy = 0;
+        if (this.translateX) {
+            dx += Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.translateX, 0, availableWidth));
+        }
+        if (this.translateY) {
+            dy += Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.translateY, 0, availableHeight));
+        }
         if (!this.handleAlignment) {
-            const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
-            const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
-            const paddingLeft = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingLeft + PercentLength.toDevicePixels(this.paddingLeft, 0, availableWidth) + parent.effectiveBorderLeftWidth);
-            const paddingRight = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingRight  +PercentLength.toDevicePixels(this.paddingRight, 0, availableWidth)+ parent.effectiveBorderRightWidth);
-            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop + PercentLength.toDevicePixels(this.paddingTop, 0, availableHeight)+ parent.effectiveBorderTopWidth);
-            const paddingBottom = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingBottom + PercentLength.toDevicePixels(this.paddingBottom, 0, availableHeight) + parent.effectiveBorderBottomWidth);
-            canvas.save();
+            const paddingLeft = Utils.layout.toDeviceIndependentPixels(
+                parent.effectivePaddingLeft + PercentLength.toDevicePixels(this.paddingLeft, 0, availableWidth) + parent.effectiveBorderLeftWidth
+            );
+            const paddingRight = Utils.layout.toDeviceIndependentPixels(
+                parent.effectivePaddingRight + PercentLength.toDevicePixels(this.paddingRight, 0, availableWidth) + parent.effectiveBorderRightWidth
+            );
+            const paddingTop = Utils.layout.toDeviceIndependentPixels(parent.effectivePaddingTop + PercentLength.toDevicePixels(this.paddingTop, 0, availableHeight) + parent.effectiveBorderTopWidth);
+            const paddingBottom = Utils.layout.toDeviceIndependentPixels(
+                parent.effectivePaddingBottom + PercentLength.toDevicePixels(this.paddingBottom, 0, availableHeight) + parent.effectiveBorderBottomWidth
+            );
             if (paddingLeft > 0) {
-                canvas.translate(paddingLeft, 0);
+                dx += paddingLeft;
             }
             if (this.horizontalAlignment && this.horizontalAlignment !== 'left' && paddingRight > 0) {
-                canvas.translate(-paddingRight, 0);
+                dx -= paddingRight;
             }
             if (paddingTop > 0) {
-                canvas.translate(0, paddingTop);
+                dy += paddingTop;
             }
             if (this.verticalAlignment && this.verticalAlignment !== 'top' && paddingBottom > 0) {
-                canvas.translate(0, -paddingBottom);
+                dy -= paddingBottom;
             }
             if (this.horizontalAlignment === 'right') {
                 const sWidth = this.getWidth(availableWidth, availableHeight);
-                canvas.translate(width - sWidth, 0);
+                dx += width - sWidth;
             } else if (this.horizontalAlignment === 'center' || this.horizontalAlignment === 'middle') {
                 const sWidth = this.getWidth(availableWidth, availableHeight);
-                canvas.translate(width / 2 - sWidth/2, 0);
+                dx += width / 2 - sWidth / 2;
             }
             if (this.verticalAlignment === 'bottom') {
                 const sHeight = this.getHeight(availableWidth, availableHeight);
-                canvas.translate(0, height - sHeight);
+                dy += height - sHeight;
             } else if (this.verticalAlignment === 'center' || this.verticalAlignment === 'middle') {
                 const sHeight = this.getHeight(availableWidth, availableHeight);
-                canvas.translate(0, height / 2 - sHeight/2);
+                dy += height / 2 - sHeight / 2;
             }
+        }
+        const needsSave = dx !== 0 || dy !== 0 || this.rotate !== 0;
+        if (needsSave) {
+            canvas.save();
+        }
+        if (dx !== 0 || dy !== 0) {
+            canvas.translate(dx, dy);
+        }
+        if (this.rotate !== 0) {
+            canvas.rotate(this.rotate);
+        }
+        if (this.scaleX !== 1 || this.scaleY !== 1) {
+            canvas.scale(this.scaleX, this.scaleY);
         }
 
         const paint = this.paint;
@@ -315,7 +341,7 @@ export default abstract class Shape extends Observable {
         } else {
             this.drawOnCanvas(canvas, parent);
         }
-        if (!this.handleAlignment) {
+        if (needsSave) {
             canvas.restore();
         }
     }
