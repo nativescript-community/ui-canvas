@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.45](https://github.com/nativescript-community/ui-canvas/compare/v4.0.44...v4.0.45) (2021-02-18)
+
+
+### Bug Fixes
+
+* removed margin and added translateX, translateY, rotate,scaleX,scaleY for shapes ([0ef9fab](https://github.com/nativescript-community/ui-canvas/commit/0ef9fab4cbe2ad11517d604501a66de7dedde1d8))
+
+
+
+
+
 ## [4.0.44](https://github.com/nativescript-community/ui-canvas/compare/v4.0.43...v4.0.44) (2021-02-17)
 
 
