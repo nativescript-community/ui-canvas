@@ -6,7 +6,14 @@ import { stringProperty } from './shape';
 
 export default class Text extends Rectangle {
     drawOnCanvas(canvas: Canvas) {
-        canvas.drawText(this.text, layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left)), layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top)), this.paint);
+        const availableWidth = layout.toDevicePixels(canvas.getWidth());
+        const availableHeight = layout.toDevicePixels(canvas.getHeight());
+        canvas.drawText(
+            this.text,
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left, 0, availableWidth)),
+            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top, 0, availableHeight)),
+            this.paint
+        );
     }
     @stringProperty text: string;
 }
