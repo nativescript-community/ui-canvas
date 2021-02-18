@@ -177,7 +177,6 @@ export class Rect implements IRect {
 
     private updateCGRect() {
         this.cgRect = createCGRect(this._left, this._top, this._right, this._bottom);
-
     }
 
     get left() {
@@ -1107,7 +1106,6 @@ export class Paint implements IPaint {
         } else {
             this.alpha = 255;
         }
-
     }
     getColor(): Color {
         return this._color;
@@ -1388,13 +1386,18 @@ export class Canvas implements ICanvas {
         if (!image) {
             return;
         }
-        const dst = args[2] instanceof Rect ? args[2].cgRect : CGRectMake(args[1], args[2], image.size.width, image.size.height);
 
-        // CGContextSaveGState(ctx);
-        CGContextTranslateCTM(ctx, 0, dst.origin.y + dst.size.height);
-        CGContextScaleCTM(ctx, 1.0, -1.0);
-        CGContextDrawImage(ctx, CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), image.CGImage);
-        // CGContextRestoreGState(ctx);
+        if (args[1] instanceof Matrix) {
+            CGContextConcatCTM(ctx, args[1]._transform);
+            CGContextTranslateCTM(ctx, 0, image.size.height);
+            CGContextScaleCTM(ctx, 1.0, -1.0);
+            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.width, image.size.height), image.CGImage);
+        } else {
+            const dst = args[2] instanceof Rect ? args[2].cgRect : CGRectMake(args[1], args[2], image.size.width, image.size.height);
+            CGContextTranslateCTM(ctx, 0, dst.origin.y + dst.size.height);
+            CGContextScaleCTM(ctx, 1.0, -1.0);
+            CGContextDrawImage(ctx, CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), image.CGImage);
+        }
     }
 
     drawPoint(x: number, y: number, paint: Paint): void {
@@ -1551,11 +1554,10 @@ export class Canvas implements ICanvas {
         const op = args[1] as Op;
         const ctx = this.ctx;
         if (op !== undefined) {
-            const cgPath  = ctx.path;
+            const cgPath = ctx.path;
             let clipPath = cgPath ? UIBezierPath.bezierPathWithCGPath(cgPath) : UIBezierPath.bezierPathWithRect(CGRectMake(0, 0, this._width, this._height));
             if (op === Op.DIFFERENCE) {
                 clipPath.appendPath(path.getOrCreateBPath().bezierPathByReversingPath());
-
             } else if (op === Op.REVERSE_DIFFERENCE) {
                 clipPath = clipPath.bezierPathByReversingPath();
                 clipPath.appendPath(path.getOrCreateBPath());
@@ -1748,12 +1750,12 @@ export class Canvas implements ICanvas {
         this._drawPath(paint, ctx);
     }
 
-    @paint
-    drawImage(x: number, y: number, w: number, h: number, image: ImageSource | UIImage) {
-        const ctx = this.ctx;
-        const theImage: UIImage = image instanceof ImageSource ? image.ios : image;
-        CGContextDrawImage(ctx, createCGRect(x, y, w, h), theImage.CGImage);
-    }
+    // @paint
+    // drawImage(x: number, y: number, w: number, h: number, image: ImageSource | UIImage) {
+    //     const ctx = this.ctx;
+    //     const theImage: UIImage = image instanceof ImageSource ? image.ios : image;
+    //     CGContextDrawImage(ctx, createCGRect(x, y, w, h), theImage.CGImage);
+    // }
     clipRect(...params) {
         const ctx = this.ctx;
         const length = params.length;
@@ -1800,12 +1802,10 @@ export class Canvas implements ICanvas {
 
         if (path && paint.shader) {
             if (paint.style === Style.STROKE) {
-                const cgStrokedPath = CGPathCreateCopyByStrokingPath(path, null,
-                    paint.strokeWidth, paint.strokeCap as any, paint.strokeJoin as any, 0);
+                const cgStrokedPath = CGPathCreateCopyByStrokingPath(path, null, paint.strokeWidth, paint.strokeCap as any, paint.strokeJoin as any, 0);
                 CGContextAddPath(ctx, cgStrokedPath);
             } else {
                 CGContextAddPath(ctx, path);
-
             }
             paint.drawShader(ctx);
         } else {
@@ -2169,8 +2169,7 @@ export class BitmapShader {
         }
         return this.bitmap;
     }
-    release() {
-    }
+    release() {}
 }
 export class PorterDuffXfermode {
     constructor(public mode?: number) {}
@@ -2185,7 +2184,7 @@ export class StaticLayout {
             // } else if (!(text instanceof NSMutableAttributedString)) {
             //     text = NSMutableAttributedString.alloc().initWithStringAttributes(text, this.paint.getDrawTextAttribs());
         } else {
-            this.nsAttributedString = NSAttributedString.alloc().initWithString(text +' ' );
+            this.nsAttributedString = NSAttributedString.alloc().initWithString(text + ' ');
         }
     }
     toDraw: NSMutableAttributedString;
