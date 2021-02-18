@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.46](https://github.com/nativescript-community/ui-canvas/compare/v4.0.45...v4.0.46) (2021-02-18)
+
+
+### Bug Fixes
+
+* **ios:** matrix support for drawBitmap ([642562e](https://github.com/nativescript-community/ui-canvas/commit/642562eac1ee35fe1d99378f6ab5ad4d68645689))
+* shape save/restore canvas to ensure we dont polute other shapes ([2178c53](https://github.com/nativescript-community/ui-canvas/commit/2178c53744b20ef3f45b625e230c4eb48034d321))
+* text percent left and top ([367f9f2](https://github.com/nativescript-community/ui-canvas/commit/367f9f231a5b91c48bd750f87a1abd812d47529b))
+
+
+
+
+
 ## [4.0.45](https://github.com/nativescript-community/ui-canvas/compare/v4.0.44...v4.0.45) (2021-02-18)
 
 
