@@ -476,29 +476,14 @@ export class StaticLayout {
         return this._native;
     }
     constructor(text: any, paint: android.graphics.Paint, width: number, align = LayoutAlignment.ALIGN_NORMAL, spacingmult = 1, spacingadd = 0, includepad = true) {
-        paint = paint['_native'] ? (paint as any).getNative() : paint;
-        if (!(text instanceof java.lang.CharSequence) && !(typeof text === 'string')) {
+        paint = (paint as any).getNative ? (paint as any).getNative() : paint;
+
+        if (typeof text === 'boolean' || typeof text === 'number') {
+            // in case it is a number or a boolean
             text = text + '';
         }
-        if (getSDK() >=24) {
-            let builder = android.text.StaticLayout.Builder.obtain(
-                text,
-                0,
-                typeof text.length === 'function' ? text.length() : text.length,
-                paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint),
-                width
-            )
-                .setBreakStrategy(android.text.Layout.BREAK_STRATEGY_SIMPLE)
-                .setAlignment(align)
-                .setLineSpacing(spacingadd, spacingmult)
-                .setIncludePad(includepad);
-            if (getSDK() >=26) {
-                builder = builder.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_NONE);
-            }
-            this._native = builder.build();
-        } else {
-            this._native = new android.text.StaticLayout(text, paint instanceof android.text.TextPaint ? paint : new android.text.TextPaint(paint), width, align, spacingmult, spacingadd, includepad);
-        }
+        this._native = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad);
+
         return new Proxy(this, this);
     }
     get(target, name, receiver) {
