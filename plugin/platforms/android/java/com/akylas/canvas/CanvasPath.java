@@ -1,12 +1,7 @@
 package com.akylas.canvas;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.Size;
-
-import android.util.Log;
 
 public class CanvasPath extends android.graphics.Path {
 

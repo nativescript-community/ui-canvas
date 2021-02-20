@@ -21,7 +21,7 @@ export const DEFAULT_SCALE = Screen.mainScreen.scale;
 export const cachedProperty = new Property<CanvasBase, boolean>({ name: 'cached', defaultValue: false, valueConverter: booleanConverter });
 export const hardwareAcceleratedProperty = new Property<CanvasBase, boolean>({ name: 'hardwareAccelerated', valueConverter: booleanConverter });
 export const callDrawBeforeShapesProperty = new Property<CanvasBase, boolean>({ name: 'callDrawBeforeShapes', defaultValue: false, valueConverter: booleanConverter });
-export const densityProperty = new Property<CanvasBase, number>({ name: 'density', defaultValue:DEFAULT_SCALE, valueConverter: parseFloat });
+export const densityProperty = new Property<CanvasBase, number>({ name: 'density', defaultValue: DEFAULT_SCALE, valueConverter: parseFloat });
 
 export * from './shapes';
 

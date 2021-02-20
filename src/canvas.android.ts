@@ -26,7 +26,7 @@ export {
     Align,
     LayoutAlignment,
     PorterDuffMode,
-    PorterDuffXfermode,
+    PorterDuffXfermode
 };
 
 let SDK_INT = -1;
@@ -84,7 +84,7 @@ function createColorParam(param) {
         return param.map(createColorParam);
     } else if (param instanceof Color) {
         return param.android;
-    } else if(param) {
+    } else if (param) {
         return new Color(param).android;
     }
 }
@@ -238,7 +238,7 @@ export class Paint {
                         if (methodName === 'setShadowLayer') {
                             args[3] = createColorParam(args[3]);
                         } else if (methodName === 'setColor') {
-                            if (!args[0])  {
+                            if (!args[0]) {
                                 return;
                             }
                             args[0] = createColorParam(args[0]);
@@ -587,7 +587,7 @@ class CanvasView extends CanvasBase {
         this.nativeViewProtected.sizeChangedListener = new com.akylas.canvas.SizeChangedListener({
             onSizeChanged: (w, h, oldW, oldH) => {
                 this.onSizeChanged(layout.toDeviceIndependentPixels(w), layout.toDeviceIndependentPixels(h), oldW, oldH);
-            },
+            }
         });
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
             onDraw: (canvas: android.graphics.Canvas) => {
@@ -612,7 +612,7 @@ class CanvasView extends CanvasBase {
                     (this.augmentedCanvas as any).drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
                 }
                 canvas.restore();
-            },
+            }
         });
     }
     disposeNativeView() {

@@ -21,7 +21,7 @@ typedef BOOL (^TestingBlock)(id object);
 @implementation NSString (Utility)
 + (NSString *) ipsum:(NSUInteger) numberOfParagraphs
 {
-    NSString *urlString = [NSString stringWithFormat:@"http://loripsum.net/api/%0d/short/prude/plaintext", numberOfParagraphs];
+    NSString *urlString = [NSString stringWithFormat:@"http://loripsum.net/api/%0lu/short/prude/plaintext", numberOfParagraphs];
     
     NSError *error;
     NSString *string = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString] encoding:NSUTF8StringEncoding error:&error];

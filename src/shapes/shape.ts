@@ -189,9 +189,6 @@ export default abstract class Shape extends Observable {
         }
         return this._paint;
     }
-    log(...args) {
-        return console.log(this.toString(), ...args);
-    }
 
     id: string;
     toString() {
