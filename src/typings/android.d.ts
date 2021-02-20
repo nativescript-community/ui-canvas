@@ -1,11 +1,11 @@
-declare module com {
-    export module akylas {
-        export module canvas {
+declare namespace com {
+    export namespace akylas {
+        export namespace canvas {
             export class CanvasPath extends globalAndroid.graphics.Path {
-                addLines(points: number[], offset?:number, length?: number, close?: boolean);
-                setLines(points: number[], offset?:number, length?: number, close?: boolean);
-                addCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
-                setCubicLines(points: number[], offset?:number, length?: number, close?: boolean);
+                addLines(points: number[], offset?: number, length?: number, close?: boolean);
+                setLines(points: number[], offset?: number, length?: number, close?: boolean);
+                addCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
+                setCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
             }
 
             export class CanvasView extends globalAndroid.view.View {
@@ -19,6 +19,18 @@ declare module com {
             export class DrawListener {
                 constructor(impl?: { onDraw(canvas: globalAndroid.graphics.Canvas) });
                 onDraw(canvas: globalAndroid.graphics.Canvas);
+            }
+
+            export class StaticLayout {
+                static createStaticLayout(
+                    source: java.lang.CharSequence,
+                    paint: globalAndroid.graphics.Paint | globalAndroid.text.TextPaint,
+                    width: number,
+                    align: globalAndroid.text.Layout.Alignment,
+                    spacingmult: number,
+                    spacingadd: number,
+                    includepad: boolean
+                ): android.text.StaticLayout;
             }
         }
     }
