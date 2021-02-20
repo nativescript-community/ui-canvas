@@ -23,3 +23,5 @@ plugin/**/*js.map
 plugin/**/*js
 /pnpm-lock.yaml
 pnpm-lock.yaml
+/.gradle
+/.settings
