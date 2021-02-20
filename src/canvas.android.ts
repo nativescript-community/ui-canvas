@@ -210,9 +210,10 @@ class Canvas {
 export class Paint {
     _native: android.graphics.Paint;
     fontInternal: Font;
-    _needsFontUpdate = true;
+    _needsFontUpdate = false;
+    handlesFont = false;
     getNative() {
-        if (this._needsFontUpdate) {
+        if (!this.handlesFont && this._needsFontUpdate) {
             this._needsFontUpdate = false;
             const font = this.font;
             const nTypeface = font.getAndroidTypeface();
@@ -255,11 +256,14 @@ export class Paint {
                 } else {
                     return Reflect.get(target, name, receiver);
                 }
-            },
+            }
         });
     }
     setFont(font: Font) {
         this.fontInternal = font;
+        if (this.handlesFont) {
+            return;
+        }
         this._native.setTextSize(font.fontSize);
         this._needsFontUpdate = true;
     }
@@ -287,7 +291,9 @@ export class Paint {
     setFontFamily(familyName: string) {
         if (this.font.fontFamily !== familyName) {
             this.fontInternal = this.font.withFontFamily(familyName);
-            this._needsFontUpdate = true;
+            if (!this.handlesFont) {
+                this._needsFontUpdate = true;
+            }
         }
     }
     set fontWeight(weight: FontWeight) {
@@ -296,7 +302,9 @@ export class Paint {
     setFontWeight(weight: FontWeight) {
         if (this.font.fontWeight !== weight) {
             this.fontInternal = this.font.withFontWeight(weight);
-            this._needsFontUpdate = true;
+            if (!this.handlesFont) {
+                this._needsFontUpdate = true;
+            }
         }
     }
     set fontStyle(style: FontStyle) {
@@ -305,7 +313,9 @@ export class Paint {
     setFontStyle(style: FontStyle) {
         if (this.font.fontStyle !== style) {
             this.fontInternal = this.font.withFontStyle(style);
-            this._needsFontUpdate = true;
+            if (!this.handlesFont) {
+                this._needsFontUpdate = true;
+            }
         }
     }
     set color(color) {
@@ -335,13 +345,15 @@ export class Paint {
     public setTypeface(font: Font | android.graphics.Typeface): Font {
         if (font instanceof Font) {
             this.setFont(font);
-            return this.fontInternal;;
+            return this.fontInternal;
         } else if (font) {
             this.fontInternal['_typeface'] = font;
         } else {
             this.fontInternal = null;
         }
-        this._needsFontUpdate = true;
+        if (!this.handlesFont) {
+            this._needsFontUpdate = true;
+        }
         return this.fontInternal;
     }
     set typeface(typeface) {
