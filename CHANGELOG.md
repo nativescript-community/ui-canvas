@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.47](https://github.com/nativescript-community/ui-canvas/compare/v4.0.46...v4.0.47) (2021-02-20)
+
+
+### Bug Fixes
+
+* **android:** allow custom shape to have custom font handling ([57bd9e2](https://github.com/nativescript-community/ui-canvas/commit/57bd9e24fcdb8444b2978633b19d8f224d5e8928))
+* **android:** faster StaticLayout ([8306ce4](https://github.com/nativescript-community/ui-canvas/commit/8306ce4d0b01d4351dcd82bebb162f9d3350d28b))
+
+
+
+
+
 ## [4.0.46](https://github.com/nativescript-community/ui-canvas/compare/v4.0.45...v4.0.46) (2021-02-18)
 
 
