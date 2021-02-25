@@ -1106,6 +1106,7 @@ export class Paint implements IPaint {
         } else {
             this.alpha = 255;
         }
+        this._textAttribs = null;
     }
     getColor(): Color {
         return this._color;

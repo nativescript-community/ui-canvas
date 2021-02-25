@@ -1,4 +1,4 @@
-import { ChangedData, Observable, ObservableArray, Property, Screen, View, booleanConverter } from '@nativescript/core';
+import { ChangedData, Observable, ObservableArray, Property, Screen, View, booleanConverter, colorProperty } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/utils';
 import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';
@@ -159,6 +159,12 @@ export abstract class CanvasBase extends View {
     }
     private removePropertyChangeHandler(shape: Shape) {
         shape.off(Observable.propertyChangeEvent, this.onShapePropertyChange, this);
+    }
+
+    [colorProperty.setNative](value) {
+        if (!!this._shapes) {
+            this.requestDrawShapes();
+        }
     }
 
     [densityProperty.setNative](value) {
