@@ -1153,7 +1153,7 @@ export class Paint implements IPaint {
         }
     }
 
-    drawShader(ctx) {
+    drawShader(ctx, shouldStrkedPath = true) {
         if (this.shader instanceof LinearGradient) {
             const color = UIColor.clearColor;
             CGContextSetFillColorWithColor(ctx, color.CGColor);
@@ -1162,7 +1162,7 @@ export class Paint implements IPaint {
             const options = g.tileMode === TileMode.CLAMP ? CGGradientDrawingOptions.kCGGradientDrawsBeforeStartLocation | CGGradientDrawingOptions.kCGGradientDrawsAfterEndLocation : 0;
             // const path = CGContextCopyPath(ctx);
             CGContextSaveGState(ctx);
-            if (this.style === Style.STROKE) {
+            if (shouldStrkedPath && this.style === Style.STROKE) {
                 CGContextReplacePathWithStrokedPath(ctx);
             }
             CGContextClip(ctx);
@@ -1808,7 +1808,7 @@ export class Canvas implements ICanvas {
             } else {
                 CGContextAddPath(ctx, path);
             }
-            paint.drawShader(ctx);
+            paint.drawShader(ctx, false);
         } else {
             if (bPath) {
                 bPath.lineWidth = paint.strokeWidth;
