@@ -93,39 +93,39 @@ function paint(...args) {
 export enum Style {
     FILL,
     STROKE,
-    FILL_AND_STROKE,
+    FILL_AND_STROKE
 }
 export enum Cap {
     ROUND = CGLineCap.kCGLineCapRound,
     SQUARE = CGLineCap.kCGLineCapSquare,
-    BUT = CGLineCap.kCGLineCapButt,
+    BUT = CGLineCap.kCGLineCapButt
 }
 
 export enum Join {
     BEVEL = CGLineJoin.kCGLineJoinBevel,
     MITER = CGLineJoin.kCGLineJoinMiter,
-    ROUND = CGLineJoin.kCGLineJoinRound,
+    ROUND = CGLineJoin.kCGLineJoinRound
 }
 export enum Align {
     LEFT = 0,
     RIGHT = 1,
-    CENTER = 2,
+    CENTER = 2
 }
 
 export enum Direction {
     CCW,
-    CW,
+    CW
 }
 export enum TileMode {
     CLAMP,
     MIRROR,
-    REPEAT,
+    REPEAT
 }
 export enum FillType {
     EVEN_ODD,
     INVERSE_EVEN_ODD,
     INVERSE_WINDING,
-    WINDING,
+    WINDING
 }
 
 export enum Op {
@@ -134,13 +134,13 @@ export enum Op {
     REPLACE,
     REVERSE_DIFFERENCE,
     UNION,
-    XOR,
+    XOR
 }
 
 export enum LayoutAlignment {
     ALIGN_NORMAL,
     ALIGN_CENTER,
-    ALIGN_OPPOSITE,
+    ALIGN_OPPOSITE
 }
 
 export enum PorterDuffMode {
@@ -161,7 +161,7 @@ export enum PorterDuffMode {
     SRC_IN = CGBlendMode.kCGBlendModeSourceIn,
     SRC_OUT = CGBlendMode.kCGBlendModeSourceOut,
     SRC_OVER = CGBlendMode.kCGBlendModeNormal,
-    XOR = CGBlendMode.kCGBlendModeXOR,
+    XOR = CGBlendMode.kCGBlendModeXOR
 }
 
 function createCGRect(l, t, r, b) {
@@ -386,7 +386,7 @@ export class Matrix implements IMatrix {
             src = args[2];
         }
         src = src || pts;
-        pointCount = Math.floor(pointCount || src.length / 2);
+        pointCount = Math.floor(pointCount || src.length);
         for (let index = 0; index < pointCount; index += 2) {
             const cgPoint = CGPointApplyAffineTransform(CGPointMake(src[index + srcIndex], src[index + srcIndex + 1]), this._transform);
             pts[index + dstIndex] = cgPoint.x;
@@ -896,7 +896,7 @@ export class Paint implements IPaint {
             radius: radius / 1,
             dx,
             dy,
-            color: new Color(color.a / 1, color.r, color.g, color.b),
+            color: new Color(color.a / 1, color.r, color.g, color.b)
         };
     }
     public clearShadowLayer() {
