@@ -15,7 +15,6 @@ const folder: Folder = knownFolders.currentApp();
 const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'images/test.jpg'));
 
 export function drawOnImage(scale = 3, canvas?: Canvas) {
-
     if (!canvas) {
         const folderPath: string = path.join(folder.path, 'images/test.jpg');
         const imageFromLocalFile: ImageSource = ImageSource.fromFileSync(folderPath);
@@ -187,10 +186,8 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     canvas.save();
     canvas.translate(30, 200);
     const fontMetrics = textPaint.getFontMetrics();
-    console.log('fontMetrics', fontMetrics.descent - fontMetrics.ascent, fontMetrics.ascent, fontMetrics.bottom, fontMetrics.descent, fontMetrics.leading, fontMetrics.top);
     const rect = new Rect(0, 0, 0, 0);
     textPaint.getTextBounds('A', 0, 1, rect);
-    console.log('textBounds', rect.top, rect.left, rect.width(), rect.height());
     canvas.drawRect(rect, bgPaint);
     canvas.drawText('A', 0, 0, textPaint);
 
