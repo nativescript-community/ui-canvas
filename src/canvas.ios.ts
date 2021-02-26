@@ -2120,8 +2120,15 @@ export class LinearGradient {
     get gradient() {
         if (!this._gradient) {
             if (Array.isArray(this.colors)) {
+                let stopsRef = null;
+                if (this.stops) {
+                    const CGFloatArray = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
+                    const buffer = CGFloatArray.from(this.stops);
+                    stopsRef = buffer;
+                }
+
                 const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
-                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, this.stops);
+                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, stopsRef);
                 CFRetain(this._gradient);
             } else {
                 const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);

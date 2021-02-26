@@ -441,7 +441,21 @@ export class LinearGradient {
         return this._native;
     }
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
-        this._native = new android.graphics.LinearGradient(param0, param1, param2, param3, createColorParam(param4), param5 instanceof Array ? param5 : createColorParam(param5), param6);
+        if (Array.isArray(param4)) {
+            const testArray = Array.create('int', param4.length);
+            param4.forEach((c, i) => (testArray[i] = createColorParam(c)));
+            param4 = testArray;
+        } else if (param4.hasOwnProperty('length')) {
+            param4 = createColorParam(param4);
+        }
+        if (Array.isArray(param5)) {
+            const testArray = Array.create('float', param4.length);
+            param5.forEach((c, i) => (testArray[i] = c));
+            param5 = testArray;
+        } else if (param5.hasOwnProperty('length')) {
+            param5 = createColorParam(param5);
+        }
+        this._native = new android.graphics.LinearGradient(param0, param1, param2, param3, param4, param5, param6);
         return new Proxy(this, this);
     }
     get(target, name, receiver) {
