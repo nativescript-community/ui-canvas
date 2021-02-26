@@ -373,11 +373,11 @@ export class Matrix implements IMatrix {
     }
     public mapPoints(...args) {
         let src: number[];
-        let dstIndex: number,
+        let dstIndex: number = 0,
             srcIndex: number = 0,
             pointCount: number;
         const pts: number[] = args[0];
-        if (args.length === 2) {
+        if (args.length <= 2) {
             src = args[1];
         } else {
             dstIndex = args[1] || 0;
@@ -386,7 +386,7 @@ export class Matrix implements IMatrix {
             src = args[2];
         }
         src = src || pts;
-        pointCount = Math.floor(pointCount || src.length);
+        pointCount = Math.floor(pointCount || src.length / 2);
         for (let index = 0; index < pointCount; index += 2) {
             const cgPoint = CGPointApplyAffineTransform(CGPointMake(src[index + srcIndex], src[index + srcIndex + 1]), this._transform);
             pts[index + dstIndex] = cgPoint.x;
@@ -2121,7 +2121,7 @@ export class LinearGradient {
         if (!this._gradient) {
             if (Array.isArray(this.colors)) {
                 const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
-                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
+                this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, this.stops);
                 CFRetain(this._gradient);
             } else {
                 const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
