@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.49](https://github.com/nativescript-community/ui-canvas/compare/v4.0.48...v4.0.49) (2021-02-26)
+
+
+### Bug Fixes
+
+* **ios:** crrectly stroke path for shader ([61b0693](https://github.com/nativescript-community/ui-canvas/commit/61b0693b7a3713e6b6c3b24e8b2393c97dc5552c))
+* full support for LinearGradient ([118c73a](https://github.com/nativescript-community/ui-canvas/commit/118c73aaa3923e557b85b94807a68a135a1f2bb5))
+* **ios:** mapPoints function fix ([4a5493b](https://github.com/nativescript-community/ui-canvas/commit/4a5493b6f43e6f8c270de09299338faab74c577c))
+
+
+
+
+
 ## [4.0.48](https://github.com/nativescript-community/ui-canvas/compare/v4.0.47...v4.0.48) (2021-02-25)
 
 
