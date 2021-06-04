@@ -2186,7 +2186,7 @@ export class PorterDuffXfermode {
 export class StaticLayout {
     rect: CGRect;
     nsAttributedString: NSAttributedString;
-    public constructor(private text: any, private paint: Paint, private width: number, private align: LayoutAlignment, private spacingmult, private spacingadd, private includepad) {
+    public constructor(private text: any, private paint: Paint, private width: number, private align: LayoutAlignment, private spacingmult?, private spacingadd?, private includepad?) {
         if (text instanceof NSAttributedString) {
             this.nsAttributedString = text;
             // } else if (!(text instanceof NSMutableAttributedString)) {
@@ -2221,18 +2221,22 @@ export class StaticLayout {
             nsAttributedString.addAttributesRange(attributes, range);
         });
     }
-    draw(canvas: Canvas) {
+    draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
         canvas.startApplyPaint(this.paint);
         const ctx = canvas.ctx;
         this.createAttributedStringToDraw();
 
         UIGraphicsPushContext(ctx);
-        this.toDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+        this.toDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, maxHeight), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         UIGraphicsPopContext();
         canvas.finishApplyPaint(this.paint);
     }
     getPaint() {
         return this.paint;
+    }
+    static getDesiredWidth(source, paint) {
+        const layout = new StaticLayout(source, paint, Number.MAX_SAFE_INTEGER, LayoutAlignment.ALIGN_NORMAL);
+        return layout.getBounds().size.width;
     }
     getBounds() {
         if (!this.rect) {
