@@ -1,7 +1,7 @@
 /* eslint-disable no-redeclare */
 import { Color, HorizontalAlignment, Length, Observable, PercentLength, Utils, VerticalAlignment, Visibility } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
-import { Canvas, CanvasView, Cap, Join, Paint, Style } from '../canvas';
+import { Canvas, CanvasView, Cap, Join, Paint, PorterDuffXfermode, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
 
 function parseThickness(value: string) {
@@ -178,6 +178,13 @@ function applyShadow(paint: Paint, shadow: Shadow) {
         paint.clearShadowLayer();
     }
 }
+function parseXfermode(value) {
+    if (value instanceof PorterDuffXfermode) {
+        return value;
+    } else {
+        return new PorterDuffXfermode(value);
+    }
+}
 export default abstract class Shape extends Observable {
     _paint: Paint;
     _parent: WeakRef<CanvasView>;
@@ -204,6 +211,7 @@ export default abstract class Shape extends Observable {
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;
     @numberProperty textSize: number;
+    @numberProperty({ converter: parseXfermode }) xfermode: number;
     // alias for textSize
     @numberProperty({ paintSetterName: 'setTextSize' }) fontSize: number;
     @booleanProperty({ paintGetterName: 'isAntiAlias', paintSetterName: 'setAntiAlias' }) antiAlias: boolean;
