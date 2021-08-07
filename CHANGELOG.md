@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.50](https://github.com/nativescript-community/ui-canvas/compare/v4.0.49...v4.0.50) (2021-08-07)
+
+
+### Bug Fixes
+
+* **ios:** gradient error fix when stop outside of 0..1 ([aaeda5c](https://github.com/nativescript-community/ui-canvas/commit/aaeda5c49356d158aa502c08f9555971ad5679b6))
+* **ios:** more StaticLayout functions ([25af233](https://github.com/nativescript-community/ui-canvas/commit/25af23351298d1a9344b1997ca5a0923713fcbcd))
+
+
+### Features
+
+* shap xfermode support ([4104e01](https://github.com/nativescript-community/ui-canvas/commit/4104e01031c7cded166336c2aaa82c07d722c1ab))
+
+
+
+
+
 ## [4.0.49](https://github.com/nativescript-community/ui-canvas/compare/v4.0.48...v4.0.49) (2021-02-26)
 
 
