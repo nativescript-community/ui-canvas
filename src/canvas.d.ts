@@ -246,6 +246,7 @@ export class Path {
     offset(param0: number, param1: number): void;
     rCubicTo(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): void;
     rQuadTo(param0: number, param1: number, param2: number, param3: number): void;
+    addRoundRect(left: number, top: number, right: number, bottom: number, param1: number, param2: number, param3: Direction): void;
     addRoundRect(param0: RectF, param1: number, param2: number, param3: Direction): void;
     addRoundRect(param0: RectF, param1: number[], param2: Direction): void;
     offset(param0: number, param1: number, param2: Path): void;
