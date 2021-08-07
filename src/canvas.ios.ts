@@ -2123,17 +2123,21 @@ export class LinearGradient {
                 let stopsRef = null;
                 if (this.stops) {
                     const CGFloatArray = interop.sizeof(interop.types.id) === 4 ? Float32Array : Float64Array;
-                    const buffer = CGFloatArray.from(this.stops);
+                    const buffer = CGFloatArray.from(this.stops.map((s) => Math.max(0, Math.min(1, s))));
                     stopsRef = buffer;
                 }
 
                 const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, stopsRef);
-                CFRetain(this._gradient);
+                if (this._gradient) {
+                    CFRetain(this._gradient);
+                }
             } else {
                 const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
                 this._gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
-                CFRetain(this._gradient);
+                if (this._gradient) {
+                    CFRetain(this._gradient);
+                }
             }
         }
         return this._gradient;
