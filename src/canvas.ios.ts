@@ -848,7 +848,7 @@ export class Path implements IPath {
         CGPathAddEllipseInRect(this._path, null, rect);
     }
     isInverseFillType(): boolean {
-        return this._fillType === FillType.INVERSE_EVEN_ODD || this._fillType === FillType.INVERSE_EVEN_ODD;
+        return this._fillType === FillType.INVERSE_EVEN_ODD || this._fillType === FillType.INVERSE_WINDING;
     }
     set(path: Path): void {
         this._path = CGPathCreateMutableCopy(path._path);
