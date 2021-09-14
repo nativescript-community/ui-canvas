@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.51](https://github.com/nativescript-community/ui-canvas/compare/v4.0.50...v4.0.51) (2021-09-14)
+
+
+### Bug Fixes
+
+* ios support for all filltype ([752c5a8](https://github.com/nativescript-community/ui-canvas/commit/752c5a898b567687b77173ffdcd0058b8933c770))
+
+
+
+
+
 ## [4.0.50](https://github.com/nativescript-community/ui-canvas/compare/v4.0.49...v4.0.50) (2021-08-07)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
