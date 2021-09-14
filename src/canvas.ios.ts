@@ -302,8 +302,8 @@ export class RectF extends Rect {}
 
 export class Matrix implements IMatrix {
     _transform: CGAffineTransform;
-    constructor() {
-        this._transform = CGAffineTransformIdentity;
+    constructor(transform?) {
+        this._transform = transform || CGAffineTransformIdentity;
     }
     mapRect(rect: Rect) {
         rect.cgRect = CGRectApplyAffineTransform(rect.cgRect, this._transform);
@@ -793,7 +793,20 @@ export class Path implements IPath {
         console.error('Method not implemented:', 'setLastPoint');
     }
     toggleInverseFillType(): void {
-        console.error('Method not implemented:', 'toggleInverseFillType');
+        switch (this._fillType) {
+            case FillType.EVEN_ODD:
+                this._fillType = FillType.INVERSE_EVEN_ODD;
+                break;
+            case FillType.INVERSE_EVEN_ODD:
+                this._fillType = FillType.EVEN_ODD;
+                break;
+            case FillType.WINDING:
+                this._fillType = FillType.INVERSE_WINDING;
+                break;
+            case FillType.INVERSE_WINDING:
+                this._fillType = FillType.WINDING;
+                break;
+        }
     }
     moveTo(x: number, y: number): void {
         CGPathMoveToPoint(this._path, null, x, y);
@@ -835,7 +848,7 @@ export class Path implements IPath {
         CGPathAddEllipseInRect(this._path, null, rect);
     }
     isInverseFillType(): boolean {
-        return false;
+        return this._fillType === FillType.INVERSE_EVEN_ODD || this._fillType === FillType.INVERSE_EVEN_ODD;
     }
     set(path: Path): void {
         this._path = CGPathCreateMutableCopy(path._path);
@@ -1524,13 +1537,7 @@ export class Canvas implements ICanvas {
     @paint
     drawPath(path: Path, paint: Paint): void {
         const ctx = this.ctx;
-        if (path._fillType === FillType.EVEN_ODD) {
-            CGContextBeginPath(ctx);
-            CGContextAddPath(ctx, path.getCGPath());
-            this._drawEOFPath(paint, ctx);
-        } else {
-            this._drawPath(paint, ctx, path.getBPath() || path.getCGPath());
-        }
+        this._drawPath(paint, ctx, path.getBPath() || path.getCGPath());
     }
     clipOutPath(path: IPath): boolean {
         console.error('Method not implemented:', 'clipOutPath');
@@ -1769,33 +1776,29 @@ export class Canvas implements ICanvas {
         CGContextClipToRect(ctx, rect);
         return true;
     }
-    private _drawEOFPath(paint: Paint, ctx) {
-        if (paint.style === Style.FILL) {
-            CGContextEOFillPath(ctx);
-        } else if (paint.style === Style.STROKE) {
-            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
-        } else {
-            CGContextEOFillPath(ctx);
-            CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
-        }
-        paint.drawShader(ctx);
-    }
     private _drawPath(paint: Paint, ctx, path?) {
         let bPath: UIBezierPath;
         if (path instanceof UIBezierPath) {
             bPath = path;
             path = bPath.CGPath;
         }
-        if (paint.shader && !path) {
-            path = CGContextCopyPath(ctx);
-        }
-        if (paint.pathEffect instanceof DashPathEffect) {
+        function createBPath() {
             if (!bPath) {
                 if (!path) {
                     path = CGContextCopyPath(ctx);
                 }
                 bPath = UIBezierPath.bezierPathWithCGPath(path);
             }
+        }
+        if (paint.shader && !path) {
+            path = CGContextCopyPath(ctx);
+        }
+        if (path._fillType === FillType.INVERSE_WINDING || path._fillType === FillType.INVERSE_EVEN_ODD) {
+            createBPath();
+            bPath = bPath.bezierPathByReversingPath();
+        }
+        if (paint.pathEffect instanceof DashPathEffect) {
+            createBPath();
             const intervals = paint.pathEffect.intervals;
             const length = intervals.length;
             bPath.setLineDashCountPhase(FloatConstructor.from(intervals) as any, length, paint.pathEffect.phase);
@@ -1835,11 +1838,19 @@ export class Canvas implements ICanvas {
                 }
                 if (paint.style === Style.FILL) {
                     // CGContextFillPath(ctx);
-                    CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
+                    if (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD) {
+                        CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFill);
+                    } else {
+                        CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
+                    }
                 } else if (paint.style === Style.STROKE) {
                     CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
                 } else {
-                    CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
+                    if (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD) {
+                        CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFillStroke);
+                    } else {
+                        CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
+                    }
                 }
             }
         }
