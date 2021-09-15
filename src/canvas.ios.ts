@@ -536,7 +536,7 @@ export class DashPathEffect extends PathEffect {
 export class Path implements IPath {
     private _path: any;
     private _bPath?: UIBezierPath;
-    _fillType: FillType;
+    _fillType: FillType = FillType.WINDING;
 
     getOrCreateBPath() {
         if (!this._bPath) {
