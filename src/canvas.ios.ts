@@ -566,6 +566,7 @@ export class Path implements IPath {
     }
     constructor() {
         this._path = CGPathCreateMutable();
+        this._fillType = FillType.WINDING;
         // this._path = UIBezierPath.bezierPath();
     }
     computeBounds(rect: RectF, exact: boolean) {
@@ -1537,7 +1538,7 @@ export class Canvas implements ICanvas {
     @paint
     drawPath(path: Path, paint: Paint): void {
         const ctx = this.ctx;
-        this._drawPath(paint, ctx, path.getBPath() || path.getCGPath());
+        this._drawPath(paint, ctx, path);
     }
     clipOutPath(path: IPath): boolean {
         console.error('Method not implemented:', 'clipOutPath');
@@ -1778,24 +1779,29 @@ export class Canvas implements ICanvas {
     }
     private _drawPath(paint: Paint, ctx, path?) {
         let bPath: UIBezierPath;
-        if (path instanceof UIBezierPath) {
+        let cgPath = path;
+        if (path instanceof Path) {
+            bPath = path.getBPath();
+            cgPath = path.getCGPath();
+        } else if (path instanceof UIBezierPath) {
             bPath = path;
-            path = bPath.CGPath;
+            cgPath = bPath.CGPath;
         }
         function createBPath() {
             if (!bPath) {
-                if (!path) {
-                    path = CGContextCopyPath(ctx);
+                if (!cgPath) {
+                    cgPath = CGContextCopyPath(ctx);
                 }
-                bPath = UIBezierPath.bezierPathWithCGPath(path);
+                bPath = UIBezierPath.bezierPathWithCGPath(cgPath);
             }
         }
-        if (paint.shader && !path) {
-            path = CGContextCopyPath(ctx);
+        if (paint.shader && !cgPath) {
+            cgPath = CGContextCopyPath(ctx);
         }
         if (path && (path._fillType === FillType.INVERSE_WINDING || path._fillType === FillType.INVERSE_EVEN_ODD)) {
             createBPath();
             bPath = bPath.bezierPathByReversingPath();
+            cgPath = bPath.CGPath;
         }
         if (paint.pathEffect instanceof DashPathEffect) {
             createBPath();
@@ -1804,12 +1810,12 @@ export class Canvas implements ICanvas {
             bPath.setLineDashCountPhase(FloatConstructor.from(intervals) as any, length, paint.pathEffect.phase);
         }
 
-        if (path && paint.shader) {
+        if (cgPath && paint.shader) {
             if (paint.style === Style.STROKE) {
-                const cgStrokedPath = CGPathCreateCopyByStrokingPath(path, null, paint.strokeWidth, paint.strokeCap as any, paint.strokeJoin as any, 0);
+                const cgStrokedPath = CGPathCreateCopyByStrokingPath(cgPath, null, paint.strokeWidth, paint.strokeCap as any, paint.strokeJoin as any, 0);
                 CGContextAddPath(ctx, cgStrokedPath);
             } else {
-                CGContextAddPath(ctx, path);
+                CGContextAddPath(ctx, cgPath);
             }
             paint.drawShader(ctx, false);
         } else {
@@ -1833,12 +1839,12 @@ export class Canvas implements ICanvas {
                 }
                 UIGraphicsPopContext();
             } else {
-                if (path) {
-                    CGContextAddPath(ctx, path);
+                if (cgPath) {
+                    CGContextAddPath(ctx, cgPath);
                 }
                 if (paint.style === Style.FILL) {
                     // CGContextFillPath(ctx);
-                    if (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD) {
+                    if (path && (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD)) {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFill);
                     } else {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
@@ -1846,7 +1852,7 @@ export class Canvas implements ICanvas {
                 } else if (paint.style === Style.STROKE) {
                     CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
                 } else {
-                    if (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD) {
+                    if (path && (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD)) {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFillStroke);
                     } else {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
