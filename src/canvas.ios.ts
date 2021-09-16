@@ -1793,7 +1793,7 @@ export class Canvas implements ICanvas {
         if (paint.shader && !path) {
             path = CGContextCopyPath(ctx);
         }
-        if (path._fillType === FillType.INVERSE_WINDING || path._fillType === FillType.INVERSE_EVEN_ODD) {
+        if (path && (path._fillType === FillType.INVERSE_WINDING || path._fillType === FillType.INVERSE_EVEN_ODD)) {
             createBPath();
             bPath = bPath.bezierPathByReversingPath();
         }
