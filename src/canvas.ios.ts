@@ -1779,13 +1779,15 @@ export class Canvas implements ICanvas {
     }
     private _drawPath(paint: Paint, ctx, path?) {
         let bPath: UIBezierPath;
-        let cgPath = path;
+        let cgPath;
         if (path instanceof Path) {
             bPath = path.getBPath();
             cgPath = path.getCGPath();
         } else if (path instanceof UIBezierPath) {
             bPath = path;
             cgPath = bPath.CGPath;
+        } else {
+            cgPath = path;
         }
         function createBPath() {
             if (!bPath) {
