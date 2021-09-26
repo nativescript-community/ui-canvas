@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.54](https://github.com/nativescript-community/ui-canvas/compare/v4.0.53...v4.0.54) (2021-09-26)
+
+
+### Bug Fixes
+
+* Android LinearGradient params were throwing errors. ([94bb468](https://github.com/nativescript-community/ui-canvas/commit/94bb468b866fbc7dbacd8484456ce5d48f0ad099))
+
+
+
+
+
 ## [4.0.53](https://github.com/nativescript-community/ui-canvas/compare/v4.0.52...v4.0.53) (2021-09-16)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
