@@ -1779,13 +1779,10 @@ export class Canvas implements ICanvas {
     }
     private _drawPath(paint: Paint, ctx, path?) {
         let bPath: UIBezierPath;
-        let cgPath = path;
-        if (path instanceof Path) {
+        let cgPath;
+        if (path != null) {
             bPath = path.getBPath();
             cgPath = path.getCGPath();
-        } else if (path instanceof UIBezierPath) {
-            bPath = path;
-            cgPath = bPath.CGPath;
         }
         function createBPath() {
             if (!bPath) {
@@ -1878,7 +1875,8 @@ export class Canvas implements ICanvas {
             radius = Math.max(params[1], params[2]);
             rect = (params[0] as Rect).cgRect;
         }
-        const path = UIBezierPath.bezierPathWithRoundedRectCornerRadius(rect, radius);
+        const path = new Path();
+        path.setBPath(UIBezierPath.bezierPathWithRoundedRectCornerRadius(rect, radius));
         // CGContextAddPath(ctx, path.CGPath);
         this._drawPath(paint, ctx, path);
     }
