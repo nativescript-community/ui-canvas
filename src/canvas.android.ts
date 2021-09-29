@@ -60,6 +60,7 @@ function pointsFromBuffer(buffer: ArrayBuffer, useInts = false) {
 }
 
 export function arrayoNativeArray(array, useInts = false) {
+    console.log('arrayoNativeArray', Array.isArray(array));
     if (!Array.isArray(array)) {
         return array;
     }
@@ -401,10 +402,10 @@ export class Path {
                     const element = args[index];
                     if (element && element._native) {
                         args[index] = element.getNative();
+                    } else if (Array.isArray(element)) {
+                        console.log('test', 'methodName', index, element);
+                        args[index] = arrayoNativeArray(element);
                     }
-                }
-                if (methodName === 'addLines' || methodName === 'setLines' || methodName === 'addCubicLines' || methodName === 'setCubicLines') {
-                    args[0] = arrayoNativeArray(args[0]);
                 }
                 return native[methodName](...args);
             };
@@ -549,7 +550,7 @@ function initClasses() {
     Op = android.graphics.Region.Op;
     Direction = android.graphics.Path.Direction;
     FillType = android.graphics.Path.FillType;
-    Matrix = android.graphics.Matrix;
+    Matrix = com.akylas.canvas.CanvasMatrix;
     TileMode = android.graphics.Shader.TileMode;
     LayoutAlignment = android.text.Layout.Alignment;
     PorterDuffMode = android.graphics.PorterDuff.Mode;

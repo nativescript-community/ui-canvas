@@ -1,6 +1,12 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 declare namespace com {
     export namespace akylas {
         export namespace canvas {
+            export class CanvasMatrix extends globalAndroid.graphics.Matrix {
+                mapPoints(param0: Float32Array | native.Array<number>, param1: Float32Array | native.Array<number>): void;
+                mapPoints(param0: Float32Array | native.Array<number>, param1: number, param2: Float32Array | native.Array<number>, param3: number, param4: number): void;
+                mapPoints(param0: Float32Array | native.Array<number>): void;
+            }
             export class CanvasPath extends globalAndroid.graphics.Path {
                 addLines(points: number[], offset?: number, length?: number, close?: boolean);
                 setLines(points: number[], offset?: number, length?: number, close?: boolean);
