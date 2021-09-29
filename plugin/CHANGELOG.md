@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/nativescript-community/ui-canvas/compare/v4.0.54...v4.1.0) (2021-09-29)
+
+
+### Features
+
+* **android:** support runtime 8.2.0 and improved perfs with typed arrays ([41c853b](https://github.com/nativescript-community/ui-canvas/commit/41c853b471bffca9c2abc31d3bcfecaf06ac96a9))
+
+
+
+
+
 ## [4.0.54](https://github.com/nativescript-community/ui-canvas/compare/v4.0.53...v4.0.54) (2021-09-26)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
