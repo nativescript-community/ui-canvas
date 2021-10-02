@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](https://github.com/nativescript-community/ui-canvas/compare/v4.1.0...v4.1.1) (2021-10-02)
+
+
+### Bug Fixes
+
+* **android:** removed logs ([dc89af5](https://github.com/nativescript-community/ui-canvas/commit/dc89af5138998e592abfcbf0bbdb95e57aaa505e))
+
+
+
+
+
 # [4.1.0](https://github.com/nativescript-community/ui-canvas/compare/v4.0.54...v4.1.0) (2021-09-29)
 
 
