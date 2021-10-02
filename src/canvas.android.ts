@@ -59,8 +59,7 @@ function pointsFromBuffer(buffer: ArrayBuffer, useInts = false) {
     return testArray as number[];
 }
 
-export function arrayoNativeArray(array, useInts = false) {
-    console.log('arrayoNativeArray', Array.isArray(array));
+export function arrayToNativeArray(array, useInts = false) {
     if (!Array.isArray(array)) {
         return array;
     }
@@ -169,7 +168,7 @@ class Canvas {
                 } else if (methodName === 'drawColor') {
                     args[0] = createColorParam(args[0]);
                 } else if (methodName === 'drawLines') {
-                    args[0] = arrayoNativeArray(args[0]);
+                    args[0] = arrayToNativeArray(args[0]);
                     const last = args[args.length - 1];
                     if (last instanceof android.graphics.Matrix) {
                         last.mapPoints(args[0]);
@@ -368,7 +367,7 @@ export class DashPathEffect {
         return this._native;
     }
     constructor(intervals: number[], phase: number) {
-        this._native = new android.graphics.DashPathEffect(arrayoNativeArray(intervals), phase);
+        this._native = new android.graphics.DashPathEffect(arrayToNativeArray(intervals), phase);
         return new Proxy(this, this);
     }
     get(target, name, receiver) {
@@ -403,8 +402,7 @@ export class Path {
                     if (element && element._native) {
                         args[index] = element.getNative();
                     } else if (Array.isArray(element)) {
-                        console.log('test', 'methodName', index, element);
-                        args[index] = arrayoNativeArray(element);
+                        args[index] = arrayToNativeArray(element);
                     }
                 }
                 return native[methodName](...args);
