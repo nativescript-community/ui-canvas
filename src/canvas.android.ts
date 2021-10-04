@@ -37,23 +37,23 @@ function getSDK() {
     return SDK_INT;
 }
 
-function createArrayBuffer(length: number, useInts = false) {
+export function createArrayBuffer(length: number, useInts = false) {
     let bb: java.nio.ByteBuffer;
     if (useInts) {
         bb = java.nio.ByteBuffer.allocateDirect(length);
     } else {
         bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
     }
-    // var bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
     const result = (ArrayBuffer as any).from(bb);
-    // result.bb = bb;
-    return result;
+    return useInts ? new Int8Array(result) : new Float32Array(result);
 }
-function pointsFromBuffer(buffer: ArrayBuffer, useInts = false) {
+export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts = false) {
     if (useInts) {
+        const buffer = typedArray.buffer;
         return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
     }
-    const length = buffer.byteLength / 4;
+    const buffer = typedArray.buffer;
+    const length = typedArray.length;
     const testArray = Array.create('float', length);
     ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
     return testArray as number[];
@@ -64,11 +64,9 @@ export function arrayToNativeArray(array, useInts = false) {
         return array;
     }
     const length = array.length;
-    const buffer = createArrayBuffer(length, useInts);
-    const arrayBuffer = useInts ? new Int8Array(buffer) : new Float32Array(buffer);
-    arrayBuffer.set(array);
+    const typedArray = createArrayBuffer(length, useInts);
 
-    return pointsFromBuffer(buffer, useInts);
+    return pointsFromBuffer(typedArray, useInts);
 }
 
 export function parseDashEffect(value: string) {
@@ -226,7 +224,7 @@ export class Paint {
         native.setLinearText(true); // ensure we are drawing fonts correctly
         return new Proxy(this, {
             get(target, name, receiver) {
-                if (native[name]) {
+                if (native && native[name]) {
                     return function (...args) {
                         const methodName = name;
                         for (let index = 0; index < args.length; index++) {
@@ -372,7 +370,7 @@ export class DashPathEffect {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 return native[methodName](...args);
@@ -394,7 +392,7 @@ export class Path {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
@@ -423,7 +421,7 @@ export class RadialGradient {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 return native[methodName](...args);
@@ -463,7 +461,7 @@ export class LinearGradient {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 return native[methodName](...args);
@@ -488,7 +486,7 @@ export class BitmapShader {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 return native[methodName](...args);
@@ -517,7 +515,7 @@ export class StaticLayout {
     }
     get(target, name, receiver) {
         const native = this._native;
-        if (native[name]) {
+        if (native && native[name]) {
             return function (...args) {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {

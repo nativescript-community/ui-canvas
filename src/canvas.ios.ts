@@ -2285,3 +2285,17 @@ export class StaticLayout {
         return result;
     }
 }
+
+export function createArrayBuffer(length: number, useInts = false) {
+    if (useInts) {
+        return new Int8Array(length);
+    }
+    return new FloatConstructor(length);
+}
+export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts = false) {
+    return typedArray;
+}
+
+export function arrayToNativeArray(array, useInts = false) {
+    return array;
+}

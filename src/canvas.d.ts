@@ -30,8 +30,8 @@ export class Paint {
     fontWeight: FontWeight;
     fontStyle: FontStyle;
     font: Font;
-    getFont(): Font
-    setFont(font: Font)
+    getFont(): Font;
+    setFont(font: Font);
 
     public getAlpha(): number;
     public getStyle(): Style;
@@ -330,3 +330,7 @@ declare class CanvasView extends View {
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;
 export function releaseImage(image: ImageSource);
+
+export function createArrayBuffer(length: number, useInts?): Float32Array | Int8Array | Float64Array;
+export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts?): number[];
+export function arrayToNativeArray(array, useInts?): number[];
