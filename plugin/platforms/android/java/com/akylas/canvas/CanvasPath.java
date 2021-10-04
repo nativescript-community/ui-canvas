@@ -133,7 +133,7 @@ public class CanvasPath extends android.graphics.Path {
         final int l = length;
         moveTo(points.get(offset), points.get(offset + 1));
         for (int i = offset + 2; i < l; i += 6) {
-            cubicTo(points.get(i), points.get(offset + 1), points.get(offset + 2), points.get(offset + 3), points.get(offset + 4), points.get(offset + 5));
+            cubicTo(points.get(i), points.get(i + 1), points.get(i + 2), points.get(i + 3), points.get(i + 4), points.get(i + 5));
         }
         if (close) {
             close();
