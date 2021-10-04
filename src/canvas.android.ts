@@ -87,16 +87,16 @@ function createColorParam(param) {
     }
 }
 
-function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
-    if (param0 instanceof ImageSource) {
-        param0 = param0.android;
-    }
-    if (!param3 && (param2 === undefined || param2 instanceof Paint)) {
-        canvas.drawBitmap(param0, param1, param2);
-    } else {
-        canvas.drawBitmap(param0, param1, param2, param3);
-    }
-}
+// function drawBitmapOnCanvas(canvas: android.graphics.Canvas, param0: any, param1: any, param2: any, param3?: any) {
+//     if (param0 instanceof ImageSource) {
+//         param0 = param0.android;
+//     }
+//     if (!param3 && (param2 === undefined || param2 instanceof Paint)) {
+//         canvas.drawBitmap(param0, param1, param2);
+//     } else {
+//         canvas.drawBitmap(param0, param1, param2, param3);
+//     }
+// }
 function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: android.graphics.Rect) {
     if (!view.nativeView) {
         const activity = androidApp.foregroundActivity;
@@ -120,15 +120,48 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
     }
 }
 
-const canvasAugmentedMethods = ['clear', 'drawBitmap', 'drawView'];
-class Canvas {
-    _native: android.graphics.Canvas;
+class ProxyClass<T> {
+    _native: T;
+    static augmentedMethods = [];
     getNative() {
         return this._native;
     }
+    constructor() {
+        const proxy = new Proxy(this, this);
+        return proxy;
+    }
+    handleCustomMethods(target: this, native: T, methodName: string, args: any[]): any {}
+    get(target: this, name, receiver) {
+        const native = target.getNative();
+        if (native && (target.constructor['augmentedMethods'].indexOf(name) >= 0 || native[name])) {
+            return function (...args) {
+                const methodName = name;
+                for (let index = 0; index < args.length; index++) {
+                    const element = args[index];
+                    if (element && element._native) {
+                        args[index] = element.getNative();
+                    } else if (Array.isArray(element)) {
+                        args[index] = arrayToNativeArray(element);
+                    }
+                }
+                const result = target.handleCustomMethods(target, native, methodName, args);
+                if (result) {
+                    return result;
+                }
+                return native[methodName](...args);
+            };
+        } else {
+            return Reflect.get(target, name, receiver);
+        }
+    }
+}
+
+class Canvas extends ProxyClass<android.graphics.Canvas> {
     _bitmap: android.graphics.Bitmap;
     _shouldReleaseBitmap = false;
+    static augmentedMethods = ['clear', 'drawBitmap', 'drawView'];
     constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number, height?: number) {
+        super();
         if (imageOrWidth) {
             if (imageOrWidth instanceof ImageSource) {
                 this._bitmap = imageOrWidth.android;
@@ -145,58 +178,41 @@ class Canvas {
             this._native = new android.graphics.Canvas(this._bitmap);
         }
 
-        const proxy = new Proxy(this, this);
-        return proxy;
+        return this;
     }
-    get(target: Canvas, name, receiver) {
-        const native = this._native;
-        if (native && (canvasAugmentedMethods.indexOf(name) >= 0 || native[name])) {
-            return function (...args) {
-                const methodName = name;
-                for (let index = 0; index < args.length; index++) {
-                    const element = args[index];
-                    if (element && element._native) {
-                        args[index] = element.getNative();
-                    }
-                }
-                if (methodName === 'setBitmap') {
-                    if (args[0] instanceof ImageSource) {
-                        args[0] = args[0].android;
-                    }
-                } else if (methodName === 'drawColor') {
-                    args[0] = createColorParam(args[0]);
-                } else if (methodName === 'drawLines') {
-                    args[0] = arrayToNativeArray(args[0]);
-                    const last = args[args.length - 1];
-                    if (last instanceof android.graphics.Matrix) {
-                        last.mapPoints(args[0]);
-                        args.pop();
-                    }
-                } else if (methodName === 'getWidth' || methodName === 'getHeight') {
-                    if (!target._bitmap) {
-                        return layout.toDeviceIndependentPixels(native[methodName]());
-                    }
-                } else if (methodName === 'clear') {
-                    return native.drawColor(android.graphics.Color.TRANSPARENT);
-                } else if (methodName === 'drawBitmap') {
-                    if (args[0] instanceof ImageSource) {
-                        args[0] = args[0].android;
-                    }
-                } else if (methodName === 'drawView') {
-                    return drawViewOnCanvas(native, args[0], args[1]);
-                }
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
+    override handleCustomMethods(target, native, methodName, args): any {
+        if (methodName === 'setBitmap') {
+            if (args[0] instanceof ImageSource) {
+                args[0] = args[0].android;
+            }
+        } else if (methodName === 'drawColor') {
+            args[0] = createColorParam(args[0]);
+        } else if (methodName === 'drawLines') {
+            args[0] = arrayToNativeArray(args[0]);
+            const last = args[args.length - 1];
+            if (last instanceof android.graphics.Matrix) {
+                last.mapPoints(args[0]);
+                args.pop();
+            }
+        } else if (methodName === 'getWidth' || methodName === 'getHeight') {
+            if (!target._bitmap) {
+                return layout.toDeviceIndependentPixels(native[methodName]());
+            }
+        } else if (methodName === 'clear') {
+            native.drawColor(android.graphics.Color.TRANSPARENT);
+            return true;
+        } else if (methodName === 'drawBitmap') {
+            if (args[0] instanceof ImageSource) {
+                args[0] = args[0].android;
+            }
+        } else if (methodName === 'drawView') {
+            drawViewOnCanvas(native, args[0], args[1]);
+            return true;
         }
     }
     getImage() {
         return this._bitmap;
     }
-    // clear() {
-    //     this.drawColor('transparent');
-    // }
     release() {
         if (this._shouldReleaseBitmap && this._bitmap) {
             this._bitmap.recycle();
@@ -205,7 +221,7 @@ class Canvas {
     }
 }
 
-export class Paint {
+export class Paint extends ProxyClass<android.graphics.Paint> {
     _native: android.graphics.Paint;
     fontInternal: Font;
     _needsFontUpdate = false;
@@ -220,42 +236,28 @@ export class Paint {
         return this._native;
     }
     constructor() {
-        const native = (this._native = new android.graphics.Paint());
-        native.setLinearText(true); // ensure we are drawing fonts correctly
-        return new Proxy(this, {
-            get(target, name, receiver) {
-                if (native && native[name]) {
-                    return function (...args) {
-                        const methodName = name;
-                        for (let index = 0; index < args.length; index++) {
-                            const element = args[index];
-                            if (element && element._native) {
-                                args[index] = element.getNative();
-                            }
-                        }
-                        if (methodName === 'setShadowLayer') {
-                            args[3] = createColorParam(args[3]);
-                        } else if (methodName === 'setColor') {
-                            if (!args[0]) {
-                                return;
-                            }
-                            args[0] = createColorParam(args[0]);
-                        } else if (methodName === 'setTypeface') {
-                            if (args[0] instanceof Font) {
-                                this.fontInternal = args[0];
-                            } else {
-                                this.font['_typeface'] = args[0] as android.graphics.Typeface;
-                            }
-                            this._needsFontUpdate = true;
-                            return this.fontInternal;
-                        }
-                        return native[methodName](...args);
-                    };
-                } else {
-                    return Reflect.get(target, name, receiver);
-                }
+        super();
+        this._native = new android.graphics.Paint();
+        this._native.setLinearText(true); // ensure we are drawing fonts correctly
+        return this;
+    }
+    handleCustomMethods(target, native, methodName: string, args: any[]): any {
+        if (methodName === 'setShadowLayer') {
+            args[3] = createColorParam(args[3]);
+        } else if (methodName === 'setColor') {
+            if (!args[0]) {
+                return;
             }
-        });
+            args[0] = createColorParam(args[0]);
+        } else if (methodName === 'setTypeface') {
+            if (args[0] instanceof Font) {
+                this.fontInternal = args[0];
+            } else {
+                this.font['_typeface'] = args[0] as android.graphics.Typeface;
+            }
+            this._needsFontUpdate = true;
+            return this.fontInternal;
+        }
     }
     setFont(font: Font) {
         this.fontInternal = font;
@@ -359,85 +361,36 @@ export class Paint {
     }
 }
 
-export class DashPathEffect {
-    _native: android.graphics.DashPathEffect;
-    getNative() {
-        return this._native;
-    }
+export class DashPathEffect extends ProxyClass<android.graphics.DashPathEffect> {
     constructor(intervals: number[], phase: number) {
+        super();
         this._native = new android.graphics.DashPathEffect(arrayToNativeArray(intervals), phase);
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
 
-export class Path {
-    _native: com.akylas.canvas.CanvasPath;
-    getNative() {
-        return this._native;
-    }
+export class Path extends ProxyClass<com.akylas.canvas.CanvasPath> {
     constructor(path?: com.akylas.canvas.CanvasPath) {
+        super();
         this._native = path ? new com.akylas.canvas.CanvasPath(path) : new com.akylas.canvas.CanvasPath();
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                for (let index = 0; index < args.length; index++) {
-                    const element = args[index];
-                    if (element && element._native) {
-                        args[index] = element.getNative();
-                    } else if (Array.isArray(element)) {
-                        args[index] = arrayToNativeArray(element);
-                    }
-                }
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
-export class RadialGradient {
-    _native: android.graphics.RadialGradient;
-    getNative() {
-        return this._native;
-    }
+export class RadialGradient extends ProxyClass<android.graphics.RadialGradient> {
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {
+        super();
         this._native = new android.graphics.RadialGradient(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
 
-export class LinearGradient {
+export class LinearGradient extends ProxyClass<android.graphics.LinearGradient> {
     _native: android.graphics.LinearGradient;
     getNative() {
         return this._native;
     }
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
+        super();
         if (param4 != null) {
             if (Array.isArray(param4)) {
                 const testArray = Array.create('int', param4.length);
@@ -457,52 +410,25 @@ export class LinearGradient {
             }
         }
         this._native = new android.graphics.LinearGradient(param0, param1, param2, param3, param4, param5, param6);
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
 
-export class BitmapShader {
+export class BitmapShader extends ProxyClass<android.graphics.BitmapShader> {
     _native: android.graphics.BitmapShader;
-    getNative() {
-        return this._native;
-    }
     constructor(bitmap: any, tileX: any, tileY: any) {
+        super();
         if (bitmap instanceof ImageSource) {
             bitmap = bitmap.android;
         }
         this._native = new android.graphics.BitmapShader(bitmap, tileX, tileY);
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
 
-export class StaticLayout {
-    _native: android.text.StaticLayout;
-    getNative() {
-        return this._native;
-    }
+export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
     constructor(text: any, paint: android.graphics.Paint, width: number, align = LayoutAlignment.ALIGN_NORMAL, spacingmult = 1, spacingadd = 0, includepad = true) {
+        super();
         paint = (paint as any).getNative ? (paint as any).getNative() : paint;
 
         if (typeof text === 'boolean' || typeof text === 'number') {
@@ -511,24 +437,7 @@ export class StaticLayout {
         }
         this._native = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad);
 
-        return new Proxy(this, this);
-    }
-    get(target, name, receiver) {
-        const native = this._native;
-        if (native && native[name]) {
-            return function (...args) {
-                const methodName = name;
-                for (let index = 0; index < args.length; index++) {
-                    const element = args[index];
-                    if (element && element._native) {
-                        args[index] = element.getNative();
-                    }
-                }
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
+        return this;
     }
 }
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;
