@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.3](https://github.com/nativescript-community/ui-canvas/compare/v4.1.2...v4.1.3) (2021-10-04)
+
+
+### Bug Fixes
+
+* **android:** trying to fix `Cannot read property 'Symbol(Symbol.toStringTag)' of undefined` ([3fcc78e](https://github.com/nativescript-community/ui-canvas/commit/3fcc78ec80cfa34f25862eb6303519aa43b64897))
+
+
+
+
+
 ## [4.1.2](https://github.com/nativescript-community/ui-canvas/compare/v4.1.1...v4.1.2) (2021-10-04)
 
 
