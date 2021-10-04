@@ -152,7 +152,7 @@ class Canvas {
     }
     get(target: Canvas, name, receiver) {
         const native = this._native;
-        if (canvasAugmentedMethods.indexOf(name) >= 0 || native[name]) {
+        if (native && (canvasAugmentedMethods.indexOf(name) >= 0 || native[name])) {
             return function (...args) {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
