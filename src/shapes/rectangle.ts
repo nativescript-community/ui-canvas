@@ -1,7 +1,8 @@
-import { Length, PercentLength, zeroLength } from '@nativescript/core/ui/styling/style-properties';
+import { CoreTypes } from '@nativescript/core';
+import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { layout } from '@nativescript/core/utils/utils';
 import { Canvas, Rect, RectF, createRectF } from '../canvas';
-import Shape, { lengthProperty, numberProperty, percentLengthProperty } from './shape';
+import Shape, { numberProperty, percentLengthProperty } from './shape';
 
 export { Rect, RectF };
 export default class Rectangle extends Shape {
@@ -14,8 +15,8 @@ export default class Rectangle extends Shape {
         }
     }
 
-    @percentLengthProperty left: PercentLength = 0;
-    @percentLengthProperty top: PercentLength = 0;
+    @percentLengthProperty left: CoreTypes.PercentLengthType = 0;
+    @percentLengthProperty top: CoreTypes.PercentLengthType = 0;
     @numberProperty borderRadius: number;
     getRect(canvas: Canvas) {
         const availableWidth = layout.toDevicePixels(canvas.getWidth());

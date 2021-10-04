@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Color, HorizontalAlignment, Length, Observable, PercentLength, Utils, VerticalAlignment, Visibility } from '@nativescript/core';
+import { Color, CoreTypes, Length, Observable, PercentLength, Utils } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, PorterDuffXfermode, Style } from '../canvas';
 import { parseCap, parseDashEffect, parseJoin, parseShadow, parseType } from '../utils';
@@ -41,7 +41,7 @@ function parseThickness(value: string) {
             top,
             right,
             bottom,
-            left,
+            left
         };
     } else {
         return value;
@@ -105,7 +105,7 @@ function shapePropertyGenerator(target: Object, key: string | symbol, options?: 
         get: createGetter(key, options),
         set: createSetter(key, options),
         enumerable: true,
-        configurable: true,
+        configurable: true
     });
 
     // for svelte!
@@ -113,7 +113,7 @@ function shapePropertyGenerator(target: Object, key: string | symbol, options?: 
         get: createGetter(key, options),
         set: createSetter(key, options),
         enumerable: true,
-        configurable: true,
+        configurable: true
     });
 }
 // export function shapeProperty(target: any, k?, desc?: PropertyDescriptor): any;
@@ -217,23 +217,23 @@ export default abstract class Shape extends Observable {
     @booleanProperty({ paintGetterName: 'isAntiAlias', paintSetterName: 'setAntiAlias' }) antiAlias: boolean;
     @colorProperty({
         converter: parseShadow,
-        paintSetter: applyShadow,
+        paintSetter: applyShadow
     })
     shadow: Shadow;
-    @stringProperty({ nonPaintProp: true }) visibility: Visibility = 'visible';
-    @stringProperty({ nonPaintProp: true }) horizontalAlignment: HorizontalAlignment & 'middle';
-    @stringProperty({ nonPaintProp: true }) verticalAlignment: VerticalAlignment & 'center';
+    @stringProperty({ nonPaintProp: true }) visibility: CoreTypes.VisibilityType = 'visible';
+    @stringProperty({ nonPaintProp: true }) horizontalAlignment: CoreTypes.HorizontalAlignmentType & 'middle';
+    @stringProperty({ nonPaintProp: true }) verticalAlignment: CoreTypes.VerticalAlignmentType & 'center';
 
-    @percentLengthProperty({ nonPaintProp: true }) width: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) height: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) width: CoreTypes.PercentLengthType;
+    @percentLengthProperty({ nonPaintProp: true }) height: CoreTypes.PercentLengthType;
 
-    @percentLengthProperty({ nonPaintProp: true }) paddingLeft: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) paddingRight: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) paddingBottom: PercentLength;
-    @percentLengthProperty({ nonPaintProp: true }) paddingTop: PercentLength;
+    @percentLengthProperty({ nonPaintProp: true }) paddingLeft: CoreTypes.PercentLengthType;
+    @percentLengthProperty({ nonPaintProp: true }) paddingRight: CoreTypes.PercentLengthType;
+    @percentLengthProperty({ nonPaintProp: true }) paddingBottom: CoreTypes.PercentLengthType;
+    @percentLengthProperty({ nonPaintProp: true }) paddingTop: CoreTypes.PercentLengthType;
 
-    @percentLengthProperty({ nonPaintProp: true }) translateX: PercentLength = 0;
-    @percentLengthProperty({ nonPaintProp: true }) translateY: PercentLength = 0;
+    @percentLengthProperty({ nonPaintProp: true }) translateX: CoreTypes.PercentLengthType = 0;
+    @percentLengthProperty({ nonPaintProp: true }) translateY: CoreTypes.PercentLengthType = 0;
     @numberProperty({ nonPaintProp: true }) rotate: number = 0;
     @numberProperty({ nonPaintProp: true }) originX: number = 0;
     @numberProperty({ nonPaintProp: true }) originY: number = 0;

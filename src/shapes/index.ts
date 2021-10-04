@@ -5,11 +5,4 @@ import Rectangle from './rectangle';
 import Shape from './shape';
 import Text from './text';
 
-export {
-	Arc,
-	Circle,
-	Line,
-	Rectangle,
-	Shape,
-	Text
-};
+export { Arc, Circle, Line, Rectangle, Shape, Text };
