@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/nativescript-community/ui-canvas/compare/v4.1.3...v4.2.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* **android:** refactored code for smaller bundle and easier maintenance ([dfcee2b](https://github.com/nativescript-community/ui-canvas/commit/dfcee2bbadaea4a5b4c78bb1fa89c8ceba8df982))
+
+
+### Features
+
+* added method `createArrayBuffer` `pointsFromBuffer` and `arrayToNativeArray` for other plugins to use ([9a872e4](https://github.com/nativescript-community/ui-canvas/commit/9a872e492ba9ad4055da2bf0d39fb8a537b91d87))
+* **android:** native-api-usage support ([cdea355](https://github.com/nativescript-community/ui-canvas/commit/cdea35515d6ac6246bf5eb0be6480485b7e66bc5))
+
+
+
+
+
 ## [4.1.3](https://github.com/nativescript-community/ui-canvas/compare/v4.1.2...v4.1.3) (2021-10-04)
 
 
