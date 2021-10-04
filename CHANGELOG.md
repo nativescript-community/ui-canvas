@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.2](https://github.com/nativescript-community/ui-canvas/compare/v4.1.1...v4.1.2) (2021-10-04)
+
+
+### Bug Fixes
+
+* **android:** cubic lines fix for android runtime 8.2.x ([a601047](https://github.com/nativescript-community/ui-canvas/commit/a601047fe6568e652d4b077b857d2228b6ab4728))
+
+
+
+
+
 ## [4.1.1](https://github.com/nativescript-community/ui-canvas/compare/v4.1.0...v4.1.1) (2021-10-02)
 
 
