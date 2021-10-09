@@ -351,4 +351,8 @@ export default abstract class Shape extends Observable {
         }
         canvas.restore();
     }
+    notifyPropertyChange(propertyName, value, oldValue) {
+        if (!this.mParent) return;
+        super.notifyPropertyChange(propertyName, value, oldValue);
+    }
 }
