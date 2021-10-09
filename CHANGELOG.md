@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.2](https://github.com/nativescript-community/ui-canvas/compare/v4.2.1...v4.2.2) (2021-10-09)
+
+
+### Bug Fixes
+
+* improve mangling support ([3f2b376](https://github.com/nativescript-community/ui-canvas/commit/3f2b376631eee42e58b5d0d5866d4b3900de5461))
+
+
+
+
+
 ## [4.2.1](https://github.com/nativescript-community/ui-canvas/compare/v4.2.0...v4.2.1) (2021-10-09)
 
 
