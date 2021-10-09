@@ -78,7 +78,7 @@ function createSetter(key, options: ShapePropertyOptions) {
         const oldValue = this[realKey];
         const actualVal = options.converter ? options.converter(newVal) : newVal;
         this[realKey] = actualVal;
-        if (options.nonPaintProp !== true) {
+        if (this.handlesPaint !== true && options.nonPaintProp !== true) {
             if (options.paintSetter) {
                 options.paintSetter(this.paint, actualVal);
             } else if (options.paintSetterName) {
