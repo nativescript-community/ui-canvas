@@ -138,7 +138,7 @@ class ProxyClass<T> {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
-                    if (element && element.mNative) {
+                    if (element && element.getNative) {
                         args[index] = element.getNative();
                     } else if (Array.isArray(element)) {
                         args[index] = arrayToNativeArray(element);
