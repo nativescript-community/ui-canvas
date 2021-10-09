@@ -7,7 +7,6 @@ import Shape, { numberProperty, percentLengthProperty } from './shape';
 export { Rect, RectF };
 export default class Rectangle extends Shape {
     drawOnCanvas(canvas: Canvas) {
-        // console.log('Rectangle', 'drawOnCanvas');
         if (this.borderRadius) {
             canvas.drawRoundRect(this.getRect(canvas), this.borderRadius, this.borderRadius, this.paint);
         } else {

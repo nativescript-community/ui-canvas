@@ -41,12 +41,12 @@ export abstract class CanvasBase extends View {
     // Declare events as static variables, so that they can be set in NativeScript Core XML
     public static drawEvent = 'draw';
 
-    protected _shapes: ObservableArray<Shape>;
+    protected mShapes: ObservableArray<Shape>;
 
     callDrawBeforeShapes = false;
 
     get shapes() {
-        return this._shapes;
+        return this.mShapes;
     }
     public cached;
     public density;
@@ -55,11 +55,11 @@ export abstract class CanvasBase extends View {
     drawFameRate = false;
 
     getOrCreateShapes() {
-        if (!this._shapes) {
-            this._shapes = new ObservableArray<Shape>();
-            this._shapes.addEventListener(ObservableArray.changeEvent, this.onShapesCollectionChanged, this);
+        if (!this.mShapes) {
+            this.mShapes = new ObservableArray<Shape>();
+            this.mShapes.addEventListener(ObservableArray.changeEvent, this.onShapesCollectionChanged, this);
         }
-        return this._shapes;
+        return this.mShapes;
     }
 
     requestDrawShapes() {
@@ -96,10 +96,10 @@ export abstract class CanvasBase extends View {
     }
 
     public removeShape(shape: Shape) {
-        if (this._shapes) {
-            const index = this._shapes.indexOf(shape);
+        if (this.mShapes) {
+            const index = this.mShapes.indexOf(shape);
             if (index !== -1) {
-                this._shapes.splice(index, 1);
+                this.mShapes.splice(index, 1);
             }
         }
     }
@@ -129,7 +129,7 @@ export abstract class CanvasBase extends View {
                 const shape = (eventData.object as ObservableArray<any>).getItem(eventData.index + i);
                 // Then attach handlers - we skip the first nofitication because
                 // we raise change for the whole instance.
-                shape._parent = new WeakRef(this as any);
+                shape.mParent = new WeakRef(this as any);
                 this.addPropertyChangeHandler(shape);
             }
         }
@@ -140,13 +140,13 @@ export abstract class CanvasBase extends View {
                 // First remove handlers so that we don't listen for changes
                 // on inherited properties.
                 this.removePropertyChangeHandler(shape);
-                shape._parent = null;
+                shape.mParent = null;
                 this.redraw();
             }
         }
     }
     public onSizeChanged(w: number, h: number, oldw: number, oldh: number) {
-        if (!!this._shapes && this._shapes.length > 0) {
+        if (!!this.mShapes && this.mShapes.length > 0) {
             this.requestDrawShapes();
         }
     }
@@ -162,13 +162,13 @@ export abstract class CanvasBase extends View {
     }
 
     [colorProperty.setNative](value) {
-        if (!!this._shapes) {
+        if (!!this.mShapes) {
             this.requestDrawShapes();
         }
     }
 
     [densityProperty.setNative](value) {
-        if (!!this._shapes) {
+        if (!!this.mShapes) {
             this.requestDrawShapes();
         }
     }
@@ -180,10 +180,10 @@ export abstract class CanvasBase extends View {
             // this.shapesCanvas.release();
             this.shapesCanvas = null;
         }
-        if (this._shapes && this._shapes.length > 0 && width > 0 && height > 0) {
+        if (this.mShapes && this.mShapes.length > 0 && width > 0 && height > 0) {
             const canvas = (this.shapesCanvas = new Canvas(width, height));
             canvas.setDensity(this.density);
-            this._shapes.forEach((s) => s.drawMyShapeOnCanvas(canvas, this as any, width, height));
+            this.mShapes.forEach((s) => s.drawMyShapeOnCanvas(canvas, this as any, width, height));
             this.redraw();
         }
     }

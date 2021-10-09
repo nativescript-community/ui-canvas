@@ -596,26 +596,7 @@ export class Path implements IPath {
         if (points.length <= 0 || points.length % 2 !== 0) {
             console.error('wrong points number');
         }
-        // let starttime = Date.now();
-        // let count = length || points.length;
-        // CGPathMoveToPoint(this._path, null, points[0], points[1]);
-        // // console.log('addLines', count);
-        // for (let index = 2; index < count; index += 2) {
-        //     CGPathAddLineToPoint(this._path, null, points[index], points[index + 1]);
-        // }
-        // if (close === true) {
-        //     CGPathCloseSubpath(this._path);
-        // }
-
-        // const path = CGPathCreateMutable();
-        // starttime = Date.now();
         UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this._path);
-        // console.log('test2', Date.now() - starttime);
-
-        // const bPath =  UIBezierPath.bezierPath();
-        // starttime = Date.now();
-        // bPath.addLinesCountClose(points, length, close);
-        // console.log('test3', Date.now() - starttime);
     }
     setLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
@@ -1491,30 +1472,6 @@ export class Canvas implements ICanvas {
             pts = FloatConstructor.from(pts);
         }
         UIDrawingPath.drawLineSegmentsCountInContextWithTransform(pts, count, this.ctx, matrix ? matrix._transform : identity);
-
-        // const realCount = count / 2
-        // const cgPoints = new FloatConstructor(realCount) as any;
-        // console.log('drawPointsCountInContextWithTransform', Date.now() - startTime);
-        // let cgPoint;
-        // for (let index = offset; index <= realCount; index++) {
-        //     cgPoint = CGPointMake(pts[2 * index], pts[2 * index + 1]);
-        //     if (matrix) {
-        //         // cgPoint = CGPointApplyAffineTransform(cgPoint, matrix._transform);
-        //     }
-        //     cgPoints[index] = cgPoint;
-        //     // CGContextAddLineToPoint(ctx, pts[index], pts[index + 1]);
-        // }
-        // console.log('test1', Date.now() - startTime);
-
-        // // CGContextBeginPath(ctx);
-        // CGContextStrokeLineSegments(ctx, cgPoints as any, realCount);
-        // console.log('test2', Date.now() - startTime);
-        // CGContextMoveToPoint(ctx, pts[offset], pts[offset + 1]);
-        // for (let index = offset + 2; index <= count / 2; index++) {
-        //     CGContextAddLineToPoint(ctx, pts[index], pts[index + 1]);
-        // }
-        // this._drawPath(paint, ctx);
-        // paint.style = oldStyle;
     }
 
     concat(mat: Matrix) {
@@ -1980,10 +1937,7 @@ export class Canvas implements ICanvas {
         } else {
             UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
         }
-        // nsstring.drawAtPointWithAttributes(CGPointMake(offsetx, offsety -paint.getUIFont().ascender), attribs);
         UIGraphicsPopContext();
-        // console.log('draw text', text, offsetx, offsety , text, Date.now()-startTime);
-        // CGContextShowTextAtPoint(ctx, offsetx, offsety, text, text.length);
     }
 
     @paint

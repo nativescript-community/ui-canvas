@@ -121,10 +121,10 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
 }
 
 class ProxyClass<T> {
-    _native: T;
+    mNative: T;
     static augmentedMethods = [];
     getNative() {
-        return this._native;
+        return this.mNative;
     }
     constructor() {
         const proxy = new Proxy(this, this);
@@ -138,7 +138,7 @@ class ProxyClass<T> {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
-                    if (element && element._native) {
+                    if (element && element.mNative) {
                         args[index] = element.getNative();
                     } else if (Array.isArray(element)) {
                         args[index] = arrayToNativeArray(element);
@@ -175,7 +175,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
                 this._shouldReleaseBitmap = true;
                 this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
             }
-            this._native = new android.graphics.Canvas(this._bitmap);
+            this.mNative = new android.graphics.Canvas(this._bitmap);
         }
 
         return this;
@@ -222,23 +222,23 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
 }
 
 export class Paint extends ProxyClass<android.graphics.Paint> {
-    _native: android.graphics.Paint;
-    fontInternal: Font;
-    _needsFontUpdate = false;
+    mNative: android.graphics.Paint;
+    mFontInternal: Font;
+    mNeedsFontUpdate = false;
     handlesFont = false;
     getNative() {
-        if (!this.handlesFont && this._needsFontUpdate) {
-            this._needsFontUpdate = false;
+        if (!this.handlesFont && this.mNeedsFontUpdate) {
+            this.mNeedsFontUpdate = false;
             const font = this.font;
             const nTypeface = font.getAndroidTypeface();
-            this._native.setTypeface(nTypeface);
+            this.mNative.setTypeface(nTypeface);
         }
-        return this._native;
+        return this.mNative;
     }
     constructor() {
         super();
-        this._native = new android.graphics.Paint();
-        this._native.setLinearText(true); // ensure we are drawing fonts correctly
+        this.mNative = new android.graphics.Paint();
+        this.mNative.setLinearText(true); // ensure we are drawing fonts correctly
         return this;
     }
     handleCustomMethods(target, native, methodName: string, args: any[]): any {
@@ -251,27 +251,27 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             args[0] = createColorParam(args[0]);
         } else if (methodName === 'setTypeface') {
             if (args[0] instanceof Font) {
-                this.fontInternal = args[0];
+                this.mFontInternal = args[0];
             } else {
                 this.font['_typeface'] = args[0] as android.graphics.Typeface;
             }
-            this._needsFontUpdate = true;
-            return this.fontInternal;
+            this.mNeedsFontUpdate = true;
+            return this.mFontInternal;
         }
     }
     setFont(font: Font) {
-        this.fontInternal = font;
+        this.mFontInternal = font;
         if (this.handlesFont) {
             return;
         }
-        this._native.setTextSize(font.fontSize);
-        this._needsFontUpdate = true;
+        this.mNative.setTextSize(font.fontSize);
+        this.mNeedsFontUpdate = true;
     }
     getFont() {
-        if (!this.fontInternal) {
-            this.fontInternal = Font.default;
+        if (!this.mFontInternal) {
+            this.mFontInternal = Font.default;
         }
-        return this.fontInternal;
+        return this.mFontInternal;
     }
     get font() {
         return this.getFont();
@@ -290,9 +290,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     }
     setFontFamily(familyName: string) {
         if (this.font.fontFamily !== familyName) {
-            this.fontInternal = this.font.withFontFamily(familyName);
+            this.mFontInternal = this.font.withFontFamily(familyName);
             if (!this.handlesFont) {
-                this._needsFontUpdate = true;
+                this.mNeedsFontUpdate = true;
             }
         }
     }
@@ -301,9 +301,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     }
     setFontWeight(weight: FontWeight) {
         if (this.font.fontWeight !== weight) {
-            this.fontInternal = this.font.withFontWeight(weight);
+            this.mFontInternal = this.font.withFontWeight(weight);
             if (!this.handlesFont) {
-                this._needsFontUpdate = true;
+                this.mNeedsFontUpdate = true;
             }
         }
     }
@@ -312,9 +312,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     }
     setFontStyle(style: FontStyle) {
         if (this.font.fontStyle !== style) {
-            this.fontInternal = this.font.withFontStyle(style);
+            this.mFontInternal = this.font.withFontStyle(style);
             if (!this.handlesFont) {
-                this._needsFontUpdate = true;
+                this.mNeedsFontUpdate = true;
             }
         }
     }
@@ -322,39 +322,39 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         (this as any).setColor(color);
     }
     set strokeWidth(value: number) {
-        this._native.setStrokeWidth(value);
+        this.mNative.setStrokeWidth(value);
     }
     set strokeCap(value: number) {
-        this._native.setStrokeCap(value);
+        this.mNative.setStrokeCap(value);
     }
     set strokeJoin(value: number) {
-        this._native.setStrokeJoin(value);
+        this.mNative.setStrokeJoin(value);
     }
     set style(value: number) {
-        this._native.setStyle(value);
+        this.mNative.setStyle(value);
     }
     set textSize(value: number) {
-        this._native.setTextSize(value);
+        this.mNative.setTextSize(value);
     }
     get textSize() {
         return this.getTextSize();
     }
     public getTextSize(): number {
-        return this._native.getTextSize();
+        return this.mNative.getTextSize();
     }
     public setTypeface(font: Font | android.graphics.Typeface): Font {
         if (font instanceof Font) {
             this.setFont(font);
-            return this.fontInternal;
+            return this.mFontInternal;
         } else if (font) {
-            this.fontInternal['_typeface'] = font;
+            this.mFontInternal['_typeface'] = font;
         } else {
-            this.fontInternal = null;
+            this.mFontInternal = null;
         }
         if (!this.handlesFont) {
-            this._needsFontUpdate = true;
+            this.mNeedsFontUpdate = true;
         }
-        return this.fontInternal;
+        return this.mFontInternal;
     }
     set typeface(typeface) {
         this.setTypeface(typeface);
@@ -364,7 +364,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
 export class DashPathEffect extends ProxyClass<android.graphics.DashPathEffect> {
     constructor(intervals: number[], phase: number) {
         super();
-        this._native = new android.graphics.DashPathEffect(arrayToNativeArray(intervals), phase);
+        this.mNative = new android.graphics.DashPathEffect(arrayToNativeArray(intervals), phase);
         return this;
     }
 }
@@ -372,22 +372,22 @@ export class DashPathEffect extends ProxyClass<android.graphics.DashPathEffect> 
 export class Path extends ProxyClass<com.akylas.canvas.CanvasPath> {
     constructor(path?: com.akylas.canvas.CanvasPath) {
         super();
-        this._native = path ? new com.akylas.canvas.CanvasPath(path) : new com.akylas.canvas.CanvasPath();
+        this.mNative = path ? new com.akylas.canvas.CanvasPath(path) : new com.akylas.canvas.CanvasPath();
         return this;
     }
 }
 export class RadialGradient extends ProxyClass<android.graphics.RadialGradient> {
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any) {
         super();
-        this._native = new android.graphics.RadialGradient(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
+        this.mNative = new android.graphics.RadialGradient(param0, param1, param2, createColorParam(param3), param4 instanceof Array ? param4 : createColorParam(param4), param5);
         return this;
     }
 }
 
 export class LinearGradient extends ProxyClass<android.graphics.LinearGradient> {
-    _native: android.graphics.LinearGradient;
+    mNative: android.graphics.LinearGradient;
     getNative() {
-        return this._native;
+        return this.mNative;
     }
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: any, param6: any) {
         super();
@@ -409,19 +409,19 @@ export class LinearGradient extends ProxyClass<android.graphics.LinearGradient> 
                 param5 = createColorParam(param5);
             }
         }
-        this._native = new android.graphics.LinearGradient(param0, param1, param2, param3, param4, param5, param6);
+        this.mNative = new android.graphics.LinearGradient(param0, param1, param2, param3, param4, param5, param6);
         return this;
     }
 }
 
 export class BitmapShader extends ProxyClass<android.graphics.BitmapShader> {
-    _native: android.graphics.BitmapShader;
+    mNative: android.graphics.BitmapShader;
     constructor(bitmap: any, tileX: any, tileY: any) {
         super();
         if (bitmap instanceof ImageSource) {
             bitmap = bitmap.android;
         }
-        this._native = new android.graphics.BitmapShader(bitmap, tileX, tileY);
+        this.mNative = new android.graphics.BitmapShader(bitmap, tileX, tileY);
         return this;
     }
 }
@@ -435,7 +435,7 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
             // in case it is a number or a boolean
             text = text + '';
         }
-        this._native = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad);
+        this.mNative = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad);
 
         return this;
     }
@@ -478,7 +478,7 @@ class CanvasView extends CanvasBase {
             }
             canvas.drawBitmap(shapeCanvas.getImage() as android.graphics.Bitmap, 0, 0, this.shapePaint);
         } else if (!this.cached) {
-            const shapes = this._shapes;
+            const shapes = this.mShapes;
             const width = canvas.getWidth();
             const height = canvas.getHeight();
             if (shapes && shapes.length > 0) {
@@ -524,7 +524,7 @@ class CanvasView extends CanvasBase {
                 canvas.save();
                 // canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(scale, scale); // always scale to device density to work with dp
-                this.augmentedCanvas._native = canvas;
+                this.augmentedCanvas.mNative = canvas;
                 this.onDraw(this.augmentedCanvas as any);
                 if (drawFameRate) {
                     const end = Date.now();

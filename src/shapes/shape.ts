@@ -186,15 +186,14 @@ function parseXfermode(value) {
     }
 }
 export default abstract class Shape extends Observable {
-    _paint: Paint;
-    _parent: WeakRef<CanvasView>;
+    mPaint: Paint;
+    mParent: WeakRef<CanvasView>;
     get paint() {
-        if (!this._paint) {
-            // const startTime = Date.now();
-            this._paint = new Paint();
-            // this.log('create paint', Date.now() - startTime, 'ms');
+        if (!this.mPaint) {
+            this.mPaint = new Paint();
+            this.mPaint.setAntiAlias(true);
         }
-        return this._paint;
+        return this.mPaint;
     }
 
     id: string;
@@ -322,7 +321,6 @@ export default abstract class Shape extends Observable {
         }
 
         const paint = this.paint;
-        // console.log('drawMyShapeOnCanvas', paint.getColor(), this.strokeColor, this.fillColor);
         if (this.strokeColor || this.fillColor) {
             const oldStyle = paint.getStyle();
             const oldColor = paint.getColor();
