@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.1](https://github.com/nativescript-community/ui-canvas/compare/v4.2.0...v4.2.1) (2021-10-09)
+
+
+### Bug Fixes
+
+* faster notifyPropertyChange ([c4041d7](https://github.com/nativescript-community/ui-canvas/commit/c4041d7f3a99dee6c84ec444bf3602835a843803))
+
+
+
+
+
 # [4.2.0](https://github.com/nativescript-community/ui-canvas/compare/v4.1.3...v4.2.0) (2021-10-04)
 
 
