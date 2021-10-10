@@ -331,9 +331,11 @@ declare class CanvasView extends View {
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;
 export function releaseImage(image: ImageSource);
 
-
 export type FloatArray = Float32Array | Float64Array | Uint8Array;
 export type TypedArray = FloatArray | Uint8Array;
 export function createArrayBuffer(length: number, useInts?): TypedArray;
+export function createNativeArray(length: number, useInts?): number[];
 export function pointsFromBuffer(typedArray: TypedArray, useInts?): number[] | TypedArray;
 export function arrayToNativeArray(array, useInts?): number[];
+export function createArrayBufferOrNativeArray(length: number, useInts?: boolean): number[] | TypedArray;
+export function nativeArrayToArray(array): number[];

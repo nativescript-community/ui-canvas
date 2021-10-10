@@ -53,8 +53,15 @@ export function supportsDirectArrayBuffers() {
     return _supportsDirectArrayBuffers;
 }
 
+export function createArrayBufferOrNativeArray(length: number, useInts = false) {
+    if (!supportsDirectArrayBuffers()) {
+        return createNativeArray(length, useInts);
+    } else {
+        return createArrayBuffer(length, useInts);
+    }
+}
 export function createArrayBuffer(length: number, useInts = false) {
-    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+    if (!supportsDirectArrayBuffers()) {
         let bb: java.nio.ByteBuffer;
         if (useInts) {
             bb = java.nio.ByteBuffer.allocateDirect(length);
@@ -67,7 +74,7 @@ export function createArrayBuffer(length: number, useInts = false) {
     return useInts ? new Int8Array(length) : new Float32Array(length);
 }
 export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts = false) {
-    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+    if (!supportsDirectArrayBuffers()) {
         if (useInts) {
             const buffer = typedArray.buffer;
             return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
@@ -92,8 +99,8 @@ export function arrayToNativeArray(array, useInts = false) {
 }
 
 // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
-export function nativeArrayToArray(array) {
-    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+export function nativeArrayToArray(array): number[] {
+    if (!supportsDirectArrayBuffers()) {
         const result = [];
         for (let index = 0; index < array.length; index++) {
             result[index] = array[index];
@@ -103,12 +110,12 @@ export function nativeArrayToArray(array) {
     }
     return array;
 }
-export function createNativeArray(length) {
-    if (global.isAndroid) {
+export function createNativeArray(length, useInts = false): number[] {
+    if (useInts) {
+        return Array.create('int', length);
+    } else {
         return Array.create('float', length);
     }
-    // At least, set length to use it for iterations
-    return new Array(length);
 }
 
 export function parseDashEffect(value: string) {
