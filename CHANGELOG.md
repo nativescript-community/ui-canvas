@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.9](https://github.com/nativescript-community/ui-canvas/compare/v4.2.8...v4.2.9) (2021-10-10)
+
+
+### Bug Fixes
+
+* Paint antialias by default ([a544f90](https://github.com/nativescript-community/ui-canvas/commit/a544f900abc0e1cdd45603b4e2d48c52ca90160b))
+
+
+
+
+
 ## [4.2.8](https://github.com/nativescript-community/ui-canvas/compare/v4.2.7...v4.2.8) (2021-10-10)
 
 
