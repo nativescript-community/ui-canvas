@@ -18,6 +18,7 @@ type ColorParam = Color | number | string;
 // export * from './canvas.android'
 
 export class Paint {
+    constructor(paint?: Paint);
     color: ColorParam;
     setColor(color: ColorParam);
 

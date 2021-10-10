@@ -284,9 +284,11 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         }
         return this.mNative;
     }
-    constructor() {
+    constructor(paint?: Paint) {
         super();
-        this.mNative = new android.graphics.Paint();
+        if (paint) {
+            this.mNative = new android.graphics.Paint(paint?.getNative());
+        }
         this.mNative.setLinearText(true); // ensure we are drawing fonts correctly
         return this;
     }

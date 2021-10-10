@@ -846,6 +846,47 @@ export class FontMetrics implements IFontMetrics {
 }
 
 export class Paint implements IPaint {
+    mColor: Color = new Color('black');
+    style: Style = Style.FILL;
+    align: Align = Align.LEFT;
+    mFont: Font;
+    strokeWidth = 0;
+    strokeMiter = 0;
+    strokeCap: Cap = Cap.BUT;
+    strokeJoin: Join = Join.BEVEL;
+    antiAlias;
+    dither;
+    alpha = 255;
+    currentContext: any;
+    shadowLayer?: {
+        radius: number;
+        dx: number;
+        dy: number;
+        color: Color;
+    };
+    shader;
+    pathEffect: PathEffect;
+    xfermode: IPorterDuffXfermode;
+    mTextAttribs: NSMutableDictionary<any, any>;
+    constructor(paint?: Paint) {
+        if (paint) {
+            this.mColor = paint.mColor;
+            this.style = paint.style;
+            this.align = paint.align;
+            this.mFont = paint.mFont;
+            this.strokeWidth = paint.strokeWidth;
+            this.strokeMiter = paint.strokeMiter;
+            this.strokeCap = paint.strokeCap;
+            this.strokeJoin = paint.strokeJoin;
+            this.antiAlias = paint.antiAlias;
+            this.dither = paint.dither;
+            this.alpha = paint.alpha;
+            this.shadowLayer = paint.shadowLayer;
+            this.shader = paint.shader;
+            this.pathEffect = paint.pathEffect;
+            this.xfermode = paint.xfermode;
+        }
+    }
     getTextPath(text: string, start: number, end: number, x: number, y: number, path: Path) {
         const bPath = UIBezierPath.fromStringWithFont(text.slice(start, end), this.getUIFont());
         const bounds = bPath.bounds;
@@ -860,30 +901,11 @@ export class Paint implements IPaint {
 
     public setTextAlign(align: Align): void {
         this.align = align;
-        this._textAttribs = null;
+        this.mTextAttribs = null;
     }
     public getTextAlign(): Align {
         return this.align;
     }
-    _color: Color = new Color('black');
-    style: Style = Style.FILL;
-    align: Align = Align.LEFT;
-    _font: Font;
-    strokeWidth = 0;
-    strokeMiter = 0;
-    strokeCap: Cap = Cap.BUT;
-    strokeJoin: Join = Join.BEVEL;
-    antiAlias = false;
-    dither = false;
-    alpha = 255;
-    currentContext: any;
-    shadowLayer?: {
-        radius: number;
-        dx: number;
-        dy: number;
-        color: Color;
-    };
-    shader;
 
     public setShadowLayer(radius: number, dx: number, dy: number, color: number | Color | string): void {
         color = color instanceof Color ? color : new Color(color as any);
@@ -908,7 +930,7 @@ export class Paint implements IPaint {
         this.strokeMiter = value;
     }
     public setARGB(a: number, r: number, g: number, b: number): void {
-        this._color = new Color(a, r, g, b);
+        this.mColor = new Color(a, r, g, b);
     }
     public measureText(text: string, start = 0, end?) {
         if (end === undefined) {
@@ -977,36 +999,33 @@ export class Paint implements IPaint {
         }
         this.shader = value;
     }
-    constructor() {
-        // this.font = Font.default;
-    }
     setFont(font: Font) {
-        if (font === this._font) {
+        if (font === this.mFont) {
             return;
         }
-        this._font = font;
-        this._textAttribs = null;
+        this.mFont = font;
+        this.mTextAttribs = null;
     }
     public setTypeface(font: Font | UIFont): Font {
         if (this.font === font) {
-            return this._font;
+            return this.mFont;
         }
         if (font instanceof Font) {
             this.setFont(font);
-            return this._font;
+            return this.mFont;
         } else if (font) {
-            this._font['_uiFont'] = font;
+            this.mFont['_uiFont'] = font;
         } else {
-            this._font = null;
+            this.mFont = null;
         }
-        this._textAttribs = null;
-        return this._font;
+        this.mTextAttribs = null;
+        return this.mFont;
     }
     getFont() {
-        if (!this._font) {
-            this._font = Font.default;
+        if (!this.mFont) {
+            this.mFont = Font.default;
         }
-        return this._font;
+        return this.mFont;
     }
     get font() {
         return this.getFont();
@@ -1016,11 +1035,11 @@ export class Paint implements IPaint {
     }
 
     setFontFamily(familyName: string) {
-        if (this._font && this._font.fontFamily === familyName) {
+        if (this.mFont && this.mFont.fontFamily === familyName) {
             return;
         }
-        this._font = this.font.withFontFamily(familyName);
-        this._textAttribs = null;
+        this.mFont = this.font.withFontFamily(familyName);
+        this.mTextAttribs = null;
     }
     set fontFamily(familyName: string) {
         this.setFontFamily(familyName);
@@ -1033,35 +1052,35 @@ export class Paint implements IPaint {
     }
 
     set fontWeight(weight: FontWeight) {
-        if (this._font && this._font.fontWeight === weight) {
+        if (this.mFont && this.mFont.fontWeight === weight) {
             return;
         }
         this.setFontWeight(weight);
     }
     setFontWeight(weight: FontWeight) {
-        this._font = this.font.withFontWeight(weight);
-        this._textAttribs = null;
+        this.mFont = this.font.withFontWeight(weight);
+        this.mTextAttribs = null;
     }
     set fontStyle(style: FontStyle) {
         this.setFontStyle(style);
     }
     setFontStyle(style: FontStyle) {
-        if (this._font && this._font.fontStyle === style) {
+        if (this.mFont && this.mFont.fontStyle === style) {
             return;
         }
-        this._font = this.font.withFontStyle(style);
-        this._textAttribs = null;
+        this.mFont = this.font.withFontStyle(style);
+        this.mTextAttribs = null;
     }
 
     getUIFont(): UIFont {
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
-        return this._color && (this._color.ios as UIColor);
+        return this.mColor && (this.mColor.ios as UIColor);
     }
 
     public getTextSize(): number {
-        return this._font ? this._font.fontSize : UIFont.labelFontSize;
+        return this.mFont ? this.mFont.fontSize : UIFont.labelFontSize;
     }
 
     set textSize(textSize) {
@@ -1071,40 +1090,40 @@ export class Paint implements IPaint {
         return this.getTextSize();
     }
     setTextSize(textSize) {
-        if (this._font && this._font.fontSize === textSize) {
+        if (this.mFont && this.mFont.fontSize === textSize) {
             return;
         }
-        this._font = this.font.withFontSize(textSize);
-        this._textAttribs = null;
+        this.mFont = this.font.withFontSize(textSize);
+        this.mTextAttribs = null;
     }
     get color(): Color | number | string {
-        return this._color;
+        return this.mColor;
     }
     set color(color: Color | number | string) {
         this.setColor(color);
     }
     setColor(color: Color | number | string) {
         if (color instanceof Color) {
-            this._color = color;
+            this.mColor = color;
         } else if (!!color) {
-            this._color = new Color(color as any);
+            this.mColor = new Color(color as any);
         } else {
-            this._color = undefined;
+            this.mColor = undefined;
         }
-        if (this._color) {
+        if (this.mColor) {
             // on android setColor sets the alpha too
-            const c = this._color;
+            const c = this.mColor;
             this.alpha = c.a;
             // we want to ignore color alpha because on android it is not used but
             // on ios it will add up
-            this._color = new Color(255, c.r, c.g, c.b);
+            this.mColor = new Color(255, c.r, c.g, c.b);
         } else {
             this.alpha = 255;
         }
-        this._textAttribs = null;
+        this.mTextAttribs = null;
     }
     getColor(): Color {
-        return this._color;
+        return this.mColor;
     }
 
     clear() {
@@ -1113,12 +1132,10 @@ export class Paint implements IPaint {
             this.shader = null;
         }
     }
-    pathEffect: PathEffect;
     public setPathEffect(param0: PathEffect) {
         this.pathEffect = param0;
     }
 
-    xfermode: IPorterDuffXfermode;
     public setXfermode(param0: IPorterDuffXfermode): IPorterDuffXfermode {
         this.xfermode = param0;
         return param0;
@@ -1200,26 +1217,25 @@ export class Paint implements IPaint {
             // CGContextAddPath(ctx, path);
         }
     }
-    _textAttribs: NSMutableDictionary<any, any>;
     getDrawTextAttribs() {
-        if (!this._textAttribs) {
-            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
+        if (!this.mTextAttribs) {
+            this.mTextAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
             const color = this.getUIColor();
-            this._textAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
+            this.mTextAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
             if (color) {
-                this._textAttribs.setObjectForKey(color, NSForegroundColorAttributeName);
+                this.mTextAttribs.setObjectForKey(color, NSForegroundColorAttributeName);
             }
             if (this.align === Align.CENTER) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
                 paragraphStyle.alignment = NSTextAlignment.Center;
-                this._textAttribs.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
+                this.mTextAttribs.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
             } else if (this.align === Align.RIGHT) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
                 paragraphStyle.alignment = NSTextAlignment.Right;
-                this._textAttribs.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
+                this.mTextAttribs.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
             }
         }
-        return this._textAttribs;
+        return this.mTextAttribs;
     }
 }
 
