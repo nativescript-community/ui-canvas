@@ -38,4 +38,10 @@ public class CanvasMatrix extends android.graphics.Matrix {
         src.put(srcArray);
         src.rewind();
     }
+    public void setValues (java.nio.FloatBuffer points) {
+        float[] pointsArray = new float[points.capacity()];
+        points.get(pointsArray);
+        setValues(pointsArray);
+        points.rewind();
+    }
 }
