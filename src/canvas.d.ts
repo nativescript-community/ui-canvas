@@ -339,3 +339,4 @@ export function pointsFromBuffer(typedArray: TypedArray, useInts?): number[] | T
 export function arrayToNativeArray(array, useInts?): number[];
 export function createArrayBufferOrNativeArray(length: number, useInts?: boolean): number[] | TypedArray;
 export function nativeArrayToArray(array): number[];
+export function supportsDirectArrayBuffers(): boolean; //android only
