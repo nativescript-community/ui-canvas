@@ -854,7 +854,7 @@ export class Paint implements IPaint {
     strokeMiter = 0;
     strokeCap: Cap = Cap.BUT;
     strokeJoin: Join = Join.BEVEL;
-    antiAlias;
+    antiAlias = true;
     dither;
     alpha = 255;
     currentContext: any;

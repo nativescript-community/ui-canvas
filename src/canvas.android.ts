@@ -273,8 +273,8 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
 export class Paint extends ProxyClass<android.graphics.Paint> {
     mNative: android.graphics.Paint;
     mFontInternal: Font;
-    mNeedsFontUpdate = false;
-    handlesFont = false;
+    mNeedsFontUpdate;
+    handlesFont;
     getNative() {
         if (!this.handlesFont && this.mNeedsFontUpdate) {
             this.mNeedsFontUpdate = false;
@@ -287,7 +287,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     constructor(paint?: Paint) {
         super();
         if (paint) {
-            this.mNative = new android.graphics.Paint(paint?.getNative());
+            this.mNative = new android.graphics.Paint(paint.getNative());
+        } else {
+            this.mNative = new android.graphics.Paint(1);  //android.graphics.Paint.ANTI_ALIAS_FLAG
         }
         this.mNative.setLinearText(true); // ensure we are drawing fonts correctly
         return this;
