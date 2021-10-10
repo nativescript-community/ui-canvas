@@ -6,6 +6,10 @@ import { layout } from '@nativescript/core/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 
+declare global {
+    const __runtimeVersion: string;
+}
+
 export * from './canvas.common';
 export {
     Canvas,
@@ -37,26 +41,44 @@ function getSDK() {
     return SDK_INT;
 }
 
-export function createArrayBuffer(length: number, useInts = false) {
-    let bb: java.nio.ByteBuffer;
-    if (useInts) {
-        bb = java.nio.ByteBuffer.allocateDirect(length);
-    } else {
-        bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+let _runtimeVersion;
+let _supportsDirectArrayBuffers;
+export function supportsDirectArrayBuffers() {
+    if (_supportsDirectArrayBuffers === undefined) {
+        if (!_runtimeVersion) {
+            _runtimeVersion = __runtimeVersion;
+        }
+        _supportsDirectArrayBuffers = parseInt(_runtimeVersion[0], 10) > 8 || (parseInt(_runtimeVersion[0], 10) === 8 && parseInt(_runtimeVersion[2], 10) >= 2);
     }
-    const result = (ArrayBuffer as any).from(bb);
-    return useInts ? new Int8Array(result) : new Float32Array(result);
+    return _supportsDirectArrayBuffers;
+}
+
+export function createArrayBuffer(length: number, useInts = false) {
+    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+        let bb: java.nio.ByteBuffer;
+        if (useInts) {
+            bb = java.nio.ByteBuffer.allocateDirect(length);
+        } else {
+            bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+        }
+        const result = (ArrayBuffer as any).from(bb);
+        return useInts ? new Int8Array(result) : new Float32Array(result);
+    }
+    return useInts ? new Int8Array(length) : new Float32Array(length);
 }
 export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts = false) {
-    if (useInts) {
+    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+        if (useInts) {
+            const buffer = typedArray.buffer;
+            return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
+        }
         const buffer = typedArray.buffer;
-        return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
+        const length = typedArray.length;
+        const testArray = Array.create('float', length);
+        ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
+        return testArray as number[];
     }
-    const buffer = typedArray.buffer;
-    const length = typedArray.length;
-    const testArray = Array.create('float', length);
-    ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
-    return testArray as number[];
+    return typedArray;
 }
 
 export function arrayToNativeArray(array, useInts = false) {
@@ -67,6 +89,26 @@ export function arrayToNativeArray(array, useInts = false) {
     const typedArray = createArrayBuffer(length, useInts);
 
     return pointsFromBuffer(typedArray, useInts);
+}
+
+// export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
+export function nativeArrayToArray(array) {
+    if (global.isAndroid && !supportsDirectArrayBuffers()) {
+        const result = [];
+        for (let index = 0; index < array.length; index++) {
+            result[index] = array[index];
+        }
+
+        return result as number[];
+    }
+    return array;
+}
+export function createNativeArray(length) {
+    if (global.isAndroid) {
+        return Array.create('float', length);
+    }
+    // At least, set length to use it for iterations
+    return new Array(length);
 }
 
 export function parseDashEffect(value: string) {
