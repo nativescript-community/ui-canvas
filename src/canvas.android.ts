@@ -3,7 +3,7 @@ import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import { android as androidApp } from '@nativescript/core/application';
 import lazy from '@nativescript/core/utils/lazy';
 import { layout } from '@nativescript/core/utils/utils';
-import { Canvas as ICanvas, Paint as IPaint } from './canvas';
+import { Canvas as ICanvas, Paint as IPaint, TypedArray } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 
 declare global {
@@ -60,7 +60,7 @@ export function createArrayBufferOrNativeArray(length: number, useInts = false) 
         return createArrayBuffer(length, useInts);
     }
 }
-export function createArrayBuffer(length: number, useInts = false) {
+export function createArrayBuffer(length: number, useInts = false): TypedArray {
     if (!supportsDirectArrayBuffers()) {
         let bb: java.nio.ByteBuffer;
         if (useInts) {
@@ -69,11 +69,13 @@ export function createArrayBuffer(length: number, useInts = false) {
             bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
         }
         const result = (ArrayBuffer as any).from(bb);
+        //@ts-ignore
         return useInts ? new Int8Array(result) : new Float32Array(result);
     }
+    //@ts-ignore
     return useInts ? new Int8Array(length) : new Float32Array(length);
 }
-export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts = false) {
+export function pointsFromBuffer(typedArray: TypedArray, useInts = false) {
     if (!supportsDirectArrayBuffers()) {
         if (useInts) {
             const buffer = typedArray.buffer;
@@ -88,12 +90,12 @@ export function pointsFromBuffer(typedArray: Float32Array | Int8Array, useInts =
     return typedArray;
 }
 
-export function arrayToNativeArray(array, useInts = false) {
+export function arrayToNativeArray(array: number[] | TypedArray, useInts = false) {
     if (!Array.isArray(array)) {
         return array;
     }
     const length = array.length;
-    const typedArray = createArrayBuffer(length, useInts);
+    const typedArray = ArrayBuffer.isView(array) ? (array as any as TypedArray) : createArrayBuffer(length, useInts);
 
     return pointsFromBuffer(typedArray, useInts);
 }
@@ -289,7 +291,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         if (paint) {
             this.mNative = new android.graphics.Paint(paint.getNative());
         } else {
-            this.mNative = new android.graphics.Paint(1);  //android.graphics.Paint.ANTI_ALIAS_FLAG
+            this.mNative = new android.graphics.Paint(1); //android.graphics.Paint.ANTI_ALIAS_FLAG
         }
         this.mNative.setLinearText(true); // ensure we are drawing fonts correctly
         return this;
