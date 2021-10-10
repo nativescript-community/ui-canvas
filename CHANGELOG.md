@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.8](https://github.com/nativescript-community/ui-canvas/compare/v4.2.7...v4.2.8) (2021-10-10)
+
+
+### Bug Fixes
+
+* new Paint constructor to quickly clone a Paint ([a39fed7](https://github.com/nativescript-community/ui-canvas/commit/a39fed752b3065f6e3a252dd131103ba8e3ac2ba))
+
+
+
+
+
 ## [4.2.7](https://github.com/nativescript-community/ui-canvas/compare/v4.2.6...v4.2.7) (2021-10-10)
 
 
