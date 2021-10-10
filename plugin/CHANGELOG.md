@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.10](https://github.com/nativescript-community/ui-canvas/compare/v4.2.9...v4.2.10) (2021-10-10)
+
+
+### Bug Fixes
+
+* **android:** Matrix.setValues for 8.2.0 ([dba0946](https://github.com/nativescript-community/ui-canvas/commit/dba0946b47eca2736850191224ab1deefa1e7a94))
+
+
+
+
+
 ## [4.2.9](https://github.com/nativescript-community/ui-canvas/compare/v4.2.8...v4.2.9) (2021-10-10)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
