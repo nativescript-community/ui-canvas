@@ -2261,3 +2261,7 @@ export function nativeArrayToArray(array): number[] {
 export function createNativeArray(length: number, useInts?): number[] {
     return new Array(length);
 }
+
+export function supportsDirectArrayBuffers() {
+    return true;
+}
