@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.11](https://github.com/nativescript-community/ui-canvas/compare/v4.2.10...v4.2.11) (2021-10-11)
+
+
+### Bug Fixes
+
+* **android:** Matrix. getValues fix for buffers ([371e973](https://github.com/nativescript-community/ui-canvas/commit/371e973b7685b04b30b1b5b75a491ca99250a230))
+* **android:** preparing the path for custom DashPathEffect class ([85f208c](https://github.com/nativescript-community/ui-canvas/commit/85f208c881db604a7056202de97f4f3f93158f46))
+* better utility methods for native arrays / buffers ([4d02ee2](https://github.com/nativescript-community/ui-canvas/commit/4d02ee28870cee4e236408a5f71bff2144cdcfcb))
+
+
+
+
+
 ## [4.2.10](https://github.com/nativescript-community/ui-canvas/compare/v4.2.9...v4.2.10) (2021-10-10)
 
 
