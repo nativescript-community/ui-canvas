@@ -53,8 +53,8 @@ export function supportsDirectArrayBuffers() {
     return _supportsDirectArrayBuffers;
 }
 
-export function createArrayBufferOrNativeArray(length: number, useInts = false) {
-    if (!supportsDirectArrayBuffers()) {
+export function createArrayBufferOrNativeArray(length: number, useInts = false, canReturnBuffer = true) {
+    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
         return createNativeArray(length, useInts);
     } else {
         return createArrayBuffer(length, useInts);
@@ -75,8 +75,8 @@ export function createArrayBuffer(length: number, useInts = false): TypedArray {
     //@ts-ignore
     return useInts ? new Int8Array(length) : new Float32Array(length);
 }
-export function pointsFromBuffer(typedArray: TypedArray, useInts = false) {
-    if (!supportsDirectArrayBuffers()) {
+export function pointsFromBuffer(typedArray: TypedArray, useInts = false, canReturnBuffer = true) {
+    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
         if (useInts) {
             const buffer = typedArray.buffer;
             return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
@@ -90,14 +90,23 @@ export function pointsFromBuffer(typedArray: TypedArray, useInts = false) {
     return typedArray;
 }
 
-export function arrayToNativeArray(array: number[] | TypedArray, useInts = false) {
-    if (!Array.isArray(array)) {
+export function arrayToNativeArray(array: number[] | TypedArray, useInts = false, canReturnBuffer = true) {
+    const isBufferView = ArrayBuffer.isView(array);
+    if (!Array.isArray(array) && !isBufferView) {
         return array;
+    }
+    // for now we cant do it the old way
+    if (!isBufferView && supportsDirectArrayBuffers()) {
+        const nArray = createNativeArray(array.length, useInts);
+        for (let index = 0; index < array.length; index++) {
+            nArray[index] = array[index];
+        }
+        return nArray;
     }
     const length = array.length;
     const typedArray = ArrayBuffer.isView(array) ? (array as any as TypedArray) : createArrayBuffer(length, useInts);
 
-    return pointsFromBuffer(typedArray, useInts);
+    return pointsFromBuffer(typedArray, useInts, canReturnBuffer);
 }
 
 // export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
@@ -192,7 +201,7 @@ class ProxyClass<T> {
                     if (element && element.getNative) {
                         args[index] = element.getNative();
                     } else if (Array.isArray(element)) {
-                        args[index] = arrayToNativeArray(element);
+                        args[index] = arrayToNativeArray(element, false, false);
                     }
                 }
                 const result = target.handleCustomMethods(target, native, methodName, args);
@@ -239,7 +248,6 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         } else if (methodName === 'drawColor') {
             args[0] = createColorParam(args[0]);
         } else if (methodName === 'drawLines') {
-            args[0] = arrayToNativeArray(args[0]);
             const last = args[args.length - 1];
             if (last instanceof android.graphics.Matrix) {
                 last.mapPoints(args[0]);
