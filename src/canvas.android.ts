@@ -105,7 +105,7 @@ export function arrayToNativeArray(array: number[] | TypedArray, useInts = false
     }
     const length = array.length;
     const typedArray = ArrayBuffer.isView(array) ? (array as any as TypedArray) : createArrayBuffer(length, useInts);
-
+    typedArray.set(array);
     return pointsFromBuffer(typedArray, useInts, canReturnBuffer);
 }
 
