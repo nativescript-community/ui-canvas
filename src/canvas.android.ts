@@ -585,7 +585,6 @@ class CanvasView extends CanvasBase {
                 }
                 const scale = this.density;
                 canvas.save();
-                // canvas.setDensity(Math.round(scale * 160));
                 canvas.scale(scale, scale); // always scale to device density to work with dp
                 this.augmentedCanvas.mNative = canvas;
                 this.onDraw(this.augmentedCanvas as any);
