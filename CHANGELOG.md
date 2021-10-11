@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.12](https://github.com/nativescript-community/ui-canvas/compare/v4.2.11...v4.2.12) (2021-10-11)
+
+
+### Bug Fixes
+
+* **android:** DashPathEffect fix ([d256eee](https://github.com/nativescript-community/ui-canvas/commit/d256eee0cc180474cffe2aa7448332f1e36ef955))
+
+
+
+
+
 ## [4.2.11](https://github.com/nativescript-community/ui-canvas/compare/v4.2.10...v4.2.11) (2021-10-11)
 
 
