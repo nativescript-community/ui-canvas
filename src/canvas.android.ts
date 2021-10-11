@@ -419,7 +419,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
 export class DashPathEffect extends ProxyClass<android.graphics.DashPathEffect> {
     constructor(intervals: number[], phase: number) {
         super();
-        this.mNative = new android.graphics.DashPathEffect(arrayToNativeArray(intervals), phase);
+        this.mNative = new com.akylas.canvas.CanvasDashPathEffect(arrayToNativeArray(intervals, false, false), phase);
         return this;
     }
 }

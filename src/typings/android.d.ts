@@ -7,6 +7,8 @@ declare namespace com {
                 mapPoints(param0: Float32Array | native.Array<number>, param1: number, param2: Float32Array | native.Array<number>, param3: number, param4: number): void;
                 mapPoints(param0: Float32Array | native.Array<number>): void;
             }
+            export class CanvasDashPathEffect extends globalAndroid.graphics.DashPathEffect {
+            }
             export class CanvasPath extends globalAndroid.graphics.Path {
                 addLines(points: number[], offset?: number, length?: number, close?: boolean);
                 setLines(points: number[], offset?: number, length?: number, close?: boolean);
