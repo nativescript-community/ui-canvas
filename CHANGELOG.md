@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.13](https://github.com/nativescript-community/ui-canvas/compare/v4.2.12...v4.2.13) (2021-10-12)
+
+
+### Bug Fixes
+
+* drawFrameRate property name fix ([4325ae9](https://github.com/nativescript-community/ui-canvas/commit/4325ae977cc6d4b6cd5dfca7f0cd187bc43fa026))
+
+
+
+
+
 ## [4.2.12](https://github.com/nativescript-community/ui-canvas/compare/v4.2.11...v4.2.12) (2021-10-11)
 
 
