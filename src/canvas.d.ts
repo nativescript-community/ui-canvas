@@ -317,7 +317,7 @@ declare class CanvasView extends View {
     cached: boolean;
     hardwareAccelerated: boolean;
     density: number;
-    drawFameRate: boolean;
+    drawFrameRate: boolean;
 
     shapes: ObservableArray<Shape>;
 

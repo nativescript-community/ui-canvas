@@ -2034,8 +2034,8 @@ export class UICustomCanvasView extends UIView {
         if (!owner) {
             return;
         }
-        const drawFameRate = owner.drawFameRate;
-        if (drawFameRate) {
+        const drawFrameRate = owner.drawFrameRate;
+        if (drawFrameRate) {
         }
         if (!this._canvas) {
             this._canvas = new Canvas(0, 0);
@@ -2061,7 +2061,7 @@ export class UICustomCanvasView extends UIView {
         if (!owner.callDrawBeforeShapes) {
             owner.onDraw(this._canvas);
         }
-        if (drawFameRate) {
+        if (drawFrameRate) {
             const end = Date.now();
             if (!this.frameRatePaint) {
                 this.frameRatePaint = new Paint();

@@ -52,7 +52,7 @@ export abstract class CanvasBase extends View {
     public density;
     public hardwareAccelerated;
 
-    drawFameRate = false;
+    drawFrameRate = false;
 
     getOrCreateShapes() {
         if (!this.mShapes) {

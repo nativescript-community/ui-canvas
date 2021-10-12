@@ -578,9 +578,9 @@ class CanvasView extends CanvasBase {
         });
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
             onDraw: (canvas: android.graphics.Canvas) => {
-                const drawFameRate = this.drawFameRate;
+                const drawFrameRate = this.drawFrameRate;
                 let startTime;
-                if (drawFameRate) {
+                if (drawFrameRate) {
                     startTime = Date.now();
                 }
                 const scale = this.density;
@@ -588,7 +588,7 @@ class CanvasView extends CanvasBase {
                 canvas.scale(scale, scale); // always scale to device density to work with dp
                 this.augmentedCanvas.mNative = canvas;
                 this.onDraw(this.augmentedCanvas as any);
-                if (drawFameRate) {
+                if (drawFrameRate) {
                     const end = Date.now();
                     if (!this.frameRatePaint) {
                         this.frameRatePaint = new Paint() as any;
