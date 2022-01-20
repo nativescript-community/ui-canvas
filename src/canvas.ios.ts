@@ -857,7 +857,7 @@ export class Paint implements IPaint {
     antiAlias = true;
     dither;
     alpha = 255;
-    letterSpacing: number;
+    letterSpacing: number = 0;
     currentContext: any;
     shadowLayer?: {
         radius: number;
@@ -1236,7 +1236,7 @@ export class Paint implements IPaint {
             if (color) {
                 this.mTextAttribs.setObjectForKey(color, NSForegroundColorAttributeName);
             }
-            if (this.letterSpacing !== undefined) {
+            if (this.letterSpacing !== 0) {
                 this.mTextAttribs.setObjectForKey(this.letterSpacing * iosFont.pointSize, NSKernAttributeName);
             }
             if (this.align === Align.CENTER) {

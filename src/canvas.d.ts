@@ -27,12 +27,16 @@ export class Paint {
     strokeJoin: Join;
     style: Style;
     textSize: number;
+    letterSpacing: number;
     fontFamily: string;
     fontWeight: FontWeight;
     fontStyle: FontStyle;
     font: Font;
     getFont(): Font;
     setFont(font: Font);
+
+    public setLetterSpacing(spacing: number);
+    public getLetterSpacing(): number;
 
     public getAlpha(): number;
     public getStyle(): Style;

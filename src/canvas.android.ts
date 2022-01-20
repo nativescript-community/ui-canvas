@@ -206,7 +206,7 @@ class ProxyClass<T> {
                     }
                 }
                 const result = target.handleCustomMethods(target, native, methodName, args);
-                if (result) {
+                if (result !== undefined) {
                     return result;
                 }
                 return native[methodName](...args);
@@ -268,8 +268,6 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         } else if (methodName === 'drawView') {
             drawViewOnCanvas(native, args[0], args[1]);
             return true;
-        } else if (methodName === 'setLetterSpacing' && sdkVersion() < 21) {
-            return true;
         }
     }
     getImage() {
@@ -323,6 +321,10 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             }
             this.mNeedsFontUpdate = true;
             return this.mFontInternal;
+        } else if (methodName === 'setLetterSpacing' && sdkVersion() < 21) {
+            return true;
+        } else if (methodName === 'getLetterSpacing' && sdkVersion() < 21) {
+            return 0;
         }
     }
     setFont(font: Font) {
@@ -344,6 +346,12 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     }
     set font(font: Font) {
         this.setFont(font);
+    }
+    get letterSpacing() {
+        return this['getLetterSpacing']();
+    }
+    set letterSpacing(spacing: number) {
+        this['setLetterSpacing'](spacing);
     }
     getFontFamily() {
         return this.font.fontFamily;
