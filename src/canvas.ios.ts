@@ -857,6 +857,7 @@ export class Paint implements IPaint {
     antiAlias = true;
     dither;
     alpha = 255;
+    letterSpacing: number;
     currentContext: any;
     shadowLayer?: {
         radius: number;
@@ -1096,6 +1097,16 @@ export class Paint implements IPaint {
         this.mFont = this.font.withFontSize(textSize);
         this.mTextAttribs = null;
     }
+    getLetterSpacing() {
+        return this.letterSpacing;
+    }
+    setLetterSpacing(spacing) {
+        if (this.letterSpacing === spacing) {
+            return;
+        }
+        this.letterSpacing = spacing;
+        this.mTextAttribs = null;
+    }
     get color(): Color | number | string {
         return this.mColor;
     }
@@ -1219,11 +1230,14 @@ export class Paint implements IPaint {
     }
     getDrawTextAttribs() {
         if (!this.mTextAttribs) {
-            this.mTextAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
+            const iosFont = this.getUIFont();
+            this.mTextAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([iosFont], [NSFontAttributeName]);
             const color = this.getUIColor();
-            this.mTextAttribs = NSMutableDictionary.dictionaryWithObjectsForKeys([this.getUIFont()], [NSFontAttributeName]);
             if (color) {
                 this.mTextAttribs.setObjectForKey(color, NSForegroundColorAttributeName);
+            }
+            if (this.letterSpacing !== undefined) {
+                this.mTextAttribs.setObjectForKey(this.letterSpacing * iosFont.pointSize, NSKernAttributeName);
             }
             if (this.align === Align.CENTER) {
                 const paragraphStyle = NSMutableParagraphStyle.new();
@@ -1925,7 +1939,6 @@ export class Canvas implements ICanvas {
             x = params[1];
             y = params[2];
         }
-        // const attribs = paint.getDrawTextAttribs();
         // const nsstring = NSString.stringWithUTF8String(text);
         // const attrString = NSAttributedString.alloc().initWithStringAttributes(text.replace(/\n/g, ' '), attribs);
         let offsetx = x;
@@ -1948,7 +1961,10 @@ export class Canvas implements ICanvas {
         }
         const font = paint.getUIFont();
         const color = paint.getUIColor();
-        if (text instanceof NSAttributedString) {
+        if (paint.letterSpacing !== undefined) {
+            const attribs = paint.getDrawTextAttribs();
+            UIDrawingText.drawStringXYWithAttributes(text, offsetx, offsety - font.ascender, attribs);
+        } else if (text instanceof NSAttributedString) {
             UIDrawingText.drawAttributedStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
         } else {
             UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);

@@ -1,4 +1,4 @@
-import { CSSType, Color, Font, ImageSource, View } from '@nativescript/core';
+import { CSSType, Color, Font, ImageSource, View, Device } from '@nativescript/core';
 import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import { android as androidApp } from '@nativescript/core/application';
 import lazy from '@nativescript/core/utils/lazy';
@@ -9,6 +9,7 @@ import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 declare global {
     const __runtimeVersion: string;
 }
+const sdkVersion = lazy(() => parseInt(Device.sdkVersion));
 
 export * from './canvas.common';
 export {
@@ -266,6 +267,8 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
             }
         } else if (methodName === 'drawView') {
             drawViewOnCanvas(native, args[0], args[1]);
+            return true;
+        } else if (methodName === 'setLetterSpacing' && sdkVersion() < 21) {
             return true;
         }
     }
