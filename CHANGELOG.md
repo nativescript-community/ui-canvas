@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/nativescript-community/ui-canvas/compare/v4.2.13...v4.3.0) (2022-01-20)
+
+
+### Features
+
+* `Paint` `letterSpacing` support ([880c260](https://github.com/nativescript-community/ui-canvas/commit/880c260c3cda3effe8fd5e5f7089163f08d0e686))
+
+
+
+
+
 ## [4.2.13](https://github.com/nativescript-community/ui-canvas/compare/v4.2.12...v4.2.13) (2021-10-12)
 
 
