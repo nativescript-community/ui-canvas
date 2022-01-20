@@ -1,6 +1,6 @@
-import { CSSType, Color, Font, ImageSource, View, Device } from '@nativescript/core';
-import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import { CSSType, Color, Device, Font, ImageSource, View } from '@nativescript/core';
 import { android as androidApp } from '@nativescript/core/application';
+import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import lazy from '@nativescript/core/utils/lazy';
 import { layout } from '@nativescript/core/utils/utils';
 import { Canvas as ICanvas, Paint as IPaint, TypedArray } from './canvas';
@@ -9,7 +9,7 @@ import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 declare global {
     const __runtimeVersion: string;
 }
-const sdkVersion = lazy(() => parseInt(Device.sdkVersion));
+const sdkVersion = lazy(() => parseInt(Device.sdkVersion, 10));
 
 export * from './canvas.common';
 export {
