@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.2](https://github.com/nativescript-community/ui-canvas/compare/v4.3.1...v4.3.2) (2022-02-08)
+
+
+### Bug Fixes
+
+* **ios:** allow to drawText with `NSAttributedString` ([67ad68e](https://github.com/nativescript-community/ui-canvas/commit/67ad68e79504c174601443e006bfd2b241850049))
+
+
+
+
+
 ## [4.3.1](https://github.com/nativescript-community/ui-canvas/compare/v4.3.0...v4.3.1) (2022-01-20)
 
 
