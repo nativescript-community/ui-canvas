@@ -933,24 +933,27 @@ export class Paint implements IPaint {
     public setARGB(a: number, r: number, g: number, b: number): void {
         this.mColor = new Color(a, r, g, b);
     }
-    public measureText(text: string, start = 0, end?) {
+    public measureText(text: string | NSAttributedString, start = 0, end?) {
         if (end === undefined) {
             end = text.length;
         }
+        if (text instanceof NSAttributedString) {
+            const rect = new Rect();
+            this.getTextBounds(text, start, end, rect);
+            return rect.width();
+        }
         return UIDrawingText.measureTextFromToAttributes(text, start, end, this.getDrawTextAttribs());
-        // const result = NSString.stringWithString(text.slice(start, end)).sizeWithFont(this.getUIFont());
-        // return result.width;
     }
-    public getTextBounds(text: string, start: number, end: number, rect: Rect): void {
-        const cgrect = UIDrawingText.getTextBoundsFromToAttributes(text, start, end, this.getDrawTextAttribs());
-        // const cgrect = NSString.stringWithString(text.slice(start, end)).boundingRectWithSizeOptionsAttributesContext(
-        //     CGSizeMake(Number.MAX_VALUE, Number.MAX_VALUE),
-        //     NSStringDrawingOptions.UsesDeviceMetrics,
-        //     this.getDrawTextAttribs(),
-        //     null
-        // );
-        // rect.cgRect = CGRectMake(0, -cgrect.size.height, cgrect.size.width, cgrect.size.height);
-        rect.cgRect = cgrect;
+    public getTextBounds(text: string | NSAttributedString, start: number, end: number, rect: Rect): void {
+        if (text instanceof NSAttributedString) {
+            rect.cgRect = applyAttributesToNSAttributedString(text, this.getDrawTextAttribs()).boundingRectWithSizeOptionsContext(
+                CGSizeMake(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
+                NSStringDrawingOptions.UsesDeviceMetrics,
+                null
+            );
+        } else {
+            rect.cgRect = UIDrawingText.getTextBoundsFromToAttributes(text, start, end, this.getDrawTextAttribs());
+        }
     }
     public isAntiAlias(): boolean {
         return this.antiAlias;
@@ -1961,11 +1964,10 @@ export class Canvas implements ICanvas {
         }
         const font = paint.getUIFont();
         const color = paint.getUIColor();
-        if (paint.letterSpacing !== undefined) {
-            const attribs = paint.getDrawTextAttribs();
-            UIDrawingText.drawStringXYWithAttributes(text, offsetx, offsety - font.ascender, attribs);
-        } else if (text instanceof NSAttributedString) {
-            UIDrawingText.drawAttributedStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
+        if (text instanceof NSAttributedString) {
+            UIDrawingText.drawAttributedStringXYFontColor(applyAttributesToNSAttributedString(text, paint.getDrawTextAttribs()), offsetx, offsety - font.ascender, font, color);
+        } else if (paint.letterSpacing !== undefined) {
+            UIDrawingText.drawStringXYWithAttributes(text, offsetx, offsety - font.ascender, paint.getDrawTextAttribs());
         } else {
             UIDrawingText.drawStringXYFontColor(text, offsetx, offsety - font.ascender, font, color);
         }
