@@ -4,6 +4,8 @@
         "com.akylas.canvas*:*",
         "android.graphics:Canvas*",
         "android.graphics:Matrix*",
+        "android.text:StaticLayout*",
+        "android.text:Layout*",
         "android.graphics:DashPathEffect*",
         "android.graphics:LinearGradient*",
         "android.graphics:RadialGradient*",

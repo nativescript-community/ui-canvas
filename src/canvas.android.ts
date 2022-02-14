@@ -513,6 +513,22 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
 
         return this;
     }
+
+    public static getDesiredWidth(...args) {
+        for (let index = 0; index < args.length; index++) {
+            const element = args[index];
+            if (element && element.getNative) {
+                args[index] = element.getNative();
+            } else if (Array.isArray(element)) {
+                args[index] = arrayToNativeArray(element, false, false);
+            }
+            if (index === args.length - 1 && !(args[index] instanceof android.text.TextPaint)) {
+                args[index] = new android.text.TextPaint(args[index]);
+            }
+        }
+        //@ts-ignore
+        return android.text.StaticLayout.getDesiredWidth(...args);
+    }
 }
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;
 let PorterDuffMode, PorterDuffXfermode;
