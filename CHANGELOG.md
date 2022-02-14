@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/nativescript-community/ui-canvas/compare/v4.3.2...v4.4.0) (2022-02-14)
+
+
+### Features
+
+* added StaticLayout.getDesiredWidth ([64cc034](https://github.com/nativescript-community/ui-canvas/commit/64cc0344185bfa5169ecf9b9556fa4d66a07909a))
+
+
+
+
+
 ## [4.3.2](https://github.com/nativescript-community/ui-canvas/compare/v4.3.1...v4.3.2) (2022-02-08)
 
 
