@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.1](https://github.com/nativescript-community/ui-canvas/compare/v4.4.0...v4.4.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* **android:** `createArrayBufferOrNativeArray` fix for the chart plugin ([de7a477](https://github.com/nativescript-community/ui-canvas/commit/de7a4779af69c0c2beb9d1fd439634a44cfefb3d))
+
+
+
+
+
 # [4.4.0](https://github.com/nativescript-community/ui-canvas/compare/v4.3.2...v4.4.0) (2022-02-14)
 
 
