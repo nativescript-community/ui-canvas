@@ -55,14 +55,14 @@ export function supportsDirectArrayBuffers() {
 }
 
 export function createArrayBufferOrNativeArray(length: number, useInts = false, canReturnBuffer = true) {
-    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
-        return createNativeArray(length, useInts);
-    } else {
-        return createArrayBuffer(length, useInts);
-    }
+    // if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
+    //     return createNativeArray(length, useInts);
+    // } else {
+    return createArrayBuffer(length, useInts, canReturnBuffer);
+    // }
 }
-export function createArrayBuffer(length: number, useInts = false): TypedArray {
-    if (!supportsDirectArrayBuffers()) {
+export function createArrayBuffer(length: number, useInts = false, canReturnBuffer = true): TypedArray {
+    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
         let bb: java.nio.ByteBuffer;
         if (useInts) {
             bb = java.nio.ByteBuffer.allocateDirect(length);
