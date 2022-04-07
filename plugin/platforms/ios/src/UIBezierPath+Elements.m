@@ -84,7 +84,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
         prev = CGPointApplyAffineTransform(prev, transform);
       }
     }
-    p[i] =prev;
+    p[i] = prev;
     p[i+1]= cur;
     prev = cur;
   }
@@ -106,7 +106,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 
 - (void) addLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close{
   [self moveToPoint:(CGPoint)CGPointMake(points[offset], points[offset+1])];
-  for (int i = offset + 2; i < count; i+=2)
+  for (int i = (int)offset + 2; i < count; i+=2)
   {
     [self addLineToPoint:(CGPoint)CGPointMake(points[i], points[i + 1])];
   }
@@ -117,7 +117,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 
 + (void) addLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path{
   CGPathMoveToPoint(path, NULL, points[offset], points[offset+1]);
-  for (int i = offset +2; i < count; i+=2)
+  for (int i = (int)offset + 2; i < count; i+=2)
   {
     CGPathAddLineToPoint(path, NULL, points[i], points[i + 1]);
   }
@@ -133,7 +133,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 
 - (void) addCubicLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close {
   [self moveToPoint:(CGPoint)CGPointMake(points[offset], points[offset+1])];
-  for (int i = offset+2; i < count; i+=6)
+  for (int i = (int)offset + 2; i < count; i+=6)
   {
     [self addCurveToPoint:CGPointMake(points[i + 4], points[i + 5]) controlPoint1:CGPointMake(points[i], points[i + 1]) controlPoint2:CGPointMake(points[i + 2], points[i + 3])];
   }
@@ -145,7 +145,7 @@ UIBezierPath *PathFromPercentToPercent(UIBezierPath *path, CGFloat startPercent,
 
 + (void) addCubicLines: (CGFloat *)points offset:(NSUInteger)offset count:(NSUInteger)count close:(BOOL)close toPath:(CGMutablePathRef)path {
   CGPathMoveToPoint(path, NULL, points[offset], points[offset+1]);
-  for (int i = offset + 2; i < count; i+=6)
+  for (int i = (int)offset + 2; i < count; i+=6)
   {
     CGPathAddCurveToPoint(path, NULL, points[i], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5]);
   }
