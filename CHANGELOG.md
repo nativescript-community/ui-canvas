@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.3](https://github.com/nativescript-community/ui-canvas/compare/v4.4.2...v4.4.3) (2022-05-09)
+
+
+### Bug Fixes
+
+* xfermode. property type fix ([1918b32](https://github.com/nativescript-community/ui-canvas/commit/1918b327d333b511a9fc8e986090311510e8ed73))
+
+
+
+
+
 ## [4.4.2](https://github.com/nativescript-community/ui-canvas/compare/v4.4.1...v4.4.2) (2022-05-09)
 
 
