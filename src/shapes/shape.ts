@@ -196,6 +196,13 @@ export default abstract class Shape extends Observable {
         return this.mPaint;
     }
 
+    set parent(value) {
+        this.mParent = new WeakRef(value);
+    }
+    get parent() {
+        return this.mParent?.get();
+    }
+
     id: string;
     toString() {
         return `[${this.constructor.name}]${this.id ? `<${this.id}>` : ''}`;
