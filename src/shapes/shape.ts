@@ -217,7 +217,7 @@ export default abstract class Shape extends Observable {
     @numberProperty({ converter: parseCap }) strokeCap: Cap;
     @numberProperty({ converter: parseJoin }) strokeJoin: Join;
     @numberProperty textSize: number;
-    @numberProperty({ converter: parseXfermode }) xfermode: number;
+    @numberProperty({ converter: parseXfermode }) xfermode: PorterDuffXfermode;
     // alias for textSize
     @numberProperty({ paintSetterName: 'setTextSize' }) fontSize: number;
     @booleanProperty({ paintGetterName: 'isAntiAlias', paintSetterName: 'setAntiAlias' }) antiAlias: boolean;
