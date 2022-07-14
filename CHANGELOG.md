@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.4](https://github.com/nativescript-community/ui-canvas/compare/v4.4.3...v4.4.4) (2022-07-14)
+
+
+### Bug Fixes
+
+* shape fix ([dad29b2](https://github.com/nativescript-community/ui-canvas/commit/dad29b26c36de59969fc26a1fc9dab5045d630fc))
+
+
+### Features
+
+* paint color filter support ([5a7c2cd](https://github.com/nativescript-community/ui-canvas/commit/5a7c2cdc60ab0ea8360a099e784306cf4a3627c6))
+
+
+
+
+
 ## [4.4.3](https://github.com/nativescript-community/ui-canvas/compare/v4.4.2...v4.4.3) (2022-05-09)
 
 
