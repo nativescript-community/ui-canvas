@@ -866,6 +866,7 @@ export class Paint implements IPaint {
         color: Color;
     };
     shader;
+    colorFilter;
     pathEffect: PathEffect;
     xfermode: IPorterDuffXfermode;
     mTextAttribs: NSMutableDictionary<any, any>;
@@ -967,6 +968,9 @@ export class Paint implements IPaint {
     public getShader() {
         return this.shader;
     }
+    public getColorFilter() {
+        return this.colorFilter;
+    }
     public setStrokeWidth(value: number): void {
         this.strokeWidth = value;
     }
@@ -1002,6 +1006,12 @@ export class Paint implements IPaint {
             this.shader.release();
         }
         this.shader = value;
+    }
+    public setColorFilter(value: any) {
+        if (this.colorFilter) {
+            this.colorFilter.release();
+        }
+        this.colorFilter = value;
     }
     setFont(font: Font) {
         if (font === this.mFont) {
@@ -1144,6 +1154,10 @@ export class Paint implements IPaint {
         if (this.shader) {
             this.shader.clear();
             this.shader = null;
+        }
+        if (this.colorFilter) {
+            this.colorFilter.clear();
+            this.colorFilter = null;
         }
     }
     public setPathEffect(param0: PathEffect) {
@@ -1415,17 +1429,32 @@ export class Canvas implements ICanvas {
         if (!image) {
             return;
         }
+        const length = args.length;
+        const paint = args[length - 1] as Paint;
+        let cgImage;
+        if (paint?.colorFilter) {
+            const ciFilter = paint.colorFilter.ciFilter;
+            const tmp = CIImage.alloc().initWithImage(image);
+            ciFilter.setValueForKey(tmp, 'inputImage');
+
+            const outputRect = tmp.extent;
+            const context = CIContext.contextWithOptions(null);
+            cgImage = context.createCGImageFromRect(ciFilter.outputImage, outputRect);
+            // image = UIImage.imageWithCGImageScaleOrientation(cgim, image.scale, image.imageOrientation);
+        } else {
+            cgImage = image.CGImage;
+        }
 
         if (args[1] instanceof Matrix) {
             CGContextConcatCTM(ctx, args[1]._transform);
             CGContextTranslateCTM(ctx, 0, image.size.height);
             CGContextScaleCTM(ctx, 1.0, -1.0);
-            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.width, image.size.height), image.CGImage);
+            CGContextDrawImage(ctx, CGRectMake(0, 0, image.size.width, image.size.height), cgImage);
         } else {
             const dst = args[2] instanceof Rect ? args[2].cgRect : CGRectMake(args[1], args[2], image.size.width, image.size.height);
             CGContextTranslateCTM(ctx, 0, dst.origin.y + dst.size.height);
             CGContextScaleCTM(ctx, 1.0, -1.0);
-            CGContextDrawImage(ctx, CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), image.CGImage);
+            CGContextDrawImage(ctx, CGRectMake(dst.origin.x, 0, dst.size.width, dst.size.height), cgImage);
         }
     }
 
@@ -2153,6 +2182,27 @@ export class LinearGradient {
         if (this._gradient) {
             CFRelease(this._gradient);
             this._gradient = undefined;
+        }
+    }
+}
+export class ColorMatrixColorFilter {
+    _ciFilter;
+    constructor(private values: number[]) {}
+    get ciFilter() {
+        if (!this._ciFilter) {
+            this._ciFilter = CIFilter.filterWithName('CIColorMatrix');
+            const value = this.values;
+            this._ciFilter.setValueForKey(CIVector.vectorWithValuesCount(new FloatConstructor(value.slice(0, 4)).buffer as any, 4), 'inputRVector');
+            this._ciFilter.setValueForKey(CIVector.vectorWithValuesCount(new FloatConstructor(value.slice(5, 9)).buffer as any, 4), 'inputGVector');
+            this._ciFilter.setValueForKey(CIVector.vectorWithValuesCount(new FloatConstructor(value.slice(10, 14)).buffer as any, 4), 'inputBVector');
+            this._ciFilter.setValueForKey(CIVector.vectorWithValuesCount(new FloatConstructor(value.slice(15, 19)).buffer as any, 4), 'inputAVector');
+            this._ciFilter.setValueForKey(CIVector.vectorWithValuesCount(new FloatConstructor([value[4], value[9], value[14], value[19]]).buffer as any, 4), 'inputBiasVector');
+        }
+        return this._ciFilter;
+    }
+    release() {
+        if (this._ciFilter) {
+            this._ciFilter = undefined;
         }
     }
 }

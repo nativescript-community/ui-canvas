@@ -17,6 +17,7 @@ type ColorParam = Color | number | string;
 
 // export * from './canvas.android'
 
+export type ColorFilter = android.graphics.ColorFilter;
 export class Paint {
     constructor(paint?: Paint);
     color: ColorParam;
@@ -87,6 +88,7 @@ export class Paint {
     // public getFontSpacing(): number;
     public setXfermode(param0: PorterDuffXfermode): PorterDuffXfermode;
     public getXfermode(): PorterDuffXfermode;
+    public setColorFilter(param0: ColorFilter): void;
 }
 
 // export class StaticLayout {
@@ -303,6 +305,7 @@ export class FillType extends android.graphics.Path.FillType {}
 export class Matrix extends android.graphics.Matrix {
     mapRect(rect: Rect);
 }
+export class ColorMatrixColorFilter extends android.graphics.ColorMatrixColorFilter {}
 export class PathEffect extends android.graphics.PathEffect {}
 export class DashPathEffect extends android.graphics.DashPathEffect {
     constructor(intervals: number[], phase: number);

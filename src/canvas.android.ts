@@ -442,6 +442,13 @@ export class DashPathEffect extends ProxyClass<android.graphics.DashPathEffect> 
         return this;
     }
 }
+export class ColorMatrixColorFilter extends ProxyClass<android.graphics.ColorMatrixColorFilter> {
+    constructor(values: number[]) {
+        super();
+        this.mNative = new android.graphics.ColorMatrixColorFilter(arrayToNativeArray(values, false, false));
+        return this;
+    }
+}
 
 export class Path extends ProxyClass<com.akylas.canvas.CanvasPath> {
     constructor(path?: com.akylas.canvas.CanvasPath) {
