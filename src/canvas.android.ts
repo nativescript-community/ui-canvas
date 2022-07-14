@@ -3,8 +3,10 @@ import { android as androidApp } from '@nativescript/core/application';
 import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import lazy from '@nativescript/core/utils/lazy';
 import { layout } from '@nativescript/core/utils/utils';
-import { Canvas as ICanvas, Paint as IPaint, TypedArray } from './canvas';
+import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
+
+import { arrayToNativeArray } from '@nativescript-community/arraybuffers';
 
 declare global {
     const __runtimeVersion: string;
@@ -40,94 +42,6 @@ function getSDK() {
         SDK_INT = android.os.Build.VERSION.SDK_INT;
     }
     return SDK_INT;
-}
-
-let _runtimeVersion;
-let _supportsDirectArrayBuffers;
-export function supportsDirectArrayBuffers() {
-    if (_supportsDirectArrayBuffers === undefined) {
-        if (!_runtimeVersion) {
-            _runtimeVersion = __runtimeVersion;
-        }
-        _supportsDirectArrayBuffers = parseInt(_runtimeVersion[0], 10) > 8 || (parseInt(_runtimeVersion[0], 10) === 8 && parseInt(_runtimeVersion[2], 10) >= 2);
-    }
-    return _supportsDirectArrayBuffers;
-}
-
-export function createArrayBufferOrNativeArray(length: number, useInts = false, canReturnBuffer = true) {
-    // if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
-    //     return createNativeArray(length, useInts);
-    // } else {
-    return createArrayBuffer(length, useInts, canReturnBuffer);
-    // }
-}
-export function createArrayBuffer(length: number, useInts = false, canReturnBuffer = true): TypedArray {
-    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
-        let bb: java.nio.ByteBuffer;
-        if (useInts) {
-            bb = java.nio.ByteBuffer.allocateDirect(length);
-        } else {
-            bb = java.nio.ByteBuffer.allocateDirect(length * 4).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-        }
-        const result = (ArrayBuffer as any).from(bb);
-        //@ts-ignore
-        return useInts ? new Int8Array(result) : new Float32Array(result);
-    }
-    //@ts-ignore
-    return useInts ? new Int8Array(length) : new Float32Array(length);
-}
-export function pointsFromBuffer(typedArray: TypedArray, useInts = false, canReturnBuffer = true) {
-    if (!supportsDirectArrayBuffers() || !canReturnBuffer) {
-        if (useInts) {
-            const buffer = typedArray.buffer;
-            return ((buffer as any).nativeObject as java.nio.ByteBuffer).array();
-        }
-        const buffer = typedArray.buffer;
-        const length = typedArray.length;
-        const testArray = Array.create('float', length);
-        ((buffer as any).nativeObject as java.nio.ByteBuffer).asFloatBuffer().get(testArray, 0, length);
-        return testArray as number[];
-    }
-    return typedArray;
-}
-
-export function arrayToNativeArray(array: number[] | TypedArray, useInts = false, canReturnBuffer = true) {
-    const isBufferView = ArrayBuffer.isView(array);
-    if (!Array.isArray(array) && !isBufferView) {
-        return array;
-    }
-    // for now we cant do it the old way
-    if (!isBufferView && supportsDirectArrayBuffers()) {
-        const nArray = createNativeArray(array.length, useInts);
-        for (let index = 0; index < array.length; index++) {
-            nArray[index] = array[index];
-        }
-        return nArray;
-    }
-    const length = array.length;
-    const typedArray = ArrayBuffer.isView(array) ? (array as any as TypedArray) : createArrayBuffer(length, useInts);
-    typedArray.set(array);
-    return pointsFromBuffer(typedArray, useInts, canReturnBuffer);
-}
-
-// export const nativeArrayToArray = profile('nativeArrayToArray', function(array) {
-export function nativeArrayToArray(array): number[] {
-    if (!supportsDirectArrayBuffers()) {
-        const result = [];
-        for (let index = 0; index < array.length; index++) {
-            result[index] = array[index];
-        }
-
-        return result as number[];
-    }
-    return array;
-}
-export function createNativeArray(length, useInts = false): number[] {
-    if (useInts) {
-        return Array.create('int', length);
-    } else {
-        return Array.create('float', length);
-    }
 }
 
 export function parseDashEffect(value: string) {
@@ -483,9 +397,7 @@ export class LinearGradient extends ProxyClass<android.graphics.LinearGradient> 
         }
         if (param5 != null) {
             if (Array.isArray(param5)) {
-                const testArray = Array.create('float', param4.length);
-                param5.forEach((c, i) => (testArray[i] = c));
-                param5 = testArray;
+                param5 = arrayToNativeArray(param5, false, false);
             } else {
                 param5 = createColorParam(param5);
             }
