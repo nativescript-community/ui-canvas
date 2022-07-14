@@ -28,6 +28,8 @@ export default class Image extends Vue {
         Frame.topmost().goBack();
     }
     onDraw(event: { canvas }) {
+        try {
+            
         const canvas = event.canvas;
 
         // const deviceScale = screen.mainScreen.scale;
@@ -35,6 +37,9 @@ export default class Image extends Vue {
         console.log('onDraw canvas:', canvas.getWidth(), canvas.getHeight());
 
         canvas.drawBitmap(iconLocalFile, null, createRect(0, 50, 200, 300), null);
+        } catch (error) {
+            console.error(error, error.stack)
+        }
     }
 }
 </script>

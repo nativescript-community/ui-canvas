@@ -1,4 +1,4 @@
-import { Align, Canvas, Cap, DashPathEffect, LinearGradient, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF } from '@nativescript-community/ui-canvas';
+import { Align, Canvas, Cap, DashPathEffect, LinearGradient, Paint, Path, RadialGradient, Rect, RectF, Style, TileMode, createRect, createRectF, ColorMatrixColorFilter } from '@nativescript-community/ui-canvas';
 import { Label, Utils } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
@@ -120,7 +120,9 @@ export function drawOnImage(scale = 3, canvas?: Canvas) {
     canvas.save();
     // canvas.translate(10, 600);
     // canvas.drawBitmap(iconLocalFile, 0, 0, null);
-    canvas.drawBitmap(iconLocalFile, null, createRect(0, 0, 200, 300), null);
+    const bitmapPaint = new Paint();
+    bitmapPaint.setColorFilter(new ColorMatrixColorFilter([0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0, 0, 0, 1, 0]));
+    canvas.drawBitmap(iconLocalFile, null, createRect(0, 0, 200, 300), bitmapPaint);
     canvas.restore();
 
     // arc path
