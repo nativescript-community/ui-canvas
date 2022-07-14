@@ -318,7 +318,7 @@ export default abstract class Shape extends Observable {
         }
         canvas.save();
         if (this.rotate !== 0) {
-            canvas.rotate(this.rotate, this.originX, this.originY);
+            canvas.rotate(this.rotate, this.originX * width, this.originY * height);
         }
         if (dx !== 0 || dy !== 0) {
             canvas.translate(dx, dy);
