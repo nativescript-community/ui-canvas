@@ -7,7 +7,7 @@
         "noLib": false,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
-        "lib": ["es6", "dom"],
+        "lib": ["esnext", "dom"],
         "sourceMap": true,
         "pretty": true,
         "allowUnreachableCode": false,
