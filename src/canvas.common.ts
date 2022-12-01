@@ -1,5 +1,5 @@
 import { ChangedData, Observable, ObservableArray, Property, Screen, View, booleanConverter, colorProperty } from '@nativescript/core';
-import { layout } from '@nativescript/core/utils/utils';
+import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';
 
