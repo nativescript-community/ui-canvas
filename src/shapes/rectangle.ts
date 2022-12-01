@@ -1,6 +1,6 @@
 import { CoreTypes } from '@nativescript/core';
 import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
-import { layout } from '@nativescript/core/utils/utils';
+import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas, Rect, RectF, createRectF } from '../canvas';
 import Shape, { numberProperty, percentLengthProperty } from './shape';
 
