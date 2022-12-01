@@ -2,7 +2,7 @@ import { CSSType, Color, Device, Font, ImageSource, View } from '@nativescript/c
 import { android as androidApp } from '@nativescript/core/application';
 import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
 import lazy from '@nativescript/core/utils/lazy';
-import { layout } from '@nativescript/core/utils/utils';
+import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 
