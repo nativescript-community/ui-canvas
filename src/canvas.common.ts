@@ -3,11 +3,11 @@ import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';
 
-declare module '@nativescript/core/ui/core/view' {
-    interface View {
-        _raiseLayoutChangedEvent();
-    }
-}
+// declare module '@nativescript/core/ui/core/view' {
+//     interface ViewCommon {
+//         _raiseLayoutChangedEvent();
+//     }
+// }
 
 export function createRect(x: number, y: number, w: number, h: number) {
     return new Rect(x, y, x + w, y + h);

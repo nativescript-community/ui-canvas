@@ -1,6 +1,6 @@
 import { CSSType, Color, Device, Font, ImageSource, View } from '@nativescript/core';
 import { android as androidApp } from '@nativescript/core/application';
-import { FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import { FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
 import lazy from '@nativescript/core/utils/lazy';
 import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
@@ -284,10 +284,10 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             }
         }
     }
-    set fontWeight(weight: FontWeight) {
+    set fontWeight(weight: FontWeightType) {
         this.setFontWeight(weight);
     }
-    setFontWeight(weight: FontWeight) {
+    setFontWeight(weight: FontWeightType) {
         if (this.font.fontWeight !== weight) {
             this.mFontInternal = this.font.withFontWeight(weight);
             if (!this.handlesFont) {
@@ -295,10 +295,10 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             }
         }
     }
-    set fontStyle(style: FontStyle) {
+    set fontStyle(style: FontStyleType) {
         this.setFontStyle(style);
     }
-    setFontStyle(style: FontStyle) {
+    setFontStyle(style: FontStyleType) {
         if (this.font.fontStyle !== style) {
             this.mFontInternal = this.font.withFontStyle(style);
             if (!this.handlesFont) {

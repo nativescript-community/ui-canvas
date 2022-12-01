@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import { Font, FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
 import { CSSType, Color, View, backgroundColorProperty } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils/layout-helper';
 import { ImageSource } from '@nativescript/core/image-source';
@@ -1065,20 +1065,20 @@ export class Paint implements IPaint {
         return this.font.fontFamily || this.getUIFont().familyName;
     }
 
-    set fontWeight(weight: FontWeight) {
+    set fontWeight(weight: FontWeightType) {
         if (this.mFont && this.mFont.fontWeight === weight) {
             return;
         }
         this.setFontWeight(weight);
     }
-    setFontWeight(weight: FontWeight) {
+    setFontWeight(weight: FontWeightType) {
         this.mFont = this.font.withFontWeight(weight);
         this.mTextAttribs = null;
     }
-    set fontStyle(style: FontStyle) {
+    set fontStyle(style: FontStyleType) {
         this.setFontStyle(style);
     }
-    setFontStyle(style: FontStyle) {
+    setFontStyle(style: FontStyleType) {
         if (this.mFont && this.mFont.fontStyle === style) {
             return;
         }

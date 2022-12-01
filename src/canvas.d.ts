@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { Color, ImageSource, ObservableArray, View } from '@nativescript/core';
-import { Font, FontStyle, FontWeight } from '@nativescript/core/ui/styling/font';
+import { Font, FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
 export function createRect(x: number, y: number, w: number, h: number): Rect;
@@ -30,8 +30,8 @@ export class Paint {
     textSize: number;
     letterSpacing: number;
     fontFamily: string;
-    fontWeight: FontWeight;
-    fontStyle: FontStyle;
+    fontWeight: FontWeightType;
+    fontStyle: FontStyleType;
     font: Font;
     getFont(): Font;
     setFont(font: Font);
@@ -78,8 +78,8 @@ export class Paint {
     public getStrokeCap(): Cap;
     public setTextSize(value: number): void;
     public setFontFamily(familyName: string);
-    public setFontWeight(weight: FontWeight);
-    public setFontStyle(style: FontStyle);
+    public setFontWeight(weight: FontWeightType);
+    public setFontStyle(style: FontStyleType);
     public getFontFamily(): string;
     public setShader(value: any): any;
     // public descent(): number;
