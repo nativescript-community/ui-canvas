@@ -1,8 +1,6 @@
 /* eslint-disable no-redeclare */
-import { Font, FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
-import { CSSType, Color, View, backgroundColorProperty } from '@nativescript/core';
-import { layout } from '@nativescript/core/utils/layout-helper';
-import { ImageSource } from '@nativescript/core/image-source';
+import { CSSType, Color, Font, ImageSource, Utils, View } from '@nativescript/core';
+import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
 import { Canvas as ICanvas, FontMetrics as IFontMetrics, Matrix as IMatrix, Paint as IPaint, Path as IPath, PorterDuffXfermode as IPorterDuffXfermode, Rect as IRect, RectF as IRectF } from './canvas';
 import { CanvasBase } from './canvas.common';
 
@@ -2136,7 +2134,7 @@ export class CanvasView extends CanvasBase {
     }
     _onSizeChanged() {
         super._onSizeChanged();
-        this.onSizeChanged(layout.toDeviceIndependentPixels(this.getMeasuredWidth()), layout.toDeviceIndependentPixels(this.getMeasuredHeight()), -1, -1);
+        this.onSizeChanged(Utils.layout.toDeviceIndependentPixels(this.getMeasuredWidth()), Utils.layout.toDeviceIndependentPixels(this.getMeasuredHeight()), -1, -1);
     }
     redraw() {
         if (this.nativeViewProtected) {

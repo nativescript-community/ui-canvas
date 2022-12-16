@@ -1,5 +1,4 @@
-import { ChangedData, Observable, ObservableArray, Property, Screen, View, booleanConverter, colorProperty } from '@nativescript/core';
-import { layout } from '@nativescript/core/utils/layout-helper';
+import { ChangedData, Observable, ObservableArray, Property, Screen, Utils, View, booleanConverter, colorProperty } from '@nativescript/core';
 import { Canvas, Rect, RectF } from './canvas';
 import Shape from './shapes/shape';
 
@@ -174,8 +173,8 @@ export abstract class CanvasBase extends View {
     }
     shapesCanvas: Canvas;
     drawShapes() {
-        const width = layout.toDeviceIndependentPixels(this.getMeasuredWidth());
-        const height = layout.toDeviceIndependentPixels(this.getMeasuredHeight());
+        const width = Utils.layout.toDeviceIndependentPixels(this.getMeasuredWidth());
+        const height = Utils.layout.toDeviceIndependentPixels(this.getMeasuredHeight());
         if (this.shapesCanvas) {
             // this.shapesCanvas.release();
             this.shapesCanvas = null;

@@ -1,6 +1,4 @@
-
-import { Color } from '@nativescript/core/color';
-import { Length } from '@nativescript/core/ui/styling/style-properties';
+import { Color, Length } from '@nativescript/core';
 import { Cap, DashPathEffect, Join, Style } from './canvas';
 
 export function parseCap(value: string | number) {
@@ -59,7 +57,7 @@ export function parseShadow(value: string) {
         radius: hasRadius ? Length.parse(args[2]) : 3,
         dx: Length.toDevicePixels(Length.parse(args[0])),
         dy: Length.toDevicePixels(Length.parse(args[1])),
-        color: new Color(args[hasRadius ? 3 : 2]),
+        color: new Color(args[hasRadius ? 3 : 2])
     };
 }
 

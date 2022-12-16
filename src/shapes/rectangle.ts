@@ -1,6 +1,4 @@
-import { CoreTypes } from '@nativescript/core';
-import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
-import { layout } from '@nativescript/core/utils/layout-helper';
+import { CoreTypes, PercentLength, Utils } from '@nativescript/core';
 import { Canvas, Rect, RectF, createRectF } from '../canvas';
 import Shape, { numberProperty, percentLengthProperty } from './shape';
 
@@ -18,13 +16,13 @@ export default class Rectangle extends Shape {
     @percentLengthProperty top: CoreTypes.PercentLengthType = 0;
     @numberProperty borderRadius: number;
     getRect(canvas: Canvas) {
-        const availableWidth = layout.toDevicePixels(canvas.getWidth());
-        const availableHeight = layout.toDevicePixels(canvas.getHeight());
+        const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
+        const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
         const rect = createRectF(
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
-            layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left)),
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top)),
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
         );
         return rect;
     }

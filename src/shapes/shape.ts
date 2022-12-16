@@ -224,8 +224,7 @@ export default abstract class Shape extends Observable {
     @colorProperty({
         converter: parseShadow,
         paintSetter: applyShadow
-    })
-    shadow: Shadow;
+    }) shadow: Shadow;
     @stringProperty({ nonPaintProp: true }) visibility: CoreTypes.VisibilityType = 'visible';
     @stringProperty({ nonPaintProp: true }) horizontalAlignment: CoreTypes.HorizontalAlignmentType & 'middle';
     @stringProperty({ nonPaintProp: true }) verticalAlignment: CoreTypes.VerticalAlignmentType & 'center';

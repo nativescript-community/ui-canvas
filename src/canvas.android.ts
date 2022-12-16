@@ -1,12 +1,10 @@
-import { CSSType, Color, Device, Font, ImageSource, View } from '@nativescript/core';
-import { android as androidApp } from '@nativescript/core/application';
-import { FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
+import { Application, CSSType, Color, Device, Font, ImageSource, Utils, View } from '@nativescript/core';
 import lazy from '@nativescript/core/utils/lazy';
-import { layout } from '@nativescript/core/utils/layout-helper';
 import { Canvas as ICanvas, Paint as IPaint } from './canvas';
 import { CanvasBase, hardwareAcceleratedProperty } from './canvas.common';
 
 import { arrayToNativeArray } from '@nativescript-community/arraybuffers';
+import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font-interfaces';
 
 declare global {
     const __runtimeVersion: string;
@@ -74,7 +72,7 @@ function createColorParam(param) {
 // }
 function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: android.graphics.Rect) {
     if (!view.nativeView) {
-        const activity = androidApp.foregroundActivity;
+        const activity = Application.android.foregroundActivity;
         (view as any)._setupAsRootView(activity);
         (view as any)._isAddedToNativeVisualTree = true;
         (view as any).callLoaded();
@@ -170,7 +168,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
             }
         } else if (methodName === 'getWidth' || methodName === 'getHeight') {
             if (!target._bitmap) {
-                return layout.toDeviceIndependentPixels(native[methodName]());
+                return Utils.layout.toDeviceIndependentPixels(native[methodName]());
             }
         } else if (methodName === 'clear') {
             native.drawColor(android.graphics.Color.TRANSPARENT);
@@ -519,7 +517,7 @@ class CanvasView extends CanvasBase {
         super.initNativeView();
         this.nativeViewProtected.sizeChangedListener = new com.akylas.canvas.SizeChangedListener({
             onSizeChanged: (w, h, oldW, oldH) => {
-                this.onSizeChanged(layout.toDeviceIndependentPixels(w), layout.toDeviceIndependentPixels(h), oldW, oldH);
+                this.onSizeChanged(Utils.layout.toDeviceIndependentPixels(w), Utils.layout.toDeviceIndependentPixels(h), oldW, oldH);
             }
         });
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
