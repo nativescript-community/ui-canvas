@@ -1,11 +1,8 @@
+.DS_Store
+tsconfig.json
 node_modules/
 pnpm-global/
-src/
-bin/
-hooks/
-*.ts
-*.old
-tsconfig.json
-!*.d.ts
-*.jar
+CHANGELOG.md
+blueprint.md
 *.aar
+*.jar
