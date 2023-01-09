@@ -1,0 +1,8 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/ui-canvas",
+        "outDir": "./"
+    },
+    "include": ["../../src/ui-canvas/**/*", "../../references.d.ts", "../../tools/references.d.ts", "../../src/references.d.ts"]
+}

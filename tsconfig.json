@@ -1,36 +1,9 @@
 {
+    "extends": "./tools/tsconfig",
     "compilerOptions": {
-        "target": "es2017",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "removeComments": true,
-        "noLib": false,
-        "emitDecoratorMetadata": false,
-        "experimentalDecorators": true,
-        "lib": ["esnext", "dom"],
-        "sourceMap": true,
-        "pretty": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "noEmitHelpers": true,
-        "noEmitOnError": false,
-        "noImplicitAny": false,
-        "noImplicitReturns": true,
-        "noImplicitUseStrict": true,
-        "noFallthroughCasesInSwitch": true,
-        "sourceRoot": "../src",
-        "baseUrl": ".",
-        "outDir": "./plugin",
         "paths": {
-            "tns-core-modules": ["./node_modules/@nativescript/core"],
-            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
-            "@nativescript-community/ui-canvas": ["src/canvas"],
-            "@nativescript-community/ui-canvas/*": ["src/*"],
-            "*": ["node_modules/*"]
-        },
-        "plugins": [{ "transform": "@nativescript/webpack/dist/transformers/NativeClass", "type": "raw" }]
-    },
-    "include": ["src/**/*", "./references.d.ts"],
-    "exclude": ["node_modules", "platforms", "src/angular/**/*"],
-    "compileOnSave": false
+            "@nativescript-community/ui-canvas": ["src/ui-canvas/index"],
+            "@nativescript-community/ui-canvas/*": ["src/ui-canvas/*"],
+        }
+    }
 }

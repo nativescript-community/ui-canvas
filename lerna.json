@@ -1,9 +1,22 @@
 {
-    "packages": ["plugin"],
-    "version": "4.4.6",
+    "packages": [
+        "packages/*"
+    ],
+    "npmClient": "yarn",
+    "useWorkspaces": true,
     "command": {
         "publish": {
-            "conventionalCommits": true
+            "conventionalCommits": true,
+            "ignoreChanges": [
+                "ignored-file",
+                "*.md"
+            ]
+        },
+        "bootstrap": {
+            "npmClientArgs": [
+                "--no-package-lock"
+            ]
         }
-    }
+    },
+    "version": "4.4.6"
 }
