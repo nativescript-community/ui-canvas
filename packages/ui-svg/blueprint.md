@@ -35,7 +35,7 @@ or `SVGView` which is a basic svg view with support for auto sizing
 <SVGView height="30%" src="~/assets/svgs/Ghostscript_Tiger.svg" stretch="aspectFit" backgroundColor="red" />
 ```
 
-Or within and canvas extending view
+Or within and Canvas View extending `CanvasView` like `CanvasLabel`
 
 ```html
 <CanvasLabel>
