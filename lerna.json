@@ -1,4 +1,5 @@
 {
+    "version": "independent",
     "packages": [
         "packages/*"
     ],
@@ -36,6 +37,5 @@
                 "--no-package-lock"
             ]
         }
-    },
-    "version": "independent"
+    }
 }
