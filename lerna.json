@@ -18,6 +18,19 @@
                 "*.md"
             ]
         },
+        "version": {
+            "conventionalCommits": true,
+            "conventionalBlacklist": [
+                "chore"
+            ],
+            "changelogPreset": "angular",
+            "createRelease": "github",
+            "commitHooks": "false",
+            "noPrivate": true,
+            "ignoreChanges": [
+                "*.md"
+            ]
+        },
         "bootstrap": {
             "npmClientArgs": [
                 "--no-package-lock"
