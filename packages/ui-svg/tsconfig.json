@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/ui-svg",
+        "outDir": "./",
+        "paths": {
+            "@nativescript-community/ui-canvas": ["packages/ui-canvas/index"],
+            "@nativescript-community/ui-canvas/*": ["packages/ui-canvas/*"],
+        }
+    },
+    "include": ["../../src/ui-svg/**/*", "../../references.d.ts", "../../tools/references.d.ts", "../../src/references.d.ts"]
+}

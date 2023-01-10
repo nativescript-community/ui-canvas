@@ -1,0 +1,73 @@
+import { Color, CoreTypes, Observable } from '@nativescript/core';
+import { Canvas, CanvasView, Cap, Join, Paint, PorterDuffXfermode, Style } from '..';
+export interface ShapePropertyOptions {
+    converter?: Function;
+    paintGetterName?: string;
+    paintSetterName?: string;
+    nonPaintProp?: boolean;
+    paintSetter?: (paint: Paint, value: any) => void;
+}
+export declare function shapeProperty(converter: any, args: any): void | ((target: any, key?: string, descriptor?: PropertyDescriptor) => void);
+export declare function stringProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function stringProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export declare function colorProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function colorProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export declare function lengthProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function lengthProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export declare function percentLengthProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function percentLengthProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export declare function numberProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function numberProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export declare function booleanProperty(target: any, k?: any, desc?: PropertyDescriptor): any;
+export declare function booleanProperty(options: ShapePropertyOptions): (target: any, k?: any, desc?: PropertyDescriptor) => any;
+export interface Shadow {
+    dx: number;
+    dy: number;
+    radius: number;
+    color: Color;
+}
+export default abstract class Shape extends Observable {
+    mPaint: Paint;
+    mParent: WeakRef<CanvasView>;
+    get paint(): Paint;
+    set parent(value: CanvasView);
+    get parent(): CanvasView;
+    id: string;
+    toString(): string;
+    fillColor: Color;
+    strokeColor: Color;
+    color: Color;
+    strokeWidth: number;
+    dash: string;
+    paintStyle: Style;
+    strokeCap: Cap;
+    strokeJoin: Join;
+    textSize: number;
+    xfermode: PorterDuffXfermode;
+    fontSize: number;
+    antiAlias: boolean;
+    shadow: Shadow;
+    visibility: CoreTypes.VisibilityType;
+    horizontalAlignment: CoreTypes.HorizontalAlignmentType & 'middle';
+    verticalAlignment: CoreTypes.VerticalAlignmentType & 'center';
+    width: CoreTypes.PercentLengthType;
+    height: CoreTypes.PercentLengthType;
+    paddingLeft: CoreTypes.PercentLengthType;
+    paddingRight: CoreTypes.PercentLengthType;
+    paddingBottom: CoreTypes.PercentLengthType;
+    paddingTop: CoreTypes.PercentLengthType;
+    translateX: CoreTypes.PercentLengthType;
+    translateY: CoreTypes.PercentLengthType;
+    rotate: number;
+    originX: number;
+    originY: number;
+    scaleX: number;
+    scaleY: number;
+    ignorePadding: boolean;
+    protected handleAlignment: boolean;
+    abstract drawOnCanvas(canvas: Canvas, parent: CanvasView): void;
+    getWidth(availableWidth: number, availableHeight: number): number;
+    getHeight(availableWidth: number, availableHeight: number): number;
+    drawMyShapeOnCanvas(canvas: Canvas, parent: CanvasView, width: number, height: number): void;
+    notifyPropertyChange(propertyName: any, value: any, oldValue: any): void;
+}

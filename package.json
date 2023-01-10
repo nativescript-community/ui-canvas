@@ -19,7 +19,7 @@
         "plugin.watch.android": "npm i && npm-watch build.android",
         "plugin.watch.ios": "npm i && npm-watch build.ios",
         "plugin.watch": "npm run plugin.watch.tsc & npm run plugin.watch.android & npm run plugin.watch.ios",
-        "publish": "npm run clean && npm run build.all && npm run readme && npm run doc && lerna publish --no-private --create-release=github --force-publish",
+        "publish": "npm run clean && npm run build.all && npm run readme && npm run doc && lerna publish",
         "sync": "node ./tools/sync.js",
         "commitmsg": "commitlint -e $GIT_PARAMS",
         "build.all": "npm run build",
@@ -37,7 +37,8 @@
     "devDependencies": {
         "@nativescript-community/arraybuffers": "1.1.1",
         "@nativescript-community/plugin-seed-tools": "file:tools",
-        "@nativescript-community/template-snippet": "file:demo-snippets"
+        "@nativescript-community/template-snippet": "file:demo-snippets",
+        "@nativescript-community/text": "^1.5.11"
     },
     "repository": {
         "type": "git",

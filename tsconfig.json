@@ -4,6 +4,8 @@
         "paths": {
             "@nativescript-community/ui-canvas": ["src/ui-canvas/index"],
             "@nativescript-community/ui-canvas/*": ["src/ui-canvas/*"],
+            "@nativescript-community/ui-svg": ["src/ui-svg/index"],
+            "@nativescript-community/ui-svg/*": ["src/ui-svg/*"],
         }
     }
 }

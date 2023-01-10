@@ -2417,14 +2417,21 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=7c31d6&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=36c192&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@nativescript-community/perms": 2.2.21
     "@nativescript-community/tween": 0.0.14
     "@nativescript-community/ui-canvas": 4.4.6
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
-  checksum: a36791fb425b3c7468bdf832e401a779243fd7344224607c5e46656288aa1662813a6c903ae423f21ed96cbbb00582391f38f05431b97f4ae2031e97e4d99aee
+  checksum: 9eaa087932b39b89d1ae9a37efa45e646bbe7dd69d5dfb42484a26683f719ba112f7119724696e0750d39b6a99abde91a2e34866e660b2e3e1f08aff5ca441ed
+  languageName: node
+  linkType: hard
+
+"@nativescript-community/text@npm:^1.5.11":
+  version: 1.5.11
+  resolution: "@nativescript-community/text@npm:1.5.11"
+  checksum: f4fd9df93911266d3a4ab026d99828934f01b51be1183783d40a79e6c74e6e7def652ea2dc7d9abfb387bdf97a62c92781865798ee621df709c33dac06180c69
   languageName: node
   linkType: hard
 
@@ -2437,11 +2444,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/ui-canvas@4.4.6, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
+"@nativescript-community/ui-canvas@4.4.6, @nativescript-community/ui-canvas@^4.4.6, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvas@workspace:packages/ui-canvas"
   dependencies:
     "@nativescript-community/arraybuffers": ^1.0.0
+  languageName: unknown
+  linkType: soft
+
+"@nativescript-community/ui-svg@workspace:packages/ui-svg":
+  version: 0.0.0-use.local
+  resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
+  dependencies:
+    "@nativescript-community/text": ^1.5.11
+    "@nativescript-community/ui-canvas": ^4.4.6
   languageName: unknown
   linkType: soft
 
@@ -13706,6 +13722,7 @@ __metadata:
     "@nativescript-community/arraybuffers": 1.1.1
     "@nativescript-community/plugin-seed-tools": "file:tools"
     "@nativescript-community/template-snippet": "file:demo-snippets"
+    "@nativescript-community/text": ^1.5.11
     ts-node: ^8.10.2
   languageName: unknown
   linkType: soft

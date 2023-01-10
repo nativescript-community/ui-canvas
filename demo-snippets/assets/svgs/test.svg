@@ -1,0 +1,36 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" width="72" height="72" viewBox="0 0 72 72">
+    <defs>
+        <path id="oyx5a" d="M267 324c0-16.569 13.431-30 30-30 16.569 0 30 13.431 30 30 0 16.569-13.431 30-30 30-16.569 0-30-13.431-30-30z"/>
+        <path id="oyx5d" d="M297 317v14"/>
+        <path id="oyx5e" d="M304 324h-14"/>
+        <mask id="oyx5c" width="2" height="2" x="-1" y="-1">
+            <path fill="#fff" d="M267 294h60v60h-60z"/>
+            <use xlink:href="#oyx5a"/>
+        </mask>
+        <filter id="oyx5b" width="95" height="96" x="250" y="277" filterUnits="userSpaceOnUse">
+            <feOffset dx="1" dy="2" in="SourceGraphic" result="FeOffset1025Out"/>
+            <feGaussianBlur in="FeOffset1025Out" result="FeGaussianBlur1026Out" stdDeviation="2.8 2.8"/>
+        </filter>
+    </defs>
+    <g>
+        <g transform="translate(-262 -290)">
+            <g>
+                <g filter="url(#oyx5b)">
+                    <use fill="none" stroke-opacity=".34" stroke-width="0" mask="url(&quot;#oyx5c&quot;)" xlink:href="#oyx5a"/>
+                    <use fill="#575757" fill-opacity=".34" xlink:href="#oyx5a"/>
+                </g>
+                <use fill="#e10514" xlink:href="#oyx5a"/>
+            </g>
+            <g>
+                <g>
+                    <use fill="#fff" fill-opacity="0" stroke="#fff" stroke-miterlimit="50" stroke-width="2" xlink:href="#oyx5d"/>
+                </g>
+                <g>
+                    <use fill="#fff" fill-opacity="0" stroke="#fff" stroke-miterlimit="50" stroke-width="2" xlink:href="#oyx5e"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
