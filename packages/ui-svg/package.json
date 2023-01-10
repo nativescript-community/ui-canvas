@@ -7,7 +7,7 @@
     "typings": "./index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/nativescript-community/ui-svg"
+        "url": "https://github.com/nativescript-community/ui-canvas"
     },
     "nativescript": {
         "platforms": {
@@ -28,6 +28,7 @@
         "JavaScript",
         "Android",
         "iOS",
+        "svg",
         "Vue"
     ],
     "author": {
@@ -36,7 +37,7 @@
     },
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/nativescript-community/ui-svg/issues"
+        "url": "https://github.com/nativescript-community/ui-canvas/issues"
     },
     "dependencies": {
         "@nativescript-community/text": "^1.5.11",
