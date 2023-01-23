@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 4.4.7 (2023-01-23)
+
+
+### Bug Fixes
+
+* **android:** improved native-api-usage ([ac262b9](https://github.com/nativescript-community/ui-canvas/commit/ac262b977fa84d2d4a1c1b089822fa38a4601d16))
+
+
+
+
+
 ## [4.4.6](https://github.com/nativescript-community/ui-canvas/compare/v4.4.5...v4.4.6) (2022-12-16)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
