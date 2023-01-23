@@ -2339,7 +2339,7 @@ __metadata:
 
 "@nativescript-community/plugin-seed-tools@file:tools::locator=root-workspace-0b6124%40workspace%3A.":
   version: 1.0.0
-  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=9cb4d4&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=4e5ab1&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@angular/animations": ~14.2.12
     "@angular/common": ~14.2.12
@@ -2354,7 +2354,7 @@ __metadata:
     "@commitlint/cli": ~17.4.0
     "@commitlint/config-conventional": ~17.4.0
     "@nativescript/angular": ~14.2.8
-    "@nativescript/core": ~8.4.3
+    "@nativescript/core": ~8.4.4
     "@nativescript/eslint-plugin": 0.0.4
     "@nativescript/types-android": ~8.4.0
     "@nativescript/types-ios": ~8.4.0
@@ -2399,7 +2399,7 @@ __metadata:
     vue: ~2.6.14
     yargs: ^17.6.2
     zone.js: ~0.12.0
-  checksum: edf813cc65b30d8031b8178e629c2f0f70d8ebae513bc4eb9b0b62d31def2b26bdd24b3467bcaadd5bfa2d34df7d9ebc1207ed9916e3d9cfa943ad6f3567e5de
+  checksum: 902bda23b4500a4e03da98a82cf8ba55638202b0c98fa3c39afafa70458082a3a3a24052d2a25e3d86f9a4137ca2a1a1ce84ab9e94a03ffab8076bf878cd1673
   languageName: node
   linkType: hard
 
@@ -2525,7 +2525,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript/core@npm:~8.4.1, @nativescript/core@npm:~8.4.3":
+"@nativescript/core@npm:~8.4.1":
   version: 8.4.3
   resolution: "@nativescript/core@npm:8.4.3"
   dependencies:
@@ -2536,6 +2536,20 @@ __metadata:
     reduce-css-calc: ^2.1.7
     tslib: ^2.0.0
   checksum: d958c3d59bcddcb949ea449c8d6fa61b1e9a794721e2c52ebc16591f645d198635373390952dfce22280bfbae5b9929dc631ce4977782dd886e3dc7cb11060a1
+  languageName: node
+  linkType: hard
+
+"@nativescript/core@npm:~8.4.4":
+  version: 8.4.4
+  resolution: "@nativescript/core@npm:8.4.4"
+  dependencies:
+    "@nativescript/hook": ~2.0.0
+    acorn: ^8.7.0
+    css-tree: ^1.1.2
+    emoji-regex: ^10.2.1
+    reduce-css-calc: ^2.1.7
+    tslib: ^2.0.0
+  checksum: 24aed7977feb3c40c4d288b2e75e05cd3128e6c35490611859be21beae99c4d8236ed12d7cb77fa096dc20551967ebd461da8167bbace79cf3bccb348bd6d65a
   languageName: node
   linkType: hard
 
