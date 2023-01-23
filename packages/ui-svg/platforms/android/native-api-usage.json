@@ -1,5 +1,7 @@
 {
     "uses": [
-        "com.caverock.androidsvg:SVG*","com.caverock.androidsvg:PreserveAspectRatio*","com.caverock.androidsvg:RenderOptions*"
+        "com.caverock.androidsvg:SVG",
+        "com.caverock.androidsvg:PreserveAspectRatio",
+        "com.caverock.androidsvg:RenderOptions"
     ]
 }
