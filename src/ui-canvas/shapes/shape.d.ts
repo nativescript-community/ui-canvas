@@ -48,8 +48,8 @@ export default abstract class Shape extends Observable {
     antiAlias: boolean;
     shadow: Shadow;
     visibility: CoreTypes.VisibilityType;
-    horizontalAlignment: CoreTypes.HorizontalAlignmentType & 'middle';
-    verticalAlignment: CoreTypes.VerticalAlignmentType & 'center';
+    horizontalAlignment: CoreTypes.HorizontalAlignmentType | 'middle';
+    verticalAlignment: CoreTypes.VerticalAlignmentType | 'center';
     width: CoreTypes.PercentLengthType;
     height: CoreTypes.PercentLengthType;
     paddingLeft: CoreTypes.PercentLengthType;
