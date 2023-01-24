@@ -2339,7 +2339,7 @@ __metadata:
 
 "@nativescript-community/plugin-seed-tools@file:tools::locator=root-workspace-0b6124%40workspace%3A.":
   version: 1.0.0
-  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=4e5ab1&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=178f65&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@angular/animations": ~14.2.12
     "@angular/common": ~14.2.12
@@ -2354,7 +2354,7 @@ __metadata:
     "@commitlint/cli": ~17.4.0
     "@commitlint/config-conventional": ~17.4.0
     "@nativescript/angular": ~14.2.8
-    "@nativescript/core": ~8.4.4
+    "@nativescript/core": ~8.4.3
     "@nativescript/eslint-plugin": 0.0.4
     "@nativescript/types-android": ~8.4.0
     "@nativescript/types-ios": ~8.4.0
@@ -2399,7 +2399,7 @@ __metadata:
     vue: ~2.6.14
     yargs: ^17.6.2
     zone.js: ~0.12.0
-  checksum: 902bda23b4500a4e03da98a82cf8ba55638202b0c98fa3c39afafa70458082a3a3a24052d2a25e3d86f9a4137ca2a1a1ce84ab9e94a03ffab8076bf878cd1673
+  checksum: 26090570200f03a9a7e757cc6bfa51341696d1b69280647ee6632fb1af310a06c2f7ec2f096280020801774569b35a2968225613643cc955889522e7c9407048
   languageName: node
   linkType: hard
 
@@ -2417,14 +2417,14 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=36c192&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=9fdfb4&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@nativescript-community/perms": 2.2.21
     "@nativescript-community/tween": 0.0.14
     "@nativescript-community/ui-canvas": 4.4.6
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
-  checksum: 9eaa087932b39b89d1ae9a37efa45e646bbe7dd69d5dfb42484a26683f719ba112f7119724696e0750d39b6a99abde91a2e34866e660b2e3e1f08aff5ca441ed
+  checksum: 625767682897e985d2d267aa48b53c7907a9b3c5c0f2d364405ba247831ddc4033587d99ae5fde163d371402a8a728f11e0f7e64f727bbb1e5ea9f18950f9618
   languageName: node
   linkType: hard
 
@@ -2444,7 +2444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/ui-canvas@4.4.6, @nativescript-community/ui-canvas@^4.4.6, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
+"@nativescript-community/ui-canvas@^4.4.8, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvas@workspace:packages/ui-canvas"
   dependencies:
@@ -2452,12 +2452,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@nativescript-community/ui-canvas@npm:4.4.6":
+  version: 4.4.6
+  resolution: "@nativescript-community/ui-canvas@npm:4.4.6"
+  dependencies:
+    "@nativescript-community/arraybuffers": ^1.0.0
+  checksum: 6f5e4e7b2381c72fadd29dc5c9fee49598f9ac0565106b70607238391979fbdbd5abcd2d0766f54ca0a8e993823d0422c2b827386ae02523ef94348ff0d9fe7c
+  languageName: node
+  linkType: hard
+
 "@nativescript-community/ui-svg@workspace:packages/ui-svg":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   dependencies:
     "@nativescript-community/text": ^1.5.11
-    "@nativescript-community/ui-canvas": ^4.4.6
+    "@nativescript-community/ui-canvas": ^4.4.8
   languageName: unknown
   linkType: soft
 
@@ -2539,9 +2548,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript/core@npm:~8.4.4":
-  version: 8.4.4
-  resolution: "@nativescript/core@npm:8.4.4"
+"@nativescript/core@npm:~8.4.3":
+  version: 8.4.7
+  resolution: "@nativescript/core@npm:8.4.7"
   dependencies:
     "@nativescript/hook": ~2.0.0
     acorn: ^8.7.0
@@ -2549,7 +2558,7 @@ __metadata:
     emoji-regex: ^10.2.1
     reduce-css-calc: ^2.1.7
     tslib: ^2.0.0
-  checksum: 24aed7977feb3c40c4d288b2e75e05cd3128e6c35490611859be21beae99c4d8236ed12d7cb77fa096dc20551967ebd461da8167bbace79cf3bccb348bd6d65a
+  checksum: f568e09b1e97b3381089af9dc408e96c4dcf75b1449f86cc7458158d975d50d19a64fe8e991ca954ee847cee1492defb9d0b95dfa142d1180e5a17d8ebd20747
   languageName: node
   linkType: hard
 
