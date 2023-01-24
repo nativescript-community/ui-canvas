@@ -1,7 +1,7 @@
 import { init } from '@nativescript-community/text';
 import { Canvas, CanvasView, PorterDuffMode } from '@nativescript-community/ui-canvas';
 import Shape, { lengthProperty, percentLengthProperty } from '@nativescript-community/ui-canvas/shapes/shape';
-import { CSSType, CoreTypes, ImageAsset, Property, View, zeroLength } from '@nativescript/core';
+import { CSSType, CoreTypes, ImageAsset, Property, View } from '@nativescript/core';
 
 // init text to ensure font overrides are called
 init();
@@ -43,8 +43,8 @@ export abstract class SVG extends Shape {
     _parent: WeakRef<any>;
     @percentLengthProperty width: CoreTypes.PercentLengthType;
     @percentLengthProperty height: CoreTypes.PercentLengthType;
-    @lengthProperty left: CoreTypes.LengthType = zeroLength;
-    @lengthProperty top: CoreTypes.LengthType = zeroLength;
+    @lengthProperty left: CoreTypes.LengthType = CoreTypes.zeroLength;
+    @lengthProperty top: CoreTypes.LengthType = CoreTypes.zeroLength;
     blendingMode: PorterDuffMode;
     cache: boolean = true;
     drawOnCanvas(canvas: Canvas, parent: CanvasView) {}
