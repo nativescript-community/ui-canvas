@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.7](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.6...@nativescript-community/ui-svg@0.1.7) (2023-01-28)
+
+
+### Bug Fixes
+
+* **ui-svg:** android fix native-api-usage ([e7df868](https://github.com/nativescript-community/ui-canvas/commit/e7df868526761be7611731c41111b82138fc939c))
+
+
+
+
+
 ## [0.1.6](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.5...@nativescript-community/ui-svg@0.1.6) (2023-01-24)
 
 **Note:** Version bump only for package @nativescript-community/ui-svg
