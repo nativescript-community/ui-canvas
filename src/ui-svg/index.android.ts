@@ -152,16 +152,17 @@ export class SVG extends SVGBase {
             const nativeWidth = box ? box.width() : width;
             const nativeHeight = box ? box.height() : height;
 
-            const nativeAspectRatio = nativeWidth / nativeHeight;
-            const boundedAspectRatio = width / height;
+            // const nativeAspectRatio = nativeWidth / nativeHeight;
+            // const boundedAspectRatio = width / height;
 
-            let paintedWidth = width;
-            let paintedHeight = height;
-            if (nativeAspectRatio >= boundedAspectRatio) {
-                paintedHeight = paintedWidth / nativeAspectRatio;
-            } else {
-                paintedWidth = paintedHeight * nativeAspectRatio;
-            }
+            const paintedWidth = width;
+            const paintedHeight = height;
+            // does not seem like we need this. Handled by options?
+            // if (nativeAspectRatio >= boundedAspectRatio) {
+            //     paintedHeight = paintedWidth / nativeAspectRatio;
+            // } else {
+            //     paintedWidth = paintedHeight * nativeAspectRatio;
+            // }
             const xOrigin = (width - paintedWidth) / 2.0;
             const yOrigin = (height - paintedHeight) / 2.0;
             options = options.preserveAspectRatio(this._preserveAspectRatio);
