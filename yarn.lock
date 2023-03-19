@@ -2409,7 +2409,8 @@ __metadata:
   dependencies:
     "@nativescript-community/perms": 2.2.21
     "@nativescript-community/tween": 0.0.14
-    "@nativescript-community/ui-canvas": 4.4.6
+    "@nativescript-community/ui-canvas": "*"
+    "@nativescript-community/ui-svg": "*"
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
   languageName: unknown
@@ -2417,14 +2418,15 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=9fdfb4&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=48e09e&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@nativescript-community/perms": 2.2.21
     "@nativescript-community/tween": 0.0.14
-    "@nativescript-community/ui-canvas": 4.4.6
+    "@nativescript-community/ui-canvas": "*"
+    "@nativescript-community/ui-svg": "*"
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
-  checksum: 625767682897e985d2d267aa48b53c7907a9b3c5c0f2d364405ba247831ddc4033587d99ae5fde163d371402a8a728f11e0f7e64f727bbb1e5ea9f18950f9618
+  checksum: ca9d6d4ed2e0238fdb1f0594443284c3bc50187236e9c9078bf07b48be9dfd1f0a1576c8326eccab7cf6ed20ed8aad01451e885c83f47350224198dc83acd92c
   languageName: node
   linkType: hard
 
@@ -2444,7 +2446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/ui-canvas@^4.4.8, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
+"@nativescript-community/ui-canvas@*, @nativescript-community/ui-canvas@^4.4.12, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvas@workspace:packages/ui-canvas"
   dependencies:
@@ -2452,21 +2454,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@nativescript-community/ui-canvas@npm:4.4.6":
-  version: 4.4.6
-  resolution: "@nativescript-community/ui-canvas@npm:4.4.6"
-  dependencies:
-    "@nativescript-community/arraybuffers": ^1.0.0
-  checksum: 6f5e4e7b2381c72fadd29dc5c9fee49598f9ac0565106b70607238391979fbdbd5abcd2d0766f54ca0a8e993823d0422c2b827386ae02523ef94348ff0d9fe7c
-  languageName: node
-  linkType: hard
-
-"@nativescript-community/ui-svg@workspace:packages/ui-svg":
+"@nativescript-community/ui-svg@*, @nativescript-community/ui-svg@workspace:packages/ui-svg":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   dependencies:
     "@nativescript-community/text": ^1.5.11
-    "@nativescript-community/ui-canvas": ^4.4.8
+    "@nativescript-community/ui-canvas": ^4.4.12
   languageName: unknown
   linkType: soft
 
@@ -2534,21 +2527,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript/core@npm:~8.4.1":
-  version: 8.4.3
-  resolution: "@nativescript/core@npm:8.4.3"
-  dependencies:
-    "@nativescript/hook": ~2.0.0
-    acorn: ^8.7.0
-    css-tree: ^1.1.2
-    emoji-regex: ^10.2.1
-    reduce-css-calc: ^2.1.7
-    tslib: ^2.0.0
-  checksum: d958c3d59bcddcb949ea449c8d6fa61b1e9a794721e2c52ebc16591f645d198635373390952dfce22280bfbae5b9929dc631ce4977782dd886e3dc7cb11060a1
-  languageName: node
-  linkType: hard
-
-"@nativescript/core@npm:~8.4.3":
+"@nativescript/core@npm:~8.4.1, @nativescript/core@npm:~8.4.3":
   version: 8.4.7
   resolution: "@nativescript/core@npm:8.4.7"
   dependencies:
@@ -3437,10 +3416,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.11.18, @types/node@npm:~18.11.15":
+"@types/node@npm:18.11.18":
   version: 18.11.18
   resolution: "@types/node@npm:18.11.18"
   checksum: 03f17f9480f8d775c8a72da5ea7e9383db5f6d85aa5fefde90dd953a1449bd5e4ffde376f139da4f3744b4c83942166d2a7603969a6f8ea826edfb16e6e3b49d
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:~18.11.15":
+  version: 18.11.19
+  resolution: "@types/node@npm:18.11.19"
+  checksum: d7cd19fcfc59cbdd3f9ba0b4072cb7adc21bd575bd8eb7d7e698975e63564aaa83f03434f32b12331f84f73d0b369d9cbe2371e359d9d7f5c3361f4987f4f7da
   languageName: node
   linkType: hard
 
@@ -7822,7 +7808,7 @@ __metadata:
 
 "fsevents@patch:fsevents@^2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -13594,7 +13580,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -13607,7 +13593,7 @@ __metadata:
 
 "resolve@patch:resolve@^2.0.0-next.3#~builtin<compat/resolve>":
   version: 2.0.0-next.4
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#~builtin<compat/resolve>::version=2.0.0-next.4&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#~builtin<compat/resolve>::version=2.0.0-next.4&hash=07638b"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -15366,17 +15352,17 @@ __metadata:
 
 "typescript@patch:typescript@^3 || ^4#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.9.4
-  resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=ad5954"
+  resolution: "typescript@patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 1caaea6cb7f813e64345190fddc4e6c924d0b698ab81189b503763c4a18f7f5501c69362979d36e19c042d89d936443e768a78b0675690b35eb663d19e0eae71
+  checksum: 37f6e2c3c5e2aa5934b85b0fddbf32eeac8b1bacf3a5b51d01946936d03f5377fe86255d4e5a4ae628fd0cd553386355ad362c57f13b4635064400f3e8e05b9d
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@^3.5.3#~builtin<compat/typescript>":
   version: 3.9.10
-  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=3bd3d3"
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -15386,7 +15372,7 @@ __metadata:
 
 "typescript@patch:typescript@~4.2.3#~builtin<compat/typescript>":
   version: 4.2.4
-  resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=334f98"
+  resolution: "typescript@patch:typescript@npm%3A4.2.4#~builtin<compat/typescript>::version=4.2.4&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -15396,11 +15382,11 @@ __metadata:
 
 "typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
-  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=0102e9"
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 301459fc3eb3b1a38fe91bf96d98eb55da88a9cb17b4ef80b4d105d620f4d547ba776cc27b44cc2ef58b66eda23fe0a74142feb5e79a6fb99f54fc018a696afa
+  checksum: 563a0ef47abae6df27a9a3ab38f75fc681f633ccf1a3502b1108e252e187787893de689220f4544aaf95a371a4eb3141e4a337deb9895de5ac3c1ca76430e5f0
   languageName: node
   linkType: hard
 

@@ -5,7 +5,8 @@
     "dependencies": {
         "@nativescript-community/perms": "2.2.21",
         "@nativescript-community/tween": "0.0.14",
-        "@nativescript-community/ui-canvas": "4.4.6",
+        "@nativescript-community/ui-canvas": "*",
+        "@nativescript-community/ui-svg": "*",
         "vue-class-component": "7.2.6",
         "vue-property-decorator": "9.1.2"
     },

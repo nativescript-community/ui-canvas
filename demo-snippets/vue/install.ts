@@ -6,9 +6,11 @@ import Image from './Image.vue';
 import Complex from './Complex.vue';
 import SVG from './SVG.vue';
 import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
+import SVGPlugin from '@nativescript-community/ui-svg/vue';
 
 export function installPlugin() {
     Vue.use(CanvasPlugin);
+    Vue.use(SVGPlugin);
 }
 
 export const demos = [
