@@ -3,10 +3,17 @@
     "private": true,
     "version": "0.0.1",
     "dependencies": {
-        "@nativescript-community/perms": "2.2.21",
+        "@mdi/font": "6.5.95",
+        "@nativescript-community/perms": "2.3.0",
         "@nativescript-community/tween": "0.0.14",
         "@nativescript-community/ui-canvas": "*",
+        "@nativescript-community/ui-canvaslabel": "*",
+        "@nativescript-community/ui-collectionview": "*",
         "@nativescript-community/ui-svg": "*",
+        "copy-webpack-plugin": "^11.0.0",
+        "nativescript-vue-template-compiler": "~2.9.3",
+        "scss-symbols-parser": "^2.0.1",
+        "string-replace-loader": "^3.1.0",
         "vue-class-component": "7.2.6",
         "vue-property-decorator": "9.1.2"
     },

@@ -1,0 +1,11 @@
+
+
+
+dependencies {
+	def androidxVersion =  project.hasProperty("androidxVersion") ? project.androidxVersion : "1.2.0"
+	def androidXAppCompat =  project.hasProperty("androidXAppCompat") ? project.androidXAppCompat : "1.1.0"
+
+	implementation "androidx.appcompat:appcompat:$androidXAppCompat"
+	implementation "androidx.core:core:$androidxVersion"
+    // compile 'com.lsjwzh.widget:FastTextView:1.2.20'
+}

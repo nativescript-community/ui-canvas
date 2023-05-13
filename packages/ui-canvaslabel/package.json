@@ -1,0 +1,46 @@
+{
+    "name": "@nativescript-community/ui-canvaslabel",
+    "version": "1.1.8",
+    "description": "Alternative to the built-in NativeScript Label but uses canvas which allows extreme complexity and customization.",
+    "main": "./canvaslabel",
+    "sideEffects": false,
+    "typings": "./canvaslabel.d.ts",
+    "nativescript": {
+        "platforms": {
+            "android": "6.1.0",
+            "ios": "6.1.0"
+        }
+    },
+    "scripts": {
+        "build": "npm run tsc",
+        "build.all": "npm run build",
+        "build.angular": "ng-packagr -p ../../src/ui-svg/angular/ng-package.json -c ../../src/ui-svg/angular/tsconfig.json",
+        "readme": "readme generate -c ../../tools/readme/blueprint.json",
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-svg' --parents --cwd=../../src/ui-svg && tsc -skipLibCheck -d",
+        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "iOS",
+        "Vue",
+        "Svelte"
+    ],
+    "author": {
+        "name": "Martin Guillon",
+        "email": "martin@akylas.fr"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/nativescript-community/ui-canvas/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nativescript-community/ui-canvas"
+    },
+    "dependencies": {
+        "@nativescript-community/text": "^1.5.19",
+        "@nativescript-community/ui-canvas": "^4.4.12"
+    }
+}

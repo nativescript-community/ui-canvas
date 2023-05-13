@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/ui-canvaslabel",
+        "outDir": "./",
+        "paths": {
+            "@nativescript-community/ui-canvas": ["packages/ui-canvas/index"],
+            "@nativescript-community/ui-canvas/*": ["packages/ui-canvas/*"],
+            "@nativescript-community/ui-canvaslabel": ["packages/ui-canvaslabel/index"],
+            "@nativescript-community/ui-canvaslabel/*": ["packages/ui-canvaslabel/*"]
+        }
+    },
+    "include": ["../../src/ui-canvaslabel/**/*", "../../references.d.ts", "../../tools/references.d.ts", "../../src/references.d.ts"]
+}
