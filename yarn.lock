@@ -2316,7 +2316,7 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=7a6e8d&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=bbcb24&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": 6.5.95
     "@nativescript-community/perms": 2.3.0
@@ -2331,15 +2331,16 @@ __metadata:
     string-replace-loader: ^3.1.0
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
-  checksum: 30dd4c90f7bf27c04229e2c09e5194ba527b1ef69ca5cb39126f4d589873d01aac0e7d422819b4eeea69e7087c0c01b5cd4cf5732a5c5cc12bb26ac40b935326
+  checksum: d2dc556f0945d7b431a4de7dfadad1a50977848872298a4b22c6cab954797257acec6334029dc71127d6527281c87c6657b8de396c409a04849bedb3c686e40b
   languageName: node
   linkType: hard
 
-"@nativescript-community/text@portal:/Volumes/dev/nativescript/nativescript-text/packages/text::locator=root-workspace-0b6124%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@nativescript-community/text@portal:/Volumes/dev/nativescript/nativescript-text/packages/text::locator=root-workspace-0b6124%40workspace%3A."
+"@nativescript-community/text@npm:^1.5.23":
+  version: 1.5.24
+  resolution: "@nativescript-community/text@npm:1.5.24"
+  checksum: b8ae262b6a952cbaf116e85cb32bbf1e65ed4d4326e21f552f6e4be53a23ada8abcfbd28a3d0eb07c2127829154fa475931c4b543b7c88fc591764bec6ff8528
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@nativescript-community/tween@npm:0.0.14":
   version: 0.0.14
@@ -2362,7 +2363,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvaslabel@workspace:packages/ui-canvaslabel"
   dependencies:
-    "@nativescript-community/text": ^1.5.19
+    "@nativescript-community/text": ^1.5.23
     "@nativescript-community/ui-canvas": ^4.4.12
   languageName: unknown
   linkType: soft
@@ -2378,7 +2379,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   dependencies:
-    "@nativescript-community/text": ^1.5.11
     "@nativescript-community/ui-canvas": ^4.4.12
   languageName: unknown
   linkType: soft
@@ -13796,7 +13796,7 @@ __metadata:
     "@nativescript-community/arraybuffers": 1.1.1
     "@nativescript-community/plugin-seed-tools": "file:tools"
     "@nativescript-community/template-snippet": "file:demo-snippets"
-    "@nativescript-community/text": ^1.5.11
+    "@nativescript-community/text": ^1.5.23
     ts-node: ^8.10.2
   languageName: unknown
   linkType: soft

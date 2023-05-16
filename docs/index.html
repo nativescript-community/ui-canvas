@@ -190,14 +190,14 @@ if you use <code>pnpm</code> then run <code>pnpm i</code></p>
 <a href="#build" id="build" style="color: inherit; text-decoration: none;">
   <h3>Build</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">build.all</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">build.all</span>
 </code></pre>
 <p>WARNING: it seems <code>yarn build.all</code> wont always work (not finding binaries in <code>node_modules/.bin</code>) which is why the doc explicitly uses <code>npm run</code></p>
 
 <a href="#demos" id="demos" style="color: inherit; text-decoration: none;">
   <h3>Demos</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.[ng</span><span class="hl-2">|react|svelte|vue].[ios|android]</span><br/><br/><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.svelte.ios</span><span class="hl-2"> </span><span class="hl-14"># Example</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.[ng</span><span class="hl-2">|</span><span class="hl-8">react</span><span class="hl-2">|</span><span class="hl-8">svelte</span><span class="hl-2">|</span><span class="hl-8">vue].[ios</span><span class="hl-2">|</span><span class="hl-8">android]</span><br/><br/><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.svelte.ios</span><span class="hl-2"> </span><span class="hl-14"># Example</span>
 </code></pre>
 <p>Demo setup is a bit special in the sense that if you want to modify/add demos you dont work directly in <code>demo-[ng|react|svelte|vue]</code>
 Instead you work in <code>demo-snippets/[ng|react|svelte|vue]</code>
@@ -214,24 +214,24 @@ You can start from the <code>install.ts</code> of each flavor to see how to regi
 </a>
 <p>You can update the repo files quite easily</p>
 <p>First update the submodules</p>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">update</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">update</span>
 </code></pre>
 <p>Then commit the changes
 Then update common files</p>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">sync</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">sync</span>
 </code></pre>
 <p>Then you can run <code>yarn|pnpm</code>, commit changed files if any</p>
 
 <a href="#update-readme" id="update-readme" style="color: inherit; text-decoration: none;">
   <h3>Update readme</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">readme</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">readme</span>
 </code></pre>
 
 <a href="#update-doc" id="update-doc" style="color: inherit; text-decoration: none;">
   <h3>Update doc</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">doc</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">doc</span>
 </code></pre>
 
 <a href="#publish" id="publish" style="color: inherit; text-decoration: none;">
@@ -239,7 +239,7 @@ Then update common files</p>
 </a>
 <p>The publishing is completely handled by <code>lerna</code> (you can add <code>-- --bump major</code> to force a major release)
 Simply run </p>
-<pre><code class="language-shell"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">publish</span>
+<pre><code class="language-shell"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">publish</span>
 </code></pre>
 
 <a href="#modifying-submodules" id="modifying-submodules" style="color: inherit; text-decoration: none;">
@@ -253,6 +253,221 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#questions"></a></p>
 
 <a href="#questions" id="questions" style="color: inherit; text-decoration: none;">
+  <h2>Questions</h2>
+</a>
+<p>If you have any questions/issues/comments please feel free to create an issue or start a conversation in the <a href="https://nativescript.org/discord">NativeScript Community Discord</a>.</p>
+</details><details>
+<summary><b>ui-canvaslabel</b></summary>
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+<!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      DO NOT EDIT THIS READEME DIRECTLY! Edit "bluesprint.md" instead.
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<h1 align="center">@nativescript-community/ui-canvaslabel</h1>
+<p align="center">
+        <a href="https://npmcharts.com/compare/@nativescript-community/ui-canvaslabel?minimal=true"><img alt="Downloads per month" src="https://img.shields.io/npm/dm/@nativescript-community/ui-canvaslabel.svg" height="20"/></a>
+<a href="https://www.npmjs.com/package/@nativescript-community/ui-canvaslabel"><img alt="NPM Version" src="https://img.shields.io/npm/v/@nativescript-community/ui-canvaslabel.svg" height="20"/></a>
+    </p>
+
+<p align="center">
+  <b>Alternative to the built-in NativeScript Label but uses canvas which allows extreme complexity and customization.</b></br>
+  <sub><sub>
+</p>
+
+<br />
+
+
+
+<p><a href="#table-of-contents"></a></p>
+<p><a href="#table-of-contents"></a></p>
+
+<a href="#table-of-contents-1" id="table-of-contents-1" style="color: inherit; text-decoration: none;">
+  <h2>Table of Contents</h2>
+</a>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#performances">Performances</a></li>
+<li><a href="#todo--limitations">TODO / Limitations</a><ul>
+<li><a href="#examples">Examples:</a></li>
+</ul>
+</li>
+<li><a href="#demos-and-development">Demos and Development</a><ul>
+<li><a href="#repo-setup">Repo Setup</a></li>
+<li><a href="#build">Build</a></li>
+<li><a href="#demos">Demos</a></li>
+</ul>
+</li>
+<li><a href="#contributing">Contributing</a><ul>
+<li><a href="#update-repo-">Update repo </a></li>
+<li><a href="#update-readme-">Update readme </a></li>
+<li><a href="#update-doc-">Update doc </a></li>
+<li><a href="#publish">Publish</a></li>
+<li><a href="#modifying-submodules">modifying submodules</a></li>
+</ul>
+</li>
+<li><a href="#questions">Questions</a></li>
+</ul>
+<p>A NativeScript Label widget. This widget takes a different approch from other label components. It is based on <code>nativescript-canvas</code> and allows drawing
+multiple labels within one single widget.
+It allows extreme complexity and customization.</p>
+<p><a href="#installation"></a></p>
+<p><a href="#installation"></a></p>
+
+<a href="#installation-1" id="installation-1" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
+</a>
+<p>Run the following command from the root of your project:</p>
+<p><code>ns plugin add @nativescript-community/ui-canvaslabel</code></p>
+<p><a href="#configuration"></a></p>
+<p><a href="#configuration"></a></p>
+
+<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
+  <h2>Configuration</h2>
+</a>
+<p>It works almost like a normal label.
+You can create spans, just like with the {N} labels. However there is a big difference with the {N} component.
+<code>CSpan</code> do not support css class and never will! It was actually made on purpose to make to make the component much more efficient.</p>
+<p>For now <code>CanvasLabel</code> do not auto size itself. I will add some way of doing it in the future but in a sense it defies the purpose of this component.</p>
+<p>The <code>CanvasLabel</code> component supports most labels properties:
+<code>color</code>, <code>fontSize</code>,<code>fontFamily</code>,<code>fontStyle</code>, <code>fontWeight</code>,<code>textAlignment</code>. Those can be defined through css.</p>
+<p>Now with <code>CanvasLabel</code> you don&#39;t set the text directly. Instead you create <code>CSpan</code> or <code>CGroup</code></p>
+<p>Here is a complex Vue layout as an example</p>
+<pre><code class="language-html"><span class="hl-0">&lt;</span><span class="hl-10">CanvasLabel</span><span class="hl-2"> </span><span class="hl-3">id</span><span class="hl-2">=</span><span class="hl-4">&quot;canvaslabel&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;10&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;white&quot;</span><span class="hl-2"> </span><span class="hl-3">backgroundColor</span><span class="hl-2">=</span><span class="hl-4">&quot;darkgray&quot;</span><span class="hl-0">&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;</span><span class="hl-10">CGroup</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;18&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;middle&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingLeft</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-0">&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;item.text1&quot;</span><span class="hl-2"> </span><span class="hl-3">fontWeight</span><span class="hl-2">=</span><span class="hl-4">&quot;bold&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39;\n&#39; + item.text2&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;#ccc&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;16&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;/</span><span class="hl-10">CGroup</span><span class="hl-0">&gt;</span><br/><br/><span class="hl-2">    </span><span class="hl-0">&lt;</span><span class="hl-10">CGroup</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;12&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;bottom&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingLeft</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingBottom</span><span class="hl-2">=</span><span class="hl-4">&quot;1&quot;</span><span class="hl-0">&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;item.icon1&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;green&quot;</span><span class="hl-2"> </span><span class="hl-3">:fontFamily</span><span class="hl-2">=</span><span class="hl-4">&quot;mdiFontFamily&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39; &#39; + item.texticon1&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalTextAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;center&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39;   &#39; + item.icon2&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;red&quot;</span><span class="hl-2"> </span><span class="hl-3">:fontFamily</span><span class="hl-2">=</span><span class="hl-4">&quot;mdiFontFamily&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39; &#39; + item.texticon2&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalTextAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;center&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39;   &#39; + item.icon3&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;yellow&quot;</span><span class="hl-2"> </span><span class="hl-3">:fontFamily</span><span class="hl-2">=</span><span class="hl-4">&quot;mdiFontFamily&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39; &#39; + item.texticon3&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalTextAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;center&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;/</span><span class="hl-10">CGroup</span><span class="hl-0">&gt;</span><br/><br/><span class="hl-2">    </span><span class="hl-0">&lt;</span><span class="hl-10">CGroup</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;12&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;middle&quot;</span><span class="hl-2"> </span><span class="hl-3">horizontalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;center&quot;</span><span class="hl-2"> </span><span class="hl-3">textAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;right&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingRight</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;brown&quot;</span><span class="hl-2"> </span><span class="hl-3">width</span><span class="hl-2">=</span><span class="hl-4">&quot;60&quot;</span><span class="hl-0">&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;item.icon1&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;14&quot;</span><span class="hl-2"> </span><span class="hl-3">:fontFamily</span><span class="hl-2">=</span><span class="hl-4">&quot;mdiFontFamily&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;&#39;\n&#39; + item.texticon1&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingRight</span><span class="hl-2">=</span><span class="hl-4">&quot;10&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;/</span><span class="hl-10">CGroup</span><span class="hl-0">&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">:text</span><span class="hl-2">=</span><span class="hl-4">&quot;item.text4&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;lightgray&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;14&quot;</span><span class="hl-2"> </span><span class="hl-3">textAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;right&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingRight</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingTop</span><span class="hl-2">=</span><span class="hl-4">&quot;4&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-0">&lt;/</span><span class="hl-10">CanvasLabel</span><span class="hl-0">&gt;</span>
+</code></pre>
+<p>For full example / doc look at the vue demo and the typings.</p>
+<p><a href="#performances"></a></p>
+<p><a href="#performances"></a></p>
+
+<a href="#performances" id="performances" style="color: inherit; text-decoration: none;">
+  <h2>Performances</h2>
+</a>
+<p><code>CanvasLabel</code> is made to be real fast. It was designed principaly to be used within list views. It uses the technique of drawing the text directly instead of using heavy native text components.
+That technique is used by many apps looking for the best performances. One of the best examples is Telegram.</p>
+<p><a href="#todo--limitations"></a></p>
+<p><a href="#todo--limitations"></a></p>
+
+<a href="#todo--limitations" id="todo--limitations" style="color: inherit; text-decoration: none;">
+  <h2>TODO / Limitations</h2>
+</a>
+<ul>
+<li>For now there is no accessibility support (but it should be possible)</li>
+<li>The label can&#39;t size itself. I will add some ways of doing that. But possibly not in the way you are used to.</li>
+<li>no ellipsize support yet. Will come (<a href="https://github.com/lsjwzh/FastTextView/blob/5e440575539ab1f470d853b1e7462fe0251eb869/widget.FastTextView/src/main/java/android/text/EllipsisSpannedContainer.java">this</a> could be a solution)</li>
+<li>a lot of canvas features can be added like shadows, gradient ...</li>
+<li>transform supoort should be possible at least for groups and top spans.</li>
+</ul>
+
+<a href="#examples-1" id="examples-1" style="color: inherit; text-decoration: none;">
+  <h3>Examples:</h3>
+</a>
+<ul>
+<li><a href="demo-snippets/vue/CanvasLabel.vue">Basic</a><ul>
+<li>A basic SVG example</li>
+</ul>
+</li>
+</ul>
+<p><a href="#demos-and-development"></a></p>
+<p><a href="#demos-and-development"></a></p>
+
+<a href="#demos-and-development-1" id="demos-and-development-1" style="color: inherit; text-decoration: none;">
+  <h2>Demos and Development</h2>
+</a>
+
+<a href="#repo-setup-1" id="repo-setup-1" style="color: inherit; text-decoration: none;">
+  <h3>Repo Setup</h3>
+</a>
+<p>The repo uses submodules. If you did not clone with <code> --recursive</code> then you need to call</p>
+<pre><code><span class="hl-6">git</span><span class="hl-2"> </span><span class="hl-6">submodule</span><span class="hl-2"> </span><span class="hl-6">update</span><span class="hl-2"> --</span><span class="hl-6">init</span>
+</code></pre>
+<p>The package manager used to install and link dependencies must be <code>pnpm</code> or <code>yarn</code>. <code>npm</code> wont work.</p>
+<p>To develop and test:
+if you use <code>yarn</code> then run <code>yarn</code>
+if you use <code>pnpm</code> then run <code>pnpm i</code></p>
+<p><strong>Interactive Menu:</strong></p>
+<p>To start the interactive menu, run <code>npm start</code> (or <code>yarn start</code> or <code>pnpm start</code>). This will list all of the commonly used scripts.</p>
+
+<a href="#build-1" id="build-1" style="color: inherit; text-decoration: none;">
+  <h3>Build</h3>
+</a>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">build.all</span>
+</code></pre>
+<p>WARNING: it seems <code>yarn build.all</code> wont always work (not finding binaries in <code>node_modules/.bin</code>) which is why the doc explicitly uses <code>npm run</code></p>
+
+<a href="#demos-1" id="demos-1" style="color: inherit; text-decoration: none;">
+  <h3>Demos</h3>
+</a>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.[ng</span><span class="hl-2">|</span><span class="hl-8">react</span><span class="hl-2">|</span><span class="hl-8">svelte</span><span class="hl-2">|</span><span class="hl-8">vue].[ios</span><span class="hl-2">|</span><span class="hl-8">android]</span><br/><br/><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.svelte.ios</span><span class="hl-2"> </span><span class="hl-14"># Example</span>
+</code></pre>
+<p>Demo setup is a bit special in the sense that if you want to modify/add demos you dont work directly in <code>demo-[ng|react|svelte|vue]</code>
+Instead you work in <code>demo-snippets/[ng|react|svelte|vue]</code>
+You can start from the <code>install.ts</code> of each flavor to see how to register new demos </p>
+<p><a href="#contributing"></a></p>
+<p><a href="#contributing"></a></p>
+
+<a href="#contributing-1" id="contributing-1" style="color: inherit; text-decoration: none;">
+  <h2>Contributing</h2>
+</a>
+
+<a href="#update-repo-1" id="update-repo-1" style="color: inherit; text-decoration: none;">
+  <h3>Update repo</h3>
+</a>
+<p>You can update the repo files quite easily</p>
+<p>First update the submodules</p>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">update</span>
+</code></pre>
+<p>Then commit the changes
+Then update common files</p>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">sync</span>
+</code></pre>
+<p>Then you can run <code>yarn|pnpm</code>, commit changed files if any</p>
+
+<a href="#update-readme-1" id="update-readme-1" style="color: inherit; text-decoration: none;">
+  <h3>Update readme</h3>
+</a>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">readme</span>
+</code></pre>
+
+<a href="#update-doc-1" id="update-doc-1" style="color: inherit; text-decoration: none;">
+  <h3>Update doc</h3>
+</a>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">doc</span>
+</code></pre>
+
+<a href="#publish-1" id="publish-1" style="color: inherit; text-decoration: none;">
+  <h3>Publish</h3>
+</a>
+<p>The publishing is completely handled by <code>lerna</code> (you can add <code>-- --bump major</code> to force a major release)
+Simply run </p>
+<pre><code class="language-shell"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">publish</span>
+</code></pre>
+
+<a href="#modifying-submodules-1" id="modifying-submodules-1" style="color: inherit; text-decoration: none;">
+  <h3>modifying submodules</h3>
+</a>
+<p>The repo uses https:// for submodules which means you won&#39;t be able to push directly into the submodules.
+One easy solution is t modify <code>~/.gitconfig</code> and add</p>
+<pre><code><span class="hl-2">[</span><span class="hl-6">url</span><span class="hl-2"> </span><span class="hl-7">&quot;ssh://git@github.com/&quot;</span><span class="hl-2">]</span><br/><span class="hl-2">    </span><span class="hl-6">pushInsteadOf</span><span class="hl-2"> = </span><span class="hl-15">https</span><span class="hl-2">:</span><span class="hl-14">//github.com/</span>
+</code></pre>
+<p><a href="#questions"></a></p>
+<p><a href="#questions"></a></p>
+
+<a href="#questions-1" id="questions-1" style="color: inherit; text-decoration: none;">
   <h2>Questions</h2>
 </a>
 <p>If you have any questions/issues/comments please feel free to create an issue or start a conversation in the <a href="https://nativescript.org/discord">NativeScript Community Discord</a>.</p>
@@ -296,7 +511,7 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#table-of-contents"></a></p>
 <p><a href="#table-of-contents"></a></p>
 
-<a href="#table-of-contents-1" id="table-of-contents-1" style="color: inherit; text-decoration: none;">
+<a href="#table-of-contents-2" id="table-of-contents-2" style="color: inherit; text-decoration: none;">
   <h2>Table of Contents</h2>
 </a>
 <ul>
@@ -324,7 +539,7 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#installation"></a></p>
 <p><a href="#installation"></a></p>
 
-<a href="#installation-1" id="installation-1" style="color: inherit; text-decoration: none;">
+<a href="#installation-2" id="installation-2" style="color: inherit; text-decoration: none;">
   <h2>Installation</h2>
 </a>
 <p>Run the following command from the root of your project:</p>
@@ -332,7 +547,7 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#configuration"></a></p>
 <p><a href="#configuration"></a></p>
 
-<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
+<a href="#configuration-1" id="configuration-1" style="color: inherit; text-decoration: none;">
   <h2>Configuration</h2>
 </a>
 <p>For now only <code>vue</code> (and core) is supported.</p>
@@ -349,7 +564,7 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <pre><code class="language-html"><span class="hl-0">&lt;</span><span class="hl-10">CanvasLabel</span><span class="hl-0">&gt;</span><br/><span class="hl-2"> </span><span class="hl-0">&lt;</span><span class="hl-10">CGroup</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;18&quot;</span><span class="hl-2"> </span><span class="hl-3">verticalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;middle&quot;</span><span class="hl-2"> </span><span class="hl-3">paddingLeft</span><span class="hl-2">=</span><span class="hl-4">&quot;20&quot;</span><span class="hl-0">&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">text</span><span class="hl-2">=</span><span class="hl-4">&quot;test&quot;</span><span class="hl-2"> </span><span class="hl-3">fontWeight</span><span class="hl-2">=</span><span class="hl-4">&quot;bold&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">        </span><span class="hl-0">&lt;</span><span class="hl-10">CSpan</span><span class="hl-2"> </span><span class="hl-3">text</span><span class="hl-2">=</span><span class="hl-4">&quot;test2&quot;</span><span class="hl-2"> </span><span class="hl-3">color</span><span class="hl-2">=</span><span class="hl-4">&quot;#ccc&quot;</span><span class="hl-2"> </span><span class="hl-3">fontSize</span><span class="hl-2">=</span><span class="hl-4">&quot;16&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;/</span><span class="hl-10">CGroup</span><span class="hl-0">&gt;</span><br/><span class="hl-2">    </span><span class="hl-0">&lt;</span><span class="hl-10">CSVG</span><span class="hl-2"> </span><span class="hl-3">horizontalAlignment</span><span class="hl-2">=</span><span class="hl-4">&quot;left&quot;</span><span class="hl-2"> </span><span class="hl-3">src</span><span class="hl-2">=</span><span class="hl-4">&quot;~/assets/svgs/Ghostscript_Tiger.svg&quot;</span><span class="hl-2"> </span><span class="hl-3">height</span><span class="hl-2">=</span><span class="hl-4">&quot;10&quot;</span><span class="hl-2"> </span><span class="hl-3">stretch</span><span class="hl-2">=</span><span class="hl-4">&quot;aspectFit&quot;</span><span class="hl-0"> /&gt;</span><br/><span class="hl-0">&lt;/</span><span class="hl-10">CanvasSVG</span><span class="hl-0">&gt;</span>
 </code></pre>
 
-<a href="#examples-1" id="examples-1" style="color: inherit; text-decoration: none;">
+<a href="#examples-2" id="examples-2" style="color: inherit; text-decoration: none;">
   <h3>Examples:</h3>
 </a>
 <ul>
@@ -361,11 +576,11 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#demos-and-development"></a></p>
 <p><a href="#demos-and-development"></a></p>
 
-<a href="#demos-and-development-1" id="demos-and-development-1" style="color: inherit; text-decoration: none;">
+<a href="#demos-and-development-2" id="demos-and-development-2" style="color: inherit; text-decoration: none;">
   <h2>Demos and Development</h2>
 </a>
 
-<a href="#repo-setup-1" id="repo-setup-1" style="color: inherit; text-decoration: none;">
+<a href="#repo-setup-2" id="repo-setup-2" style="color: inherit; text-decoration: none;">
   <h3>Repo Setup</h3>
 </a>
 <p>The repo uses submodules. If you did not clone with <code> --recursive</code> then you need to call</p>
@@ -378,17 +593,17 @@ if you use <code>pnpm</code> then run <code>pnpm i</code></p>
 <p><strong>Interactive Menu:</strong></p>
 <p>To start the interactive menu, run <code>npm start</code> (or <code>yarn start</code> or <code>pnpm start</code>). This will list all of the commonly used scripts.</p>
 
-<a href="#build-1" id="build-1" style="color: inherit; text-decoration: none;">
+<a href="#build-2" id="build-2" style="color: inherit; text-decoration: none;">
   <h3>Build</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">build.all</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">build.all</span>
 </code></pre>
 <p>WARNING: it seems <code>yarn build.all</code> wont always work (not finding binaries in <code>node_modules/.bin</code>) which is why the doc explicitly uses <code>npm run</code></p>
 
-<a href="#demos-1" id="demos-1" style="color: inherit; text-decoration: none;">
+<a href="#demos-2" id="demos-2" style="color: inherit; text-decoration: none;">
   <h3>Demos</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.[ng</span><span class="hl-2">|react|svelte|vue].[ios|android]</span><br/><br/><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.svelte.ios</span><span class="hl-2"> </span><span class="hl-14"># Example</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.[ng</span><span class="hl-2">|</span><span class="hl-8">react</span><span class="hl-2">|</span><span class="hl-8">svelte</span><span class="hl-2">|</span><span class="hl-8">vue].[ios</span><span class="hl-2">|</span><span class="hl-8">android]</span><br/><br/><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">demo.svelte.ios</span><span class="hl-2"> </span><span class="hl-14"># Example</span>
 </code></pre>
 <p>Demo setup is a bit special in the sense that if you want to modify/add demos you dont work directly in <code>demo-[ng|react|svelte|vue]</code>
 Instead you work in <code>demo-snippets/[ng|react|svelte|vue]</code>
@@ -396,44 +611,44 @@ You can start from the <code>install.ts</code> of each flavor to see how to regi
 <p><a href="#contributing"></a></p>
 <p><a href="#contributing"></a></p>
 
-<a href="#contributing-1" id="contributing-1" style="color: inherit; text-decoration: none;">
+<a href="#contributing-2" id="contributing-2" style="color: inherit; text-decoration: none;">
   <h2>Contributing</h2>
 </a>
 
-<a href="#update-repo-1" id="update-repo-1" style="color: inherit; text-decoration: none;">
+<a href="#update-repo-2" id="update-repo-2" style="color: inherit; text-decoration: none;">
   <h3>Update repo</h3>
 </a>
 <p>You can update the repo files quite easily</p>
 <p>First update the submodules</p>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">update</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">update</span>
 </code></pre>
 <p>Then commit the changes
 Then update common files</p>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">sync</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">sync</span>
 </code></pre>
 <p>Then you can run <code>yarn|pnpm</code>, commit changed files if any</p>
 
-<a href="#update-readme-1" id="update-readme-1" style="color: inherit; text-decoration: none;">
+<a href="#update-readme-2" id="update-readme-2" style="color: inherit; text-decoration: none;">
   <h3>Update readme</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">readme</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">readme</span>
 </code></pre>
 
-<a href="#update-doc-1" id="update-doc-1" style="color: inherit; text-decoration: none;">
+<a href="#update-doc-2" id="update-doc-2" style="color: inherit; text-decoration: none;">
   <h3>Update doc</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">doc</span>
+<pre><code class="language-bash"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">doc</span>
 </code></pre>
 
-<a href="#publish-1" id="publish-1" style="color: inherit; text-decoration: none;">
+<a href="#publish-2" id="publish-2" style="color: inherit; text-decoration: none;">
   <h3>Publish</h3>
 </a>
 <p>The publishing is completely handled by <code>lerna</code> (you can add <code>-- --bump major</code> to force a major release)
 Simply run </p>
-<pre><code class="language-shell"><span class="hl-2">npm </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">publish</span>
+<pre><code class="language-shell"><span class="hl-8">npm</span><span class="hl-2"> </span><span class="hl-7">run</span><span class="hl-2"> </span><span class="hl-7">publish</span>
 </code></pre>
 
-<a href="#modifying-submodules-1" id="modifying-submodules-1" style="color: inherit; text-decoration: none;">
+<a href="#modifying-submodules-2" id="modifying-submodules-2" style="color: inherit; text-decoration: none;">
   <h3>modifying submodules</h3>
 </a>
 <p>The repo uses https:// for submodules which means you won&#39;t be able to push directly into the submodules.
@@ -443,7 +658,7 @@ One easy solution is t modify <code>~/.gitconfig</code> and add</p>
 <p><a href="#questions"></a></p>
 <p><a href="#questions"></a></p>
 
-<a href="#questions-1" id="questions-1" style="color: inherit; text-decoration: none;">
+<a href="#questions-2" id="questions-2" style="color: inherit; text-decoration: none;">
   <h2>Questions</h2>
 </a>
 <p>If you have any questions/issues/comments please feel free to create an issue or start a conversation in the <a href="https://nativescript.org/discord">NativeScript Community Discord</a>.</p>

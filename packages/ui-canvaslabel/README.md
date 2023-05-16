@@ -1,18 +1,73 @@
-# NativeScript Label widget
-[![npm downloads](https://img.shields.io/npm/dm/@nativescript-community/ui-canvaslabel.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvaslabel)
-[![npm downloads](https://img.shields.io/npm/dt/@nativescript-community/ui-canvaslabel.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvaslabel)
-[![npm](https://img.shields.io/npm/v/@nativescript-community/ui-canvaslabel.svg)](https://www.npmjs.com/package/@nativescript-community/ui-canvaslabel)
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+<!--  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      DO NOT EDIT THIS READEME DIRECTLY! Edit "bluesprint.md" instead.
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<h1 align="center">@nativescript-community/ui-canvaslabel</h1>
+<p align="center">
+		<a href="https://npmcharts.com/compare/@nativescript-community/ui-canvaslabel?minimal=true"><img alt="Downloads per month" src="https://img.shields.io/npm/dm/@nativescript-community/ui-canvaslabel.svg" height="20"/></a>
+<a href="https://www.npmjs.com/package/@nativescript-community/ui-canvaslabel"><img alt="NPM Version" src="https://img.shields.io/npm/v/@nativescript-community/ui-canvaslabel.svg" height="20"/></a>
+	</p>
+
+<p align="center">
+  <b>Alternative to the built-in NativeScript Label but uses canvas which allows extreme complexity and customization.</b></br>
+  <sub><sub>
+</p>
+
+<br />
+
+
+
+[](#table-of-contents)
+
+## Table of Contents
+
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Performances](#performances)
+* [TODO / Limitations](#todo--limitations)
+	* [Examples:](#examples)
+* [Demos and Development](#demos-and-development)
+	* [Repo Setup](#repo-setup)
+	* [Build](#build)
+	* [Demos](#demos)
+* [Contributing](#contributing)
+	* [Update repo ](#update-repo-)
+	* [Update readme ](#update-readme-)
+	* [Update doc ](#update-doc-)
+	* [Publish](#publish)
+	* [modifying submodules](#modifying-submodules)
+* [Questions](#questions)
 
 A NativeScript Label widget. This widget takes a different approch from other label components. It is based on `nativescript-canvas` and allows drawing
 multiple labels within one single widget.
 It allows extreme complexity and customization.
 
+
+[](#installation)
+
 ## Installation
 Run the following command from the root of your project:
 
-`tns plugin add @nativescript-community/ui-canvaslabel`
+`ns plugin add @nativescript-community/ui-canvaslabel`
 
-This command automatically installs the necessary files, as well as stores @nativescript-community/ui-canvaslabel as a dependency in your project's package.json file.
+
+[](#configuration)
 
 ## Configuration
 It works almost like a normal label.
@@ -53,10 +108,16 @@ Here is a complex Vue layout as an example
 
 For full example / doc look at the vue demo and the typings.
 
+
+[](#performances)
+
 ## Performances
 
 `CanvasLabel` is made to be real fast. It was designed principaly to be used within list views. It uses the technique of drawing the text directly instead of using heavy native text components.
 That technique is used by many apps looking for the best performances. One of the best examples is Telegram.
+
+
+[](#todo--limitations)
 
 ## TODO / Limitations
 
@@ -65,3 +126,107 @@ That technique is used by many apps looking for the best performances. One of th
 * no ellipsize support yet. Will come ([this](https://github.com/lsjwzh/FastTextView/blob/5e440575539ab1f470d853b1e7462fe0251eb869/widget.FastTextView/src/main/java/android/text/EllipsisSpannedContainer.java) could be a solution)
 * a lot of canvas features can be added like shadows, gradient ...
 * transform supoort should be possible at least for groups and top spans.
+
+### Examples:
+
+- [Basic](demo-snippets/vue/CanvasLabel.vue)
+  - A basic SVG example
+
+
+[](#demos-and-development)
+
+## Demos and Development
+
+
+### Repo Setup
+
+The repo uses submodules. If you did not clone with ` --recursive` then you need to call
+```
+git submodule update --init
+```
+
+The package manager used to install and link dependencies must be `pnpm` or `yarn`. `npm` wont work.
+
+To develop and test:
+if you use `yarn` then run `yarn`
+if you use `pnpm` then run `pnpm i`
+
+**Interactive Menu:**
+
+To start the interactive menu, run `npm start` (or `yarn start` or `pnpm start`). This will list all of the commonly used scripts.
+
+### Build
+
+```bash
+npm run build.all
+```
+WARNING: it seems `yarn build.all` wont always work (not finding binaries in `node_modules/.bin`) which is why the doc explicitly uses `npm run`
+
+### Demos
+
+```bash
+npm run demo.[ng|react|svelte|vue].[ios|android]
+
+npm run demo.svelte.ios # Example
+```
+
+Demo setup is a bit special in the sense that if you want to modify/add demos you dont work directly in `demo-[ng|react|svelte|vue]`
+Instead you work in `demo-snippets/[ng|react|svelte|vue]`
+You can start from the `install.ts` of each flavor to see how to register new demos 
+
+
+[](#contributing)
+
+## Contributing
+
+### Update repo 
+
+You can update the repo files quite easily
+
+First update the submodules
+
+```bash
+npm run update
+```
+
+Then commit the changes
+Then update common files
+
+```bash
+npm run sync
+```
+Then you can run `yarn|pnpm`, commit changed files if any
+
+### Update readme 
+```bash
+npm run readme
+```
+
+### Update doc 
+```bash
+npm run doc
+```
+
+### Publish
+
+The publishing is completely handled by `lerna` (you can add `-- --bump major` to force a major release)
+Simply run 
+```shell
+npm run publish
+```
+
+### modifying submodules
+
+The repo uses https:// for submodules which means you won't be able to push directly into the submodules.
+One easy solution is t modify `~/.gitconfig` and add
+```
+[url "ssh://git@github.com/"]
+	pushInsteadOf = https://github.com/
+```
+
+
+[](#questions)
+
+## Questions
+
+If you have any questions/issues/comments please feel free to create an issue or start a conversation in the [NativeScript Community Discord](https://nativescript.org/discord).
