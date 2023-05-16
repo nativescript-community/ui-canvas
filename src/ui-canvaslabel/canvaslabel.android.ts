@@ -23,7 +23,8 @@ export class Group extends GroupBase {
             this.mNative = null;
             return;
         }
-        this.mNative = this._ssb = createNativeAttributedString(this as any, this, parentCanvas, false);
+        this.mNative = this._ssb = createNativeAttributedString(this as any, this, parentCanvas, false, 1, 1);
+        // let ssb = this._ssb;
         // if (!ssb) {
         //     this._ssb = ssb = NSPan.createSpannableStringBuilder();
         // } else {
