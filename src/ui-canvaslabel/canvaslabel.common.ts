@@ -17,12 +17,10 @@ import {
     profile
 } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
-import lazy from '@nativescript/core/utils/lazy';
 
 const toDpi = Utils.layout.toDeviceIndependentPixels;
 export const paintCache: { [k: string]: Paint } = {};
 export const paintFontCache = {};
-const sdkVersion = lazy(() => parseInt(Device.sdkVersion, 10));
 
 // init text to ensure font overrides are called
 init();
@@ -237,7 +235,9 @@ export abstract class Span extends Shape {
         if (letterSpacing) {
             cachedPaint.setLetterSpacing(letterSpacing);
         }
-        cachedPaint.color = color;
+        if (color) {
+            cachedPaint.color = color;
+        }
         this.mStaticlayout = new StaticLayout(text, cachedPaint, w, align, 1, 0, true);
         return this.mStaticlayout;
     }
