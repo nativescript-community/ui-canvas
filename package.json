@@ -95,8 +95,5 @@
         "yarn": ">=1.19.1",
         "pnpm": ">=7.0.0",
         "node": "^14.20.0 || ^16.13.0 || >=18.10.0"
-    },
-    "resolutions": {
-        "@nativescript-community/text": "portal:/Volumes/dev/nativescript/nativescript-text/packages/text"
     }
 }
