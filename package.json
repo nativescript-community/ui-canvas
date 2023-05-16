@@ -38,7 +38,7 @@
         "@nativescript-community/arraybuffers": "1.1.1",
         "@nativescript-community/plugin-seed-tools": "file:tools",
         "@nativescript-community/template-snippet": "file:demo-snippets",
-        "@nativescript-community/text": "^1.5.11"
+        "@nativescript-community/text": "^1.5.22"
     },
     "repository": {
         "type": "git",
