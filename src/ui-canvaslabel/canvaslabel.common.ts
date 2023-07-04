@@ -68,6 +68,7 @@ export abstract class Span extends Shape {
     @stringProperty textAlignment: CoreTypes.TextAlignmentType & 'middle';
     @stringProperty textDecoration: CoreTypes.TextDecorationType;
     @stringProperty textTransform: CoreTypes.TextTransformType;
+    @stringProperty lineBreak: string | number;
 
     @percentLengthProperty width: CoreTypes.PercentLengthType;
     @percentLengthProperty height: CoreTypes.PercentLengthType;
@@ -214,6 +215,7 @@ export abstract class Span extends Shape {
         const fontstyle = this.fontStyle || parent.style.fontStyle || parent.fontStyle;
         const fontFamily = this.fontFamily;
         const color = this.color || parent.style.color;
+        const lineBreak = this.lineBreak || parent['lineBreak'];
         const xfermode = this.xfermode;
         const fontSize = this.fontSize;
         const letterSpacing = this.letterSpacing;
@@ -238,7 +240,7 @@ export abstract class Span extends Shape {
         if (color) {
             cachedPaint.color = color;
         }
-        this.mStaticlayout = new StaticLayout(text, cachedPaint, w, align, 1, 0, true);
+        this.mStaticlayout = new StaticLayout(text, cachedPaint, w, align, 1, 0, true, lineBreak);
         return this.mStaticlayout;
     }
 
@@ -408,7 +410,7 @@ export abstract class Span extends Shape {
                 }
             }
         }
-        staticlayout.draw(canvas);
+        staticlayout.draw(canvas, h);
     }
     toNativeString() {}
 }
