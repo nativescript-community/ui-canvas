@@ -40,7 +40,7 @@
         "url": "https://github.com/nativescript-community/ui-canvas"
     },
     "dependencies": {
-        "@nativescript-community/text": "^1.5.23",
+        "@nativescript-community/text": "^1.5.31",
         "@nativescript-community/ui-canvas": "^4.4.13"
     }
 }
