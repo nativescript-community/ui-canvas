@@ -7,8 +7,7 @@ declare namespace com {
                 mapPoints(param0: Float32Array | native.Array<number>, param1: number, param2: Float32Array | native.Array<number>, param3: number, param4: number): void;
                 mapPoints(param0: Float32Array | native.Array<number>): void;
             }
-            export class CanvasDashPathEffect extends globalAndroid.graphics.DashPathEffect {
-            }
+            export class CanvasDashPathEffect extends globalAndroid.graphics.DashPathEffect {}
             export class CanvasPath extends globalAndroid.graphics.Path {
                 addLines(points: number[], offset?: number, length?: number, close?: boolean);
                 setLines(points: number[], offset?: number, length?: number, close?: boolean);
@@ -37,8 +36,18 @@ declare namespace com {
                     align: globalAndroid.text.Layout.Alignment,
                     spacingmult: number,
                     spacingadd: number,
-                    includepad: boolean
+                    includepad: boolean,
+                    ellipsize: globalAndroid.text.TextUtils.TruncateAt,
+                    ellipsizedWidth: number
                 ): android.text.StaticLayout;
+                static draw(
+                    staticLayout: globalAndroid.text.StaticLayout,
+                    canvas: globalAndroid.graphics.Canvas,
+                    includepad: boolean,
+                    ellipsize: globalAndroid.text.TextUtils.TruncateAt,
+                    ellipsizedWidth: number,
+                    maxHeight: number
+                );
             }
         }
     }
