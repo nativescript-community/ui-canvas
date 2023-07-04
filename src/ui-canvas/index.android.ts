@@ -96,6 +96,7 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
 class ProxyClass<T> {
     mNative: T;
     static augmentedMethods = [];
+    static nonNativeMethods = [];
     getNative() {
         return this.mNative;
     }
@@ -106,7 +107,7 @@ class ProxyClass<T> {
     handleCustomMethods(target: this, native: T, methodName: string, args: any[]): any {}
     get(target: this, name, receiver) {
         const native = target.getNative();
-        if (native && (target.constructor['augmentedMethods'].indexOf(name) >= 0 || native[name])) {
+        if (native && target.constructor['nonNativeMethods'].indexOf(name) === -1 && (target.constructor['augmentedMethods'].indexOf(name) >= 0 || native[name])) {
             return function (...args) {
                 const methodName = name;
                 for (let index = 0; index < args.length; index++) {
@@ -417,8 +418,38 @@ export class BitmapShader extends ProxyClass<android.graphics.BitmapShader> {
     }
 }
 
+function lineBreakToEllipsize(value) {
+    if (typeof value === 'string') {
+        switch (value) {
+            case 'end':
+                return android.text.TextUtils.TruncateAt.END;
+            case 'start':
+                return android.text.TextUtils.TruncateAt.START;
+            case 'marquee':
+                return android.text.TextUtils.TruncateAt.MARQUEE;
+            case 'middle':
+                return android.text.TextUtils.TruncateAt.MIDDLE;
+            default:
+                return null;
+        }
+    }
+    return value;
+}
+
 export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
-    constructor(text: any, paint: android.graphics.Paint, width: number, align = LayoutAlignment.ALIGN_NORMAL, spacingmult = 1, spacingadd = 0, includepad = true) {
+    ellipsize: android.text.TextUtils.TruncateAt;
+    static nonNativeMethods = ['draw'];
+    constructor(
+        text: any,
+        paint: android.graphics.Paint,
+        width: number,
+        align = LayoutAlignment.ALIGN_NORMAL,
+        spacingmult = 1,
+        spacingadd = 0,
+        private includepad = true,
+        ellipsize = null,
+        private ellipsizedWidth = width
+    ) {
         super();
         paint = (paint as any).getNative ? (paint as any).getNative() : paint;
 
@@ -426,8 +457,8 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
             // in case it is a number or a boolean
             text = text + '';
         }
-        this.mNative = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad);
-
+        this.ellipsize = lineBreakToEllipsize(ellipsize);
+        this.mNative = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad, this.ellipsize, ellipsizedWidth);
         return this;
     }
 
@@ -445,6 +476,10 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
         }
         //@ts-ignore
         return android.text.StaticLayout.getDesiredWidth(...args);
+    }
+
+    draw(canvas: Canvas, maxHeight = -1) {
+        com.akylas.canvas.StaticLayout.draw(this.getNative(), canvas.getNative(), this.includepad, this.ellipsize, this.ellipsizedWidth, maxHeight);
     }
 }
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;

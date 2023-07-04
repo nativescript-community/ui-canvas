@@ -2275,6 +2275,10 @@ export class StaticLayout {
                 paragraphStyle.alignment = NSTextAlignment.Right;
                 break;
         }
+
+        if (this.lineBreak) {
+            paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.lineBreak);
+        }
         const fullRange = { location: 0, length: nsAttributedString.length };
         nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
         this.toDraw = nsAttributedString;
