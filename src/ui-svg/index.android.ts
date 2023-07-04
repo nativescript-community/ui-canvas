@@ -44,11 +44,11 @@ function getSVG(src: string | ImageAsset | File) {
     return com.caverock.androidsvg.SVG.getFromString(imagePath);
 }
 
-declare module '@nativescript-community/ui-canvas' {
-    interface Canvas {
-        _native: android.graphics.Canvas;
-    }
-}
+// declare module '@nativescript-community/ui-canvas' {
+//     interface Canvas {
+//         _native: android.graphics.Canvas;
+//     }
+// }
 
 let bgdImagePaint: android.graphics.Paint;
 
@@ -193,7 +193,7 @@ export class SVG extends SVGBase {
                     width,
                     height
                 );
-                svg.renderToCanvas(canvas._native, options);
+                svg.renderToCanvas((canvas as any).getNative(), options);
             }
             // console.log('drawSvg', wasCached, Date.now() - startTime, 'ms');
         }

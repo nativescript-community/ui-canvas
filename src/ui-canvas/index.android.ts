@@ -131,25 +131,25 @@ class ProxyClass<T> {
 }
 
 class Canvas extends ProxyClass<android.graphics.Canvas> {
-    _bitmap: android.graphics.Bitmap;
-    _shouldReleaseBitmap = false;
+    mBitmap: android.graphics.Bitmap;
+    mShouldReleaseBitmap = false;
     static augmentedMethods = ['clear', 'drawBitmap', 'drawView'];
     constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number, height?: number) {
         super();
         if (imageOrWidth) {
             if (imageOrWidth instanceof ImageSource) {
-                this._bitmap = imageOrWidth.android;
+                this.mBitmap = imageOrWidth.android;
             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
-                this._bitmap = imageOrWidth;
+                this.mBitmap = imageOrWidth;
             } else {
-                this._shouldReleaseBitmap = true;
-                this._bitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
+                this.mShouldReleaseBitmap = true;
+                this.mBitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
             }
-            if (!this._bitmap.isMutable()) {
-                this._shouldReleaseBitmap = true;
-                this._bitmap = this._bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
+            if (!this.mBitmap.isMutable()) {
+                this.mShouldReleaseBitmap = true;
+                this.mBitmap = this.mBitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
             }
-            this.mNative = new android.graphics.Canvas(this._bitmap);
+            this.mNative = new android.graphics.Canvas(this.mBitmap);
         }
 
         return this;
@@ -184,12 +184,12 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         }
     }
     getImage() {
-        return this._bitmap;
+        return this.mBitmap;
     }
     release() {
-        if (this._shouldReleaseBitmap && this._bitmap) {
-            this._bitmap.recycle();
-            this._bitmap = null;
+        if (this.mShouldReleaseBitmap && this.mBitmap) {
+            this.mBitmap.recycle();
+            this.mBitmap = null;
         }
     }
 }
