@@ -32,7 +32,7 @@ export default class ComplexExample extends Vue {
         Frame.topmost().goBack();
     }
     postMessageToWorker(type, data?) {
-        if (global.isIOS) {
+        if (__IOS__) {
             // the clone makes the UI slow! No solution right now
             const nativeDict = NSMutableDictionary.dictionaryWithObjectForKey(type, 'type');
             if (data) {
@@ -52,7 +52,7 @@ export default class ComplexExample extends Vue {
             .then(() => perms.request('photo'))
             .then(() => {
                 console.log('saveToAlbum', imageSource.width, imageSource.height);
-                if (global.isIOS) {
+                if (__IOS__) {
                     // var res = false;
                     // if (!imageSource) {
                     //     return res;

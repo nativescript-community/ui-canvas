@@ -2300,10 +2300,12 @@ __metadata:
   dependencies:
     "@mdi/font": 6.5.95
     "@nativescript-community/perms": 2.3.0
+    "@nativescript-community/text": 1.5.31
     "@nativescript-community/tween": 0.0.14
     "@nativescript-community/ui-canvas": "*"
     "@nativescript-community/ui-canvaslabel": "*"
-    "@nativescript-community/ui-collectionview": "*"
+    "@nativescript-community/ui-collectionview": 5.1.7
+    "@nativescript-community/ui-label": 1.3.6
     "@nativescript-community/ui-svg": "*"
     copy-webpack-plugin: ^11.0.0
     nativescript-vue-template-compiler: ~2.9.3
@@ -2316,14 +2318,16 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=c2970d&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=48f1dc&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": 6.5.95
     "@nativescript-community/perms": 2.3.0
+    "@nativescript-community/text": 1.5.31
     "@nativescript-community/tween": 0.0.14
     "@nativescript-community/ui-canvas": "*"
     "@nativescript-community/ui-canvaslabel": "*"
-    "@nativescript-community/ui-collectionview": "*"
+    "@nativescript-community/ui-collectionview": 5.1.7
+    "@nativescript-community/ui-label": 1.3.6
     "@nativescript-community/ui-svg": "*"
     copy-webpack-plugin: ^11.0.0
     nativescript-vue-template-compiler: ~2.9.3
@@ -2331,14 +2335,14 @@ __metadata:
     string-replace-loader: ^3.1.0
     vue-class-component: 7.2.6
     vue-property-decorator: 9.1.2
-  checksum: 18436d78714d61cfb34cb1a8c28e15956939fb7132d34c10695003f991dc690b2f8267d5f203a07a7dae8bbb27ea61f1bf48297c40acf136062bd0fc8f4a4b84
+  checksum: e95356ac20cb629eee853d609f58aff38bce0fa88aa0b7dcbefcdaa52d43400b1f50effcb19509c4adbc2ab7014f343428b342f347c31522f364b8b57b0cf15a
   languageName: node
   linkType: hard
 
-"@nativescript-community/text@npm:^1.5.22, @nativescript-community/text@npm:^1.5.23":
-  version: 1.5.24
-  resolution: "@nativescript-community/text@npm:1.5.24"
-  checksum: b8ae262b6a952cbaf116e85cb32bbf1e65ed4d4326e21f552f6e4be53a23ada8abcfbd28a3d0eb07c2127829154fa475931c4b543b7c88fc591764bec6ff8528
+"@nativescript-community/text@npm:1.5.31, @nativescript-community/text@npm:^1.5.21, @nativescript-community/text@npm:^1.5.22, @nativescript-community/text@npm:^1.5.31":
+  version: 1.5.31
+  resolution: "@nativescript-community/text@npm:1.5.31"
+  checksum: 38307e0f937d82265dabe090b5d84a29622a21ac76b60c0141645496d12f0aef43bb46818a9c09e1557237e8ff091a65cf9c6b35dd22a9df5019d70ccc644207
   languageName: node
   linkType: hard
 
@@ -2363,15 +2367,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvaslabel@workspace:packages/ui-canvaslabel"
   dependencies:
-    "@nativescript-community/text": ^1.5.23
+    "@nativescript-community/text": ^1.5.31
     "@nativescript-community/ui-canvas": ^4.4.13
   languageName: unknown
   linkType: soft
 
-"@nativescript-community/ui-collectionview@npm:*":
-  version: 5.1.5
-  resolution: "@nativescript-community/ui-collectionview@npm:5.1.5"
-  checksum: 5af92320e365e2201ccb2c9f7571cb280fc79b78c9b320be39cfcecd32a11915e7032ef9de13d119daf96e433370087602b2d7caf199062ee9803dbb3b226f7f
+"@nativescript-community/ui-collectionview@npm:5.1.7":
+  version: 5.1.7
+  resolution: "@nativescript-community/ui-collectionview@npm:5.1.7"
+  checksum: 54771bc50291d12c4a8fd12c0d09832687589d0c4b85492ea02f0778c99616ca28f9712d387f3abd76edd93e70e2dd9ab571363c552f4edb577d6645090b7efa
+  languageName: node
+  linkType: hard
+
+"@nativescript-community/ui-label@npm:1.3.6":
+  version: 1.3.6
+  resolution: "@nativescript-community/ui-label@npm:1.3.6"
+  dependencies:
+    "@nativescript-community/text": ^1.5.21
+  checksum: c9d954c4812a28d7955e290afc1041083fb98e43d9678dad10cebe66ac52efb14d9650ae86bb4a70475e5851d9fa1cdb253711b93d6b44d1b8dd9c0ed52f6122
   languageName: node
   linkType: hard
 

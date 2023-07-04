@@ -5,7 +5,7 @@ import 'globals';
 const context: Worker = self as any;
 
 function isOnUiThread() {
-    if (global.isIOS) {
+    if (__IOS__) {
         return NSOperationQueue.currentQueue === NSOperationQueue.mainQueue;
     } else {
         return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();
@@ -28,7 +28,7 @@ function valueFromPointerNumber(type, value) {
 }
 
 context.onmessage = function (msg) {
-    if (global.isIOS) {
+    if (__IOS__) {
         const dict = valueFromPointerNumber(NSDictionary, msg.data.value.dictionaryPtr) as any as NSDictionary<any, any>;
         const type = dict.objectForKey('type') as string;
         console.log('onmessage', type);
@@ -47,7 +47,7 @@ context.onmessage = function (msg) {
 };
 
 function sendMessageBack(type, data?) {
-    if (global.isIOS) {
+    if (__IOS__) {
         const nativeDict = NSMutableDictionary.dictionaryWithObjectForKey(type, 'type');
         if (data) {
             nativeDict.setValueForKey(data, 'data');

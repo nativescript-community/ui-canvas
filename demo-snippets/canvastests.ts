@@ -21,7 +21,7 @@ import { Folder, knownFolders, path } from '@nativescript/core/file-system';
 import { ImageSource } from '@nativescript/core/image-source';
 
 function isOnUiThread() {
-    if (global.isIOS) {
+    if (__IOS__) {
         return NSOperationQueue.currentQueue === NSOperationQueue.mainQueue;
     } else {
         return android.os.Looper.myLooper() === android.os.Looper.getMainLooper();

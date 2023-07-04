@@ -7,6 +7,7 @@ import Complex from './Complex.vue';
 import SVG from './SVG.vue';
 import CanvasLabel from './CanvasLabel.vue';
 import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
+import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import SVGPlugin from '@nativescript-community/ui-svg/vue';
@@ -16,6 +17,7 @@ export function installPlugin() {
     Vue.use(SVGPlugin);
     Vue.use(CanvasLabelPlugin);
     Vue.use(CollectionViewPlugin);
+    Vue.registerElement('HTMLLabel', () => HTMLLabel);
 }
 
 export const demos = [
