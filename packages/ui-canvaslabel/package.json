@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-canvaslabel",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Alternative to the built-in NativeScript Label but uses canvas which allows extreme complexity and customization.",
     "main": "./canvaslabel",
     "sideEffects": false,
@@ -41,6 +41,6 @@
     },
     "dependencies": {
         "@nativescript-community/text": "^1.5.31",
-        "@nativescript-community/ui-canvas": "^4.5.0"
+        "@nativescript-community/ui-canvas": "^4.5.1"
     }
 }

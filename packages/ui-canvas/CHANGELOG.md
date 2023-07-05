@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.1](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.5.0...@nativescript-community/ui-canvas@4.5.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* **android:** lineBreak working with verticalAlignment ([99de3b6](https://github.com/nativescript-community/ui-canvas/commit/99de3b62f247ae436c728cc99e883e6912de02c1))
+
+
+
+
+
 # [4.5.0](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.13...@nativescript-community/ui-canvas@4.5.0) (2023-07-05)
 
 ### Features
