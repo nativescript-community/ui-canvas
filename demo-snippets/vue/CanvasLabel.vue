@@ -1,27 +1,26 @@
 <template>
     <Page>
         <StackLayout>
-            <canvaslabel backgroundColor="red" rippleColor="green" borderRadius="10" paddingTop="0" height="80" widht="80">
-            <CGroup verticalAlignment="middle" textAlignment="center">
-                <cspan :fontFamily="mdiFontFamily" text="mdi-cellphone-screenshot" fontSize="30" />
-                <cspan :text="'\n' + 'share screenshot'" fontSize="12" />
-            </CGroup>
-        </canvaslabel>
-            <canvaslabel backgroundColor="yellow" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="middle">
-            <CGroup>
-                <cspan text="this is a tesxt to test lineBreak" fontSize="12" />
-                <cspan :text="'\n' + 'another piece of text which is going to be ellipsized'" fontSize="16" />
-            </CGroup>
-        </canvaslabel>
-            <label backgroundColor="green" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="end" >
+            <!-- <canvaslabel backgroundColor="red" rippleColor="green" borderRadius="10" paddingTop="0" height="80" widht="80" color="black">
+                <CGroup verticalAlignment="middle" textAlignment="center">
+                    <cspan :fontFamily="mdiFontFamily" text="mdi-cellphone-screenshot" fontSize="30" />
+                    <cspan :text="'\n' + 'share screenshot'" fontSize="12" />
+                </CGroup>
+            </canvaslabel> -->
+            <canvaslabel backgroundColor="yellow" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="end" color="red">
+                <CGroup>
+                    <cspan :text="'this is a tesxt to test lineBreak' +'\n' +'test'" fontSize="12" color="blue"/>
+                    <cspan :text="'\n' + 'another piece of text which is going to be ellipsized'" fontSize="16" />
+                </CGroup>
+            </canvaslabel>
+            <label backgroundColor="green" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="end" color="black">
                 <span text="this is a tesxt to test lineBreak" fontSize="12" />
                 <span :text="'\n' + 'another piece of text which is going to be ellipsized'" fontSize="16" />
-        </label>
-            <HTMLLabel backgroundColor="blue" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="end" maxLines="4">
+            </label>
+            <HTMLLabel backgroundColor="blue" rippleColor="green" borderRadius="10" paddingTop="0" height="80" width="80" lineBreak="end" maxLines="4" color="black">
                 <span text="this is a tesxt to test lineBreak" fontSize="12" />
                 <span :text="'\n' + 'another piece of text which is going to be ellipsized'" fontSize="16" />
-        </HTMLLabel>
-            
+            </HTMLLabel>
         </StackLayout>
     </Page>
 </template>
@@ -64,7 +63,7 @@ export default {
         return {
             mdiFontFamily: 'materialdesignicons-webfont,Material Design Icons',
             itemList: items,
-            item:null
+            item: null
         };
     },
     methods: {

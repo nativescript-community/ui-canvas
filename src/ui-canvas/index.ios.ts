@@ -2261,7 +2261,6 @@ function lineBreakToLineBreakMode(value: string) {
 export class StaticLayout {
     rect: CGRect;
     nsAttributedString: NSAttributedString;
-    lineBreak: string;
     mToDraw: NSMutableAttributedString;
     public constructor(
         private text: any,
@@ -2301,23 +2300,57 @@ export class StaticLayout {
                 break;
         }
 
-        if (this.lineBreak) {
-            paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.lineBreak);
+        if (this.ellipsize) {
+            // for now we only support end because we cant get NSLineBreakStrategy.Standard to work with
+            // others
+            // paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.ellipsize);
+            paragraphStyle.lineBreakStrategy = NSLineBreakStrategy.Standard;
         }
         const fullRange = { location: 0, length: nsAttributedString.length };
-        nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
         this.mToDraw = nsAttributedString;
         this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0 as any, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
             nsAttributedString.addAttributesRange(attributes, range);
         });
+        nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
     }
     draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
         canvas.startApplyPaint(this.paint);
         const ctx = canvas.ctx;
         this.createAttributedStringToDraw();
+        // const attributes = this.paint.getDrawTextAttribs();
+        // if (this.align || this.ellipsize) {
+        //     let paragraphStyle = attributes.objectForKey(NSParagraphStyleAttributeName) as NSMutableParagraphStyle;
+        //     if (!paragraphStyle) {
+        //         paragraphStyle = NSMutableParagraphStyle.alloc().init();
+        //         attributes.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
+        //     }
+        //     switch (this.align) {
+        //         case LayoutAlignment.ALIGN_CENTER:
+        //             paragraphStyle.alignment = NSTextAlignment.Center;
+        //             break;
+        //         case LayoutAlignment.ALIGN_NORMAL:
+        //             paragraphStyle.alignment = NSTextAlignment.Left;
+        //             break;
+        //         case LayoutAlignment.ALIGN_OPPOSITE:
+        //             paragraphStyle.alignment = NSTextAlignment.Right;
+        //             break;
+        //     }
+        //     if (this.ellipsize) {
+        //         paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.ellipsize);
+        //     }
+        // }
+        // console.log('this.nsAttributedString', this.nsAttributedString);
+        // console.log('attributes', attributes);
+        // UIGraphicsPushContext(ctx);
+        // UIDrawingText.drawAttributedStringXYWidthHeightWithAttributes(this.nsAttributedString, 0, 0, this.width, maxHeight, attributes);
 
         UIGraphicsPushContext(ctx);
-        this.mToDraw.drawWithRectOptionsContext(CGRectMake(0, 0, this.width, maxHeight), NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.UsesFontLeading, null);
+
+        this.mToDraw.drawWithRectOptionsContext(
+            CGRectMake(0, 0, this.width, maxHeight),
+            NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
+            null
+        );
         UIGraphicsPopContext();
         canvas.finishApplyPaint(this.paint);
     }

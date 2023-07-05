@@ -3,70 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.13...@nativescript-community/ui-canvas@4.5.0) (2023-07-05)
+
+### Features
+
+* **canvas:** ellipsize support for StaticLayout ([2b22e82](https://github.com/nativescript-community/ui-canvas/commit/2b22e82b1b2ef06dcf20162cf8798f60c2bcb2de))
+
 ## [4.4.13](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.12...@nativescript-community/ui-canvas@4.4.13) (2023-05-16)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
-
-
-
-
 
 ## [4.4.12](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.11...@nativescript-community/ui-canvas@4.4.12) (2023-02-26)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
 
-
-
-
-
 ## [4.4.11](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.10...@nativescript-community/ui-canvas@4.4.11) (2023-01-28)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
 
-
-
-
-
 ## [4.4.10](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.9...@nativescript-community/ui-canvas@4.4.10) (2023-01-24)
-
 
 ### Bug Fixes
 
 * **android:** native-api-usage fix ([3f82275](https://github.com/nativescript-community/ui-canvas/commit/3f82275755fe4f03bed8efc345379abe90f2baa7))
 
-
-
-
-
 ## [4.4.9](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.8...@nativescript-community/ui-canvas@4.4.9) (2023-01-24)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
 
-
-
-
-
 ## [4.4.8](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.4.7...@nativescript-community/ui-canvas@4.4.8) (2023-01-24)
-
 
 ### Bug Fixes
 
 * **android:** native-api-usage fix ([d47baa7](https://github.com/nativescript-community/ui-canvas/commit/d47baa7437a8f3efcf4a30af1bea31fb4afb4a66))
 
-
-
-
-
 ## 4.4.7 (2023-01-23)
-
 
 ### Bug Fixes
 
 * **android:** improved native-api-usage ([ac262b9](https://github.com/nativescript-community/ui-canvas/commit/ac262b977fa84d2d4a1c1b089822fa38a4601d16))
-
-
-
-
 
 ## [4.4.6](https://github.com/nativescript-community/ui-canvas/compare/v4.4.5...v4.4.6) (2022-12-16)
 
