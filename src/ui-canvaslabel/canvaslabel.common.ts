@@ -209,8 +209,7 @@ export abstract class Span extends Shape {
             parent.redraw();
         }
     }
-    @profile
-    createStaticLayout(text, w, align, parent: CanvasLabel) {
+    createStaticLayout(text, w, h, align, parent: CanvasLabel) {
         const fontweight = this.fontWeight;
         const fontstyle = this.fontStyle || parent.style.fontStyle || parent.fontStyle;
         const fontFamily = this.fontFamily;
@@ -240,7 +239,7 @@ export abstract class Span extends Shape {
         if (color) {
             cachedPaint.color = color;
         }
-        this.mStaticlayout = new StaticLayout(text, cachedPaint, w, align, 1, 0, true, lineBreak);
+        this.mStaticlayout = new StaticLayout(text, cachedPaint, w, align, 1, 0, true, lineBreak, w, h);
         return this.mStaticlayout;
     }
 
@@ -324,7 +323,7 @@ export abstract class Span extends Shape {
         }
         let staticlayout = this.mStaticlayout;
         if (!staticlayout) {
-            staticlayout = this.createStaticLayout(text, Math.max(0, w), align, parent);
+            staticlayout = this.createStaticLayout(text, Math.max(0, w), h, align, parent);
         }
         let _staticWidth;
         const getStaticWidth = () => {

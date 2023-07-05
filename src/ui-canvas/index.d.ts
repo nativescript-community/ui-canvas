@@ -94,7 +94,7 @@ export class Paint {
 // export class StaticLayout {
 // }
 export class StaticLayout extends android.text.StaticLayout {
-    constructor(text: any, paint: Paint, width: number, align?, spacingmult?, spacingadd?, includepad?, ellipsize?, ellipsizedWidth?);
+    constructor(text: any, paint: Paint, width: number, align?, spacingmult?, spacingadd?, includepad?, ellipsize?, ellipsizedWidth?, height?);
     public draw(canvas: any, path?: any, paint?: any, param3?: number): void;
 
     static getDesiredWidth(text: any, paint: any);

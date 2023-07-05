@@ -30,21 +30,30 @@ public class StaticLayout {
     }
 
     public static android.text.StaticLayout createStaticLayout(CharSequence source, TextPaint paint, int width,
-            Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-
+            Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int height) {
+        android.text.StaticLayout staticLayout = null;
         if (Build.VERSION.SDK_INT >= 23) {
-            return createStaticLayoutBuilder(source, paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth).build();
+            staticLayout = createStaticLayoutBuilder(source, paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth).build();
         } else {
-            return new android.text.StaticLayout(source, 0, source.length(), paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth);
+            staticLayout = new android.text.StaticLayout(source, 0, source.length(), paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth);
         }
+        return createEllipsizeStaticLayout(staticLayout, includepad, ellipsize, ellipsizedWidth, height);
     }
-
+    public static android.text.StaticLayout createStaticLayout(CharSequence source, TextPaint paint, int width,
+            Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
+        return createStaticLayout(source, paint, width, align, spacingmult, spacingadd, includepad,ellipsize, ellipsizedWidth, -1);
+    }
+    
+    public static android.text.StaticLayout createStaticLayout(CharSequence source, Paint paint, int width,
+            Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int height) {
+        return createStaticLayout(source, new TextPaint(paint), width, align, spacingmult, spacingadd, includepad,ellipsize, ellipsizedWidth, height);
+    }
     public static android.text.StaticLayout createStaticLayout(CharSequence source, Paint paint, int width,
             Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-        return createStaticLayout(source, new TextPaint(paint), width, align, spacingmult, spacingadd, includepad,ellipsize, ellipsizedWidth);
+        return createStaticLayout(source, paint, width, align, spacingmult, spacingadd, includepad,ellipsize, ellipsizedWidth, -1);
     }
 
-    public static void draw(android.text.StaticLayout staticLayout, Canvas canvas, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int maxHeight) {
+    public static android.text.StaticLayout createEllipsizeStaticLayout(android.text.StaticLayout staticLayout, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int maxHeight) {
         if (maxHeight != -1 && ellipsize != null) {
             
             // Calculate the number of lines that fit within the available height
@@ -74,7 +83,7 @@ public class StaticLayout {
                         ellipsize,
                         ellipsizedWidth);
                     builder.setMaxLines(maxLines);
-                    staticLayout = builder.build();
+                    return builder.build();
                 } else {
                     int truncationIndex = staticLayout.getLineEnd(maxLines - 1);
 
@@ -96,7 +105,7 @@ public class StaticLayout {
                     }
 
                     // Re-create the StaticLayout with the truncated text
-                    staticLayout = createStaticLayout(new SpannableString(truncatedText), staticLayout.getPaint(), 
+                    return createStaticLayout(new SpannableString(truncatedText), staticLayout.getPaint(), 
                         staticLayout.getWidth(), 
                         staticLayout.getAlignment(), 
                         staticLayout.getSpacingMultiplier(), 
@@ -108,6 +117,6 @@ public class StaticLayout {
                 }
             }
         }
-        staticLayout.draw(canvas);
+        return staticLayout;
     }
 }

@@ -437,7 +437,7 @@ function lineBreakToEllipsize(value) {
 }
 
 export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
-    ellipsize: android.text.TextUtils.TruncateAt;
+    // ellipsize: android.text.TextUtils.TruncateAt;
     static nonNativeMethods = ['draw'];
     constructor(
         text: any,
@@ -446,9 +446,10 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
         align = LayoutAlignment.ALIGN_NORMAL,
         spacingmult = 1,
         spacingadd = 0,
-        private includepad = true,
+        includepad = true,
         ellipsize = null,
-        private ellipsizedWidth = width
+        ellipsizedWidth = width,
+        height
     ) {
         super();
         paint = (paint as any).getNative ? (paint as any).getNative() : paint;
@@ -457,8 +458,18 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
             // in case it is a number or a boolean
             text = text + '';
         }
-        this.ellipsize = lineBreakToEllipsize(ellipsize);
-        this.mNative = com.akylas.canvas.StaticLayout.createStaticLayout(text, paint, width, align, spacingmult, spacingadd, includepad, this.ellipsize, ellipsizedWidth);
+        this.mNative = com.akylas.canvas.StaticLayout.createStaticLayout(
+            text,
+            paint,
+            width,
+            align,
+            spacingmult,
+            spacingadd,
+            includepad,
+            lineBreakToEllipsize(ellipsize),
+            ellipsizedWidth,
+            Math.round(height)
+        );
         return this;
     }
 
@@ -479,7 +490,8 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
     }
 
     draw(canvas: Canvas, maxHeight = -1) {
-        com.akylas.canvas.StaticLayout.draw(this.getNative(), canvas.getNative(), this.includepad, this.ellipsize, this.ellipsizedWidth, maxHeight);
+        this.getNative().draw(canvas.getNative());
+        // com.akylas.canvas.StaticLayout.draw(this.getNative(), canvas.getNative(), this.includepad, this.ellipsize, this.ellipsizedWidth, maxHeight);
     }
 }
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;

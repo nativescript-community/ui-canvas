@@ -38,7 +38,8 @@ declare namespace com {
                     spacingadd: number,
                     includepad: boolean,
                     ellipsize: globalAndroid.text.TextUtils.TruncateAt,
-                    ellipsizedWidth: number
+                    ellipsizedWidth: number,
+                    height: number
                 ): android.text.StaticLayout;
                 static draw(
                     staticLayout: globalAndroid.text.StaticLayout,

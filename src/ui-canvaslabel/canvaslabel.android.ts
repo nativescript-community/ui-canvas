@@ -7,17 +7,19 @@ import { createNativeAttributedString, createSpannable, typefaceCache } from '@n
 export class Span extends SpanBase {
     _ssb: android.text.SpannableStringBuilder;
 
-    @profile
     createNative(parentCanvas: CanvasLabelBase, parent?: Group, maxFontSize?: number) {
         this.mNative = this._ssb = createSpannable(this, parentCanvas, parent, maxFontSize);
     }
+    // createStaticLayout(text, w, h, align, parent: CanvasLabel) {
+    //     this.mStaticlayout = super.createStaticLayout(text, w, h, align, parent);
+    //     return this.mStaticlayout;
+    // }
 }
 
 // const NSPan = com.nativescript.canvaslabel.Span;
 export class Group extends GroupBase {
     _ssb: android.text.SpannableStringBuilder;
 
-    @profile
     createNative(parentCanvas: CanvasLabelBase, parent?: Group, maxFontSize?: number) {
         if (!this.mSpans) {
             this.mNative = null;
