@@ -14,6 +14,7 @@ declare namespace UIDrawingText {
 
     function drawStringXYWithAttributes(text: string, x: number, y: number, attributes: NSDictionary<any, any>);
     function drawAttributedStringXYWithAttributes(text: NSAttributedString, x: number, y: number, attributes: NSDictionary<any, any>);
+    function drawAttributedStringXYWidthHeightWithAttributes(text: NSAttributedString, x: number, y: number, w: number, h: number, attributes: NSDictionary<any, any>);
     function getTextBoundsFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): CGRect;
     function measureTextFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): number;
 }
