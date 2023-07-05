@@ -119,9 +119,9 @@ void DrawAttributedStringInRectWithAttrs(NSAttributedString *string, CGRect rect
     NSRange range = NSMakeRange(0, string.length);
     [attributedString addAttributes:attributes range:range];
     
-    CGRect destRect = [string boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-    CGRect outputRect = RectCenteredInRect(destRect, rect);
-    [attributedString drawInRect:outputRect];
+    // CGRect destRect = [string boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+    // CGRect outputRect = RectCenteredInRect(destRect, rect);
+    [attributedString drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil] ;
 }
 
 #pragma mark - Unwrapped
@@ -285,6 +285,9 @@ void DrawWrappedStringInRect(NSString *string, CGRect rect, NSString *fontFace, 
 }
 + (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes{
     DrawAttributedStringAtPosWithAttrs(string, x, y, attributes);
+}
++ (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y width:(CGFloat)width height:(CGFloat)height withAttributes:(NSDictionary*)attributes {
+    DrawAttributedStringInRectWithAttrs(string, CGRectMake (x, y, width, height), attributes);
 }
 
 + (CGRect)getTextBounds:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes {

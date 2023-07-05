@@ -36,6 +36,7 @@ UIFont *FontForWrappedString(NSString *string, NSString *fontFace, CGRect rect, 
 + (void) drawAttributedStringInRect: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y width:(CGFloat)width height:(CGFloat)height font:(UIFont*)font alignment:(NSTextAlignment)alignment  color:(UIColor*)color;
 + (void) drawString: (NSString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes;
 + (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y withAttributes:(NSDictionary*)attributes;
++ (void) drawAttributedString: (NSAttributedString *)string x:(CGFloat)x y:(CGFloat)y width:(CGFloat)width height:(CGFloat)height withAttributes:(NSDictionary*)attributes;
 + (CGRect)getTextBounds:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes;
 + (CGFloat)measureText:(NSString*)text from:(NSUInteger)from to:(NSUInteger)to attributes:(NSDictionary*)attributes;
 @end
