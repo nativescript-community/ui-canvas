@@ -14,9 +14,11 @@ import {
     ObservableArray,
     PercentLength,
     Utils,
+    View,
     profile
 } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
+import { Span } from './canvaslabel';
 
 const toDpi = Utils.layout.toDeviceIndependentPixels;
 export const paintCache: { [k: string]: Paint } = {};
@@ -55,7 +57,7 @@ export type VerticalTextAlignment = 'initial' | 'top' | 'middle' | 'bottom' | 'c
 // debugPaint.style = Style.STROKE;
 // debugPaint.color = 'red';
 
-export abstract class Span extends Shape {
+export abstract class SpanBase extends Shape {
     static get isSpan() {
         return true;
     }
@@ -93,15 +95,15 @@ export abstract class Span extends Shape {
 
     addEventListener(arg: string, callback: (data: EventData) => void, thisArg?: any) {
         super.addEventListener(arg, callback, thisArg);
-        if (arg === Span.linkTapEvent) {
+        if (arg === SpanBase.linkTapEvent) {
             this._setTappable(true);
         }
     }
 
     removeEventListener(arg: string, callback?: any, thisArg?: any) {
         super.removeEventListener(arg, callback, thisArg);
-        if (arg === Span.linkTapEvent) {
-            this._setTappable(this.hasListeners(Span.linkTapEvent));
+        if (arg === SpanBase.linkTapEvent) {
+            this._setTappable(this.hasListeners(SpanBase.linkTapEvent));
         }
     }
     private _setTappable(value: boolean): void {
@@ -290,7 +292,7 @@ export abstract class Span extends Shape {
                 break;
         }
 
-        const verticalalignment = this.verticalAlignment;
+        const verticalalignment = this.verticalAlignment || (parent && parent.verticalTextAlignment);
         let deltaX = 0,
             deltaY = 0;
         if (this.width) {
@@ -395,17 +397,17 @@ export abstract class Span extends Shape {
             // check if we are a Span inside a Group
             const spanParent = this.mParent && this.mParent.get();
             if (!(spanParent instanceof Group)) {
-                if (!Span.mBackgroundPaint) {
-                    Span.mBackgroundPaint = new Paint();
+                if (!SpanBase.mBackgroundPaint) {
+                    SpanBase.mBackgroundPaint = new Paint();
                 }
-                Span.mBackgroundPaint.color = backgroundcolor;
+                SpanBase.mBackgroundPaint.color = backgroundcolor;
                 const borderRadius = this.borderRadius;
                 const top = this.height ? -getStaticHeight() / 2 : 0;
                 const bottom = top + (this.height ? h : getStaticHeight());
                 if (borderRadius > 0) {
-                    canvas.drawRoundRect(new RectF(0, top, getStaticWidth(), bottom), borderRadius, borderRadius, Span.mBackgroundPaint);
+                    canvas.drawRoundRect(new RectF(0, top, getStaticWidth(), bottom), borderRadius, borderRadius, SpanBase.mBackgroundPaint);
                 } else {
-                    canvas.drawRect(0, top, getStaticWidth(), bottom, Span.mBackgroundPaint);
+                    canvas.drawRect(0, top, getStaticWidth(), bottom, SpanBase.mBackgroundPaint);
                 }
             }
         }
@@ -414,16 +416,16 @@ export abstract class Span extends Shape {
     toNativeString() {}
 }
 //@ts-ignore
-Span.prototype.toNativeString = NSPan.prototype.toNativeString;
-export abstract class Group extends Span {
-    mSpans: ObservableArray<Span>;
+SpanBase.prototype.toNativeString = NSPan.prototype.toNativeString;
+export abstract class Group extends SpanBase {
+    mSpans: ObservableArray<SpanBase>;
 
     get spans() {
         return this.mSpans;
     }
     getOrCreateSpans() {
         if (!this.mSpans) {
-            this.mSpans = new ObservableArray<Span>();
+            this.mSpans = new ObservableArray<SpanBase>();
             this.mSpans.addEventListener(ObservableArray.changeEvent, this.onShapesCollectionChanged, this);
         }
         return this.mSpans;
@@ -489,12 +491,12 @@ export abstract class Group extends Span {
     }
     @profile
     public _addChildFromBuilder(name: string, value: any): void {
-        if (value instanceof Span) {
+        if (value instanceof SpanBase) {
             this.getOrCreateSpans().push(value);
         }
     }
     public _removeView(view: any) {
-        if (view instanceof Span && this.mSpans) {
+        if (view instanceof SpanBase && this.mSpans) {
             const index = this.mSpans.indexOf(view);
             if (index !== -1) {
                 this.mSpans.splice(index, 1);
@@ -503,7 +505,7 @@ export abstract class Group extends Span {
             // super._removeView(view);
         }
     }
-    onChildChange(span: Span) {
+    onChildChange(span: SpanBase) {
         this.redraw();
     }
     abstract createNative(parentCanvas: CanvasLabel, parent?: Group, maxFontSize?: number);
@@ -523,7 +525,7 @@ declare module '@nativescript/core/ui/core/view' {
 @CSSType('CanvasLabel')
 export class CanvasLabel extends CanvasView {
     // fontSize: number;
-    // fontFamily: string;
+    mText: string | any;
     // fontStyle: FontStyle;
     // fontWeight: FontWeight;
     // textAlignment: TextAlignment;
@@ -535,59 +537,120 @@ export class CanvasLabel extends CanvasView {
     @cssProperty letterSpacing: number;
     @cssProperty lineHeight: number;
     @cssProperty textAlignment: CoreTypes.TextAlignmentType & 'middle';
+    @cssProperty verticalTextAlignment: CoreTypes.VerticalAlignmentType & 'middle';
     @cssProperty textDecoration: CoreTypes.TextDecorationType;
     //@ts-ignore
     @cssProperty textTransform: CoreTypes.TextTransformType;
     @cssProperty whiteSpace: CoreTypes.WhiteSpaceType;
 
+    private mTextSpan: SpanBase;
+
     handlePropertyChange() {
         const shapes = this.shapes;
-        shapes && shapes.forEach((s) => s instanceof Span && s.reset());
+        shapes && shapes.forEach((s) => s instanceof SpanBase && s.reset());
         this.invalidate();
     }
 
     onSizeChanged(w, h, oldw, oldh) {
         const shapes = this.shapes;
-        shapes && shapes.forEach((s) => s instanceof Span && s.resetLayout());
+        shapes && shapes.forEach((s) => s instanceof SpanBase && s.resetLayout());
         super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    public _addArrayFromBuilder(name: string, value: any[]) {
+        if (name === 'spans') {
+            value.forEach((v) => {
+                this._addChildFromBuilder(null, value);
+            });
+        } else {
+            super._addArrayFromBuilder(name, value);
+        }
+        // we ignore any other kind of view.
+    }
+
+    public _addChildFromBuilder(name: string, value: any): void {
+        if (!(value instanceof View)) {
+            this.addShape(value);
+        } else {
+            super._addChildFromBuilder(name, value);
+        }
+    }
+    public removeChild(view: any) {
+        if (!(view instanceof View)) {
+            this.removeShape(view);
+        } else {
+            super.removeChild(view);
+        }
+    }
+    public addChild(child: View): void {
+        if (!(child instanceof View)) {
+            this.addShape(child);
+        } else {
+            super.addChild(child);
+        }
+    }
+    public insertChild(child: View, atIndex: number): void {
+        if (!(child instanceof View)) {
+            this.insertShape(child, atIndex);
+        } else {
+            super.insertChild(child, atIndex);
+        }
     }
 
     [NColorProperty.setNative](value) {
         this.handlePropertyChange();
     }
 
-    get padding(): string | CoreTypes.LengthType {
-        return this.style.padding;
-    }
-    set padding(value: string | CoreTypes.LengthType) {
-        this.style.padding = value;
-    }
+    // get padding(): string | CoreTypes.LengthType {
+    //     return this.style.padding;
+    // }
+    // set padding(value: string | CoreTypes.LengthType) {
+    //     this.style.padding = value;
+    // }
 
-    get paddingTop(): CoreTypes.LengthType {
-        return this.style.paddingTop;
-    }
-    set paddingTop(value: CoreTypes.LengthType) {
-        this.style.paddingTop = value;
-    }
+    // get paddingTop(): CoreTypes.LengthType {
+    //     return this.style.paddingTop;
+    // }
+    // set paddingTop(value: CoreTypes.LengthType) {
+    //     this.style.paddingTop = value;
+    // }
 
-    get paddingRight(): CoreTypes.LengthType {
-        return this.style.paddingRight;
-    }
-    set paddingRight(value: CoreTypes.LengthType) {
-        this.style.paddingRight = value;
-    }
+    // get paddingRight(): CoreTypes.LengthType {
+    //     return this.style.paddingRight;
+    // }
+    // set paddingRight(value: CoreTypes.LengthType) {
+    //     this.style.paddingRight = value;
+    // }
 
-    get paddingBottom(): CoreTypes.LengthType {
-        return this.style.paddingBottom;
-    }
-    set paddingBottom(value: CoreTypes.LengthType) {
-        this.style.paddingBottom = value;
-    }
+    // get paddingBottom(): CoreTypes.LengthType {
+    //     return this.style.paddingBottom;
+    // }
+    // set paddingBottom(value: CoreTypes.LengthType) {
+    //     this.style.paddingBottom = value;
+    // }
 
-    get paddingLeft(): CoreTypes.LengthType {
-        return this.style.paddingLeft;
+    // get paddingLeft(): CoreTypes.LengthType {
+    //     return this.style.paddingLeft;
+    // }
+    // set paddingLeft(value: CoreTypes.LengthType) {
+    //     this.style.paddingLeft = value;
+    // }
+    get text() {
+        return this.mText;
     }
-    set paddingLeft(value: CoreTypes.LengthType) {
-        this.style.paddingLeft = value;
+    set text(value) {
+        if (value) {
+            if (!this.mTextSpan) {
+                this.mTextSpan = new Span();
+                this.addShape(this.mTextSpan);
+            } else {
+                this.mTextSpan.visibility = 'visible';
+            }
+            this.mTextSpan.text = value;
+        } else if (this.mTextSpan) {
+            this.mTextSpan.visibility = 'hidden';
+        }
+
+        this.mText = value;
     }
 }

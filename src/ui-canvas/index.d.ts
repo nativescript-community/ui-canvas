@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/unified-signatures */
-import { Color, ImageSource, ObservableArray, View } from '@nativescript/core';
+import { Color, GridLayout, ImageSource, ObservableArray, View } from '@nativescript/core';
 import { Font, FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
@@ -323,20 +323,24 @@ export class DashPathEffect extends android.graphics.DashPathEffect {
 //     return android.graphics.Paint.Join;
 // }
 
-declare class CanvasView extends View {
+declare class CanvasView extends GridLayout {
     cached: boolean;
     hardwareAccelerated: boolean;
     density: number;
     drawFrameRate: boolean;
 
     shapes: ObservableArray<Shape>;
+    //  mShapes: ObservableArray<Shape>;
 
     onDraw(canvas: Canvas);
     addShape(shape: Shape);
+    insertShape(shape: Shape, atIndex: number);
     removeShape(shape: Shape);
     redraw();
     invalidate();
     onSizeChanged(w: number, h: number, oldw: number, oldh: number);
+
+    public _addArrayFromBuilder(name: string, value: any[]);
 }
 
 export function createImage(options: { width: number; height: number; scale?: number; config?: any }): ImageSource;

@@ -1,5 +1,5 @@
 import { createNativeAttributedString, createSpannable } from '@nativescript-community/text';
-import { CanvasLabel as CanvasLabelBase, Group as GroupBase, Span as SpanBase } from './canvaslabel.common';
+import { CanvasLabel as CanvasLabelBase, Group as GroupBase, SpanBase } from './canvaslabel.common';
 
 export class Span extends SpanBase {
     createNative(parentCanvas: CanvasLabelBase, parent?: Group, maxFontSize?: number) {

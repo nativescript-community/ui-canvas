@@ -1,4 +1,4 @@
-import { ChangedData, Observable, ObservableArray, Property, Screen, Utils, View, booleanConverter, colorProperty } from '@nativescript/core';
+import { ChangedData, GridLayout, Observable, ObservableArray, Property, Screen, Utils, View, booleanConverter, colorProperty } from '@nativescript/core';
 import { Canvas, Rect, RectF } from '.';
 import Shape from './shapes/shape';
 
@@ -7,6 +7,12 @@ import Shape from './shapes/shape';
 //         _raiseLayoutChangedEvent();
 //     }
 // }
+
+declare module '@nativescript/core/ui/core/view' {
+    interface ViewCommon {
+        _addChildFromBuilder(name: string, value: any);
+    }
+}
 
 export function createRect(x: number, y: number, w: number, h: number) {
     return new Rect(x, y, x + w, y + h);
@@ -36,7 +42,7 @@ function throttle(fn, limit) {
         }
     };
 }
-export abstract class CanvasBase extends View {
+export abstract class CanvasBase extends GridLayout {
     // Declare events as static variables, so that they can be set in NativeScript Core XML
     public static drawEvent = 'draw';
 
@@ -93,6 +99,14 @@ export abstract class CanvasBase extends View {
     public addShape(shape: Shape) {
         this.getOrCreateShapes().push(shape);
     }
+    public insertShape(shape: Shape, atIndex: number) {
+        const shapes = this.getOrCreateShapes();
+        if (atIndex >= shapes.length) {
+            this.addShape(shape);
+        } else {
+            shapes.splice(atIndex, 0, shape);
+        }
+    }
 
     public removeShape(shape: Shape) {
         if (this.mShapes) {
@@ -104,21 +118,34 @@ export abstract class CanvasBase extends View {
     }
 
     public _addArrayFromBuilder(name: string, value: any[]) {
-        value.forEach((v) => {
-            this._addChildFromBuilder(null, value);
-        });
+        if (name === 'shapes') {
+            value.forEach((v) => {
+                this._addChildFromBuilder(null, value);
+            });
+        }
         // we ignore any other kind of view.
     }
 
     public _addChildFromBuilder(name: string, value: any): void {
         if (value instanceof Shape) {
             this.addShape(value);
+        } else {
+            super._addChildFromBuilder(name, value);
         }
         // we ignore any other kind of view.
     }
     public _removeView(view: any) {
         if (view instanceof Shape) {
             this.removeShape(view);
+        } else {
+            super._removeView(view);
+        }
+    }
+    public _addView(view: any) {
+        if (view instanceof Shape) {
+            this.addShape(view);
+        } else {
+            super._addView(view);
         }
     }
 
