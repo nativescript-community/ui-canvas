@@ -16,10 +16,7 @@
 <script lang="ts">
 import * as perms from '@nativescript-community/perms';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import * as app from '@nativescript/core/application';
-import { ImageSource } from '@nativescript/core/image-source';
-import { Frame } from '@nativescript/core/ui/frame';
-import { Image } from '@nativescript/core/ui/image';
+import { Application, Frame, Image, ImageSource } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { drawOnImage } from '../canvastests';
@@ -99,7 +96,7 @@ export default class ComplexExample extends Vue {
                     // if (callBack) callBack();
                     // return result;
                 } else {
-                    const context = app.android.context;
+                    const context = Application.android.context;
                     android.provider.MediaStore.Images.Media.insertImage(context.getContentResolver(), imageSource.android, 'test_' + Date.now() + '.png', Date.now() + '');
                 }
             });

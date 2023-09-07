@@ -9,12 +9,10 @@
 </template>
 
 <script lang="ts">
-import { Frame } from '@nativescript/core/ui/frame';
+import { Canvas, Cap, createRectF, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Frame } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { Canvas, Cap, Paint, Style, createRect, createRectF } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color';
-import { Screen } from '@nativescript/core/platform';
 
 import TWEEN from '@nativescript-community/tween';
 

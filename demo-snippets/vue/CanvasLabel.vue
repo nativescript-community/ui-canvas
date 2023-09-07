@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts">
-import { stringify } from 'querystring';
 const icons = [
     'mdi-numeric',
     'mdi-hat-fedora',

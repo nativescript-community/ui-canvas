@@ -9,14 +9,10 @@
 </template>
 
 <script lang="ts">
-import { Frame } from '@nativescript/core/ui/frame';
+import { createRect } from '@nativescript-community/ui-canvas';
+import { Frame, ImageSource, knownFolders, path } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { Paint, Style, createRect } from '@nativescript-community/ui-canvas';
-import { Color } from '@nativescript/core/color';
-import { Folder, knownFolders, path } from '@nativescript/core/file-system';
-import { ImageSource } from '@nativescript/core/image-source';
-import { Screen } from '@nativescript/core/platform';
 
 const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(knownFolders.currentApp().path, 'assets/images/test.jpg'));
 

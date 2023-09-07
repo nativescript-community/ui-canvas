@@ -15,10 +15,7 @@ import {
     createRect,
     createRectF
 } from '@nativescript-community/ui-canvas';
-import { Label, Utils } from '@nativescript/core';
-import { Color } from '@nativescript/core/color';
-import { Folder, knownFolders, path } from '@nativescript/core/file-system';
-import { ImageSource } from '@nativescript/core/image-source';
+import { Color, Folder, ImageSource, Label, Utils, knownFolders, path } from '@nativescript/core';
 
 function isOnUiThread() {
     if (__IOS__) {
