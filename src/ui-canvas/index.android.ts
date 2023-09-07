@@ -9,7 +9,7 @@ import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/fon
 declare global {
     const __runtimeVersion: string;
 }
-const sdkVersion = lazy(() => parseInt(Device.sdkVersion, 10));
+const sdkVersion = parseInt(Device.sdkVersion, 10);
 
 export * from './index.common';
 export {
@@ -34,13 +34,6 @@ export {
     PorterDuffXfermode
 };
 
-let SDK_INT = -1;
-function getSDK() {
-    if (SDK_INT === -1) {
-        SDK_INT = android.os.Build.VERSION.SDK_INT;
-    }
-    return SDK_INT;
-}
 
 export function parseDashEffect(value: string) {
     const array = value.split(' ').map(parseFloat);
@@ -234,9 +227,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             }
             this.mNeedsFontUpdate = true;
             return this.mFontInternal;
-        } else if (methodName === 'setLetterSpacing' && sdkVersion() < 21) {
+        } else if (methodName === 'setLetterSpacing' && sdkVersion < 21) {
             return true;
-        } else if (methodName === 'getLetterSpacing' && sdkVersion() < 21) {
+        } else if (methodName === 'getLetterSpacing' && sdkVersion < 21) {
             return 0;
         }
     }
@@ -546,7 +539,7 @@ class CanvasView extends CanvasBase {
     nativeViewProtected: com.akylas.canvas.CanvasView;
     createNativeView() {
         const view = new com.akylas.canvas.CanvasView(this._context);
-        if (getSDK() >= 28) {
+        if (sdkVersion >= 28) {
             view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         } else {
             view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
@@ -554,7 +547,7 @@ class CanvasView extends CanvasBase {
         return view;
     }
     [hardwareAcceleratedProperty.getDefault](value) {
-        return getSDK() >= 28;
+        return sdkVersion >= 28;
     }
 
     [hardwareAcceleratedProperty.setNative](value) {
