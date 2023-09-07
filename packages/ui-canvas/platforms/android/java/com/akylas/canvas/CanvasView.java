@@ -4,12 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.graphics.Canvas;
 
-public class CanvasView extends org.nativescript.widgets.GridLayout {
+public class CanvasView extends View {
     public SizeChangedListener sizeChangedListener = null;
     public DrawListener drawListener = null;
 
     public CanvasView(Context context) {
         super(context);
+        setWillNotDraw(false);
     }
 
     @Override
