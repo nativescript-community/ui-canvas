@@ -39,7 +39,7 @@
     "bugs": {
         "url": "https://github.com/nativescript-community/ui-canvas/issues"
     },
-    "dependencies": {
+    "peerDependencies": {
         "@nativescript-community/ui-canvas": "^4.5.1"
     }
 }

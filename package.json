@@ -35,10 +35,10 @@
         "update": "node ./tools/update.js"
     },
     "devDependencies": {
-        "@nativescript-community/arraybuffers": "1.1.1",
+        "@nativescript-community/arraybuffers": "^1.1.3",
         "@nativescript-community/plugin-seed-tools": "file:tools",
         "@nativescript-community/template-snippet": "file:demo-snippets",
-        "@nativescript-community/text": "^1.5.22"
+        "@nativescript-community/text": "^1.5.33"
     },
     "repository": {
         "type": "git",
