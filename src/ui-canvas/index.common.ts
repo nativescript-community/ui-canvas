@@ -134,18 +134,18 @@ export abstract class CanvasBase extends GridLayout {
         }
         // we ignore any other kind of view.
     }
-    public _removeView(view: any) {
+    public removeChild(view: any) {
         if (view instanceof Shape) {
             this.removeShape(view);
         } else {
-            super._removeView(view);
+            super.removeChild(view);
         }
     }
-    public _addView(view: any) {
+    public addChild(view: any) {
         if (view instanceof Shape) {
             this.addShape(view);
         } else {
-            super._addView(view);
+            super.addChild(view);
         }
     }
 
