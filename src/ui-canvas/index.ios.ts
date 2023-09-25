@@ -1233,14 +1233,20 @@ export class Paint implements IPaint {
 
             const w = source.size.width;
             const h = source.size.height;
-            const rect = CGRectMake(0, 0, w, h);
+            const rect = new Rect(CGRectMake(0, 0, w, h));
+
+            let transform = CGAffineTransformMakeTranslation(0, rect.cgRect.size.height);
+            transform = CGAffineTransformScale(transform, 1.0, -1.0);
+            if (this.shader.localMatrix) {
+                this.shader.localMatrix.mapRect(rect);
+            }
+            rect.cgRect = CGRectApplyAffineTransform(rect.cgRect, transform);
 
             // draw original image
             CGContextSaveGState(ctx);
             CGContextClip(ctx);
-            CGContextTranslateCTM(ctx, 0, source.size.height);
-            CGContextScaleCTM(ctx, 1.0, -1.0);
-            CGContextDrawImage(ctx, rect, source.CGImage);
+            CGContextConcatCTM(ctx, transform);
+            CGContextDrawImage(ctx, rect.cgRect, source.CGImage);
             CGContextRestoreGState(ctx);
             // CGContextAddPath(ctx, path);
         }
@@ -2206,9 +2212,33 @@ export class ColorMatrixColorFilter {
         }
     }
 }
-export class RadialGradient {
+
+class Shader {
+    localMatrix: Matrix;
+
+    getLocalMatrix(localM: Matrix): boolean {
+        if (this.localMatrix && !this.localMatrix.isIdentity()) {
+            localM.set(this.localMatrix);
+            return true;
+        }
+        return false;
+    }
+    setLocalMatrix(localM: Matrix) {
+        if (localM) {
+            if (!this.localMatrix) {
+                this.localMatrix = new Matrix();
+            }
+            this.localMatrix.set(localM);
+        } else {
+            this.localMatrix = null;
+        }
+    }
+}
+export class RadialGradient extends Shader {
     mGradient;
-    constructor(public centerX: number, public centerY: number, public radius: number, public colors: any, public stops: any, public tileMode: TileMode) {}
+    constructor(public centerX: number, public centerY: number, public radius: number, public colors: any, public stops: any, public tileMode: TileMode) {
+        super();
+    }
     get gradient() {
         if (!this.mGradient) {
             if (Array.isArray(this.colors)) {
@@ -2230,8 +2260,10 @@ export class RadialGradient {
         }
     }
 }
-export class BitmapShader {
-    constructor(public bitmap: any, public tileX: any, public tileY: any) {}
+export class BitmapShader extends Shader {
+    constructor(public bitmap: any, public tileX: any, public tileY: any) {
+        super();
+    }
     get image() {
         if (this.bitmap instanceof ImageSource) {
             return this.bitmap.ios;
