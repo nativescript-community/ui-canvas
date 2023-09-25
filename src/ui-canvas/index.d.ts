@@ -249,7 +249,9 @@ export class RadialGradient extends android.graphics.RadialGradient {
 export class LinearGradient extends android.graphics.LinearGradient {
     constructor(param0: number, param1: number, param2: number, param3: number, param4: any, param5: any, param6: TileMode);
 }
-export class BitmapShader extends android.graphics.BitmapShader {}
+export class BitmapShader extends android.graphics.BitmapShader {
+    constructor(image: ImageSource, tileX, tileY);
+}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path {
     computeBounds(rect: RectF, exact: boolean);
