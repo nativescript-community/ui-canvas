@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.15](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.14...@nativescript-community/ui-svg@0.1.15) (2023-09-25)
+
+**Note:** Version bump only for package @nativescript-community/ui-svg
+
 ## [0.1.14](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.13...@nativescript-community/ui-svg@0.1.14) (2023-09-07)
 
 **Note:** Version bump only for package @nativescript-community/ui-svg
