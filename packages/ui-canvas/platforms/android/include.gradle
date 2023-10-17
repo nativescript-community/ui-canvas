@@ -1,18 +1,22 @@
 import groovy.json.JsonSlurper
 dependencies {
-    implementation(name:'widgets-release', ext:'aar')
+    if (hasProperty("tempBuild")) {
+        implementation(name:'widgets-release', ext:'aar')
+    }
     implementation "androidx.annotation:annotation:1.1.0"
 }
 repositories {
-    def widgetsDir = "$USER_PROJECT_ROOT/node_modules/@nativescript/core/platforms/android"
-    def appPackageJsonFile = file("$USER_PROJECT_ROOT/package.json")
-    if (appPackageJsonFile.exists()) {
-        def appPackageJson = new JsonSlurper().parseText(appPackageJsonFile.text)
-        if (appPackageJson.dependencies['@akylas/nativescript'] != null) {
-            widgetsDir = "$USER_PROJECT_ROOT/node_modules/@akylas/nativescript/platforms/android"
+    if (hasProperty("tempBuild")) {
+        def widgetsDir = "$USER_PROJECT_ROOT/node_modules/@nativescript/core/platforms/android"
+        def appPackageJsonFile = file("$USER_PROJECT_ROOT/package.json")
+        if (appPackageJsonFile.exists()) {
+            def appPackageJson = new JsonSlurper().parseText(appPackageJsonFile.text)
+            if (appPackageJson.dependencies['@akylas/nativescript'] != null) {
+                widgetsDir = "$USER_PROJECT_ROOT/node_modules/@akylas/nativescript/platforms/android"
+            }
         }
-    }
-    flatDir {
-        dirs "$widgetsDir"
+        flatDir {
+            dirs "$widgetsDir"
+        }
     }
 }
