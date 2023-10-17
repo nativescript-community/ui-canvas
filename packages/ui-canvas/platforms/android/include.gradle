@@ -1,12 +1,12 @@
 import groovy.json.JsonSlurper
 dependencies {
-    if (hasProperty("tempBuild")) {
+    if (project.hasProperty("tempBuild")) {
         implementation(name:'widgets-release', ext:'aar')
     }
     implementation "androidx.annotation:annotation:1.1.0"
 }
 repositories {
-    if (hasProperty("tempBuild")) {
+    if (project.hasProperty("tempBuild")) {
         def widgetsDir = "$USER_PROJECT_ROOT/node_modules/@nativescript/core/platforms/android"
         def appPackageJsonFile = file("$USER_PROJECT_ROOT/package.json")
         if (appPackageJsonFile.exists()) {
