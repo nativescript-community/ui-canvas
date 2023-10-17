@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.5](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.4...@nativescript-community/ui-canvas@4.6.5) (2023-10-17)
+
+### Bug Fixes
+
+* **android:** build fix... ([0205eee](https://github.com/nativescript-community/ui-canvas/commit/0205eee2b50f6ae3ab62f21dbebbce7aaf24d413))
+
 ## [4.6.4](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.3...@nativescript-community/ui-canvas@4.6.4) (2023-10-17)
 
 ### Bug Fixes
