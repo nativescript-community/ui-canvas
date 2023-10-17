@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { BitmapShader, CanvasView, createRect, Matrix, Paint, Style } from '@nativescript-community/ui-canvas';
+import { BitmapShader, CanvasView, createRect, Matrix, Paint, Style, TileMode } from '@nativescript-community/ui-canvas';
 import { Frame, TouchGestureEventData, ImageSource, knownFolders, path } from '@nativescript/core';
 import Vue, {NativeScriptVue} from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
@@ -52,7 +52,7 @@ export default class Image extends Vue {
                 2,
                 this.touchX,this.touchY
             )
-            const shader = new BitmapShader(iconLocalFile, 0, 0);
+            const shader = new BitmapShader(iconLocalFile, TileMode.CLAMP, TileMode.CLAMP);
             shader.setLocalMatrix(matrix)
             shaderPaint.setShader(shader)
             canvas.drawCircle(this.touchX, this.touchY, 60, shaderPaint)
