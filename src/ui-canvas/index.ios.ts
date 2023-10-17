@@ -1372,6 +1372,13 @@ export class Canvas implements ICanvas {
         console.error('Method not implemented:', 'skew');
     }
 
+    // setMatrix(matrix: Matrix) {
+    //     CGContextConcatCTM(this.ctx, matrix.mTransform);
+    // }
+    getMatrix(): Matrix {
+        return new Matrix(CGContextGetCTM(this.ctx));
+    }
+
     getClipBounds(): IRect {
         return new Rect(CGContextGetClipBoundingBox(this.ctx));
     }
