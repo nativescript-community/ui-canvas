@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.9](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvaslabel@1.2.8...@nativescript-community/ui-canvaslabel@1.2.9) (2023-10-20)
+
+### Bug Fixes
+
+* **canvaslabel:** missing typings ([71a9618](https://github.com/nativescript-community/ui-canvas/commit/71a9618249dc65146439ca5a088a7d85ae58e571))
+
 ## [1.2.8](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvaslabel@1.2.7...@nativescript-community/ui-canvaslabel@1.2.8) (2023-10-17)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvaslabel

@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.6](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.5...@nativescript-community/ui-canvas@4.6.6) (2023-10-20)
+
+**Note:** Version bump only for package @nativescript-community/ui-canvas
+
 ## [4.6.5](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.4...@nativescript-community/ui-canvas@4.6.5) (2023-10-17)
 
 ### Bug Fixes
