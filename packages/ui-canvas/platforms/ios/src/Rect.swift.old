@@ -1,0 +1,103 @@
+class Rect {
+    private var rect: CGRect = CGRect()
+    
+    var left: CGFloat {
+        get { return rect.origin.x }
+        set {
+            rect.origin.x = newValue
+        }
+    }
+    
+    var top: CGFloat {
+        get { return rect.origin.y }
+        set {
+            rect.origin.y = newValue
+        }
+    }
+    
+    var right: CGFloat {
+        get { return rect.origin.x + rect.size.width }
+        set {
+            rect.size.width = newValue - rect.origin.x
+        }
+    }
+    
+    var bottom: CGFloat {
+        get { return rect.origin.y + rect.size.height }
+        set {
+            rect.size.height = newValue - rect.origin.y
+        }
+    }
+    
+    var cgRect: CGRect {
+        get { return rect }
+        set {
+            rect = newValue
+        }
+    }
+    
+    func inset(dx: CGFloat, dy: CGFloat) {
+        rect = rect.insetBy(dx: dx, dy: dy)
+    }
+    
+    func union(_ rect: CGRect) {
+        // Not implemented
+        print("Method not implemented: union")
+    }
+    
+    func offsetTo(x: CGFloat, y: CGFloat) {
+        rect.origin = CGPoint(x: x, y: y)
+    }
+    
+     func offset(dx: CGFloat, dy: CGFloat) {
+        rect.origin.x += dx
+        rect.origin.y += dy
+    }
+    func centerX() -> CGFloat {
+        return rect.origin.x + rect.size.width / 2
+    }
+    
+    func centerY() -> CGFloat {
+        return rect.origin.y + rect.size.height / 2
+    }
+    
+    func intersect(_ rect: CGRect) -> Bool {
+        let result = self.rect.intersection(rect)
+        if !result.isNull {
+            self.rect = result
+            return true
+        }
+        return false
+    }
+    
+    func contains(_ rect: CGRect) -> Bool {
+        return self.rect.contains(rect)
+    }
+    
+    var width: CGFloat {
+        return rect.size.width
+    }
+    
+    var height: CGFloat {
+        return rect.size.height
+    }
+    
+    init() {
+        // Default constructor
+    }
+    
+    init(left: CGFloat, top: CGFloat, right: CGFloat, bottom: CGFloat) {
+        self.left = left
+        self.top = top
+        self.right = right
+        self.bottom = bottom
+    }
+    
+    init(_ rect: CGRect) {
+        self.rect = rect
+    }
+    
+    func toString() -> String {
+        return "Rect(\(left), \(top), \(right), \(bottom))"
+    }
+}
