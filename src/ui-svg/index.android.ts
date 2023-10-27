@@ -96,7 +96,7 @@ export class SVG extends SVGBase {
             return paintedWidth;
         }
 
-        return 0;
+        return svg.getDocumentWidth();
     }
     getHeight(availableWidth: number, availableHeight: number) {
         if (this.height) {
@@ -136,7 +136,7 @@ export class SVG extends SVGBase {
             return paintedHeight;
         }
 
-        return 0;
+        return svg.getDocumentHeight();
     }
     drawOnCanvas(canvas: Canvas, parent: CanvasView) {
         const svg = this._svg;
@@ -148,9 +148,9 @@ export class SVG extends SVGBase {
             let options = this.renderOptions;
             const width = this.getWidth(availableWidth, availableHeight);
             const height = this.getHeight(availableWidth, availableHeight);
-            const box = svg.getDocumentViewBox();
-            const nativeWidth = box ? box.width() : width;
-            const nativeHeight = box ? box.height() : height;
+            // const box = svg.getDocumentViewBox();
+            // const nativeWidth = box ? box.width() : width;
+            // const nativeHeight = box ? box.height() : height;
 
             // const nativeAspectRatio = nativeWidth / nativeHeight;
             // const boundedAspectRatio = width / height;
