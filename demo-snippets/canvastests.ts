@@ -25,11 +25,11 @@ function isOnUiThread() {
     }
 }
 const folder: Folder = knownFolders.currentApp();
-const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'images/test.jpg'));
+const iconLocalFile: ImageSource = ImageSource.fromFileSync(path.join(folder.path, 'assets/images/test.jpg'));
 
 export function drawOnImage(scale = 3, canvas?: Canvas) {
     if (!canvas) {
-        const folderPath: string = path.join(folder.path, 'images/test.jpg');
+        const folderPath: string = path.join(folder.path, 'assets/images/test.jpg');
         const imageFromLocalFile: ImageSource = ImageSource.fromFileSync(folderPath);
         canvas = new Canvas(imageFromLocalFile);
     }

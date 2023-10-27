@@ -31,7 +31,7 @@ export default class Image extends Vue {
     itemList = new Array(1000).fill(null).map((v, i) => ({
         index: i
     }));
-    svgString = `<svg xmlns='http://www.w3.org/2000/svg' height="100" width="100">
+    svgString = `<svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 100 300">
           <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
         </svg>`;
     refreshCanvas(event) {
