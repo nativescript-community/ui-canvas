@@ -42,5 +42,6 @@
     "peerDependencies": {
         "@nativescript-community/text": "^1.5.33",
         "@nativescript-community/ui-canvas": "^4.5.1"
-    }
+    },
+    "gitHead": "6dc5e24339bbc329a239584e71c1cc30de9cedd4"
 }
