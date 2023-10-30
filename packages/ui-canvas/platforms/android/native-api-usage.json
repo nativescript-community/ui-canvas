@@ -8,6 +8,8 @@
         "android.graphics:Paint.Style",
         "android.graphics:Shader.TileMode",
         "android.graphics:Canvas",
+        "android.graphics:ColorMatrixColorFilter",
+        "android.graphics:ColorFilter",
         "android.graphics:DashPathEffect",
         "android.graphics:DrawFilter",
         "android.graphics:LinearGradient",
