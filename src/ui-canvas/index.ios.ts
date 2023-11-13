@@ -1402,8 +1402,11 @@ export class Canvas implements ICanvas {
     drawPaint(paint: Paint): void {
         // this.save();
         const ctx = this.ctx;
-        CGContextFillRect(ctx, CGRectMake(0, 0, this.mWidth, this.mHeight));
-        paint.drawShader(ctx);
+        if (paint.shader) {
+            paint.drawShader(ctx);
+        } else {
+            CGContextFillRect(ctx, CGRectMake(0, 0, this.mWidth, this.mHeight));
+        }
         // this.restore();
     }
 
