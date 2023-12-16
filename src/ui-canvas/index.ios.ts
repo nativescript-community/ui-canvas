@@ -528,7 +528,10 @@ export class Matrix implements IMatrix {
 
 export class PathEffect {}
 export class DashPathEffect extends PathEffect {
-    constructor(public intervals: number[], public phase: number) {
+    constructor(
+        public intervals: number[],
+        public phase: number
+    ) {
         super();
     }
 }
@@ -634,6 +637,7 @@ export class Path implements IPath {
             CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
         }
     }
+    //@ts-ignore
     offset(dx: number, dy: number, output?: Path) {
         const t = CGAffineTransformMakeTranslation(dx, dy);
         // if (this._bPath) {
@@ -717,6 +721,7 @@ export class Path implements IPath {
     quadTo(cpx: number, cpy: number, x: number, y: number): void {
         CGPathAddQuadCurveToPoint(this.mPath, null, cpx, cpy, x, y);
     }
+    //@ts-ignore
     transform(mat: Matrix, output?: Path) {
         const path = CGPathCreateCopyByTransformingPath(this.mPath, new interop.Reference(mat.mTransform));
         if (output) {
@@ -832,6 +837,7 @@ export class Path implements IPath {
     isInverseFillType(): boolean {
         return this.mFillType === FillType.INVERSE_EVEN_ODD || this.mFillType === FillType.INVERSE_WINDING;
     }
+    //@ts-ignore
     set(path: Path): void {
         this.mPath = CGPathCreateMutableCopy(path.mPath);
     }
@@ -889,6 +895,7 @@ export class Paint implements IPaint {
             this.xfermode = paint.xfermode;
         }
     }
+    //@ts-ignore
     getTextPath(text: string, start: number, end: number, x: number, y: number, path: Path) {
         const bPath = UIBezierPath.fromStringWithFont(text.slice(start, end), this.getUIFont());
         const bounds = bPath.bounds;
@@ -1399,6 +1406,7 @@ export class Canvas implements ICanvas {
     }
 
     @paint
+    //@ts-ignore
     drawPaint(paint: Paint): void {
         // this.save();
         const ctx = this.ctx;
@@ -1474,6 +1482,7 @@ export class Canvas implements ICanvas {
         }
     }
 
+    //@ts-ignore
     drawPoint(x: number, y: number, paint: Paint): void {
         this.drawLine(x, y, x, y, paint);
     }
@@ -1504,6 +1513,7 @@ export class Canvas implements ICanvas {
         this._drawPath(paint, ctx);
     }
     @paint
+    //@ts-ignore
     drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void {
         const oldStyle = paint.style;
         paint.style = Style.STROKE;
@@ -1556,6 +1566,7 @@ export class Canvas implements ICanvas {
         CGContextConcatCTM(this.ctx, mat.mTransform);
     }
     @paint
+    //@ts-ignore
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void {
         const ctx = this.ctx;
         const hR = radius / 2;
@@ -1571,6 +1582,7 @@ export class Canvas implements ICanvas {
         console.error('Method not implemented:', 'drawOval');
     }
     @paint
+    //@ts-ignore
     drawPath(path: Path, paint: Paint): void {
         const ctx = this.ctx;
         this._drawPath(paint, ctx, path);
@@ -2020,6 +2032,7 @@ export class Canvas implements ICanvas {
     }
 
     @paint
+    //@ts-ignore
     drawTextOnPath(text: string | NSAttributedString, path: Path, hOffset: number, vOffset: number, paint: Paint): void {
         const ctx = this.ctx;
         const bPath = path.getOrCreateBPath();
@@ -2110,7 +2123,7 @@ export class UICustomCanvasView extends UIView {
         // this._canvas.scale(1 / owner.density, 1 / owner.density);
         // this._canvas.setDensity(owner.density);
         if (owner.shapesCanvas) {
-            const canvas = owner.shapesCanvas as Canvas;
+            const canvas = owner.shapesCanvas as any as Canvas;
             // canvas.setDensity(owner.density);
             const viewport = CGRectMake(0, 0, size.width, size.height);
             const image = canvas.getCGImage();
@@ -2118,6 +2131,7 @@ export class UICustomCanvasView extends UIView {
         } else if (!owner.cached && owner.shapes) {
             const shapes = owner.shapes;
             if (shapes.length > 0) {
+                //@ts-ignore
                 shapes.forEach((s) => s.drawMyShapeOnCanvas(this.mCanvas, owner, size.width, size.height));
             }
         }
@@ -2140,6 +2154,7 @@ export class UICustomCanvasView extends UIView {
 
 @CSSType('CanvasView')
 export class CanvasView extends CanvasBase {
+    //@ts-ignore
     onDraw(canvas: Canvas) {
         this.notify({ eventName: 'draw', object: this, canvas });
     }
@@ -2168,7 +2183,15 @@ export class CanvasView extends CanvasBase {
 
 export class LinearGradient {
     mGradient;
-    constructor(public x0: number, public y0: number, public x1: number, public y1: number, public colors: any, public stops: any, public tileMode: TileMode) {}
+    constructor(
+        public x0: number,
+        public y0: number,
+        public x1: number,
+        public y1: number,
+        public colors: any,
+        public stops: any,
+        public tileMode: TileMode
+    ) {}
     get gradient() {
         if (!this.mGradient) {
             if (Array.isArray(this.colors)) {
@@ -2246,7 +2269,14 @@ class Shader {
 }
 export class RadialGradient extends Shader {
     mGradient;
-    constructor(public centerX: number, public centerY: number, public radius: number, public colors: any, public stops: any, public tileMode: TileMode) {
+    constructor(
+        public centerX: number,
+        public centerY: number,
+        public radius: number,
+        public colors: any,
+        public stops: any,
+        public tileMode: TileMode
+    ) {
         super();
     }
     get gradient() {
@@ -2271,7 +2301,11 @@ export class RadialGradient extends Shader {
     }
 }
 export class BitmapShader extends Shader {
-    constructor(public bitmap: any, public tileX: any, public tileY: any) {
+    constructor(
+        public bitmap: any,
+        public tileX: any,
+        public tileY: any
+    ) {
         super();
     }
     get image() {
