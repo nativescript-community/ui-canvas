@@ -4,6 +4,12 @@ import { Color, GridLayout, ImageSource, ObservableArray, View } from '@nativesc
 import { Font, FontStyle, FontStyleType, FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
 import Shape from './shapes/shape';
 
+// Android ONLY!!!
+export class ProxyClass {
+    getNative(): any;
+    setNative(object);
+}
+
 export function createRect(x: number, y: number, w: number, h: number): Rect;
 export function createRectF(x: number, y: number, w: number, h: number): RectF;
 export function parseCap(value: string | number): Cap;
@@ -18,7 +24,7 @@ type ColorParam = Color | number | string;
 // export * from './canvas.android'
 
 export type ColorFilter = android.graphics.ColorFilter;
-export class Paint {
+export class Paint extends ProxyClass {
     constructor(paint?: Paint);
     color: ColorParam;
     setColor(color: ColorParam);
@@ -99,6 +105,10 @@ export class StaticLayout extends android.text.StaticLayout {
 
     static getDesiredWidth(text: any, paint: any);
     static getDesiredWidth(text: any, start: number, end: number, paint: any);
+
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
 }
 
 export class FontMetrics {
@@ -108,8 +118,10 @@ export class FontMetrics {
     leading: number;
     top: number;
 }
-export class Canvas {
-    constructor(imageOrWidth: any /*  ImageSource | android.graphics.Bitmap | UIImage | number */, height?: number);
+export class Canvas extends ProxyClass {
+    constructor(imageOrWidth?: any /*  ImageSource | android.graphics.Bitmap | UIImage | number | android.graphics.Canvas */, height?: number);
+
+    setContext(context, width, height): any; // IOS ONLY!
 
     clear(); // clear the canvas by filling with transparent color
     release(); // release all data (image and such). Only to be called on destroy
@@ -245,15 +257,23 @@ export class RectF {
 }
 export class RadialGradient extends android.graphics.RadialGradient {
     constructor(param0: number, param1: number, param2: number, param3: any, param4: any, param5: TileMode);
+
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
 }
 export class LinearGradient extends android.graphics.LinearGradient {
     constructor(param0: number, param1: number, param2: number, param3: number, param4: any, param5: any, param6: TileMode);
+
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
 }
 export class BitmapShader extends android.graphics.BitmapShader {
     constructor(image: ImageSource, tileX, tileY);
 }
 export class TileMode extends android.graphics.Shader.TileMode {}
-export class Path {
+export class Path extends ProxyClass {
     computeBounds(rect: RectF, exact: boolean);
     isRect(param0: Rect): boolean;
     rMoveTo(param0: number, param1: number): void;
@@ -299,6 +319,10 @@ export class Path {
     setLines(points: number[], offset?: number, length?: number, close?: boolean);
     addCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
     setCubicLines(points: number[], offset?: number, length?: number, close?: boolean);
+
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
 }
 export class DrawFilter extends android.graphics.DrawFilter {}
 export class Op extends android.graphics.Region.Op {}
@@ -307,10 +331,18 @@ export class FillType extends android.graphics.Path.FillType {}
 export class Matrix extends android.graphics.Matrix {
     mapRect(rect: Rect);
 }
-export class ColorMatrixColorFilter extends android.graphics.ColorMatrixColorFilter {}
+export class ColorMatrixColorFilter extends android.graphics.ColorMatrixColorFilter {
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
+}
 export class PathEffect extends android.graphics.PathEffect {}
 export class DashPathEffect extends android.graphics.DashPathEffect {
     constructor(intervals: number[], phase: number);
+
+    //ANDROID ONLY!!
+    getNative(): any;
+    setNative(object);
 }
 // declare Paint extends get Canvas() {
 //     return android.graphics.Canvas;

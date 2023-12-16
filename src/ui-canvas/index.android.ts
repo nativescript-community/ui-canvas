@@ -34,7 +34,6 @@ export {
     PorterDuffXfermode
 };
 
-
 export function parseDashEffect(value: string) {
     const array = value.split(' ').map(parseFloat);
     const length = array.length;
@@ -93,6 +92,9 @@ class ProxyClass<T> {
     getNative() {
         return this.mNative;
     }
+    setNative(nativeObj) {
+        this.mNative = nativeObj;
+    }
     constructor() {
         const proxy = new Proxy(this, this);
         return proxy;
@@ -127,10 +129,13 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
     mBitmap: android.graphics.Bitmap;
     mShouldReleaseBitmap = false;
     static augmentedMethods = ['clear', 'drawBitmap', 'drawView'];
-    constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number, height?: number) {
+    constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number | android.graphics.Canvas, height?: number) {
         super();
         if (imageOrWidth) {
-            if (imageOrWidth instanceof ImageSource) {
+            if (imageOrWidth instanceof android.graphics.Canvas) {
+                this.mNative = imageOrWidth;
+                return this;
+            } else if (imageOrWidth instanceof ImageSource) {
                 this.mBitmap = imageOrWidth.android;
             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
                 this.mBitmap = imageOrWidth;
