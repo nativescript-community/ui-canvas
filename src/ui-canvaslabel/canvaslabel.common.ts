@@ -546,14 +546,12 @@ export class CanvasLabel extends CanvasView {
     private mTextSpan: SpanBase;
 
     handlePropertyChange() {
-        const shapes = this.shapes;
-        shapes && shapes.forEach((s) => s instanceof SpanBase && s.reset());
+        this.shapes?.forEach((s) => s instanceof SpanBase && s.reset());
         this.invalidate();
     }
 
     onSizeChanged(w, h, oldw, oldh) {
-        const shapes = this.shapes;
-        shapes && shapes.forEach((s) => s instanceof SpanBase && s.resetLayout());
+        this.shapes?.forEach((s) => s instanceof SpanBase && s.resetLayout());
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
