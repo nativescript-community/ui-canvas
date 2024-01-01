@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.12](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.11...@nativescript-community/ui-canvas@4.6.12) (2024-01-01)
+
+### Bug Fixes
+
+* **android:** use `dispatchDraw` so that drawing is done on top of children ([614b117](https://github.com/nativescript-community/ui-canvas/commit/614b117724b3ea838faa5d10605b272b3ebd76d8))
+
 ## [4.6.11](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.10...@nativescript-community/ui-canvas@4.6.11) (2023-12-28)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
