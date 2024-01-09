@@ -22,8 +22,8 @@ public class CanvasView extends org.nativescript.widgets.GridLayout {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
         if (drawListener != null) {
             drawListener.onDraw(canvas);
         }

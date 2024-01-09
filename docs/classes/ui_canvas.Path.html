@@ -19,9 +19,11 @@
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">Path</span></li></ul></section><aside class="tsd-sources">
+<li><a href="ui_canvas.ProxyClass.html" class="tsd-signature-type tsd-kind-class">ProxyClass</a>
+<ul class="tsd-hierarchy">
+<li><span class="target">Path</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:256</li></ul></aside>
+<li>Defined in packages/ui-canvas/canvas.d.ts:273</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -46,6 +48,7 @@
 <a href="ui_canvas.Path.html#computeBounds" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>compute<wbr/>Bounds</span></a>
 <a href="ui_canvas.Path.html#cubicTo" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cubic<wbr/>To</span></a>
 <a href="ui_canvas.Path.html#getFillType" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Fill<wbr/>Type</span></a>
+<a href="ui_canvas.Path.html#getNative" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Native</span></a>
 <a href="ui_canvas.Path.html#incReserve" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>inc<wbr/>Reserve</span></a>
 <a href="ui_canvas.Path.html#isEmpty" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Empty</span></a>
 <a href="ui_canvas.Path.html#isInverseFillType" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Inverse<wbr/>Fill<wbr/>Type</span></a>
@@ -65,6 +68,7 @@
 <a href="ui_canvas.Path.html#setFillType" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Fill<wbr/>Type</span></a>
 <a href="ui_canvas.Path.html#setLastPoint" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Last<wbr/>Point</span></a>
 <a href="ui_canvas.Path.html#setLines" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Lines</span></a>
+<a href="ui_canvas.Path.html#setNative" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Native</span></a>
 <a href="ui_canvas.Path.html#toggleInverseFillType" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>toggle<wbr/>Inverse<wbr/>Fill<wbr/>Type</span></a>
 <a href="ui_canvas.Path.html#transform" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>transform</span></a>
 </div></section></div></details></section></section>
@@ -76,8 +80,9 @@
 <li class="tsd-signature tsd-anchor-link" id="constructor.new_Path"><span class="tsd-kind-constructor-signature">new <wbr/>Path</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a><a href="#constructor.new_Path" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h4><aside class="tsd-sources">
+<p>Overrides <a href="ui_canvas.ProxyClass.html">ProxyClass</a>.<a href="ui_canvas.ProxyClass.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:288</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:305</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="constructor.new_Path-1"><span class="tsd-kind-constructor-signature">new <wbr/>Path</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a><a href="#constructor.new_Path-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -86,8 +91,9 @@
 <li>
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h4><aside class="tsd-sources">
+<p>Overrides ProxyClass.constructor</p>
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:293</li></ul></aside></li></ul></section></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:310</li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member"><a id="addArc" class="tsd-anchor"></a>
@@ -106,7 +112,7 @@
 <h5><span class="tsd-kind-parameter">param2</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:276</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:293</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addCircle" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Circle</span><a href="#addCircle" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -125,7 +131,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:279</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:296</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addCubicLines" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Cubic<wbr/>Lines</span><a href="#addCubicLines" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -144,7 +150,7 @@
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">close</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:300</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:317</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addLines" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Lines</span><a href="#addLines" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -163,7 +169,7 @@
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">close</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:298</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:315</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addOval" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Oval</span><a href="#addOval" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -178,7 +184,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:292</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:309</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addPath" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Path</span><a href="#addPath" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -193,7 +199,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <a href="ui_canvas.Matrix.html" class="tsd-signature-type tsd-kind-class">Matrix</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:269</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:286</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="addPath.addPath-2"><span class="tsd-kind-call-signature">add<wbr/>Path</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span>, <span class="tsd-kind-parameter">param2</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addPath.addPath-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -207,7 +213,7 @@
 <h5><span class="tsd-kind-parameter">param2</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:270</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:287</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="addPath.addPath-3"><span class="tsd-kind-call-signature">add<wbr/>Path</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addPath.addPath-3" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -217,7 +223,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:277</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:294</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addRect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Rect</span><a href="#addRect" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -238,7 +244,7 @@
 <h5><span class="tsd-kind-parameter">param4</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:291</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:308</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="addRect.addRect-2"><span class="tsd-kind-call-signature">add<wbr/>Rect</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addRect.addRect-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -250,7 +256,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:294</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:311</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="addRoundRect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Round<wbr/>Rect</span><a href="#addRoundRect" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -275,7 +281,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:265</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:282</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="addRoundRect.addRoundRect-2"><span class="tsd-kind-call-signature">add<wbr/>Round<wbr/>Rect</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span>, <span class="tsd-kind-parameter">param2</span>, <span class="tsd-kind-parameter">param3</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addRoundRect.addRoundRect-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -291,7 +297,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:266</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:283</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="addRoundRect.addRoundRect-3"><span class="tsd-kind-call-signature">add<wbr/>Round<wbr/>Rect</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span>, <span class="tsd-kind-parameter">param2</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#addRoundRect.addRoundRect-3" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -305,7 +311,7 @@
 <h5><span class="tsd-kind-parameter">param2</span>: <a href="ui_canvas.Direction.html" class="tsd-signature-type tsd-kind-class">Direction</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:267</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:284</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="arcTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>arc<wbr/>To</span><a href="#arcTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -324,7 +330,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:260</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:277</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="arcTo.arcTo-2"><span class="tsd-kind-call-signature">arc<wbr/>To</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span>, <span class="tsd-kind-parameter">param2</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#arcTo.arcTo-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -338,7 +344,7 @@
 <h5><span class="tsd-kind-parameter">param2</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:261</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:278</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="close" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>close</span><a href="#close" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -346,7 +352,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:278</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:295</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="computeBounds" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>compute<wbr/>Bounds</span><a href="#computeBounds" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -361,7 +367,7 @@
 <h5><span class="tsd-kind-parameter">exact</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:257</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:274</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="cubicTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>cubic<wbr/>To</span><a href="#cubicTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -384,7 +390,7 @@
 <h5><span class="tsd-kind-parameter">param5</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:287</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:304</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getFillType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Fill<wbr/>Type</span><a href="#getFillType" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -392,7 +398,16 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <a href="ui_canvas.FillType.html" class="tsd-signature-type tsd-kind-class">FillType</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:290</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:307</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="getNative" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Native</span><a href="#getNative" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="getNative.getNative-1"><span class="tsd-kind-call-signature">get<wbr/>Native</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><a href="#getNative.getNative-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
+<p>Overrides <a href="ui_canvas.ProxyClass.html">ProxyClass</a>.<a href="ui_canvas.ProxyClass.html#getNative">getNative</a></p>
+<ul>
+<li>Defined in packages/ui-canvas/canvas.d.ts:321</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="incReserve" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>inc<wbr/>Reserve</span><a href="#incReserve" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -405,7 +420,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:289</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:306</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="isEmpty" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Empty</span><a href="#isEmpty" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -413,7 +428,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:286</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:303</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="isInverseFillType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Inverse<wbr/>Fill<wbr/>Type</span><a href="#isInverseFillType" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -421,7 +436,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:295</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:312</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="isRect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Rect</span><a href="#isRect" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -434,7 +449,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.Rect.html" class="tsd-signature-type tsd-kind-class">Rect</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:258</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:275</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="lineTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>line<wbr/>To</span><a href="#lineTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -449,7 +464,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:272</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:289</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="moveTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>move<wbr/>To</span><a href="#moveTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -464,7 +479,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:283</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:300</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="offset" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>offset</span><a href="#offset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -479,7 +494,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:262</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:279</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="offset.offset-2"><span class="tsd-kind-call-signature">offset</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span>, <span class="tsd-kind-parameter">param1</span>, <span class="tsd-kind-parameter">param2</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#offset.offset-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -493,7 +508,7 @@
 <h5><span class="tsd-kind-parameter">param2</span>: <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:268</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:285</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="quadTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>quad<wbr/>To</span><a href="#quadTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -512,7 +527,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:273</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:290</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="rCubicTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>r<wbr/>Cubic<wbr/>To</span><a href="#rCubicTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -535,7 +550,7 @@
 <h5><span class="tsd-kind-parameter">param5</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:263</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:280</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="rLineTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>r<wbr/>Line<wbr/>To</span><a href="#rLineTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -550,7 +565,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:271</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:288</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="rMoveTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>r<wbr/>Move<wbr/>To</span><a href="#rMoveTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -565,7 +580,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:259</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:276</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="rQuadTo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>r<wbr/>Quad<wbr/>To</span><a href="#rQuadTo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -584,7 +599,7 @@
 <h5><span class="tsd-kind-parameter">param3</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:264</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:281</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="reset" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reset</span><a href="#reset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -592,7 +607,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:275</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:292</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="rewind" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>rewind</span><a href="#rewind" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -600,7 +615,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:280</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:297</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="set" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set</span><a href="#set" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -613,7 +628,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:296</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:313</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setCubicLines" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Cubic<wbr/>Lines</span><a href="#setCubicLines" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -632,7 +647,7 @@
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">close</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:301</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:318</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setFillType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Fill<wbr/>Type</span><a href="#setFillType" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -645,7 +660,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.FillType.html" class="tsd-signature-type tsd-kind-class">FillType</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:285</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:302</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setLastPoint" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Last<wbr/>Point</span><a href="#setLastPoint" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -660,7 +675,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:281</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:298</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setLines" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Lines</span><a href="#setLines" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -679,7 +694,21 @@
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">close</span>: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:299</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:316</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="setNative" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Native</span><a href="#setNative" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="setNative.setNative-1"><span class="tsd-kind-call-signature">set<wbr/>Native</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><a href="#setNative.setNative-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">object</span>: <span class="tsd-signature-type">any</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
+<p>Overrides <a href="ui_canvas.ProxyClass.html">ProxyClass</a>.<a href="ui_canvas.ProxyClass.html#setNative">setNative</a></p>
+<ul>
+<li>Defined in packages/ui-canvas/canvas.d.ts:322</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="toggleInverseFillType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>toggle<wbr/>Inverse<wbr/>Fill<wbr/>Type</span><a href="#toggleInverseFillType" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -687,7 +716,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:282</li></ul></aside></li></ul></section>
+<li>Defined in packages/ui-canvas/canvas.d.ts:299</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="transform" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>transform</span><a href="#transform" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -702,7 +731,7 @@
 <h5><span class="tsd-kind-parameter">param1</span>: <a href="ui_canvas.Path.html" class="tsd-signature-type tsd-kind-class">Path</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:274</li></ul></aside></li>
+<li>Defined in packages/ui-canvas/canvas.d.ts:291</li></ul></aside></li>
 <li class="tsd-signature tsd-anchor-link" id="transform.transform-2"><span class="tsd-kind-call-signature">transform</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">param0</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#transform.transform-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -712,7 +741,7 @@
 <h5><span class="tsd-kind-parameter">param0</span>: <a href="ui_canvas.Matrix.html" class="tsd-signature-type tsd-kind-class">Matrix</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ui-canvas/index.d.ts:284</li></ul></aside></li></ul></section></section></div>
+<li>Defined in packages/ui-canvas/canvas.d.ts:301</li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -745,6 +774,7 @@
 <li><a href="#computeBounds" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>compute<wbr/>Bounds</span></a></li>
 <li><a href="#cubicTo" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cubic<wbr/>To</span></a></li>
 <li><a href="#getFillType" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Fill<wbr/>Type</span></a></li>
+<li><a href="#getNative" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Native</span></a></li>
 <li><a href="#incReserve" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>inc<wbr/>Reserve</span></a></li>
 <li><a href="#isEmpty" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Empty</span></a></li>
 <li><a href="#isInverseFillType" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>Inverse<wbr/>Fill<wbr/>Type</span></a></li>
@@ -764,6 +794,7 @@
 <li><a href="#setFillType" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Fill<wbr/>Type</span></a></li>
 <li><a href="#setLastPoint" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Last<wbr/>Point</span></a></li>
 <li><a href="#setLines" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Lines</span></a></li>
+<li><a href="#setNative" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>set<wbr/>Native</span></a></li>
 <li><a href="#toggleInverseFillType" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>toggle<wbr/>Inverse<wbr/>Fill<wbr/>Type</span></a></li>
 <li><a href="#transform" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>transform</span></a></li></ul></div></details></div>
 <div class="site-menu">

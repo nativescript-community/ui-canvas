@@ -1,5 +1,5 @@
-import { ChangedData, GridLayout, Observable, ObservableArray, Property, Screen, Utils, View, booleanConverter, colorProperty } from '@nativescript/core';
-import { Canvas, Rect, RectF } from '.';
+import { ChangedData, GridLayout, Observable, ObservableArray, Property, Screen, Utils, booleanConverter, colorProperty } from '@nativescript/core';
+import { Canvas } from './canvas';
 import Shape from './shapes/shape';
 
 export * from './utils';
@@ -13,14 +13,6 @@ declare module '@nativescript/core/ui/core/view' {
     interface ViewCommon {
         _addChildFromBuilder(name: string, value: any);
     }
-}
-
-export function createRect(x: number, y: number, w: number, h: number) {
-    return new Rect(x, y, x + w, y + h);
-}
-
-export function createRectF(x: number, y: number, w: number, h: number) {
-    return new RectF(x, y, x + w, y + h);
 }
 
 export const DEFAULT_SCALE = Screen.mainScreen.scale;
