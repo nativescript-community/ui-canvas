@@ -34,15 +34,6 @@ export {
     PorterDuffXfermode
 };
 
-
-export function parseDashEffect(value: string) {
-    const array = value.split(' ').map(parseFloat);
-    const length = array.length;
-    const phase = array[length - 1];
-    const result = new DashPathEffect(array, phase);
-    return result;
-}
-
 function createColorParam(param) {
     if (param instanceof Array) {
         return param.map(createColorParam);

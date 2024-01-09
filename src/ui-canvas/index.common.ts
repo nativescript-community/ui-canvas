@@ -2,6 +2,7 @@ import { ChangedData, GridLayout, Observable, ObservableArray, Property, Screen,
 import { Canvas, Rect, RectF } from '.';
 import Shape from './shapes/shape';
 
+export * from './utils';
 // declare module '@nativescript/core/ui/core/view' {
 //     interface ViewCommon {
 //         _raiseLayoutChangedEvent();
