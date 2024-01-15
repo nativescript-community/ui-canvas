@@ -84,6 +84,7 @@ export class CanvasView extends CanvasBase {
     _onSizeChanged() {
         super._onSizeChanged();
         this.onSizeChanged(Utils.layout.toDeviceIndependentPixels(this.getMeasuredWidth()), Utils.layout.toDeviceIndependentPixels(this.getMeasuredHeight()), -1, -1);
+        this.nativeViewProtected?.setNeedsDisplay();
     }
     redraw() {
         if (this.nativeViewProtected) {
