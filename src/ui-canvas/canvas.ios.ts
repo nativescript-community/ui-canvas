@@ -2,6 +2,7 @@
 import { CSSType, Color, Font, ImageSource, Utils, View } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
 import { Canvas as ICanvas, FontMetrics as IFontMetrics, Matrix as IMatrix, Paint as IPaint, Path as IPath, PorterDuffXfermode as IPorterDuffXfermode, Rect as IRect, RectF as IRectF } from './canvas';
+import type { CanvasView } from './index.ios';
 export * from './canvas.common';
 
 const identity = CGAffineTransformIdentity;
@@ -1288,6 +1289,7 @@ export class Canvas implements ICanvas {
     mWidth: number;
     mHeight: number;
     mScale = 1;
+    view: WeakRef<CanvasView>;
 
     setBitmap(image) {
         // if (image instanceof ImageSource) {
@@ -2263,10 +2265,11 @@ export class StaticLayout {
             this.nsAttributedString = NSAttributedString.alloc().initWithString(text + '');
         }
     }
-    createAttributedStringToDraw() {
+    createAttributedStringToDraw(canvas?) {
         if (this.mToDraw) {
             return;
         }
+
         const nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
 
         const paragraphStyle = NSMutableParagraphStyle.alloc().init();
@@ -2298,7 +2301,7 @@ export class StaticLayout {
     draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
         canvas.startApplyPaint(this.paint);
         const ctx = canvas.ctx;
-        this.createAttributedStringToDraw();
+        this.createAttributedStringToDraw(canvas);
         // const attributes = this.paint.getDrawTextAttribs();
         // if (this.align || this.ellipsize) {
         //     let paragraphStyle = attributes.objectForKey(NSParagraphStyleAttributeName) as NSMutableParagraphStyle;
