@@ -63,12 +63,13 @@ public class StaticLayout {
             int i = 0;
             float lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
             float totalHeight = lineHeight * lineCount;
-
-            while (totalHeight > maxHeight && maxLines > 0) {
-                maxLines--;
-                i++;
-                lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
-                totalHeight = lineHeight * maxLines;
+            if (maxLines > 1) {
+                while (totalHeight > maxHeight && maxLines > 0) {
+                    maxLines--;
+                    i++;
+                    lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
+                    totalHeight = lineHeight * maxLines;
+                }
             }
             // Check if truncation is needed
             if (maxLines < lineCount) {
