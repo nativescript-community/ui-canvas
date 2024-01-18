@@ -219,12 +219,13 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             args[3] = createColorParam(args[3]);
         }
     }
+    setTextSize(size){}
     setFont(font: Font) {
         this.mFontInternal = font;
         if (this.handlesFont) {
             return;
         }
-        this.mNative.setTextSize(font.fontSize);
+        this.setTextSize(font.fontSize);
         this.mNeedsFontUpdate = true;
     }
     getFont() {
@@ -300,7 +301,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         this.mNative.setStyle(value);
     }
     set textSize(value: number) {
-        this.mNative.setTextSize(value);
+        this.setTextSize(value);
     }
     get textSize() {
         return this.getTextSize();
