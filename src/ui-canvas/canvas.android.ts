@@ -1,5 +1,5 @@
 /* eslint-disable no-duplicate-imports */
-import { Application, Color, Device, Font, ImageSource, Utils } from '@nativescript/core';
+import { Application, Color, Device, Font, ImageSource, Screen, Utils } from '@nativescript/core';
 import type { View } from '@nativescript/core';
 import { arrayToNativeArray } from '@nativescript-community/arraybuffers';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font-interfaces';
@@ -166,6 +166,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
     }
 }
 
+let FONT_SIZE_FACTOR;
 export class Paint extends ProxyClass<android.graphics.Paint> {
     mNative: android.graphics.Paint;
     mFontInternal: Font;
@@ -191,13 +192,17 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         return this;
     }
     handleCustomMethods(target, native, methodName: string, args: any[]): any {
-        if (methodName === 'setShadowLayer') {
-            args[3] = createColorParam(args[3]);
-        } else if (methodName === 'setColor') {
+        if (methodName === 'setColor') {
             if (!args[0]) {
                 return;
             }
             args[0] = createColorParam(args[0]);
+        } else if (methodName === 'setTextSize') {
+            // we apply a small factor so that font size is the same as in TextView
+            if (!FONT_SIZE_FACTOR) {
+                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext()) / Screen.mainScreen.scale;
+            }
+            args[0] *= FONT_SIZE_FACTOR;
         } else if (methodName === 'setTypeface') {
             if (args[0] instanceof Font) {
                 this.mFontInternal = args[0];
@@ -210,6 +215,8 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             return true;
         } else if (methodName === 'getLetterSpacing' && sdkVersion < 21) {
             return 0;
+        } else if (methodName === 'setShadowLayer') {
+            args[3] = createColorParam(args[3]);
         }
     }
     setFont(font: Font) {
