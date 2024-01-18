@@ -1,9 +1,28 @@
 /* eslint-disable no-redeclare */
-import { CSSType, Utils } from '@nativescript/core';
+import { CSSType, Font, Utils } from '@nativescript/core';
 import { Canvas, Paint } from './canvas.ios';
 import { CanvasBase } from './index.common';
+import { iosAccessibilityAdjustsFontSizeProperty, iosAccessibilityMaxFontScaleProperty, iosAccessibilityMinFontScaleProperty } from '@nativescript/core/accessibility/accessibility-properties';
+import { fontScaleInternalProperty } from '@nativescript/core/ui/styling/style-properties';
 
 export * from './canvas';
+
+export function adjustMinMaxFontScale(value, view) {
+    let finalValue;
+    if (view.iosAccessibilityAdjustsFontSize) {
+        finalValue = value;
+
+        if (view.iosAccessibilityMinFontScale && view.iosAccessibilityMinFontScale > value) {
+            finalValue = view.iosAccessibilityMinFontScale;
+        }
+        if (view.iosAccessibilityMaxFontScale && view.iosAccessibilityMaxFontScale < value) {
+            finalValue = view.iosAccessibilityMaxFontScale;
+        }
+    } else {
+        finalValue = 1.0;
+    }
+    return finalValue;
+}
 
 @NativeClass
 export class UICustomCanvasView extends UIView {
@@ -31,6 +50,7 @@ export class UICustomCanvasView extends UIView {
         }
         if (!this.mCanvas) {
             this.mCanvas = new Canvas(0, 0);
+            this.mCanvas.view = this.mOwner;
         }
         this.mCanvas.setContext(context, size.width, size.height);
         if (owner.callDrawBeforeShapes) {
@@ -84,6 +104,7 @@ export class CanvasView extends CanvasBase {
     _onSizeChanged() {
         super._onSizeChanged();
         this.onSizeChanged(Utils.layout.toDeviceIndependentPixels(this.getMeasuredWidth()), Utils.layout.toDeviceIndependentPixels(this.getMeasuredHeight()), -1, -1);
+        this.nativeViewProtected?.setNeedsDisplay();
     }
     redraw() {
         if (this.nativeViewProtected) {
@@ -94,5 +115,31 @@ export class CanvasView extends CanvasBase {
         if (this.nativeViewProtected) {
             this.nativeViewProtected.setNeedsDisplay();
         }
+    }
+
+    [fontScaleInternalProperty.setNative](value) {
+        const font = this.style.fontInternal || Font.default.withFontSize(16);
+        const finalValue = adjustMinMaxFontScale(value, this);
+
+        // Request layout on font scale as it's not done automatically
+        if (font.fontScale !== finalValue) {
+            this.style.fontInternal = font.withFontScale(finalValue);
+            this.requestLayout();
+        } else {
+            if (!this.style.fontInternal) {
+                this.style.fontInternal = font;
+            }
+        }
+    }
+    [iosAccessibilityAdjustsFontSizeProperty.setNative](value: boolean) {
+        this[fontScaleInternalProperty.setNative](this.style.fontScaleInternal);
+    }
+
+    [iosAccessibilityMinFontScaleProperty.setNative](value: number) {
+        this[fontScaleInternalProperty.setNative](this.style.fontScaleInternal);
+    }
+
+    [iosAccessibilityMaxFontScaleProperty.setNative](value: number) {
+        this[fontScaleInternalProperty.setNative](this.style.fontScaleInternal);
     }
 }
