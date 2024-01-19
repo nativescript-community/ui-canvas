@@ -34,7 +34,6 @@ public class StaticLayout {
             Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int height) {
         android.text.StaticLayout staticLayout = null;
         // we set our custom flag to discover it in FontSizeSpan
-        Log.d("JS", "createStaticLayout " + paint + " " + paint.getFlags());
         paint.setFlags(paint.getFlags() | 2048);
         if (Build.VERSION.SDK_INT >= 23) {
             staticLayout = createStaticLayoutBuilder(source, paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth).build();
