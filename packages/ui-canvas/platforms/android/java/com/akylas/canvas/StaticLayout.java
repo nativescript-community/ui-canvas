@@ -66,7 +66,7 @@ public class StaticLayout {
             int i = 0;
             float lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
             float totalHeight = lineHeight * lineCount;
-            if (maxLines > 1) {
+            if (maxHeight > 0 && maxLines > 1) {
                 while (totalHeight > maxHeight && maxLines > 1) {
                     maxLines--;
                     i++;
