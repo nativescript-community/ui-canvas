@@ -13,6 +13,7 @@ import {
     Observable,
     ObservableArray,
     PercentLength,
+    Screen,
     Utils,
     View,
     profile
@@ -56,7 +57,8 @@ export type VerticalTextAlignment = 'initial' | 'top' | 'middle' | 'bottom' | 'c
 // const debugPaint = new Paint();
 // debugPaint.style = Style.STROKE;
 // debugPaint.color = 'red';
-
+let FONT_SIZE_FACTOR;
+let SCREEN_DENSITY;
 export abstract class SpanBase extends Shape {
     static get isSpan() {
         return true;
@@ -228,6 +230,10 @@ export abstract class SpanBase extends Shape {
             paint.setFontFamily(fontFamily);
             paint.setFontWeight(fontweight);
             paint.setFontStyle(fontstyle);
+            if (__ANDROID__ && !FONT_SIZE_FACTOR) {
+                SCREEN_DENSITY = Screen.mainScreen.scale;
+                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
+            }
             paint.textSize = fontSize;
             cachedPaint = paintCache[cacheKey] = paint;
             paintFontCache[fontKey] = paint;

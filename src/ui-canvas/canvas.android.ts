@@ -99,6 +99,8 @@ class ProxyClass<T> {
     }
 }
 
+let FONT_SIZE_FACTOR;
+let SCREEN_DENSITY;
 class Canvas extends ProxyClass<android.graphics.Canvas> {
     mBitmap: android.graphics.Bitmap;
     mShouldReleaseBitmap = false;
@@ -153,6 +155,18 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         } else if (methodName === 'drawView') {
             drawViewOnCanvas(native, args[0], args[1]);
             return true;
+        } else if (methodName === 'drawText') {
+            // TODO move that to native
+            const paint = args[args.length - 1];
+            const textSize = paint.getTextSize();
+            if (!FONT_SIZE_FACTOR) {
+                SCREEN_DENSITY = Screen.mainScreen.scale;
+                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
+            }
+            paint.setTextSize((textSize * FONT_SIZE_FACTOR) / SCREEN_DENSITY);
+            native[methodName](...args);
+            paint.setTextSize(textSize);
+            return true;
         }
     }
     getImage() {
@@ -166,7 +180,6 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
     }
 }
 
-let FONT_SIZE_FACTOR;
 export class Paint extends ProxyClass<android.graphics.Paint> {
     mNative: android.graphics.Paint;
     mFontInternal: Font;
@@ -197,12 +210,6 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
                 return;
             }
             args[0] = createColorParam(args[0]);
-        } else if (methodName === 'setTextSize') {
-            // we apply a small factor so that font size is the same as in TextView
-            if (!FONT_SIZE_FACTOR) {
-                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext()) / Screen.mainScreen.scale;
-            }
-            args[0] *= FONT_SIZE_FACTOR;
         } else if (methodName === 'setTypeface') {
             if (args[0] instanceof Font) {
                 this.mFontInternal = args[0];
@@ -219,7 +226,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             args[3] = createColorParam(args[3]);
         }
     }
-    setTextSize(size){}
+    setTextSize(size) {}
     setFont(font: Font) {
         this.mFontInternal = font;
         if (this.handlesFont) {

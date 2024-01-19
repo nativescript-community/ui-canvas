@@ -29,12 +29,8 @@ public class CanvasView extends org.nativescript.widgets.GridLayout {
         }
     }
 
-    private static float FONT_SIZE_FACTOR = -1;
-    public static float getFontSizeFactor(Context context) {
-        if (FONT_SIZE_FACTOR == -1) {
-            FONT_SIZE_FACTOR = android.util.TypedValue.applyDimension(
-            android.util.TypedValue.COMPLEX_UNIT_SP, 1, context.getResources().getDisplayMetrics());
-        }
-        return FONT_SIZE_FACTOR;
+    public static float getFontSizeFactor(Context context, float textSize) {
+        return android.util.TypedValue.applyDimension(
+            android.util.TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics());
     }
 }
