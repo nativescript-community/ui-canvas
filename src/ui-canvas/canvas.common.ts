@@ -2,6 +2,8 @@ import { Device } from '@nativescript/core';
 
 import { Rect, RectF } from './canvas';
 
+export * from './shapes';
+
 export const sdkVersion = parseInt(Device.sdkVersion, 10);
 
 export function createRect(x: number, y: number, w: number, h: number) {
