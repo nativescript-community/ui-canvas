@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import java.lang.CharSequence;
+import android.util.Log;
 
 public class StaticLayout {
 
@@ -32,6 +33,8 @@ public class StaticLayout {
     public static android.text.StaticLayout createStaticLayout(CharSequence source, TextPaint paint, int width,
             Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth, int height) {
         android.text.StaticLayout staticLayout = null;
+        // we set our custom flag to discover it in FontSizeSpan
+        paint.setFlags(paint.getFlags() | 2048);
         if (Build.VERSION.SDK_INT >= 23) {
             staticLayout = createStaticLayoutBuilder(source, paint, width, align, spacingmult, spacingadd, includepad, ellipsize, ellipsizedWidth).build();
         } else {
@@ -63,12 +66,13 @@ public class StaticLayout {
             int i = 0;
             float lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
             float totalHeight = lineHeight * lineCount;
-
-            while (totalHeight > maxHeight && maxLines > 0) {
-                maxLines--;
-                i++;
-                lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
-                totalHeight = lineHeight * maxLines;
+            if (maxHeight > 0 && maxLines > 1) {
+                while (totalHeight > maxHeight && maxLines > 1) {
+                    maxLines--;
+                    i++;
+                    lineHeight = staticLayout.getLineBottom(i) - staticLayout.getLineTop(i);
+                    totalHeight = lineHeight * maxLines;
+                }
             }
             // Check if truncation is needed
             if (maxLines < lineCount) {

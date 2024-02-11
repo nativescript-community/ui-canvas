@@ -18,6 +18,7 @@ declare namespace com {
             export class CanvasView extends globalAndroid.view.View {
                 sizeChangedListener?: SizeChangedListener;
                 drawListener?: DrawListener;
+                static getFontSizeFactor(context: globalAndroid.content.Context, size: number): number;
             }
             export class SizeChangedListener {
                 constructor(impl?: { onSizeChanged(w: number, h: number, oldw: number, oldh: number) });

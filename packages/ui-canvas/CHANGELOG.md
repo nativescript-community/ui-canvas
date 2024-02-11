@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.18](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.17...@nativescript-community/ui-canvas@4.6.18) (2024-01-25)
+
+**Note:** Version bump only for package @nativescript-community/ui-canvas
+
+## [4.6.17](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.16...@nativescript-community/ui-canvas@4.6.17) (2024-01-19)
+
+### Bug Fixes
+
+* **android:** rewrote text size handling. It now seems to be consistent with TextView drawing (with very slight difference) ([8a05924](https://github.com/nativescript-community/ui-canvas/commit/8a05924faa6a3a6d62af4efd162709560169eed0))
+
+## [4.6.16](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.15...@nativescript-community/ui-canvas@4.6.16) (2024-01-18)
+
+### Bug Fixes
+
+* **android:** apply a little factor to paint text size so that font size is exactly the same as with `TextView` ([55ccff2](https://github.com/nativescript-community/ui-canvas/commit/55ccff25f9a1b03c99bea00afdbc8e482fe80ed1))
+* **android:** prevent crash with staticlayout ([e50fbde](https://github.com/nativescript-community/ui-canvas/commit/e50fbde5641c4046cb5328c47b64d5c254bdc26c))
+
 ## [4.6.15](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.14...@nativescript-community/ui-canvas@4.6.15) (2024-01-16)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas

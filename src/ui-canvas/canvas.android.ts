@@ -1,5 +1,5 @@
 /* eslint-disable no-duplicate-imports */
-import { Application, Color, Device, Font, ImageSource, Utils } from '@nativescript/core';
+import { Application, Color, Device, Font, ImageSource, Screen, Utils } from '@nativescript/core';
 import type { View } from '@nativescript/core';
 import { arrayToNativeArray } from '@nativescript-community/arraybuffers';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font-interfaces';
@@ -99,6 +99,8 @@ class ProxyClass<T> {
     }
 }
 
+let FONT_SIZE_FACTOR;
+let SCREEN_DENSITY;
 class Canvas extends ProxyClass<android.graphics.Canvas> {
     mBitmap: android.graphics.Bitmap;
     mShouldReleaseBitmap = false;
@@ -153,6 +155,18 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         } else if (methodName === 'drawView') {
             drawViewOnCanvas(native, args[0], args[1]);
             return true;
+        } else if (methodName === 'drawText') {
+            // TODO move that to native
+            const paint = args[args.length - 1];
+            const textSize = paint.getTextSize();
+            if (!FONT_SIZE_FACTOR) {
+                SCREEN_DENSITY = Screen.mainScreen.scale;
+                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
+            }
+            paint.setTextSize((textSize * FONT_SIZE_FACTOR) / SCREEN_DENSITY);
+            native[methodName](...args);
+            paint.setTextSize(textSize);
+            return true;
         }
     }
     getImage() {
@@ -191,9 +205,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         return this;
     }
     handleCustomMethods(target, native, methodName: string, args: any[]): any {
-        if (methodName === 'setShadowLayer') {
-            args[3] = createColorParam(args[3]);
-        } else if (methodName === 'setColor') {
+        if (methodName === 'setColor') {
             if (!args[0]) {
                 return;
             }
@@ -210,14 +222,17 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             return true;
         } else if (methodName === 'getLetterSpacing' && sdkVersion < 21) {
             return 0;
+        } else if (methodName === 'setShadowLayer') {
+            args[3] = createColorParam(args[3]);
         }
     }
+    setTextSize(size) {}
     setFont(font: Font) {
         this.mFontInternal = font;
         if (this.handlesFont) {
             return;
         }
-        this.mNative.setTextSize(font.fontSize);
+        this.setTextSize(font.fontSize);
         this.mNeedsFontUpdate = true;
     }
     getFont() {
@@ -293,7 +308,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         this.mNative.setStyle(value);
     }
     set textSize(value: number) {
-        this.mNative.setTextSize(value);
+        this.setTextSize(value);
     }
     get textSize() {
         return this.getTextSize();
