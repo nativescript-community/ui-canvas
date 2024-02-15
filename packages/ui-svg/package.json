@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-svg",
-    "version": "0.1.31",
+    "version": "0.1.32",
     "description": "Adds support for SVGs in your NativeScript apps.",
     "main": "./index",
     "sideEffects": false,
