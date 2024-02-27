@@ -63,7 +63,7 @@ registerNativeViewElement('canvasView', () => require('@nativescript-community/u
 ```
 
 ```svelte
-// app/components/Foo.svelte
+<!-- app/components/Foo.svelte -->
 <stackLayout>
     <canvasView width="300" height="300" on:draw={draw} />
 </stackLayout>
