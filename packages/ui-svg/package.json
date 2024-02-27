@@ -18,7 +18,7 @@
     "scripts": {
         "build": "npm run tsc",
         "build.all": "npm run build",
-        "build.angular": "ng-packagr -p ../../src/ui-svg/angular/ng-package.json -c ../../src/ui-svg/angular/tsconfig.json",
+        "build.angular": "ng-packagr -p ../../src/ui-svg/angular/ng-package.json -c ../../src/ui-svg/angular/tsconfig.json && rm angular/.npmignore",
         "readme": "readme generate -c ../../tools/readme/blueprint.json",
         "tsc": "cpy '**/*.d.ts' '../../packages/ui-svg' --parents --cwd=../../src/ui-svg && tsc -skipLibCheck -d",
         "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
