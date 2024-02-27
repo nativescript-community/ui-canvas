@@ -58,7 +58,7 @@ registerNativeViewElement('svgView', () => require('@nativescript-community/ui-s
 ```
 
 ```svelte
-// app/components/Foo.svelte
+<!-- app/components/Foo.svelte -->
 <svgView src="~/assets/foo.svg" aspectFit="stretch" />
 ```
 
