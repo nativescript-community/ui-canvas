@@ -58,6 +58,7 @@ Vue.use(CanvasPlugin);
 
 ```ts
 // app/app.ts
+import { registerNativeViewElement } from 'svelte-native/dom';
 registerNativeViewElement('canvasView', () => require('@nativescript-community/ui-canvas').CanvasView);
 ```
 
