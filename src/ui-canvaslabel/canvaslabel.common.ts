@@ -373,7 +373,9 @@ export abstract class SpanBase extends Shape {
                 decale -= paddingBottom;
             }
             if (!this.verticalTextAlignment || this.verticalTextAlignment === 'middle' || this.verticalTextAlignment === 'center') {
-                deltaY += cH / 2 - height / 2 + decale;
+                // As we draw the staticLayout with max height h, we must clip this
+                // is the text is to be ellipsized then getStaticHeight is more than what we will render
+                deltaY += Math.max(0, cH / 2 - height / 2 + decale);
             } else if (this.verticalTextAlignment === 'bottom') {
                 deltaY += cH / 2 - height + decale;
             } else {

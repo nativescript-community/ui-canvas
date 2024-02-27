@@ -70,9 +70,6 @@
             "@commitlint/config-conventional"
         ]
     },
-    "dependencies": {
-        "ts-node": "^8.10.2"
-    },
     "ntl": {
         "descriptions": {
             "build": "Build the plugin",
