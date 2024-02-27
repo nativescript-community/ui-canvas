@@ -54,9 +54,29 @@ Vue.use(CanvasPlugin);
 <CanvasView  width="100" height="100" @draw="draw"/>
 ```
 
+## NativeScript + Svelte
+
+```ts
+// app/app.ts
+registerNativeViewElement('canvasView', () => require('@nativescript-community/ui-canvas').CanvasView);
+```
+
+```svelte
+// app/components/Foo.svelte
+<stackLayout>
+    <canvasView width="300" height="300" on:draw={draw} />
+</stackLayout>
+```
+
 ## Draw Method 
-```typescript
+
+```ts
+import type { Canvas } from '@nativescript-community/ui-canvas';
+import { Paint, createRect } from '@nativescript-community/ui-canvas';
+import { Color } from '@nativescript/core';
+
 function draw(event: { canvas: Canvas }) {
+    const canvas = event.canvas;
     const paint = new Paint();
     paint.setColor(new Color('black'));
     paint.strokeWidth = 10;
