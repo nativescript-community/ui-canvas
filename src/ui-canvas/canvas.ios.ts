@@ -2315,7 +2315,8 @@ export class StaticLayout {
         nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
     }
     draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
-        canvas.startApplyPaint(this.paint);
+        const paint = this.paint;
+        canvas.startApplyPaint(paint);
         const ctx = canvas.ctx;
         this.createAttributedStringToDraw(canvas);
         // const attributes = this.paint.getDrawTextAttribs();
@@ -2346,14 +2347,24 @@ export class StaticLayout {
         // UIDrawingText.drawAttributedStringXYWidthHeightWithAttributes(this.nsAttributedString, 0, 0, this.width, maxHeight, attributes);
 
         UIGraphicsPushContext(ctx);
-
+        if (paint.align !== Align.LEFT) {
+            let offsetx = 0;
+            const width = this.getBounds().size.width;
+            if (paint.align === Align.RIGHT) {
+                offsetx -= width;
+            }
+            else {
+                offsetx -= width / 2;
+            }
+            CGContextTranslateCTM(ctx, offsetx, 0);
+        }
         this.mToDraw.drawWithRectOptionsContext(
             CGRectMake(0, 0, this.width, maxHeight),
             NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
             null
         );
         UIGraphicsPopContext();
-        canvas.finishApplyPaint(this.paint);
+        canvas.finishApplyPaint(paint);
     }
     getPaint() {
         return this.paint;

@@ -48,6 +48,7 @@
 	* [XML](#xml)
 * [NativeScript + Angular](#nativescript--angular)
 * [NativeScript + Vue](#nativescript--vue)
+* [NativeScript + Svelte](#nativescript--svelte)
 * [Draw Method ](#draw-method-)
 	* [Examples:](#examples)
 * [Demos and Development](#demos-and-development)
@@ -136,14 +137,41 @@ Vue.use(CanvasPlugin);
 ```
 
 
+[](#nativescript--svelte)
+
+
+[](#nativescript--svelte)
+
+## NativeScript + Svelte
+
+```ts
+// app/app.ts
+import { registerNativeViewElement } from 'svelte-native/dom';
+registerNativeViewElement('canvasView', () => require('@nativescript-community/ui-canvas').CanvasView);
+```
+
+```svelte
+<!-- app/components/Foo.svelte -->
+<stackLayout>
+    <canvasView width="300" height="300" on:draw={draw} />
+</stackLayout>
+```
+
+
 [](#draw-method-)
 
 
 [](#draw-method-)
 
 ## Draw Method 
-```typescript
+
+```ts
+import type { Canvas } from '@nativescript-community/ui-canvas';
+import { Paint, createRect } from '@nativescript-community/ui-canvas';
+import { Color } from '@nativescript/core';
+
 function draw(event: { canvas: Canvas }) {
+    const canvas = event.canvas;
     const paint = new Paint();
     paint.setColor(new Color('black'));
     paint.strokeWidth = 10;
@@ -271,6 +299,7 @@ One easy solution is t modify `~/.gitconfig` and add
 ## Questions
 
 If you have any questions/issues/comments please feel free to create an issue or start a conversation in the [NativeScript Community Discord](https://nativescript.org/discord).
+
 </details><details>
 <summary><b>ui-canvaslabel</b></summary>
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
@@ -575,6 +604,8 @@ If you have any questions/issues/comments please feel free to create an issue or
 
 * [Installation](#installation)
 * [Configuration](#configuration)
+	* [NativeScript + Vue](#nativescript--vue)
+	* [NativeScript + Svelte](#nativescript--svelte)
 	* [Examples:](#examples)
 * [Demos and Development](#demos-and-development)
 	* [Repo Setup](#repo-setup)
@@ -609,6 +640,8 @@ Run the following command from the root of your project:
 
 For now only `vue` (and core) is supported.
 
+### NativeScript + Vue
+
 ```ts
 import CanvasSVG from '@nativescript-community/ui-svg/vue';
 Vue.use(CanvasSVG);
@@ -640,6 +673,19 @@ Or within and Canvas View extending `CanvasView` like `CanvasLabel`
     </CGroup>
     <CSVG horizontalAlignment="left" src="~/assets/svgs/Ghostscript_Tiger.svg" height="10" stretch="aspectFit" />
 </CanvasSVG>
+```
+
+### NativeScript + Svelte
+
+```ts
+// app/app.ts
+import { registerNativeViewElement } from 'svelte-native/dom';
+registerNativeViewElement('svgView', () => require('@nativescript-community/ui-svg').SVGView);
+```
+
+```svelte
+<!-- app/components/Foo.svelte -->
+<svgView src="~/assets/foo.svg" aspectFit="stretch" />
 ```
 
 ### Examples:
@@ -754,6 +800,7 @@ One easy solution is t modify `~/.gitconfig` and add
 ## Questions
 
 If you have any questions/issues/comments please feel free to create an issue or start a conversation in the [NativeScript Community Discord](https://nativescript.org/discord).
+
 </details>
 
 [](#demos-and-development)
