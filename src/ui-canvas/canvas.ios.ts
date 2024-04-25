@@ -1,7 +1,17 @@
 /* eslint-disable no-redeclare */
 import { CSSType, Color, Font, ImageSource, Utils, View } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
-import { Canvas as ICanvas, FontMetrics as IFontMetrics, Matrix as IMatrix, Paint as IPaint, Path as IPath, PorterDuffXfermode as IPorterDuffXfermode, Rect as IRect, RectF as IRectF } from './canvas';
+import {
+    Canvas as ICanvas,
+    FontMetrics as IFontMetrics,
+    Matrix as IMatrix,
+    Paint as IPaint,
+    Path as IPath,
+    PorterDuffXfermode as IPorterDuffXfermode,
+    Rect as IRect,
+    RectF as IRectF,
+    Shader as IShader
+} from './canvas';
 import type { CanvasView } from './index.ios';
 export * from './canvas.common';
 
@@ -870,7 +880,7 @@ export class Paint implements IPaint {
         dy: number;
         color: Color;
     };
-    shader;
+    shader: Shader;
     colorFilter;
     pathEffect: PathEffect;
     xfermode: IPorterDuffXfermode;
@@ -971,9 +981,6 @@ export class Paint implements IPaint {
     public getStrokeJoin(): Join {
         return this.strokeJoin;
     }
-    public getShader() {
-        return this.shader;
-    }
     public getColorFilter() {
         return this.colorFilter;
     }
@@ -1007,11 +1014,15 @@ export class Paint implements IPaint {
     public getStrokeCap(): Cap {
         return this.strokeCap;
     }
-    public setShader(value: any) {
+    public setShader(value: IShader) {
         if (this.shader) {
-            this.shader.release();
+            (this.shader as any as Shader).release();
         }
-        this.shader = value;
+        this.shader = value as any as Shader;
+        return value;
+    }
+    public getShader() {
+        return this.shader as any as IShader;
     }
     public setColorFilter(value: any) {
         if (this.colorFilter) {
@@ -1158,7 +1169,7 @@ export class Paint implements IPaint {
 
     clear() {
         if (this.shader) {
-            this.shader.clear();
+            this.shader.release();
             this.shader = null;
         }
         if (this.colorFilter) {
@@ -2178,6 +2189,7 @@ class Shader {
             this.localMatrix = null;
         }
     }
+    release() {}
 }
 export class RadialGradient extends Shader {
     mGradient;
