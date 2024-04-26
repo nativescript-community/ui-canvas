@@ -593,11 +593,12 @@ export class Path implements IPath {
         return CGPathIsRect(this.getCGPath(), new interop.Reference(rect.cgRect));
     }
     getCurrentPoint() {
-        const path = this.getCGPath();
+        let path = this.getCGPath();
         if (CGPathIsEmpty(path)) {
             this.moveTo(0, 0);
+            path = this.mPath;
         }
-        return CGPathGetCurrentPoint(this.getCGPath());
+        return CGPathGetCurrentPoint(path);
     }
     rMoveTo(dx: number, dy: number): void {
         const currentPoint = this.getCurrentPoint();
@@ -709,44 +710,62 @@ export class Path implements IPath {
         const path = params[0] as Path;
         if (length === 1) {
             if (this.mBPath) {
-                this.mBPath.appendPath(path.getBPath());
+                this.mBPath.appendPath(path.getOrCreateBPath());
             } else {
-                CGPathAddPath(this.mPath, null, path.mPath);
+                CGPathAddPath(this.getCGPath(), null, path.getCGPath());
             }
             // param0: IPath, param1: number, param2: number
         } else if (length === 2) {
             const mat = params[1] as Matrix;
             if (this.mBPath) {
-                this.mBPath.appendPath(path.getBPath());
+                this.mBPath.appendPath(path.getOrCreateBPath());
             } else {
-                CGPathAddPath(this.mPath, new interop.Reference(mat.mTransform), path.mPath);
+                CGPathAddPath(this.getCGPath(), new interop.Reference(mat.mTransform), path.getCGPath());
             }
             // param0: IPath, param1: number, param2: number
         } else if (length === 3) {
             if (this.mBPath) {
+                const t = CGAffineTransformMakeTranslation(params[1], params[2]);
+                const newPath = CGPathCreateCopyByTransformingPath(path.getCGPath(), new interop.Reference(t));
+                this.mBPath.appendPath(newPath);
             } else {
                 const t = CGAffineTransformMakeTranslation(params[1], params[2]);
-                CGPathAddPath(this.mPath, new interop.Reference(t), path.mPath);
+                CGPathAddPath(this.getCGPath(), new interop.Reference(t), path.getCGPath());
             }
             // param0: IPath, param1: Matrix
         }
     }
-    rLineTo(param0: number, param1: number): void {
-        console.error('Method not implemented:', 'rLineTo');
+    rLineTo(x: number, y: number): void {
+        const currentPoint = this.getCurrentPoint();
+        const dx = currentPoint.x;
+        const dy = currentPoint.y;
+        this.lineTo(x + dx, y + dy);
     }
     lineTo(x: number, y: number): void {
-        CGPathAddLineToPoint(this.mPath, null, x, y);
+        if (this.mBPath) {
+            this.mBPath.addLineToPoint(CGPointMake(x, y));
+        } else {
+            CGPathAddLineToPoint(this.mPath, null, x, y);
+        }
     }
     quadTo(cpx: number, cpy: number, x: number, y: number): void {
-        CGPathAddQuadCurveToPoint(this.mPath, null, cpx, cpy, x, y);
+        if (this.mBPath) {
+            this.mBPath.addQuadCurveToPointControlPoint(CGPointMake(x, y), CGPointMake(cpx, cpy));
+        } else {
+            CGPathAddQuadCurveToPoint(this.mPath, null, cpx, cpy, x, y);
+        }
     }
     //@ts-ignore
     transform(mat: Matrix, output?: Path) {
-        const path = CGPathCreateCopyByTransformingPath(this.mPath, new interop.Reference(mat.mTransform));
-        if (output) {
-            output.mPath = path;
+        if (this.mBPath && !output) {
+            this.mBPath.applyTransform(mat.mTransform);
         } else {
-            this.mPath = path;
+            const path = CGPathCreateCopyByTransformingPath(this.getCGPath(), new interop.Reference(mat.mTransform));
+            if (output) {
+                output.mPath = path;
+            } else {
+                this.mPath = path;
+            }
         }
     }
     reset(): void {
@@ -776,20 +795,33 @@ export class Path implements IPath {
         const cy = rect.origin.y + h * 0.5;
         const r = rect.size.width * 0.5;
         // const center = CGPointMake(rect.centerX(), rect.centerY());
-        let t = CGAffineTransformMakeTranslation(cx, cy);
-        t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, h / w), t);
-        CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, r, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, false);
+        if (this.mBPath) {
+            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(CGPointMake(cx, cy), r, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, false);
+        } else {
+            let t = CGAffineTransformMakeTranslation(cx, cy);
+            t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, h / w), t);
+            CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, r, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, false);
+        }
         // CGPathMoveToPoint(this._path, null, center.x, center.y);
     }
     close(): void {
+        if (this.mBPath) {
+            this.mBPath.closePath();
+        } else {
+            CGPathCloseSubpath(this.mPath);
+        }
         // CGPathCloseSubpath(this._path);
     }
     addCircle(x: number, y: number, r: number, d: Direction): void {
-        if (d === Direction.CW) {
-            CGPathAddEllipseInRect(this.mPath, null, CGRectMake(x - r, y - r, 2 * r, 2 * r));
+        if (this.mBPath) {
+            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(CGPointMake(x, y), r, 0, 2 * Math.PI, false);
         } else {
-            const t = CGAffineTransformMakeScale(-1, 1);
-            CGPathAddEllipseInRect(this.mPath, new interop.Reference(t), CGRectMake(x - r, y - r, 2 * r, 2 * r));
+            if (d === Direction.CW) {
+                CGPathAddEllipseInRect(this.mPath, null, CGRectMake(x - r, y - r, 2 * r, 2 * r));
+            } else {
+                const t = CGAffineTransformMakeScale(-1, 1);
+                CGPathAddEllipseInRect(this.mPath, new interop.Reference(t), CGRectMake(x - r, y - r, 2 * r, 2 * r));
+            }
         }
     }
     rewind(): void {
@@ -815,7 +847,11 @@ export class Path implements IPath {
         }
     }
     moveTo(x: number, y: number): void {
-        CGPathMoveToPoint(this.mPath, null, x, y);
+        if (this.mBPath) {
+            this.mBPath.moveToPoint(CGPointMake(x, y));
+        } else {
+            CGPathMoveToPoint(this.mPath, null, x, y);
+        }
     }
     setFillType(value: FillType): void {
         this.mFillType = value;
@@ -825,7 +861,11 @@ export class Path implements IPath {
         return false;
     }
     cubicTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
-        CGPathAddCurveToPoint(this.mPath, null, cp1x, cp1y, cp2x, cp2y, x, y);
+        if (this.mBPath) {
+            this.mBPath.addCurveToPointControlPoint1ControlPoint2(CGPointMake(x, y), CGPointMake(cp1x, cp1y), CGPointMake(cp2x, cp2y));
+        } else {
+            CGPathAddCurveToPoint(this.mPath, null, cp1x, cp1y, cp2x, cp2y, x, y);
+        }
     }
     incReserve(param0: number): void {
         console.error('Method not implemented:', 'incReserve');
@@ -841,7 +881,11 @@ export class Path implements IPath {
         } else if (length === 2) {
             rect = (params[0] as Rect).cgRect;
         }
-        CGPathAddRect(this.mPath, null, rect);
+        if (this.mBPath) {
+            this.mBPath.appendPath(UIBezierPath.bezierPathWithRect(rect));
+        } else {
+            CGPathAddRect(this.mPath, null, rect);
+        }
     }
     addOval(...params): void {
         const length = params.length;
@@ -851,13 +895,18 @@ export class Path implements IPath {
         } else if (length === 2) {
             rect = (params[0] as Rect).cgRect;
         }
-        CGPathAddEllipseInRect(this.mPath, null, rect);
+        if (this.mBPath) {
+            this.mBPath.appendPath(UIBezierPath.bezierPathWithOvalInRect(rect));
+        } else {
+            CGPathAddEllipseInRect(this.mPath, null, rect);
+        }
     }
     isInverseFillType(): boolean {
         return this.mFillType === FillType.INVERSE_EVEN_ODD || this.mFillType === FillType.INVERSE_WINDING;
     }
     //@ts-ignore
     set(path: Path): void {
+        this.mBPath = null;
         this.mPath = CGPathCreateMutableCopy(path.mPath);
     }
 }
