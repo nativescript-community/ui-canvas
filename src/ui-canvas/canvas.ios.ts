@@ -678,21 +678,31 @@ export class Path implements IPath {
         // TODO: direction is ignored!
         const length = params.length;
         let rect: CGRect;
+        let radii: number[];
         let rx, ry;
         if (length === 7) {
             rect = createCGRect(params[0], params[1], params[2], params[3]);
-            rx = params[4];
-            ry = params[5];
+            radii = [params[4], params[5]];
+        } else if (length === 6) {
+            rect = createCGRect(params[0], params[1], params[2], params[3]);
+            radii = params[4];
         } else if (length === 4) {
             rect = (params[0] as Rect).cgRect;
-            rx = params[1];
-            ry = params[2];
+            radii = [params[1], params[2]];
+        } else if (length === 3) {
+            rect = (params[0] as Rect).cgRect;
+            radii = params[1];
         }
-        if (this.mBPath) {
-            this.mBPath.appendPath(UIBezierPath.bezierPathWithRoundedRectByRoundingCornersCornerRadii(rect, UIRectCorner.AllCorners, CGSizeMake(rx, ry)));
+        if (!radii || !radii.length) {
+            throw new Error('missing radii param');
+        }
+        let cgPath;
+        if (radii.length === 2) {
+            cgPath = UIBezierPath.bezierPathWithRoundedRectByRoundingCornersCornerRadii(rect, UIRectCorner.AllCorners, CGSizeMake(radii[0], radii[1]));
         } else {
-            CGPathAddRoundedRect(this.mPath, null, rect, rx, ry);
+            throw new Error('multi radii not implemented yet');
         }
+        this.getOrCreateBPath().appendPath(cgPath);
     }
     addPath(...params) {
         const length = params.length;
@@ -2352,8 +2362,7 @@ export class StaticLayout {
             const width = this.getBounds().size.width;
             if (paint.align === Align.RIGHT) {
                 offsetx -= width;
-            }
-            else {
+            } else {
                 offsetx -= width / 2;
             }
             CGContextTranslateCTM(ctx, offsetx, 0);
