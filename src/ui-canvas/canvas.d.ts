@@ -281,9 +281,10 @@ export class Path extends ProxyClass {
     offset(param0: number, param1: number): void;
     rCubicTo(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): void;
     rQuadTo(param0: number, param1: number, param2: number, param3: number): void;
-    addRoundRect(left: number, top: number, right: number, bottom: number, param1: number, param2: number, param3: Direction): void;
-    addRoundRect(param0: RectF, param1: number, param2: number, param3: Direction): void;
-    addRoundRect(param0: RectF, param1: number[], param2: Direction): void;
+    addRoundRect(left: number, top: number, right: number, bottom: number, radx: number, rady: number, direction: Direction): void;
+    addRoundRect(left: number, top: number, right: number, bottom: number, radii: number[], direction: Direction): void;
+    addRoundRect(rect: RectF, radx: number, rady: number, direction: Direction): void;
+    addRoundRect(rect: RectF, radii: number[], param2: Direction): void;
     offset(param0: number, param1: number, param2: Path): void;
     addPath(param0: Path, param1: Matrix): void;
     addPath(param0: Path, param1: number, param2: number): void;
