@@ -39,6 +39,8 @@
 
 * [Installation](#installation)
 * [Configuration](#configuration)
+	* [NativeScript + Vue](#nativescript--vue)
+	* [NativeScript + Svelte](#nativescript--svelte)
 	* [Examples:](#examples)
 * [Demos and Development](#demos-and-development)
 	* [Repo Setup](#repo-setup)
@@ -66,6 +68,8 @@ Run the following command from the root of your project:
 ## Configuration
 
 For now only `vue` (and core) is supported.
+
+### NativeScript + Vue
 
 ```ts
 import CanvasSVG from '@nativescript-community/ui-svg/vue';
@@ -98,6 +102,19 @@ Or within and Canvas View extending `CanvasView` like `CanvasLabel`
     </CGroup>
     <CSVG horizontalAlignment="left" src="~/assets/svgs/Ghostscript_Tiger.svg" height="10" stretch="aspectFit" />
 </CanvasSVG>
+```
+
+### NativeScript + Svelte
+
+```ts
+// app/app.ts
+import { registerNativeViewElement } from 'svelte-native/dom';
+registerNativeViewElement('svgView', () => require('@nativescript-community/ui-svg').SVGView);
+```
+
+```svelte
+<!-- app/components/Foo.svelte -->
+<svgView src="~/assets/foo.svg" aspectFit="stretch" />
 ```
 
 ### Examples:

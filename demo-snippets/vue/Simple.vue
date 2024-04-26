@@ -15,6 +15,8 @@ import { Component } from 'vue-property-decorator';
 import { Canvas, Paint, Style, createRect } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { Screen } from '@nativescript/core/platform';
+import { Path } from '@nativescript-community/ui-canvas';
+import { Direction } from '@nativescript-community/ui-canvas';
 
 @Component
 export default class Simple extends Vue {
@@ -48,6 +50,13 @@ export default class Simple extends Vue {
         bgPaint.setStyle(Style.FILL);
         bgPaint.setColor(new Color(255, 0, 0, 0));
         canvas.drawText('test', 0, 20, bgPaint);
+
+
+        const path = new Path();
+        const rect = createRect(10, 10, 40, 60);
+        console.log('rect', rect)
+        path.addRoundRect(rect.left, rect.top, rect.right, rect.bottom, [5, 5, 5, 5, 5,5, 0,0], Direction.CW)
+        canvas.drawPath(path, bgPaint);   
     }
 }
 </script>
