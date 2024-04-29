@@ -60,7 +60,7 @@ export class Paint extends ProxyClass {
     // public getTextWidths(param0: native.Array<string>, param1: number, param2: number, param3: native.Array<number>): number;
     public getStrokeJoin(): Join;
     public getColor(): ColorParam;
-    public getShader(): any;
+    public getShader(): Shader;
     public measureText(text: string, start: number, end: number): number;
     public setTypeface(newValue: Font): Font;
     public setStrokeWidth(value: number): void;
@@ -84,7 +84,7 @@ export class Paint extends ProxyClass {
     public setFontWeight(weight: FontWeightType);
     public setFontStyle(style: FontStyleType);
     public getFontFamily(): string;
-    public setShader(value: any): any;
+    public setShader(value: Shader): Shader;
     // public descent(): number;
     public setShadowLayer(radius: number, dx: number, dy: number, color: ColorParam): void;
     public clearShadowLayer();
@@ -269,6 +269,8 @@ export class LinearGradient extends android.graphics.LinearGradient {
 export class BitmapShader extends android.graphics.BitmapShader {
     constructor(image: ImageSource, tileX, tileY);
 }
+export class Shader extends android.graphics.Shader {
+}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path extends ProxyClass {
     computeBounds(rect: RectF, exact: boolean);
@@ -279,9 +281,10 @@ export class Path extends ProxyClass {
     offset(param0: number, param1: number): void;
     rCubicTo(param0: number, param1: number, param2: number, param3: number, param4: number, param5: number): void;
     rQuadTo(param0: number, param1: number, param2: number, param3: number): void;
-    addRoundRect(left: number, top: number, right: number, bottom: number, param1: number, param2: number, param3: Direction): void;
-    addRoundRect(param0: RectF, param1: number, param2: number, param3: Direction): void;
-    addRoundRect(param0: RectF, param1: number[], param2: Direction): void;
+    addRoundRect(left: number, top: number, right: number, bottom: number, radx: number, rady: number, direction: Direction): void;
+    addRoundRect(left: number, top: number, right: number, bottom: number, radii: number[], direction: Direction): void;
+    addRoundRect(rect: RectF, radx: number, rady: number, direction: Direction): void;
+    addRoundRect(rect: RectF, radii: number[], param2: Direction): void;
     offset(param0: number, param1: number, param2: Path): void;
     addPath(param0: Path, param1: Matrix): void;
     addPath(param0: Path, param1: number, param2: number): void;
