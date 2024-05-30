@@ -319,9 +319,10 @@ class MySVGView extends android.view.View {
         if (!svg) {
             return;
         }
-        if (this._blendingMode !== undefined) {
-            const picture = svg.renderToPicture(this.renderOptions);
-        }
+        this.renderOptions.viewPort(0, 0, canvas.getWidth(), canvas.getHeight());
+        // if (this._blendingMode !== undefined) {
+        //     const picture = svg.renderToPicture(this.renderOptions);
+        // }
         svg.renderToCanvas(canvas, this.renderOptions);
     }
     _blendingMode: android.graphics.PorterDuff.Mode;
@@ -399,10 +400,24 @@ export class SVGView extends SVGViewBase {
         }
         return view;
     }
+    async handleSrc(src) {
+        if (src instanceof Promise) {
+            this.handleSrc(await src);
+            return;
+        } else if (typeof src === 'function') {
+            const newSrc = src();
+            if (newSrc instanceof Promise) {
+                await newSrc;
+            }
+            this.handleSrc(newSrc);
+            return;
+        }
+        this.nativeViewProtected.setSvg(getSVG(src));
+    }
 
     [srcProperty.setNative](value) {
+        this.handleSrc(value);
         // this.nativeViewProtected.image = getSVGKImage(value);
-        this.nativeViewProtected.setSvg(getSVG(value));
         // if (this._imageSourceAffectsLayout) {
         //     this._imageSourceAffectsLayout = false;
         //     this.requestLayout();

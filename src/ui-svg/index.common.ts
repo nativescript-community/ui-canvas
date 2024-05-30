@@ -61,7 +61,9 @@ export const stretchProperty = new Property<SVGView, Stretch>({ name: 'stretch' 
 // export const blendingModeProperty = new Property<SVGView, string>({ name: 'blendingMode' });
 
 @CSSType('SVGView')
-export class SVGView extends View {}
+export class SVGView extends View {
+    src: string;
+}
 srcProperty.register(SVGView);
 stretchProperty.register(SVGView);
 // blendingModeProperty.register(SVGView);

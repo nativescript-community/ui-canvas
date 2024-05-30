@@ -55,7 +55,7 @@ function getSVGKImage(src: string | ImageAsset | File) {
     }
     if (Utils.isFileOrResourcePath(imagePath)) {
         if (imagePath.indexOf(Utils.RESOURCE_PREFIX) === 0) {
-            const resName = imagePath.substr(Utils.RESOURCE_PREFIX.length);
+            const resName = imagePath.slice(Utils.RESOURCE_PREFIX.length);
             return SVGKImage.imageNamed(resName);
         } else if (imagePath.indexOf('~/') === 0) {
             const strPath = path.join(knownFolders.currentApp().path, imagePath.replace('~/', ''));
@@ -320,13 +320,28 @@ export class SVGView extends SVGViewBase {
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-    [srcProperty.setNative](value) {
-        this.nativeViewProtected.image = getSVGKImage(value);
+    async handleSrc(src) {
+        if (src instanceof Promise) {
+            this.handleSrc(await src);
+            return;
+        } else if (typeof src === 'function') {
+            const newSrc = src();
+            if (newSrc instanceof Promise) {
+                await newSrc;
+            }
+            this.handleSrc(newSrc);
+            return;
+        }
+        this.nativeViewProtected.image = getSVGKImage(src);
         // this.nativeViewProtected.renderer = getRenderer(value);
         if (this._imageSourceAffectsLayout) {
             this._imageSourceAffectsLayout = false;
             this.requestLayout();
         }
+    }
+
+    [srcProperty.setNative](value) {
+        this.handleSrc(value);
     }
     [stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
         this.nativeViewProtected.contentMode = getUIImageScaleType(value);
