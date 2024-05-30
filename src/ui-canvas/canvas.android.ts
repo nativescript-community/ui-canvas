@@ -6,15 +6,9 @@ import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/fon
 import { sdkVersion } from './canvas.common';
 
 export * from './canvas.common';
-export { Canvas, Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment, PorterDuffMode, PorterDuffXfermode };
+export * from './utils';
 
-export function parseDashEffect(value: string) {
-    const array = value.split(' ').map(parseFloat);
-    const length = array.length;
-    const phase = array[length - 1];
-    const result = new DashPathEffect(array, phase);
-    return result;
-}
+export { Canvas, Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment, PorterDuffMode, PorterDuffXfermode };
 
 function createColorParam(param) {
     if (param instanceof Array) {

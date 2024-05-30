@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { CSSType, Color, Font, ImageSource, Utils, View } from '@nativescript/core';
+import { Color, Font, ImageSource, View } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
 import {
     Canvas as ICanvas,
@@ -14,6 +14,7 @@ import {
 } from './canvas';
 import type { CanvasView } from './index.ios';
 export * from './canvas.common';
+export * from './utils';
 
 const identity = CGAffineTransformIdentity;
 
