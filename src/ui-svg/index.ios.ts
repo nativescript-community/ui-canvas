@@ -21,6 +21,9 @@ function getUIImageScaleType(scaleType: string) {
 
 let bgdImagePaint: Paint;
 function getRenderer(src: string | ImageAsset | File) {
+    if (!src) {
+        return null;
+    }
     let imagePath: string;
     if (src instanceof File) {
         return SVGRenderer.alloc().initWithInputStream(NSInputStream.alloc().initWithFileAtPath(src.path));
@@ -45,6 +48,9 @@ function getRenderer(src: string | ImageAsset | File) {
     return SVGRenderer.alloc().initWithString(imagePath);
 }
 function getSVGKImage(src: string | ImageAsset | File) {
+    if (!src) {
+        return null;
+    }
     let imagePath: string;
     if (src instanceof File) {
         return SVGKImage.alloc().initWithData(NSData.alloc().initWithContentsOfFile(src.path));
@@ -322,12 +328,20 @@ export class SVGView extends SVGViewBase {
     }
     async handleSrc(src) {
         if (src instanceof Promise) {
-            this.handleSrc(await src);
+            try {
+                this.handleSrc(await src);
+            } catch (error) {
+                this.handleSrc(null);
+            }
             return;
         } else if (typeof src === 'function') {
-            const newSrc = src();
+            let newSrc = src();
             if (newSrc instanceof Promise) {
-                await newSrc;
+                try {
+                    await newSrc;
+                } catch (error) {
+                    newSrc = null;
+                }
             }
             this.handleSrc(newSrc);
             return;

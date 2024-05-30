@@ -11,6 +11,9 @@ function getSDK() {
     return SDK_INT;
 }
 function getSVG(src: string | ImageAsset | File) {
+    if (!src) {
+        return null;
+    }
     let imagePath: string;
     if (src instanceof File) {
         return com.caverock.androidsvg.SVG.getFromInputStream(new java.io.FileInputStream(new java.io.File(src.path)));
@@ -402,12 +405,20 @@ export class SVGView extends SVGViewBase {
     }
     async handleSrc(src) {
         if (src instanceof Promise) {
-            this.handleSrc(await src);
+            try {
+                this.handleSrc(await src);
+            } catch (error) {
+                this.handleSrc(null);
+            }
             return;
         } else if (typeof src === 'function') {
-            const newSrc = src();
+            let newSrc = src();
             if (newSrc instanceof Promise) {
-                await newSrc;
+                try {
+                    await newSrc;
+                } catch (error) {
+                    newSrc = null;
+                }
             }
             this.handleSrc(newSrc);
             return;
