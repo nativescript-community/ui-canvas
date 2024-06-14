@@ -35,11 +35,11 @@ export class CanvasView extends CanvasBase {
     nativeViewProtected: com.akylas.canvas.CanvasView;
     createNativeView() {
         const view = new com.akylas.canvas.CanvasView(this._context);
-        if (sdkVersion >= 28) {
-            view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-        }
+        // if (sdkVersion >= 28) {
+        //     view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        // } else {
+        //     view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+        // }
         return view;
     }
     [hardwareAcceleratedProperty.getDefault](value) {
