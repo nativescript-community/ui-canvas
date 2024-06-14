@@ -2451,6 +2451,16 @@ export class StaticLayout {
         }
         return result;
     }
+    getLineWidth(lineNumber: number) {
+        // TODO: actually find line used width
+        let result = this.getBounds().size.width;
+        if (isNaN(result)) {
+            result = this.width;
+        } else {
+            result = Math.min(result, this.width);
+        }
+        return result;
+    }
     getHeight() {
         const result = this.getBounds().size.height;
         return result;
