@@ -396,11 +396,11 @@ export class SVGView extends SVGViewBase {
     nativeViewProtected: MySVGView;
     createNativeView() {
         const view = new MySVGView(this._context);
-        if (getSDK() >= 28) {
-            view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
-        }
+        // if (getSDK() >= 28) {
+        //     view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        // } else {
+        //     view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+        // }
         return view;
     }
     async handleSrc(src) {
