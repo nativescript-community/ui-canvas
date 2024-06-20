@@ -10,20 +10,28 @@ Run the following command from the root of your project:
 
 `ns plugin add {{ pkg.name }}`
 
-## Configuration
-
-For now only `vue` (and core) is supported.
 
 ### NativeScript + Vue
 
 ```ts
-import CanvasSVG from '@nativescript-community/ui-svg/vue';
-Vue.use(CanvasSVG);
+import SVGPlugin from '@nativescript-community/ui-svg/vue';
+Vue.use(SVGPlugin);
+// or if you want the canvas version
+import CanvasSVGPlugin from '@nativescript-community/ui-svg/vue/canvas';
+Vue.use(CanvasSVGPlugin);
+```
+
+For other flavors you need to register the components directly:
+```ts
+import { SVGView } from '@nativescript-community/ui-svg';
+import { CanvasSVG, SVG } from '@nativescript-community/ui-svg/canvas';
+
 ```
 
 It works in 3 ways!.
 
 `CanvasSVG` extending `Canvas`
+
 
 ```html
 <CanvasSVG>

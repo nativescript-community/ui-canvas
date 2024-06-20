@@ -1,11 +1,9 @@
-import { CanvasSVG, SVG, SVGView } from '..';
+import { SVGView } from '..';
 
-const CanvasLabelPlugin = {
+const SVGPlugin = {
     install(Vue, options) {
-        Vue.registerElement('CanvasSVG', () => CanvasSVG);
         Vue.registerElement('SVGView', () => SVGView);
-        Vue.registerElement('CSVG', () => SVG);
-    },
+    }
 };
 
-export default CanvasLabelPlugin;
+export default SVGPlugin;
