@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.39...@nativescript-community/ui-svg@0.2.0) (2024-06-20)
+
+### Features
+
+* **ui-svg:** refactor so that ui-canvas peer dependency is not needed anymore if only using `SVGView`. Consequently the import for `CanvasSVG` or `SVG` changed (see readme) ([8e2210c](https://github.com/nativescript-community/ui-canvas/commit/8e2210caa4f953e2e0d3ef2578a0e060a5334f65))
+
 ## [0.1.39](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-svg@0.1.38...@nativescript-community/ui-svg@0.1.39) (2024-06-14)
 
 **Note:** Version bump only for package @nativescript-community/ui-svg
