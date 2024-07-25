@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Color, Font, ImageSource, View } from '@nativescript/core';
+import { Color, Font, ImageSource, Screen, View } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
 import {
     Canvas as ICanvas,
@@ -1450,9 +1450,17 @@ export class Canvas implements ICanvas {
         console.error('Method not implemented:', 'skew');
     }
 
-    // setMatrix(matrix: Matrix) {
-    //     CGContextConcatCTM(this.ctx, matrix.mTransform);
-    // }
+    setMatrix(matrix: Matrix): void {
+        // TODO: Find a better way to implement matrix set
+        const density = Screen.mainScreen.scale;
+        const currentMatrix = this.getMatrix();
+        const invertedTransform = CGAffineTransformInvert(currentMatrix.mTransform);
+        const scaleTransform = CGAffineTransformMake(density, 0, 0, -density, 0, density * this.getHeight());
+
+        CGContextConcatCTM(this.ctx, invertedTransform);
+        CGContextConcatCTM(this.ctx, scaleTransform);
+        CGContextConcatCTM(this.ctx, matrix.mTransform);
+    }
     getMatrix(): Matrix {
         return new Matrix(CGContextGetCTM(this.ctx));
     }
