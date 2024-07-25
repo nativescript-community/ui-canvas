@@ -39,8 +39,8 @@
     },
     "license": "Apache-2.0",
     "readmeFilename": "README.md",
-    "peerDependencies": {
-        "@nativescript-community/arraybuffers": "^1.1.3"
+    "dependencies": {
+        "@nativescript-community/arraybuffers": "^1.1.5"
     },
     "gitHead": "6dc5e24339bbc329a239584e71c1cc30de9cedd4"
 }
