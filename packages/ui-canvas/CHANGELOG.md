@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.29](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.28...@nativescript-community/ui-canvas@4.6.29) (2024-07-25)
+
+### Bug Fixes
+
+* **ui-canvas:** @nativescript-community/arraybuffers is now a direct dependency ([8b81088](https://github.com/nativescript-community/ui-canvas/commit/8b8108830cef1dbd1956142b50270efce14438c1))
+
 ## [4.6.28](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.27...@nativescript-community/ui-canvas@4.6.28) (2024-06-20)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
