@@ -700,7 +700,7 @@ export class Path implements IPath {
         }
         let cgPath;
         if (radii.length === 2) {
-            cgPath = UIBezierPath.bezierPathWithRoundedRectByRoundingCornersCornerRadii(rect, UIRectCorner.AllCorners, CGSizeMake(radii[0], radii[1]));
+            cgPath = UIBezierPath.bezierPathWithRoundedRectByRoundingCornersCornerRadii(rect, 0xffffffff as any /* UIRectCorner.AllCorners */, CGSizeMake(radii[0], radii[1]));
         } else {
             throw new Error('multi radii not implemented yet');
         }
