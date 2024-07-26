@@ -191,7 +191,7 @@ export class Canvas extends ProxyClass {
     clipPath(path: Path, op: Op): boolean;
     setBitmap(image);
     // getSaveCount(): number;
-    // setMatrix(param0: android.graphics.Matrix): void;
+    setMatrix(matrix: Matrix): void;
     // getClipBounds(param0: android.graphics.Rect): boolean;
     // saveLayerAlpha(param0: number, param1: number, param2: number, param3: number, param4: number): number;
     // restoreToCount(param0: number): void;
