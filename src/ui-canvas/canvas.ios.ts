@@ -1452,14 +1452,15 @@ export class Canvas implements ICanvas {
 
     setMatrix(matrix: Matrix): void {
         // TODO: Find a better way to implement matrix set
+        const ctx = this.ctx;
         const density = Screen.mainScreen.scale;
         const currentMatrix = this.getMatrix();
         const invertedTransform = CGAffineTransformInvert(currentMatrix.mTransform);
-        const scaleTransform = CGAffineTransformMake(density, 0, 0, -density, 0, density * this.getHeight());
+        const scaleTransform = CGAffineTransformMake(density, 0, 0, -density, 0, density * this.mHeight);
 
-        CGContextConcatCTM(this.ctx, invertedTransform);
-        CGContextConcatCTM(this.ctx, scaleTransform);
-        CGContextConcatCTM(this.ctx, matrix.mTransform);
+        CGContextConcatCTM(ctx, invertedTransform);
+        CGContextConcatCTM(ctx, scaleTransform);
+        CGContextConcatCTM(ctx, matrix.mTransform);
     }
     getMatrix(): Matrix {
         return new Matrix(CGContextGetCTM(this.ctx));
