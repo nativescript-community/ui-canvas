@@ -110,8 +110,9 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
             } else if (imageOrWidth instanceof android.graphics.Bitmap) {
                 this.mBitmap = imageOrWidth;
             } else {
+                const scale = Screen.mainScreen.scale;
                 this.mShouldReleaseBitmap = true;
-                this.mBitmap = android.graphics.Bitmap.createBitmap(imageOrWidth, height, android.graphics.Bitmap.Config.ARGB_8888);
+                this.mBitmap = android.graphics.Bitmap.createBitmap(imageOrWidth * scale, height * scale, android.graphics.Bitmap.Config.ARGB_8888);
             }
             if (!this.mBitmap.isMutable()) {
                 this.mShouldReleaseBitmap = true;
