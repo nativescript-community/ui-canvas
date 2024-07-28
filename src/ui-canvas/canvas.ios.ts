@@ -494,19 +494,19 @@ export class Matrix implements IMatrix {
         return CGAffineTransformIsIdentity(this.mTransform);
     }
     // public toString(): string {
-    //     return NSStringFromCGAffineTransform(this._transform);
+    //     return NSStringFromCGAffineTransform(this.mTransform);
     // }
     public preTranslate(tx: number, ty: number): boolean {
         return this.preConcat(CGAffineTransformMakeTranslation(tx, ty));
     }
     public setValues(values: number[]): void {
         this.mTransform = CGAffineTransformMake(values[0], values[3], values[1], values[4], values[2], values[5]);
-        // this._transform.a = values[0];
-        // this._transform.c = values[1];
-        // this._transform.tx = values[2];
-        // this._transform.b = values[3];
-        // this._transform.d = values[4];
-        // this._transform.ty = values[5];
+        // this.mTransform.a = values[0];
+        // this.mTransform.c = values[1];
+        // this.mTransform.tx = values[2];
+        // this.mTransform.b = values[3];
+        // this.mTransform.d = values[4];
+        // this.mTransform.ty = values[5];
     }
     public invert(output: IMatrix): boolean {
         (output as Matrix).mTransform = CGAffineTransformInvert(this.mTransform);
@@ -549,7 +549,13 @@ export class DashPathEffect extends PathEffect {
 export class Path implements IPath {
     private mPath: any;
     private mBPath?: UIBezierPath;
-    mFillType: FillType;
+    private mFillType: FillType;
+
+    constructor() {
+        this.mPath = CGPathCreateMutable();
+        this.mFillType = FillType.WINDING;
+        // this._path = UIBezierPath.bezierPath();
+    }
 
     getOrCreateBPath() {
         if (!this.mBPath) {
@@ -576,11 +582,6 @@ export class Path implements IPath {
     setBPath(bPath: UIBezierPath) {
         this.mBPath = bPath;
         // this._path = this._bPath.CGPath;
-    }
-    constructor() {
-        this.mPath = CGPathCreateMutable();
-        this.mFillType = FillType.WINDING;
-        // this._path = UIBezierPath.bezierPath();
     }
     computeBounds(rect: RectF, exact: boolean) {
         if (this.mBPath) {
@@ -1693,30 +1694,42 @@ export class Canvas implements ICanvas {
         const path = args[0] as Path;
         const op = args[1] as Op;
         const ctx = this.ctx;
+
+        let clipCGPath;
+
         if (op !== undefined) {
             const cgPath = ctx.path;
-            let clipPath = cgPath ? UIBezierPath.bezierPathWithCGPath(cgPath) : UIBezierPath.bezierPathWithRect(CGRectMake(0, 0, this.mWidth, this.mHeight));
+            let clipBPath = cgPath ? UIBezierPath.bezierPathWithCGPath(cgPath) : UIBezierPath.bezierPathWithRect(CGRectMake(0, 0, this.mWidth, this.mHeight));
+
             if (op === Op.DIFFERENCE) {
-                clipPath.appendPath(path.getOrCreateBPath().bezierPathByReversingPath());
+                clipBPath.appendPath(path.getOrCreateBPath().bezierPathByReversingPath());
             } else if (op === Op.REVERSE_DIFFERENCE) {
-                clipPath = clipPath.bezierPathByReversingPath();
-                clipPath.appendPath(path.getOrCreateBPath());
+                clipBPath = clipBPath.bezierPathByReversingPath();
+                clipBPath.appendPath(path.getOrCreateBPath());
             } else if (op === Op.UNION) {
-                clipPath.appendPath(path.getOrCreateBPath());
+                clipBPath.appendPath(path.getOrCreateBPath());
             } else if (op === Op.REPLACE) {
                 CGContextResetClip(ctx);
-                clipPath = path.getOrCreateBPath();
+                clipBPath = path.getOrCreateBPath();
             } else if (op === Op.INTERSECT) {
                 console.error('clipPath Op.INTERSECT not implemented yet');
             } else if (op === Op.XOR) {
                 console.error('clipPath Op.INTERSECT not implemented yet');
             }
-            CGContextAddPath(ctx, clipPath.CGPath);
-            CGContextClip(ctx);
+
+            clipCGPath = clipBPath.CGPath;
         } else {
-            CGContextAddPath(ctx, path.getCGPath());
+            clipCGPath = path.getCGPath();
+        }
+
+        CGContextAddPath(ctx, clipCGPath);
+
+        if (path.getFillType() === FillType.EVEN_ODD || path.getFillType() === FillType.INVERSE_EVEN_ODD) {
+            CGContextEOClip(ctx);
+        } else {
             CGContextClip(ctx);
         }
+
         // clipPath(path: IPath): boolean;
         // clipPath(path: IPath, op: Op): boolean;
         // clipPath(path: any, op?: any)
@@ -1908,30 +1921,38 @@ export class Canvas implements ICanvas {
         CGContextClipToRect(ctx, rect);
         return true;
     }
-    private _drawPath(paint: Paint, ctx, path?) {
+    private _drawPath(paint: Paint, ctx, path?: Path | UIBezierPath) {
         let bPath: UIBezierPath;
         let cgPath;
+        let fillType: FillType;
+
         if (path instanceof Path) {
             bPath = path.getBPath();
             cgPath = path.getCGPath();
-        } else if (path instanceof UIBezierPath) {
-            bPath = path;
-            cgPath = bPath.CGPath;
+            fillType = path.getFillType();
         } else {
-            cgPath = path;
+            if (path instanceof UIBezierPath) {
+                bPath = path;
+                cgPath = bPath.CGPath;
+            } else {
+                cgPath = path;
+            }
+            fillType = FillType.WINDING;
         }
-        function createBPath() {
+
+        const createBPath = () => {
             if (!bPath) {
                 if (!cgPath) {
                     cgPath = CGContextCopyPath(ctx);
                 }
                 bPath = UIBezierPath.bezierPathWithCGPath(cgPath);
             }
-        }
+        };
+
         if (paint.shader && !cgPath) {
             cgPath = CGContextCopyPath(ctx);
         }
-        if (path && (path._fillType === FillType.INVERSE_WINDING || path._fillType === FillType.INVERSE_EVEN_ODD)) {
+        if (fillType === FillType.INVERSE_WINDING || fillType === FillType.INVERSE_EVEN_ODD) {
             createBPath();
             bPath = bPath.bezierPathByReversingPath();
             cgPath = bPath.CGPath;
@@ -1977,7 +1998,7 @@ export class Canvas implements ICanvas {
                 }
                 if (paint.style === Style.FILL) {
                     // CGContextFillPath(ctx);
-                    if (path && (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD)) {
+                    if (fillType === FillType.EVEN_ODD || fillType === FillType.INVERSE_EVEN_ODD) {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFill);
                     } else {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFill);
@@ -1985,7 +2006,7 @@ export class Canvas implements ICanvas {
                 } else if (paint.style === Style.STROKE) {
                     CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathStroke);
                 } else {
-                    if (path && (path._fillType === FillType.EVEN_ODD || path._fillType === FillType.INVERSE_EVEN_ODD)) {
+                    if (fillType === FillType.EVEN_ODD || fillType === FillType.INVERSE_EVEN_ODD) {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathEOFillStroke);
                     } else {
                         CGContextDrawPath(ctx, CGPathDrawingMode.kCGPathFillStroke);
