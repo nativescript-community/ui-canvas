@@ -122,7 +122,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
 
         return this;
     }
-    override handleCustomMethods(target, native, methodName, args): any {
+    override handleCustomMethods(target: Canvas, native, methodName, args): any {
         if (methodName === 'setBitmap') {
             if (args[0] instanceof ImageSource) {
                 args[0] = args[0].android;
@@ -136,7 +136,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
                 args.pop();
             }
         } else if (methodName === 'getWidth' || methodName === 'getHeight') {
-            if (!target._bitmap) {
+            if (!target.mBitmap) {
                 return Utils.layout.toDeviceIndependentPixels(native[methodName]());
             }
         } else if (methodName === 'clear') {
@@ -198,7 +198,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         this.mNative.setLinearText(true); // ensure we are drawing fonts correctly
         return this;
     }
-    handleCustomMethods(target, native, methodName: string, args: any[]): any {
+    handleCustomMethods(target: Paint, native, methodName: string, args: any[]): any {
         if (methodName === 'setColor') {
             if (!args[0]) {
                 return;
