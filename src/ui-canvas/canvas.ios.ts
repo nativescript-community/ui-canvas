@@ -1454,10 +1454,11 @@ export class Canvas implements ICanvas {
     setMatrix(matrix: Matrix): void {
         // TODO: Find a better way to implement matrix set
         const ctx = this.ctx;
-        const density = Screen.mainScreen.scale;
         const currentMatrix = this.getMatrix();
         const invertedTransform = CGAffineTransformInvert(currentMatrix.mTransform);
-        const scaleTransform = CGAffineTransformMake(density, 0, 0, -density, 0, density * this.mHeight);
+        // Scale is excluded because it works better for bitmaps that way
+        // Android canvas scale has to be re-applied after setMatrix() call so this is going to make iOS behavior similar
+        const scaleTransform = CGAffineTransformMake(1, 0, 0, -1, 0, this.mHeight);
 
         CGContextConcatCTM(ctx, invertedTransform);
         CGContextConcatCTM(ctx, scaleTransform);
