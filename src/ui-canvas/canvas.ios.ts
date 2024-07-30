@@ -1874,7 +1874,9 @@ export class Canvas implements ICanvas {
             colorSpace,
             CGImageAlphaInfo.kCGImageAlphaPremultipliedLast
         );
-        CGContextScaleCTM(context, 1 / scaleFactor, 1 / scaleFactor);
+
+        CGContextTranslateCTM(context, 0, h);
+        CGContextScaleCTM(context, 1 / scaleFactor, -1 / scaleFactor);
         CGColorSpaceRelease(colorSpace); // 6
         return context; // 7
     }
