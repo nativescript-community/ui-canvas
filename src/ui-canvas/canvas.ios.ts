@@ -1458,10 +1458,10 @@ export class Canvas implements ICanvas {
         const invertedTransform = CGAffineTransformInvert(currentMatrix.mTransform);
         // Screen scale is excluded because it causes problems for other cases (e.g. bitmaps)
         // Android canvas scale has to be re-applied after setMatrix() call too so this is going to make iOS behavior similar
-        const scaleTransform = CGAffineTransformMake(1, 0, 0, -1, 0, this.mHeight);
+        const flipTransform = CGAffineTransformMake(1, 0, 0, -1, 0, this.mHeight);
 
         CGContextConcatCTM(ctx, invertedTransform);
-        CGContextConcatCTM(ctx, scaleTransform);
+        CGContextConcatCTM(ctx, flipTransform);
         CGContextConcatCTM(ctx, matrix.mTransform);
     }
     getMatrix(): Matrix {
