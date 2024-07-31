@@ -1361,7 +1361,25 @@ export class Canvas implements ICanvas {
     mWidth: number;
     mHeight: number;
     mScale = 1;
+    mIsBitmap = false;
     view: WeakRef<CanvasView>;
+
+    constructor(imageOrWidth: ImageSource | UIImage | number, height?: number) {
+        let isBitmap = true;
+
+        if (imageOrWidth instanceof ImageSource) {
+            this.mCgContext = this._createContextFromImage(imageOrWidth.ios);
+        } else if (imageOrWidth instanceof UIImage) {
+            this.mCgContext = this._createContextFromImage(imageOrWidth);
+        } else if (imageOrWidth > 0 && height > 0) {
+            this.mCgContext = this._createContext(imageOrWidth, height);
+        } else {
+            isBitmap = false;
+        }
+
+        this.mIsBitmap = isBitmap;
+        // CGContextFillRect(this._cgContext);
+    }
 
     setBitmap(image) {
         // if (image instanceof ImageSource) {
@@ -1454,14 +1472,13 @@ export class Canvas implements ICanvas {
     setMatrix(matrix: Matrix): void {
         // TODO: Find a better way to implement matrix set
         const ctx = this.ctx;
+        const density = this.mIsBitmap ? 1 : Screen.mainScreen.scale;
         const currentMatrix = this.getMatrix();
         const invertedTransform = CGAffineTransformInvert(currentMatrix.mTransform);
-        // Screen scale is excluded because it causes problems for other cases (e.g. bitmaps)
-        // Android canvas scale has to be re-applied after setMatrix() call too so this is going to make iOS behavior similar
-        const flipTransform = CGAffineTransformMake(1, 0, 0, -1, 0, this.mHeight);
+        const scaleTransform = CGAffineTransformMake(density, 0, 0, -density, 0, density * this.mHeight);
 
         CGContextConcatCTM(ctx, invertedTransform);
-        CGContextConcatCTM(ctx, flipTransform);
+        CGContextConcatCTM(ctx, scaleTransform);
         CGContextConcatCTM(ctx, matrix.mTransform);
     }
     getMatrix(): Matrix {
@@ -1765,16 +1782,6 @@ export class Canvas implements ICanvas {
     }
     getHeight() {
         return this.mHeight;
-    }
-    constructor(imageOrWidth: ImageSource | UIImage | number, height?: number) {
-        if (imageOrWidth instanceof ImageSource) {
-            this.mCgContext = this._createContextFromImage(imageOrWidth.ios);
-        } else if (imageOrWidth instanceof UIImage) {
-            this.mCgContext = this._createContextFromImage(imageOrWidth);
-        } else if (imageOrWidth > 0 && height > 0) {
-            this.mCgContext = this._createContext(imageOrWidth, height);
-        }
-        // CGContextFillRect(this._cgContext);
     }
 
     startApplyPaint(paint?: Paint, withFont = false) {
