@@ -1857,11 +1857,9 @@ export class Canvas implements ICanvas {
         CGContextSetBlendMode(context, CGBlendMode.kCGBlendModeNormal);
 
         // draw original image
-        CGContextSaveGState(context);
         CGContextTranslateCTM(context, 0, source.size.height);
         CGContextScaleCTM(context, 1.0, -1.0);
         CGContextDrawImage(context, rect, source.CGImage);
-        CGContextRestoreGState(context);
 
         return context;
     }
@@ -1882,7 +1880,9 @@ export class Canvas implements ICanvas {
             colorSpace,
             CGImageAlphaInfo.kCGImageAlphaPremultipliedLast
         );
-        CGContextScaleCTM(context, 1 / scaleFactor, 1 / scaleFactor);
+
+        CGContextTranslateCTM(context, 0, h);
+        CGContextScaleCTM(context, 1 / scaleFactor, -1 / scaleFactor);
         CGColorSpaceRelease(colorSpace); // 6
         return context; // 7
     }
