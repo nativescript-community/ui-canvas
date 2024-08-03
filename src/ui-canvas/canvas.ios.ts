@@ -640,13 +640,17 @@ export class Path implements IPath {
     }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());
+        // This is how Android does things in arcTo
+        const endAngle = (startAngle + sweepAngle) % 360;
+
         let t = CGAffineTransformMakeTranslation(center.x, center.y);
         t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
+
         if (this.mBPath) {
-            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, (endAngle * Math.PI) / 180, sweepAngle < 0);
             this.mBPath.applyTransform(t);
         } else {
-            CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, (endAngle * Math.PI) / 180, sweepAngle < 0);
         }
     }
     //@ts-ignore
