@@ -347,7 +347,14 @@ export class ColorMatrixColorFilter extends ProxyClass<android.graphics.ColorMat
 export class Path extends ProxyClass<com.akylas.canvas.CanvasPath> {
     constructor(path?: com.akylas.canvas.CanvasPath) {
         super();
-        this.mNative = path ? new com.akylas.canvas.CanvasPath(path) : new com.akylas.canvas.CanvasPath();
+
+        if (path) {
+            const param = (path as any).getNative ? (path as any).getNative() : path;
+            this.mNative = new com.akylas.canvas.CanvasPath(param);
+        } else {
+            this.mNative = new com.akylas.canvas.CanvasPath();
+        }
+
         return this;
     }
 }
