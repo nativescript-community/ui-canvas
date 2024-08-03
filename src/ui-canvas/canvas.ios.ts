@@ -551,8 +551,8 @@ export class Path implements IPath {
     private mBPath?: UIBezierPath;
     private mFillType: FillType;
 
-    constructor() {
-        this.mPath = CGPathCreateMutable();
+    constructor(path?: Path) {
+        this.mPath = path ? CGPathCreateMutableCopy(path.getCGPath()) : CGPathCreateMutable();
         this.mFillType = FillType.WINDING;
         // this._path = UIBezierPath.bezierPath();
     }
@@ -611,7 +611,7 @@ export class Path implements IPath {
         if (points.length <= 0 || points.length % 2 !== 0) {
             console.error('wrong points number');
         }
-        UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this.mPath);
+        UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this.getCGPath());
     }
     setLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
@@ -632,7 +632,7 @@ export class Path implements IPath {
         // if (close === true) {
         //     CGPathCloseSubpath(this._path);
         // }
-        UIBezierPath.addCubicLinesOffsetCountCloseToPath(points, offset, length, close, this.mPath);
+        UIBezierPath.addCubicLinesOffsetCountCloseToPath(points, offset, length, close, this.getCGPath());
     }
     setCubicLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
@@ -909,7 +909,7 @@ export class Path implements IPath {
     //@ts-ignore
     set(path: Path): void {
         this.mBPath = null;
-        this.mPath = CGPathCreateMutableCopy(path.mPath);
+        this.mPath = CGPathCreateMutableCopy(path.getCGPath());
     }
 }
 
