@@ -2373,7 +2373,8 @@ export class StaticLayout {
         private spacingadd?,
         private includepad?,
         private ellipsize?,
-        private ellipsizedWidth?
+        private ellipsizedWidth?,
+        private height?
     ) {
         if (text instanceof NSAttributedString) {
             this.nsAttributedString = text;
@@ -2460,7 +2461,7 @@ export class StaticLayout {
             CGContextTranslateCTM(ctx, offsetx, 0);
         }
         this.mToDraw.drawWithRectOptionsContext(
-            CGRectMake(0, 0, this.width, maxHeight),
+            CGRectMake(0, 0, this.width, Math.min(maxHeight, this.height || Number.MAX_VALUE)),
             NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
             null
         );
