@@ -551,8 +551,8 @@ export class Path implements IPath {
     private mBPath?: UIBezierPath;
     private mFillType: FillType;
 
-    constructor() {
-        this.mPath = CGPathCreateMutable();
+    constructor(path?: Path) {
+        this.mPath = path ? CGPathCreateMutableCopy(path.getCGPath()) : CGPathCreateMutable();
         this.mFillType = FillType.WINDING;
         // this._path = UIBezierPath.bezierPath();
     }
@@ -611,7 +611,7 @@ export class Path implements IPath {
         if (points.length <= 0 || points.length % 2 !== 0) {
             console.error('wrong points number');
         }
-        UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this.mPath);
+        UIBezierPath.addLinesOffsetCountCloseToPath(points, offset, length, close, this.getCGPath());
     }
     setLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
@@ -632,7 +632,7 @@ export class Path implements IPath {
         // if (close === true) {
         //     CGPathCloseSubpath(this._path);
         // }
-        UIBezierPath.addCubicLinesOffsetCountCloseToPath(points, offset, length, close, this.mPath);
+        UIBezierPath.addCubicLinesOffsetCountCloseToPath(points, offset, length, close, this.getCGPath());
     }
     setCubicLines(points: number[], offset?: number, length?: number, close?: boolean) {
         this.reset();
@@ -640,13 +640,17 @@ export class Path implements IPath {
     }
     arcTo(rect: Rect, startAngle: number, sweepAngle: number, forceMoveTo?: boolean) {
         const center = CGPointMake(rect.centerX(), rect.centerY());
+        // This is how Android does things in arcTo
+        const endAngle = (startAngle + sweepAngle) % 360;
+
         let t = CGAffineTransformMakeTranslation(center.x, center.y);
         t = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0, rect.height() / rect.width()), t);
+
         if (this.mBPath) {
-            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            this.mBPath.addArcWithCenterRadiusStartAngleEndAngleClockwise(center, rect.width() / 2, (startAngle * Math.PI) / 180, (endAngle * Math.PI) / 180, sweepAngle < 0);
             this.mBPath.applyTransform(t);
         } else {
-            CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, ((startAngle + sweepAngle) * Math.PI) / 180, sweepAngle < 0);
+            CGPathAddArc(this.mPath, new interop.Reference(t), 0, 0, rect.width() / 2, (startAngle * Math.PI) / 180, (endAngle * Math.PI) / 180, sweepAngle < 0);
         }
     }
     //@ts-ignore
@@ -909,7 +913,7 @@ export class Path implements IPath {
     //@ts-ignore
     set(path: Path): void {
         this.mBPath = null;
-        this.mPath = CGPathCreateMutableCopy(path.mPath);
+        this.mPath = CGPathCreateMutableCopy(path.getCGPath());
     }
 }
 
@@ -2369,7 +2373,8 @@ export class StaticLayout {
         private spacingadd?,
         private includepad?,
         private ellipsize?,
-        private ellipsizedWidth?
+        private ellipsizedWidth?,
+        private height?
     ) {
         if (text instanceof NSAttributedString) {
             this.nsAttributedString = text;
@@ -2456,7 +2461,7 @@ export class StaticLayout {
             CGContextTranslateCTM(ctx, offsetx, 0);
         }
         this.mToDraw.drawWithRectOptionsContext(
-            CGRectMake(0, 0, this.width, maxHeight),
+            CGRectMake(0, 0, this.width, Math.min(maxHeight, this.height || Number.MAX_VALUE)),
             NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
             null
         );

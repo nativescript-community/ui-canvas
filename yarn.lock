@@ -1219,7 +1219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/arraybuffers@npm:^1.1.3":
+"@nativescript-community/arraybuffers@npm:^1.1.3, @nativescript-community/arraybuffers@npm:^1.1.5":
   version: 1.1.5
   resolution: "@nativescript-community/arraybuffers@npm:1.1.5"
   checksum: b6d0aca5cfdba26048f543095d1ebba4bfcaa2407e9c17e3ff2da5d0ee25f5c4b959a9483ccb63ea89b5e868954116cad7e31aa93dd57a430d1d9585e65a4035
@@ -1366,8 +1366,8 @@ __metadata:
 "@nativescript-community/ui-canvas@npm:*, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvas@workspace:packages/ui-canvas"
-  peerDependencies:
-    "@nativescript-community/arraybuffers": ^1.1.3
+  dependencies:
+    "@nativescript-community/arraybuffers": "npm:^1.1.5"
   languageName: unknown
   linkType: soft
 
@@ -1400,7 +1400,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   peerDependencies:
-    "@nativescript-community/ui-canvas": ^4.5.1
+    "@nativescript-community/ui-canvas": ^4.6.27
   languageName: unknown
   linkType: soft
 
