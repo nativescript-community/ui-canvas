@@ -64,7 +64,7 @@ export class SVG extends SVGBase {
             }
             const xOrigin = (width - paintedWidth) / 2.0;
             const yOrigin = (height - paintedHeight) / 2.0;
-            return { px: 0, py: yOrigin, sx: paintedWidth / nativeWidth, sy: paintedHeight / nativeHeight };
+            return { px: xOrigin, py: yOrigin, sx: paintedWidth / nativeWidth, sy: paintedHeight / nativeHeight };
         } else if (myGravity === 'aspectFill') {
             if (nativeAspectRatio <= boundedAspectRatio) {
                 paintedHeight = paintedWidth / nativeAspectRatio;
