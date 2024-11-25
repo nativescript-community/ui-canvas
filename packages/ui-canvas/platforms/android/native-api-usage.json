@@ -1,5 +1,6 @@
 {
     "uses": [
+        "android.graphics:BitmapShader",
         "android.graphics:Paint",
         "android.graphics:Paint.Align",
         "android.graphics:Paint.Cap",
