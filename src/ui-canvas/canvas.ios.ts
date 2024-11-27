@@ -1046,9 +1046,6 @@ export class Paint implements IPaint {
     public getStrokeJoin(): Join {
         return this.strokeJoin;
     }
-    public getColorFilter() {
-        return this.colorFilter;
-    }
     public setStrokeWidth(value: number): void {
         this.strokeWidth = value;
     }
@@ -1089,11 +1086,16 @@ export class Paint implements IPaint {
     public getShader() {
         return this.shader as any as IShader;
     }
-    public setColorFilter(value: any) {
+    public getColorFilter() {
+        return this.colorFilter;
+    }
+    public setColorFilter(value: any): any {
         if (this.colorFilter) {
             this.colorFilter.release();
         }
         this.colorFilter = value;
+
+        return value;
     }
     setFont(font: Font) {
         if (font === this.mFont) {
