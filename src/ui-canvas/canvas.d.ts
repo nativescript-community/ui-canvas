@@ -91,6 +91,7 @@ export class Paint extends ProxyClass {
     // public getFontSpacing(): number;
     public setXfermode(param0: PorterDuffXfermode): PorterDuffXfermode;
     public getXfermode(): PorterDuffXfermode;
+    public getColorFilter(): ColorFilter;
     public setColorFilter(param0: ColorFilter): void;
 }
 
