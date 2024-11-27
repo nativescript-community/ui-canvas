@@ -92,7 +92,7 @@ export class Paint extends ProxyClass {
     public setXfermode(param0: PorterDuffXfermode): PorterDuffXfermode;
     public getXfermode(): PorterDuffXfermode;
     public getColorFilter(): ColorFilter;
-    public setColorFilter(param0: ColorFilter): void;
+    public setColorFilter(param0: ColorFilter): ColorFilter;
 }
 
 // export class StaticLayout {

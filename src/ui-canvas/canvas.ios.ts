@@ -1089,11 +1089,13 @@ export class Paint implements IPaint {
     public getColorFilter() {
         return this.colorFilter;
     }
-    public setColorFilter(value: any) {
+    public setColorFilter(value: any): any {
         if (this.colorFilter) {
             this.colorFilter.release();
         }
         this.colorFilter = value;
+
+        return value;
     }
     setFont(font: Font) {
         if (font === this.mFont) {
