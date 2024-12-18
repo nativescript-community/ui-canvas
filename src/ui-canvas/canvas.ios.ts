@@ -1813,7 +1813,10 @@ export class Canvas implements ICanvas {
 
         if (paint.shadowLayer) {
             const s = paint.shadowLayer;
-            CGContextSetShadowWithColor(ctx, CGSizeMake(s.dx, s.dy), s.radius, s.color.ios.CGColor);
+            // Bitmaps have their coordinate system flipped vertically, however shadow offsets ignore this and must be handled manually
+            const offsetY = this.mIsBitmap ? -s.dy : s.dy;
+
+            CGContextSetShadowWithColor(ctx, CGSizeMake(s.dx, offsetY), s.radius, s.color.ios.CGColor);
         } else {
             CGContextSetShadow(ctx, CGSizeZero, 0);
         }
