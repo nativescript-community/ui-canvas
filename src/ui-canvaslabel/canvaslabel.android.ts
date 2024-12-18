@@ -1,8 +1,5 @@
-import { Paint } from '@nativescript-community/ui-canvas';
-import { Color, getTransformedText, profile } from '@nativescript/core';
-import { FontWeight, FontWeightType } from '@nativescript/core/ui/styling/font';
-import { CanvasLabel as CanvasLabelBase, Group as GroupBase, SpanBase, paintFontCache } from './canvaslabel.common';
-import { createNativeAttributedString, createSpannable, typefaceCache } from '@nativescript-community/text';
+import { createNativeAttributedString, createSpannable } from '@nativescript-community/text';
+import { CanvasLabel as CanvasLabelBase, Group as GroupBase, SpanBase } from './canvaslabel.common';
 
 export class Span extends SpanBase {
     _ssb: android.text.SpannableStringBuilder;
@@ -53,4 +50,8 @@ export class Group extends GroupBase {
     }
 }
 
-export class CanvasLabel extends CanvasLabelBase {}
+export class CanvasLabel extends CanvasLabelBase {
+    createSpan() {
+        return new Span();
+    }
+}

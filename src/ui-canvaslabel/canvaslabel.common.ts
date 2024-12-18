@@ -19,7 +19,6 @@ import {
     profile
 } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
-import { Span } from './canvaslabel';
 
 const toDpi = Utils.layout.toDeviceIndependentPixels;
 export const paintCache: { [k: string]: Paint } = {};
@@ -531,7 +530,7 @@ declare module '@nativescript/core/ui/core/view' {
 }
 
 @CSSType('CanvasLabel')
-export class CanvasLabel extends CanvasView {
+export abstract class CanvasLabel extends CanvasView {
     // fontSize: number;
     mText: string | any;
     // fontStyle: FontStyle;
@@ -552,6 +551,8 @@ export class CanvasLabel extends CanvasView {
     @cssProperty whiteSpace: CoreTypes.WhiteSpaceType;
 
     private mTextSpan: SpanBase;
+
+    abstract createSpan(): SpanBase;
 
     handlePropertyChange() {
         this.shapes?.forEach((s) => s instanceof SpanBase && s.reset());
@@ -647,7 +648,7 @@ export class CanvasLabel extends CanvasView {
     set text(value) {
         if (value) {
             if (!this.mTextSpan) {
-                this.mTextSpan = new Span();
+                this.mTextSpan = this.createSpan();
                 this.addShape(this.mTextSpan);
             } else {
                 this.mTextSpan.visibility = 'visible';

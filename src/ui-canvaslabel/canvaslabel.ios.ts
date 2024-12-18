@@ -38,4 +38,8 @@ export class Group extends GroupBase {
     }
 }
 
-export class CanvasLabel extends CanvasLabelBase {}
+export class CanvasLabel extends CanvasLabelBase {
+    createSpan(): Span {
+        return new Span();
+    }
+}
