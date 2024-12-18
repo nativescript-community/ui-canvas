@@ -33,9 +33,9 @@ function createColorParam(param) {
 function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: android.graphics.Rect) {
     if (!view.nativeView) {
         const activity = Application.android.foregroundActivity;
-        (view as any)._setupAsRootView(activity);
-        (view as any)._isAddedToNativeVisualTree = true;
-        (view as any).callLoaded();
+        view._setupAsRootView(activity);
+        view._isAddedToNativeVisualTree = true;
+        view.callLoaded();
     }
     if (view.nativeView) {
         if (rect) {
@@ -46,7 +46,7 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
             canvas.save();
             canvas.translate(rect.left, rect.top);
         }
-        view.nativeView.draw(canvas as any);
+        view.nativeView.draw(canvas);
         if (rect) {
             canvas.restore();
         }
@@ -287,7 +287,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         }
     }
     set color(color) {
-        (this as any).setColor(color);
+        this['setColor'](color);
     }
     set strokeWidth(value: number) {
         this.mNative.setStrokeWidth(value);
