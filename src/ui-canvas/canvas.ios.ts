@@ -1762,9 +1762,9 @@ export class Canvas implements ICanvas {
     @paint
     drawView(view: View, rect?: Rect) {
         if (!view.nativeView) {
-            (view as any)._setupAsRootView({});
-            (view as any)._isAddedToNativeVisualTree = true;
-            (view as any).callLoaded();
+            view._setupAsRootView({});
+            view._isAddedToNativeVisualTree = true;
+            view.callLoaded();
         }
         if (view.nativeView) {
             const uiView = view.nativeView as UIView;
@@ -2233,13 +2233,13 @@ export class LinearGradient {
                 }
 
                 const cgColors = this.colors.map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
-                this.mGradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, stopsRef);
+                this.mGradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors, stopsRef);
                 if (this.mGradient) {
                     CFRetain(this.mGradient);
                 }
             } else {
                 const cgColors = [this.colors, this.stops].map((c) => (c instanceof Color ? c : new Color(c)).ios.CGColor);
-                this.mGradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors as any, null);
+                this.mGradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), cgColors, null);
                 if (this.mGradient) {
                     CFRetain(this.mGradient);
                 }
