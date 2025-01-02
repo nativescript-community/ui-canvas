@@ -1,6 +1,6 @@
 import { CSSType, Utils } from '@nativescript/core';
 import { Canvas, Paint } from './canvas';
-import { CanvasBase, hardwareAcceleratedProperty } from './index.common';
+import { CanvasBase, DEFAULT_SCALE, hardwareAcceleratedProperty } from './index.common';
 import { sdkVersion } from './canvas.common';
 
 export * from './canvas';
@@ -59,19 +59,22 @@ export class CanvasView extends CanvasBase {
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
             onDraw: (canvas: android.graphics.Canvas) => {
                 const drawFrameRate = this.drawFrameRate;
+                const scale = DEFAULT_SCALE;
                 let startTime;
+
                 if (drawFrameRate) {
                     startTime = Date.now();
                 }
-                const scale = this.density;
+
                 canvas.save();
-                canvas.scale(scale, scale); // always scale to device density to work with dp
+                canvas.scale(scale, scale); // always scale to device screen density to work with dip
                 this.augmentedCanvas.setNative(canvas);
                 this.onDraw(this.augmentedCanvas as any);
+
                 if (drawFrameRate) {
                     const end = Date.now();
                     if (!this.frameRatePaint) {
-                        this.frameRatePaint = new Paint() as any;
+                        this.frameRatePaint = new Paint();
                         this.frameRatePaint.color = 'blue';
                         this.frameRatePaint.setTextSize(12);
                     }
