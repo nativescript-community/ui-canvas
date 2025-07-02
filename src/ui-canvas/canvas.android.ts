@@ -193,8 +193,12 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
         if (paint) {
             this.mNative = new android.graphics.Paint(paint.getNative());
             //we need to clone the typeface or it is shared
-            const nTypeface = paint.font.getAndroidTypeface();
-           this.mNative.setTypeface(nTypeface);
+            const original = this.mNative.getTypeface();
+            if (original) {
+                const style = original.getStyle();
+                const cloned = android.graphics.Typeface.create(original, style);
+                this.mNative.setTypeface(cloned);
+            }
         } else {
             this.mNative = new android.graphics.Paint(1); //android.graphics.Paint.ANTI_ALIAS_FLAG
         }
