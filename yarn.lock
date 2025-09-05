@@ -1463,7 +1463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/arraybuffers@npm:^1.1.3, @nativescript-community/arraybuffers@npm:^1.1.5":
+"@nativescript-community/arraybuffers@npm:^1.1.5":
   version: 1.1.5
   resolution: "@nativescript-community/arraybuffers@npm:1.1.5"
   checksum: b6d0aca5cfdba26048f543095d1ebba4bfcaa2407e9c17e3ff2da5d0ee25f5c4b959a9483ccb63ea89b5e868954116cad7e31aa93dd57a430d1d9585e65a4035
@@ -1479,7 +1479,7 @@ __metadata:
 
 "@nativescript-community/plugin-seed-tools@file:tools::locator=root-workspace-0b6124%40workspace%3A.":
   version: 1.0.0
-  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=c2bdc0&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/plugin-seed-tools@file:tools#tools::hash=77c385&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@angular/animations": "npm:~18.2.13"
     "@angular/common": "npm:~18.2.13"
@@ -1539,18 +1539,18 @@ __metadata:
     tslib: "npm:2.8.1"
     typedoc: "npm:~0.27.2"
     typedoc-plugin-remove-references: "npm:0.0.6"
-    typescript: "npm:~5.4.5"
+    typescript: "npm:~5.5.4"
     typescript-eslint: "npm:^7.8.0"
     vue: "npm:^2.7.16"
     yargs: "npm:^17.7.2"
     zone.js: "npm:~0.15.0"
-  checksum: 57e73f8ec8076b47a0659f0ae7e39828e4aeeec3e6b2b8803b99ccb50094680ef85ad879d65dea51d2fbf4e22bb5126cd253d31511e97504308140750834034b
+  checksum: 09ca8f6ed64a633aa618044b9b794e9b38bd3759169d513ba38d2a7f19ba5ee29bc20aed7e65d3e1e689659479edcaa3edd252be88174e91a85a48af0968ce58
   languageName: node
   linkType: hard
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=501c94&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=711fc1&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": "npm:6.5.95"
     "@nativescript-community/perms": "npm:2.3.0"
@@ -1566,7 +1566,7 @@ __metadata:
     string-replace-loader: "npm:^3.1.0"
     vue-class-component: "npm:7.2.6"
     vue-property-decorator: "npm:9.1.2"
-  checksum: 22e661e7006b59bcaf291545379d8d61ba6d33225c6d2177b03556d2c6ee438604ea209b67fae4fe50036e66522ccf583a0aab185347e6aff8c37f4f2a7070d3
+  checksum: 56427ed04889293637ef5e26e60305bec1abb514615a3baa845beaf27877c93f8b88e8a33c1270440178c75236149270c47aea40962ce0d76ea518b44343cf4f
   languageName: node
   linkType: hard
 
@@ -1598,6 +1598,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nativescript-community/text@npm:^1.6.8":
+  version: 1.6.8
+  resolution: "@nativescript-community/text@npm:1.6.8"
+  checksum: 8e48be29a15af4dc1be9b8543bd242ae4f26d75c3e57820af9ebd05c05c712053446e16660631c9519c500e480ac9204d0f8b98c9672f1514902a1aa0bc85387
+  languageName: node
+  linkType: hard
+
 "@nativescript-community/tween@npm:0.0.14":
   version: 0.0.14
   resolution: "@nativescript-community/tween@npm:0.0.14"
@@ -1619,8 +1626,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvaslabel@workspace:packages/ui-canvaslabel"
   peerDependencies:
-    "@nativescript-community/text": ^1.5.33
-    "@nativescript-community/ui-canvas": ^4.5.1
+    "@nativescript-community/text": ^1.6.8
+    "@nativescript-community/ui-canvas": ^4.6.41
   languageName: unknown
   linkType: soft
 
@@ -1644,7 +1651,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   peerDependencies:
-    "@nativescript-community/ui-canvas": ^4.6.27
+    "@nativescript-community/ui-canvas": ^4.6.41
   languageName: unknown
   linkType: soft
 
@@ -12100,10 +12107,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@nativescript-community/arraybuffers": "npm:^1.1.3"
+    "@nativescript-community/arraybuffers": "npm:^1.1.5"
     "@nativescript-community/plugin-seed-tools": "file:tools"
     "@nativescript-community/template-snippet": "file:demo-snippets"
-    "@nativescript-community/text": "npm:^1.5.33"
+    "@nativescript-community/text": "npm:^1.6.8"
   languageName: unknown
   linkType: soft
 
@@ -13740,13 +13747,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.4.5":
-  version: 5.4.5
-  resolution: "typescript@npm:5.4.5"
+"typescript@npm:~5.5.4":
+  version: 5.5.4
+  resolution: "typescript@npm:5.5.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: d04a9e27e6d83861f2126665aa8d84847e8ebabcea9125b9ebc30370b98cb38b5dff2508d74e2326a744938191a83a69aa9fddab41f193ffa43eabfdf3f190a5
+  checksum: 1689ccafef894825481fc3d856b4834ba3cc185a9c2878f3c76a9a1ef81af04194849840f3c69e7961e2312771471bb3b460ca92561e1d87599b26c37d0ffb6f
   languageName: node
   linkType: hard
 
@@ -13770,13 +13777,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.4.5#optional!builtin<compat/typescript>":
-  version: 5.4.5
-  resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=29ae49"
+"typescript@patch:typescript@npm%3A~5.5.4#optional!builtin<compat/typescript>":
+  version: 5.5.4
+  resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 584be8bac7112ad49a9eb9992f71d542b1ff2fafb5bb315e1c196145e8feab589f1d7223cfb2d5df6770789582e6918f8287d1f2f89911b38eb80e29c560ad00
+  checksum: 2c065f0ef81855eac25c9b658a3c9da65ffc005260c12854c2286f40f3667e1b1ecf8bdbdd37b59aa0397920378ce7900bff8cb32e0f1c7af6fd86efc676718c
   languageName: node
   linkType: hard
 
