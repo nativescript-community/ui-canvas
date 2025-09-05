@@ -1,6 +1,6 @@
 import { CSSType, Utils } from '@nativescript/core';
 import { Canvas, Paint } from './canvas';
-import { CanvasBase, hardwareAcceleratedProperty } from './index.common';
+import { CanvasBase, DEFAULT_SCALE, hardwareAcceleratedProperty } from './index.common';
 import { sdkVersion } from './canvas.common';
 
 export * from './canvas';
@@ -62,11 +62,11 @@ export class CanvasView extends CanvasBase {
                 const owner = that?.get();
                 if (owner) {
                     const drawFrameRate = this.drawFrameRate;
+                    const scale = DEFAULT_SCALE;
                     let startTime;
                     if (drawFrameRate) {
                         startTime = Date.now();
                     }
-                    const scale = this.density;
                     canvas.save();
                     canvas.scale(scale, scale); // always scale to device density to work with dp
                     this.augmentedCanvas.setNative(canvas);
