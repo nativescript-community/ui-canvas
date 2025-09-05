@@ -149,18 +149,18 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
         } else if (methodName === 'drawView') {
             drawViewOnCanvas(native, args[0], args[1]);
             return true;
-        } else if (methodName === 'drawText') {
-            // TODO move that to native
-            const paint = args[args.length - 1];
-            const textSize = paint.getTextSize();
-            if (!FONT_SIZE_FACTOR) {
-                SCREEN_DENSITY = Screen.mainScreen.scale;
-                FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
-            }
-            paint.setTextSize((textSize * FONT_SIZE_FACTOR) / SCREEN_DENSITY);
-            native[methodName](...args);
-            paint.setTextSize(textSize);
-            return true;
+            // } else if (methodName === 'drawText') {
+            //     // TODO move that to native
+            //     const paint = args[args.length - 1];
+            //     const textSize = paint.getTextSize();
+            //     if (!FONT_SIZE_FACTOR) {
+            //         SCREEN_DENSITY = Screen.mainScreen.scale;
+            //         FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
+            //     }
+            //     paint.setTextSize((textSize * FONT_SIZE_FACTOR) / SCREEN_DENSITY);
+            //     native[methodName](...args);
+            //     paint.setTextSize(textSize);
+            //     return true;
         }
     }
     getImage() {
