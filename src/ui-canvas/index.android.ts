@@ -51,33 +51,37 @@ export class CanvasView extends CanvasBase {
     }
     initNativeView() {
         super.initNativeView();
+        const that = new WeakRef(this);
         this.nativeViewProtected.sizeChangedListener = new com.akylas.canvas.SizeChangedListener({
             onSizeChanged: (w, h, oldW, oldH) => {
-                this.onSizeChanged(Utils.layout.toDeviceIndependentPixels(w), Utils.layout.toDeviceIndependentPixels(h), oldW, oldH);
+                that?.get()?.onSizeChanged(Utils.layout.toDeviceIndependentPixels(w), Utils.layout.toDeviceIndependentPixels(h), oldW, oldH);
             }
         });
         this.nativeViewProtected.drawListener = new com.akylas.canvas.DrawListener({
             onDraw: (canvas: android.graphics.Canvas) => {
-                const drawFrameRate = this.drawFrameRate;
-                let startTime;
-                if (drawFrameRate) {
-                    startTime = Date.now();
-                }
-                const scale = this.density;
-                canvas.save();
-                canvas.scale(scale, scale); // always scale to device density to work with dp
-                this.augmentedCanvas.setNative(canvas);
-                this.onDraw(this.augmentedCanvas as any);
-                if (drawFrameRate) {
-                    const end = Date.now();
-                    if (!this.frameRatePaint) {
-                        this.frameRatePaint = new Paint() as any;
-                        this.frameRatePaint.color = 'blue';
-                        this.frameRatePaint.setTextSize(12);
+                const owner = that?.get();
+                if (owner) {
+                    const drawFrameRate = this.drawFrameRate;
+                    let startTime;
+                    if (drawFrameRate) {
+                        startTime = Date.now();
                     }
-                    (this.augmentedCanvas as any).drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
+                    const scale = this.density;
+                    canvas.save();
+                    canvas.scale(scale, scale); // always scale to device density to work with dp
+                    this.augmentedCanvas.setNative(canvas);
+                    this.onDraw(this.augmentedCanvas as any);
+                    if (drawFrameRate) {
+                        const end = Date.now();
+                        if (!this.frameRatePaint) {
+                            this.frameRatePaint = new Paint() as any;
+                            this.frameRatePaint.color = 'blue';
+                            this.frameRatePaint.setTextSize(12);
+                        }
+                        (this.augmentedCanvas as any).drawText(Math.round(1000 / (end - startTime)) + 'fps', 0, 14, this.frameRatePaint as any);
+                    }
+                    canvas.restore();
                 }
-                canvas.restore();
             }
         });
     }
