@@ -36,10 +36,10 @@
         "commit_readme_doc_changes": "git add docs/** *.md ; git commit -m \"readme/doc\" ; echo \"commit readme doc done\""
     },
     "devDependencies": {
-        "@nativescript-community/arraybuffers": "^1.1.3",
+        "@nativescript-community/arraybuffers": "^1.1.5",
         "@nativescript-community/plugin-seed-tools": "file:tools",
         "@nativescript-community/template-snippet": "file:demo-snippets",
-        "@nativescript-community/text": "^1.5.33"
+        "@nativescript-community/text": "^1.6.8"
     },
     "repository": {
         "type": "git",

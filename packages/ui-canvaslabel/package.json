@@ -40,8 +40,8 @@
         "url": "https://github.com/nativescript-community/ui-canvas"
     },
     "peerDependencies": {
-        "@nativescript-community/text": "^1.5.33",
-        "@nativescript-community/ui-canvas": "^4.5.1"
+        "@nativescript-community/text": "^1.6.8",
+        "@nativescript-community/ui-canvas": "^4.6.41"
     },
     "gitHead": "6dc5e24339bbc329a239584e71c1cc30de9cedd4"
 }
