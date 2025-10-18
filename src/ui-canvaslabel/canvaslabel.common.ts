@@ -252,7 +252,6 @@ export abstract class SpanBase extends Shape {
 
     static mBackgroundPaint: Paint;
 
-    @profile
     drawOnCanvas(canvas: Canvas, parent: CanvasLabel) {
         let text = this.getText(parent);
         if (!text) {
@@ -596,11 +595,12 @@ export abstract class CanvasLabel extends CanvasView {
             super.addChild(child);
         }
     }
-    public insertChild(child: View, atIndex: number): void {
+    public insertChild(child: View, atIndex: number) {
         if (!(child instanceof View)) {
             this.insertShape(child, atIndex);
+            return true;
         } else {
-            super.insertChild(child, atIndex);
+            return super.insertChild(child, atIndex);
         }
     }
 
