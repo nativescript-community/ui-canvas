@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-canvaslabel",
-    "version": "1.2.45",
+    "version": "1.2.47",
     "description": "Alternative to the built-in NativeScript Label but uses canvas which allows extreme complexity and customization.",
     "main": "./canvaslabel",
     "sideEffects": false,
@@ -12,12 +12,11 @@
         }
     },
     "scripts": {
-        "build": "npm run tsc",
+        "build": "npm run tsc && npm run readme",
         "build.all": "npm run build",
-        "build.angular": "ng-packagr -p ../../src/ui-canvaslabel/angular/ng-package.json -c ../../src/ui-canvaslabel/angular/tsconfig.json && rm angular/.npmignore",
         "readme": "readme generate -c ../../tools/readme/blueprint.json",
-        "tsc": "cpy '**/*.d.ts' '../../packages/ui-canvaslabel' --parents --cwd=../../src/ui-canvaslabel && tsc -skipLibCheck -d",
-        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-canvaslabel' --parents --cwd=../../src/ui-canvaslabel && tsc  --build",
+        "clean": "bin/rimraf ./*.d.ts ./*.js ./*.js.map ./*.tsbuildinfo ./*.mjs ./*.mjs.map ./angular ./svelte ./vue* ./react"
     },
     "keywords": [
         "NativeScript",

@@ -1,12 +1,34 @@
 import groovy.json.JsonSlurper
 dependencies {
-    if (project.hasProperty("tempBuild")) {
-        implementation(name:'widgets-release', ext:'aar')
-    }
     implementation "androidx.annotation:annotation:1.1.0"
+
+    if (project.hasProperty("tempBuild")) {
+        // we need to copy the code in both places as N main gradle system does not support top level code
+        // for now we support only @nativescript/core and @akylas/nativescript
+        // we should have a more generic way
+		def widgetsDir = "$USER_PROJECT_ROOT/node_modules/@nativescript/core/platforms/android"
+        def appPackageJsonFile = file("$USER_PROJECT_ROOT/package.json")
+        if (appPackageJsonFile.exists()) {
+            def appPackageJson = new JsonSlurper().parseText(appPackageJsonFile.text)
+            if (appPackageJson.dependencies['@akylas/nativescript'] != null) {
+                widgetsDir = "$USER_PROJECT_ROOT/node_modules/@akylas/nativescript/platforms/android"
+            }
+        }
+
+        // if ui-mobile-base is provided as source the name is nativescript.aar
+	  	//else use widget-release.aar
+      	if (file("$widgetsDir/widgets-release.aar").exists()) {
+            implementation(name:'widgets-release', ext:'aar')
+        } else {
+            implementation(name:'nativescript', ext:'aar')
+        }
+    }
 }
 repositories {
     if (project.hasProperty("tempBuild")) {
+        // we need to copy the code in both places as N main gradle system does not support top level code
+        // for now we support only @nativescript/core and @akylas/nativescript
+        // we should have a more generic way
         def widgetsDir = "$USER_PROJECT_ROOT/node_modules/@nativescript/core/platforms/android"
         def appPackageJsonFile = file("$USER_PROJECT_ROOT/package.json")
         if (appPackageJsonFile.exists()) {

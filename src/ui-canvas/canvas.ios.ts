@@ -2418,7 +2418,15 @@ export class StaticLayout {
         const fullRange = { location: 0, length: nsAttributedString.length };
         this.mToDraw = nsAttributedString;
         this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0 as any, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
-            nsAttributedString.addAttributesRange(attributes, range);
+            // if we find fontSizeNotSet we apply the font size of the paint
+            if (attributes.objectForKey('fontSizeNotSet') && attributes.objectForKey('NSFont')) {
+                const realAttributes = NSMutableDictionary.dictionaryWithDictionary(attributes);
+                const font = realAttributes.objectForKey('NSFont');
+                realAttributes.setObjectForKey(font.fontWithSize(this.paint.textSize), 'NSFont')
+                nsAttributedString.addAttributesRange(realAttributes, range);
+            } else {
+                nsAttributedString.addAttributesRange(attributes, range);
+            }
         });
         nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
     }

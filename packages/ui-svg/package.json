@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-svg",
-    "version": "0.2.14",
+    "version": "0.2.16",
     "description": "Adds support for SVGs in your NativeScript apps.",
     "main": "./index",
     "sideEffects": false,
@@ -16,12 +16,11 @@
         }
     },
     "scripts": {
-        "build": "npm run tsc",
+        "build": "npm run tsc && npm run readme",
         "build.all": "npm run build",
-        "build.angular": "ng-packagr -p ../../src/ui-svg/angular/ng-package.json -c ../../src/ui-svg/angular/tsconfig.json && rm angular/.npmignore",
         "readme": "readme generate -c ../../tools/readme/blueprint.json",
-        "tsc": "cpy '**/*.d.ts' '../../packages/ui-svg' --parents --cwd=../../src/ui-svg && tsc -skipLibCheck -d",
-        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map"
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-svg' --parents --cwd=../../src/ui-svg && tsc  --build",
+        "clean": "bin/rimraf ./*.d.ts ./*.js ./*.js.map ./*.tsbuildinfo ./*.mjs ./*.mjs.map ./angular ./svelte ./vue* ./react"
     },
     "keywords": [
         "NativeScript",
