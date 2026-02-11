@@ -488,6 +488,14 @@ export class StaticLayout extends ProxyClass<android.text.StaticLayout> {
         this.getNative().draw(canvas.getNative());
         // com.akylas.canvas.StaticLayout.draw(this.getNative(), canvas.getNative(), this.includepad, this.ellipsize, this.ellipsizedWidth, maxHeight);
     }
+
+    getActualWidth() {
+        let maxLineWidth = 0;
+        for (let i = 0; i < this.getNative().getLineCount(); i++) {
+            maxLineWidth = Math.max(maxLineWidth, this.getNative().getLineWidth(i));
+        }
+        return maxLineWidth;
+    }
 }
 let Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment;
 let PorterDuffMode, PorterDuffXfermode;

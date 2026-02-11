@@ -107,6 +107,7 @@ export class StaticLayout extends android.text.StaticLayout {
     //ANDROID ONLY!!
     getNative(): any;
     setNative(object);
+    getActualWidth(): number;
 }
 
 export class FontMetrics {

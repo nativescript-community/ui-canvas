@@ -2521,4 +2521,9 @@ export class StaticLayout {
         const result = this.getBounds().size.height;
         return result;
     }
+
+    getActualWidth() {
+        const result = this.getBounds().size.width;
+        return result;
+    }
 }
