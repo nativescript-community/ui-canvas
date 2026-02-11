@@ -1926,6 +1926,7 @@ __metadata:
     "@lerna-lite/publish": "npm:4.9.0"
     "@lerna-lite/run": "npm:4.9.0"
     "@lerna-lite/version": "npm:4.9.0"
+    "@nativescript-community/svelte-native": "npm:1.0.29"
     "@nativescript/angular": "npm:19.0.1"
     "@nativescript/core": "npm:8.9.9"
     "@nativescript/types-android": "npm:8.9.0"
@@ -1962,7 +1963,6 @@ __metadata:
     rxjs: "npm:7.8.2"
     svelte: "npm:4.2.20"
     svelte-eslint-parser: "npm:1.3.3"
-    svelte-native: "npm:1.0.29"
     svelte-preprocess: "npm:6.0.3"
     ts-patch: "npm:3.3.0"
     tslib: "npm:2.8.1"
@@ -1975,9 +1975,19 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@nativescript-community/svelte-native@npm:1.0.29":
+  version: 1.0.29
+  resolution: "@nativescript-community/svelte-native@npm:1.0.29"
+  peerDependencies:
+    "@nativescript/core": ^8.5.9
+    svelte: ^4.2.8
+  checksum: 10/17d931d45f3e8ee372a04b83838efcc3e9c82c90d673d2cc844fba67e533ebb14bd321adea338893f6321a0252c63cf9f8beae81d9f7617aecacb8f0b007fd9a
+  languageName: node
+  linkType: hard
+
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=2bd083&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=e4998a&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": "npm:6.5.95"
     "@nativescript-community/perms": "npm:2.3.0"
@@ -1993,7 +2003,7 @@ __metadata:
     string-replace-loader: "npm:^3.1.0"
     vue-class-component: "npm:7.2.6"
     vue-property-decorator: "npm:9.1.2"
-  checksum: 10/1093d5585b138e7ec270677246fd622d2aea639b87fe0f58a559afbf27c82271fd61f835a68c01f9c12313b1f4764c40a5b018bfc3f0ef912c3711ab1df02cb1
+  checksum: 10/c5e54060bc3a0dff7a026c9d50012c4d1897d651d3169e1ccd26beae64be598dac657b3d765779de8a4c6fae20812d4180109e83e8aeadbe74af1b4dca121181
   languageName: node
   linkType: hard
 
@@ -13606,16 +13616,6 @@ __metadata:
     svelte:
       optional: true
   checksum: 10/dbffc0cc1fa92b1b825beae1488735138d6c8bdae58e65b8c568f79f883bc75014f05c61f31312f4e0f9183a81f77e5d80a4042ee57aba9e105652ccb3c412ec
-  languageName: node
-  linkType: hard
-
-"svelte-native@npm:1.0.29":
-  version: 1.0.29
-  resolution: "svelte-native@npm:1.0.29"
-  peerDependencies:
-    "@nativescript/core": ^8.5.9
-    svelte: ^4.2.8
-  checksum: 10/70fa94f87d38cd4a3e581aef12c2945974b6aee52330dd34cc6b20b47ae41cef1b5e6b8d75887a7df32d5a5b73618a5cc601e73652dde9046a88495b4abab9ea
   languageName: node
   linkType: hard
 

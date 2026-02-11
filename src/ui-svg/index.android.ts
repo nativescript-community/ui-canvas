@@ -132,7 +132,7 @@ class MySVGView extends android.view.View {
         if (!svg) {
             return;
         }
-        this.renderOptions.viewPort(0, 0, canvas.getWidth(), canvas.getHeight());
+        this.renderOptions.viewPort(0, 0, this.getWidth(), this.getHeight());
         // if (this._blendingMode !== undefined) {
         //     const picture = svg.renderToPicture(this.renderOptions);
         // }
