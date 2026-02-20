@@ -1583,7 +1583,7 @@ export class Canvas implements ICanvas {
             const src = args[1] instanceof Rect ? args[1].cgRect : null;
             const dst = args[2] instanceof Rect ? args[2].cgRect : CGRectMake(args[1], args[2], image.size.width, image.size.height);
             if (src) {
-                cgImage = CGImageCreateWithImageInRect(cgImage, src);
+                cgImage = CGImageCreateWithImageInRect(cgImage, CGRectMake(src.origin.x * image.scale, src.origin.y * image.scale, src.size.width * image.scale, src.size.height * image.scale));
             }
             CGContextTranslateCTM(ctx, 0, dst.origin.y + dst.size.height);
             CGContextScaleCTM(ctx, 1.0, -1.0);
