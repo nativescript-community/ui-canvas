@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 import { Color, Font, ImageSource, Screen, View } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font';
 import {
@@ -54,7 +53,7 @@ interface PaintDecoratorOptions {
     withFont?: boolean;
 }
 
-function paintPropertyGenerator(target: Object, key: string, descriptor: TypedPropertyDescriptor<any>, options: PaintDecoratorOptions) {
+function paintPropertyGenerator(target: object, key: string, descriptor: TypedPropertyDescriptor<any>, options: PaintDecoratorOptions) {
     const originalMethod = descriptor.value as Function; // save a reference to the original method
 
     // NOTE: Do not use arrow syntax here. Use a function expression in
@@ -125,9 +124,9 @@ export enum Direction {
     CW
 }
 export enum TileMode {
-    CLAMP,
-    MIRROR,
-    REPEAT
+    CLAMP = 2,
+    MIRROR = 1,
+    REPEAT = 0
 }
 export enum FillType {
     EVEN_ODD,
@@ -1313,26 +1312,18 @@ export class Paint implements IPaint {
             CGContextSetFillColorWithColor(ctx, color.CGColor);
             CGContextSetStrokeColorWithColor(ctx, color.CGColor);
             const g = this.shader;
-            const source: UIImage = g.image;
+            const source = g.image;
 
-            const w = source.size.width;
-            const h = source.size.height;
-            const rect = new Rect(CGRectMake(0, 0, w, h));
+            const tileMode = g.tileX ?? TileMode.REPEAT;
 
-            let transform = CGAffineTransformMakeTranslation(0, rect.cgRect.size.height);
-            transform = CGAffineTransformScale(transform, 1.0, -1.0);
-            if (this.shader.localMatrix) {
-                this.shader.localMatrix.mapRect(rect);
-            }
-            rect.cgRect = CGRectApplyAffineTransform(rect.cgRect, transform);
+            const localMatrix = g.localMatrix ? g.localMatrix.mTransform : CGAffineTransformIdentity;
 
-            // draw original image
             CGContextSaveGState(ctx);
             CGContextClip(ctx);
-            CGContextConcatCTM(ctx, transform);
-            CGContextDrawImage(ctx, rect.cgRect, source.CGImage);
+            // IMPORTANT: clip must already be applied outside (your path logic)
+            UIDrawingShader.applyBitmapShaderImageTileModeLocalMatrix(ctx, source, tileMode, localMatrix);
+
             CGContextRestoreGState(ctx);
-            // CGContextAddPath(ctx, path);
         }
     }
     getDrawTextAttribs() {
@@ -2422,7 +2413,7 @@ export class StaticLayout {
             if (attributes.objectForKey('fontSizeNotSet') && attributes.objectForKey('NSFont')) {
                 const realAttributes = NSMutableDictionary.dictionaryWithDictionary(attributes);
                 const font = realAttributes.objectForKey('NSFont');
-                realAttributes.setObjectForKey(font.fontWithSize(this.paint.textSize), 'NSFont')
+                realAttributes.setObjectForKey(font.fontWithSize(this.paint.textSize), 'NSFont');
                 nsAttributedString.addAttributesRange(realAttributes, range);
             } else {
                 nsAttributedString.addAttributesRange(attributes, range);
