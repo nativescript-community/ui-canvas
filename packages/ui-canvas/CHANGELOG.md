@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.47](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.46...@nativescript-community/ui-canvas@4.6.47) (2026-04-30)
+
+### Bug Fixes
+
+* **ui-canvas:** ios fix for BitmapShader ([20bcbf0](https://github.com/nativescript-community/ui-canvas/commit/20bcbf0fcb1861a232305f35932522b64023f5bb))
+
 ## [4.6.46](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.45...@nativescript-community/ui-canvas@4.6.46) (2026-02-20)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
