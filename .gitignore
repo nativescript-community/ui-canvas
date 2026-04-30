@@ -43,7 +43,6 @@ packages/**/*.d.ts
 bin
 build
 Pods
-!packages/*/platforms
 /packages/**/*.aar
 /packages/**/*.framework
 /packages/**/*.xcframework
