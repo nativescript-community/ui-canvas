@@ -19,6 +19,11 @@ declare namespace UIDrawingText {
     function measureTextFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): number;
 }
 
+declare namespace UIDrawingShader {
+
+    export function applyBitmapShaderImageTileModeLocalMatrix(ctx: any, source: UIImage, tileMode: number, localMatrix: CGAffineTransform)
+}
+
 // eslint-disable-next-line no-redeclare
 declare interface UIBezierPath {
     drawAttributedStringWithAlignment(str: NSAttributedString, alignment: NSTextAlignment);
