@@ -11,7 +11,7 @@ export default class ArrowMode extends DrawingMode {
     onTouchStart(point: TouchPoint): void {
         const shape = new ArrowShape();
         shape.strokeColor = this.canvas.strokeColor ?? new Color('#000000');
-        shape.strokeWidth = this.canvas.strokeWidth;
+        shape.strokeWidth = this.canvas.strokeWidth / this.canvas.canvasScale;
         shape.opacity = this.canvas.shapeOpacity;
         shape.x1 = point.x;
         shape.y1 = point.y;

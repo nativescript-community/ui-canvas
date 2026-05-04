@@ -49,16 +49,22 @@ export default class PenShape extends DrawableShape {
         return this._bounds;
     }
 
+    // hitTest(px: number, py: number): boolean {
+    //     const b = this.getBounds();
+    //     if (px < b.left || px > b.right || py < b.top || py > b.bottom) return false;
+    //     const pts = this.renderPoints.length ? this.renderPoints : this.points;
+    //     const threshold = Math.max(this.strokeWidth * 2, 10);
+    //     for (let i = 1; i < pts.length; i++) {
+    //         const dist = distanceToSegment(px, py, pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
+    //         if (dist <= threshold) return true;
+    //     }
+    //     return false;
+    // }
+
     hitTest(px: number, py: number): boolean {
         const b = this.getBounds();
-        if (px < b.left || px > b.right || py < b.top || py > b.bottom) return false;
-        const pts = this.renderPoints.length ? this.renderPoints : this.points;
-        const threshold = Math.max(this.strokeWidth * 2, 10);
-        for (let i = 1; i < pts.length; i++) {
-            const dist = distanceToSegment(px, py, pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-            if (dist <= threshold) return true;
-        }
-        return false;
+        console.log('hitTest', b, px, py)
+        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
     draw(canvas: Canvas): void {

@@ -31,17 +31,21 @@ export default class ArrowShape extends DrawableShape {
         };
     }
 
+    // hitTest(px: number, py: number): boolean {
+    //     const b = this.getBounds();
+    //     if (px < b.left || px > b.right || py < b.top || py > b.bottom) return false;
+    //     const dx = this.x2 - this.x1;
+    //     const dy = this.y2 - this.y1;
+    //     const lenSq = dx * dx + dy * dy;
+    //     if (lenSq === 0) return Math.hypot(px - this.x1, py - this.y1) <= 10;
+    //     let t = ((px - this.x1) * dx + (py - this.y1) * dy) / lenSq;
+    //     t = Math.max(0, Math.min(1, t));
+    //     const dist = Math.hypot(px - (this.x1 + t * dx), py - (this.y1 + t * dy));
+    //     return dist <= Math.max(this.strokeWidth * 2, 10);
+    // }
     hitTest(px: number, py: number): boolean {
         const b = this.getBounds();
-        if (px < b.left || px > b.right || py < b.top || py > b.bottom) return false;
-        const dx = this.x2 - this.x1;
-        const dy = this.y2 - this.y1;
-        const lenSq = dx * dx + dy * dy;
-        if (lenSq === 0) return Math.hypot(px - this.x1, py - this.y1) <= 10;
-        let t = ((px - this.x1) * dx + (py - this.y1) * dy) / lenSq;
-        t = Math.max(0, Math.min(1, t));
-        const dist = Math.hypot(px - (this.x1 + t * dx), py - (this.y1 + t * dy));
-        return dist <= Math.max(this.strokeWidth * 2, 10);
+        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
     draw(canvas: Canvas): void {

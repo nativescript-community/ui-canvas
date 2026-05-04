@@ -59,7 +59,7 @@ export default class SelectMode extends DrawingMode {
 
         // Hit-test from topmost shape
         for (let i = shapes.length - 1; i >= 0; i--) {
-            const s = shapes[i];
+            const s = shapes.getItem(i);
             if (!s.visible || s.locked) continue;
             if (s.hitTest(point.x, point.y)) {
                 this._activeShape = s;
@@ -82,7 +82,7 @@ export default class SelectMode extends DrawingMode {
 
     onTouchMove(point: TouchPoint): void {
         if (!this._action || !this._activeShape) return;
-
+        console.log('onTouchMove', this._action.kind)
         if (this._action.kind === 'move') {
             const dx = point.x - this._action.startX;
             const dy = point.y - this._action.startY;
@@ -123,7 +123,7 @@ export default class SelectMode extends DrawingMode {
     }
 
     private _startTransform(handle: HandlePoint, point: TouchPoint): void {
-        const shape = this._activeShape!;
+        const shape = this._activeShape;
         const b = shape.getBounds();
         const cx = (b.left + b.right) / 2;
         const cy = (b.top + b.bottom) / 2;

@@ -14,7 +14,9 @@ import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue'
 import SVGPlugin from '@nativescript-community/ui-svg/vue';
 import DrawingCanvasPlugin from '@nativescript-community/ui-drawingcanvas/vue';
 import ZoomImagePlugin from '@nativescript-community/ui-zoomimage/vue';
+import {initialize} from '@nativescript-community/ui-image';
 
+initialize();
 export function installPlugin() {
     Vue.use(CanvasPlugin);
     Vue.use(SVGPlugin);

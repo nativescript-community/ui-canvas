@@ -16,7 +16,7 @@ export default class RectangleMode extends DrawingMode {
         const shape = new RectShape();
         shape.strokeColor = this.canvas.strokeColor ?? new Color('#000000');
         shape.fillColor = this.canvas.fillColor ?? null;
-        shape.strokeWidth = this.canvas.strokeWidth;
+        shape.strokeWidth = this.canvas.strokeWidth / this.canvas.canvasScale;
         shape.opacity = this.canvas.shapeOpacity;
         shape.x = point.x;
         shape.y = point.y;

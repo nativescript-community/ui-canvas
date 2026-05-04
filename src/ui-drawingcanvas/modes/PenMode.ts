@@ -16,7 +16,7 @@ export default class PenMode extends DrawingMode {
     onTouchStart(point: TouchPoint): void {
         const shape = new PenShape();
         shape.strokeColor = this.canvas.strokeColor ?? new Color('#000000');
-        shape.strokeWidth = this.canvas.strokeWidth;
+        shape.strokeWidth = this.canvas.strokeWidth / this.canvas.canvasScale;
         shape.opacity = this.canvas.shapeOpacity;
         shape.addPoint({ x: point.x, y: point.y });
         this._currentShape = shape;

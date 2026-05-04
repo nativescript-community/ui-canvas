@@ -1,71 +1,61 @@
 <template>
     <Page>
         <ActionBar title="Drawing Canvas Demo">
-            <ActionItem text="Undo" ios.position="left" @tap="undo" :isEnabled="canUndo" />
-            <ActionItem text="Redo" ios.position="left" @tap="redo" :isEnabled="canRedo" />
+            <ActionItem text="Undo" ios.position="left" :isEnabled="canUndo" @tap="undo" />
+            <ActionItem text="Redo" ios.position="left" :isEnabled="canRedo" @tap="redo" />
         </ActionBar>
 
         <!-- rows: toolbar | drawing surface | layer list -->
         <GridLayout rows="auto, *, auto">
-
             <!-- ── Top toolbar ── -->
             <ScrollView row="0" orientation="horizontal">
                 <StackLayout orientation="horizontal" padding="8">
-                    <Button
-                        v-for="m in modes"
-                        :key="m.id"
-                        :text="m.label"
-                        :class="currentMode === m.id ? 'mode-btn active' : 'mode-btn'"
-                        @tap="setMode(m.id)"
-                    />
+                    <Button v-for="m in modes" :key="m.id" :text="m.label" :class="currentMode === m.id ? 'mode-btn active' : 'mode-btn'" @tap="setMode(m.id)" />
                     <Button text="🗑 Clear" class="mode-btn danger" @tap="clearAll" />
                     <Button text="💾 Save" class="mode-btn" @tap="saveShapes" />
-                    <Button text="📂 Restore" class="mode-btn" @tap="restoreShapes" :isEnabled="hasSaved" />
+                    <Button text="📂 Restore" class="mode-btn" :isEnabled="hasSaved" @tap="restoreShapes" />
                 </StackLayout>
             </ScrollView>
 
             <!-- ── Drawing surface: ZoomImage + DrawingCanvas overlay ── -->
             <GridLayout row="1" rows="*" columns="*">
                 <!-- Background zoomable image -->
-                <ZoomImage
+                <NSZoomImg
                     ref="zoomImg"
-                    row="0" col="0"
+                    row="0"
+                    col="0"
                     src="~/assets/images/test.jpg"
                     width="100%"
                     height="100%"
+                    stretch="aspectFit"
+                    @transformChanged="onImageViewTransform"
+                    @finalImageSet="onImageLoaded"
                 />
 
                 <!-- Drawing canvas overlaid on top -->
                 <DrawingCanvas
-                    row="0" col="0"
                     ref="dc"
-                    width="100%"
-                    height="100%"
-                    backgroundColor="transparent"
-                    @shapeAdded="onShapeAdded"
+                    row="0"
+                    col="0"
+                    :canvasScale="canvasScale"
+                    :canvasTranslateX="canvasTranslateX"
+                    :canvasTranslateY="canvasTranslateY"
+                    backgroundColor="#ff000055"
+                    :width="canvasWidth"
+                    :height="canvasHeight"
+                    horizontalAlignment="center"
+                    verticalAlignment="center"
+                    :callDrawBeforeShapes="true"
+                    @draw="onDraw"
+                    @selectiond="onShapeAdded"
                     @selectionChange="onSelectionChange"
                     @historyChange="onHistoryChange"
                 />
 
                 <!-- Colour strip (pen / shape drawing modes) -->
-                <GridLayout
-                    v-if="showColorPicker"
-                    row="0" col="0"
-                    verticalAlignment="bottom"
-                    margin="16"
-                >
+                <GridLayout v-if="showColorPicker" row="0" col="0" verticalAlignment="bottom" margin="16">
                     <StackLayout orientation="horizontal" backgroundColor="#fff" borderRadius="24" padding="8" shadow="3" horizontalAlignment="center">
-                        <Label
-                            v-for="c in colors"
-                            :key="c"
-                            :backgroundColor="c"
-                            width="32"
-                            height="32"
-                            borderRadius="16"
-                            marginLeft="4"
-                            marginRight="4"
-                            @tap="setColor(c)"
-                        />
+                        <Label v-for="c in colors" :key="c" :backgroundColor="c" width="32" height="32" borderRadius="16" marginLeft="4" marginRight="4" @tap="setColor(c)" />
                     </StackLayout>
                 </GridLayout>
             </GridLayout>
@@ -76,7 +66,8 @@
                     <GridLayout
                         v-for="(shape, idx) in layerItems"
                         :key="shape.id"
-                        rows="*" columns="*"
+                        rows="*"
+                        columns="*"
                         width="64"
                         height="64"
                         marginRight="8"
@@ -85,16 +76,11 @@
                         @tap="selectShapeFromList(shape)"
                     >
                         <!-- Shape type label -->
-                        <Label
-                            row="0" col="0"
-                            :text="shapeEmoji(shape.shapeType)"
-                            fontSize="28"
-                            textAlignment="center"
-                            verticalAlignment="middle"
-                        />
+                        <Label row="0" col="0" :text="shapeEmoji(shape.shapeType)" fontSize="28" textAlignment="center" verticalAlignment="middle" />
                         <!-- Delete badge -->
                         <Label
-                            row="0" col="0"
+                            row="0"
+                            col="0"
                             text="✕"
                             fontSize="12"
                             color="white"
@@ -110,17 +96,9 @@
                     </GridLayout>
 
                     <!-- Empty state -->
-                    <Label
-                        v-if="layerItems.length === 0"
-                        text="No shapes yet"
-                        color="#999"
-                        fontSize="13"
-                        verticalAlignment="middle"
-                        padding="8"
-                    />
+                    <Label v-if="layerItems.length === 0" text="No shapes yet" color="#999" fontSize="13" verticalAlignment="middle" padding="8" />
                 </StackLayout>
             </ScrollView>
-
         </GridLayout>
     </Page>
 </template>
@@ -128,8 +106,12 @@
 <script lang="ts">
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { ApplicationSettings, Color, ObservableArray } from '@nativescript/core';
-import { DrawingCanvas, DrawableShape } from '@nativescript-community/ui-drawingcanvas';
+import { ApplicationSettings, Color, ObservableArray, Utils } from '@nativescript/core';
+import { DrawableShape, DrawingCanvas } from '@nativescript-community/ui-drawingcanvas';
+import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
+import { Img } from '@nativescript-community/ui-image';
+import { Rect } from '@nativescript-community/ui-canvas';
+import { RectF } from '@nativescript-community/ui-canvas';
 
 const MODES = [
     { id: 'pen', label: '✏️ Pen' },
@@ -161,6 +143,13 @@ export default class DrawingCanvasDemo extends Vue {
     canUndo = false;
     canRedo = false;
     hasSaved = false;
+    canvasWidth = '100%';
+    canvasHeight = '100%';
+    currentMatrix = new Matrix();
+    canvasTranslateX = 0;
+    canvasTranslateY = 0;
+    canvasScale = Utils.layout.toDeviceIndependentPixels(1);
+    scaleTypeMatrix = new Matrix();
     selectedShapeId: string | null = null;
     /** Mirror of dc.layers for the template (ObservableArray is reactive) */
     layerItems: ObservableArray<DrawableShape> = new ObservableArray();
@@ -173,6 +162,10 @@ export default class DrawingCanvasDemo extends Vue {
         return (this.$refs.dc as any).nativeView as DrawingCanvas;
     }
 
+    get imageView(): Img {
+        return (this.$refs.zoomImg as any).nativeView as Img;
+    }
+
     mounted() {
         this.hasSaved = !!ApplicationSettings.getString(SAVED_SHAPES_KEY);
         const dc = this.dc;
@@ -181,19 +174,86 @@ export default class DrawingCanvasDemo extends Vue {
         dc.simplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
         // Keep layerItems in sync with dc.layers (same ObservableArray reference)
         this.layerItems = dc.layers;
+    }
 
-        // Sync DrawingCanvas scale with ZoomImage zoom level
-        const zoomNv = (this.$refs.zoomImg as any)?.nativeView;
-        if (zoomNv) {
-            zoomNv.on('propertyChange', (args: any) => {
-                if (args.propertyName === 'zoomScale') {
-                    dc.canvasScale = args.value ?? 1;
-                    // TODO: sync canvasTranslateX/Y when platform-specific transform access
-                    // is added to ZoomImage (UIScrollView.contentOffset on iOS,
-                    // ZoomableController.getTransform() on Android).
-                    dc.redraw();
-                }
-            });
+    onImageViewTransform(event: any) {
+        const matrix = event.android as android.graphics.Matrix;
+        // const zoomPanMatrix = new Matrix();
+        // const inverseScaleType = new Matrix();
+        // if (!matrix.isIdentity() &&  this.scaleTypeMatrix.invert(inverseScaleType)) {
+        // zoomPanMatrix.set(inverseScaleType);
+        // zoomPanMatrix.postConcat(matrix);
+        // } else {
+        //     zoomPanMatrix.set(matrix);
+
+        // }
+        // Recombine: ScaleType * ZoomPan
+        this.currentMatrix.set(matrix);
+
+        // this.currentMatrix.postConcat(zoomPanMatrix);
+        // this.currentMatrix.postTranslate(0, -200);
+        this.dc.redraw();
+        console.log('onImageViewTransform', event.android, this.scaleTypeMatrix, this.currentMatrix);
+    }
+    getImageDisplayRect(draweeView: any, imageInfo) {
+        const hierarchy = draweeView.getHierarchy();
+        const controller = draweeView.getZoomableController();
+        console.log('getImageDisplayRect', controller.getTransform);
+
+        // Get the transform matrix
+        const matrix = controller.getTransform();
+        console.log('getImageDisplayRect1', matrix);
+
+        const imageWidth = imageInfo.getWidth();
+        const imageHeight = imageInfo.getHeight();
+
+        const scaleType = hierarchy.getActualImageScaleType();
+
+        const imageBounds = new RectF(0, 0, imageWidth, imageHeight);
+        const viewBounds = new Rect(0, 0, draweeView.getWidth(), draweeView.getHeight());
+        console.log('imageBounds', imageBounds);
+
+        // Calculate the matrix that the ScaleType applies
+        scaleType.getTransform(
+            this.scaleTypeMatrix,
+            viewBounds,
+            imageWidth,
+            imageHeight,
+            0.5, // focusX
+            0.5 // focusY
+        );
+        // Apply to get display rect
+        this.scaleTypeMatrix.mapRect(imageBounds);
+        return imageBounds;
+    }
+    onImageLoaded(event) {
+        console.log('onImageLoaded1');
+        try {
+            const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
+            // this.canvasWidth = Utils.layout.toDeviceIndependentPixels(rect.width());
+            // this.canvasHeight = Utils.layout.toDeviceIndependentPixels(rect.height());
+            console.log('onImageLoaded', this.scaleTypeMatrix, rect);
+            this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
+            this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
+        } catch (error) {
+            console.error(error, error.stack);
+        }
+    }
+    onDraw(event: any) {
+        const canvas = event.canvas as Canvas;
+        // console.log('onDraw', this.currentMatrix);
+        if (this.currentMatrix) {
+            try {
+                // if (!this.currentMatrix.isIdentity()) {
+                //     const scale = Utils.layout.toDeviceIndependentPixels(1);
+                //     console.log('scale', scale);
+                //     // canvas.scale(scale, scale)
+                //     // this.currentMatrix.postScale(scale, scale);
+                // }
+                canvas.concat(this.currentMatrix);
+            } catch (error) {
+                console.error(error, error.stack);
+            }
         }
     }
 

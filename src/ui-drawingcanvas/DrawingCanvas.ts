@@ -132,7 +132,14 @@ export class DrawingCanvas extends CanvasView {
         if (!mode) {
             throw new Error(`DrawingCanvas: unknown mode '${name}'. Register it with registerMode() first.`);
         }
+        const oldMode = this._mode;
         this._mode.deactivate();
+        console.log('setMode', mode.name, oldMode.name);
+        if (mode.name === 'move') {
+            this.isUserInteractionEnabled = false;
+        } else if (oldMode.name === 'move') {
+            this.isUserInteractionEnabled = true;
+        }
         this._mode = mode;
         this._mode.activate();
         this.notify({ eventName: 'modeChange', object: this, mode: name });
@@ -336,15 +343,21 @@ export class DrawingCanvas extends CanvasView {
     // -----------------------------------------------------------------------
     // Drawing
     // -----------------------------------------------------------------------
+    augmentedCanvas: Canvas;
+    callDrawBeforeShapes: boolean;
+
 
     onDraw(canvas: Canvas): void {
         const hasTransform = this.canvasScale !== 1 || this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0;
-
         if (hasTransform) {
             canvas.save();
             canvas.translate(this.canvasTranslateX, this.canvasTranslateY);
             canvas.scale(this.canvasScale, this.canvasScale);
         }
+        if (this.callDrawBeforeShapes) {
+            this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
+        }
+
 
         // Draw all committed layers
         for (const shape of this.layers) {
@@ -371,7 +384,9 @@ export class DrawingCanvas extends CanvasView {
         }
 
         // Fire draw event for external listeners (consistent with CanvasView behaviour)
-        this.notify({ eventName: 'draw', object: this, canvas });
+        if (!this.callDrawBeforeShapes) {
+            this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -424,7 +439,7 @@ export class DrawingCanvas extends CanvasView {
     }
 
     private _captureSnapshot(): Snapshot {
-        return { layers: this.layers.map((s) => s.toJSON()) };
+        return { layers: [...this.layers.map((s) => s.toJSON())] };
     }
 
     private _restoreSnapshot(snap: Snapshot): void {
