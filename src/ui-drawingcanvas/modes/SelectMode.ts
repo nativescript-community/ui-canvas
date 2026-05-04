@@ -1,4 +1,3 @@
-import { Color } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { DrawingMode, TouchPoint } from './DrawingMode';
 import { DrawableShape, HandlePoint } from '../shapes/DrawableShape';
@@ -22,6 +21,12 @@ export default class SelectMode extends DrawingMode {
 
     get selectedShape(): DrawableShape | null {
         return this._activeShape;
+    }
+
+    /** Programmatically set the selected shape (used by DrawingCanvas.selectShape) */
+    setSelectedShape(shape: DrawableShape | null): void {
+        this._activeShape = shape;
+        this._action = null;
     }
 
     onTouchStart(point: TouchPoint): void {
@@ -120,10 +125,10 @@ export default class SelectMode extends DrawingMode {
     private _startTransform(handle: HandlePoint, point: TouchPoint): void {
         const shape = this._activeShape!;
         const b = shape.getBounds();
+        const cx = (b.left + b.right) / 2;
+        const cy = (b.top + b.bottom) / 2;
 
         if (handle.type === 'rotate') {
-            const cx = b.left + (b.right - b.left) / 2;
-            const cy = b.top + (b.bottom - b.top) / 2;
             this._action = {
                 kind: 'rotate',
                 cx,
@@ -152,23 +157,28 @@ export default class SelectMode extends DrawingMode {
 
         const right = origBounds.x + origBounds.w;
         const bottom = origBounds.y + origBounds.h;
+        const origAspect = origBounds.w / (origBounds.h || 1);
+        const isCorner = handle.type === 'tl' || handle.type === 'tr' || handle.type === 'bl' || handle.type === 'br';
 
         switch (handle.type) {
-            case 'tl':
-                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
-                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
-                w = right - x;
-                h = bottom - y;
+            case 'tl': {
+                let nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                let ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                w = right - nx;
+                h = bottom - ny;
                 break;
+            }
             case 'tm':
                 y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
                 h = bottom - y;
                 break;
-            case 'tr':
-                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+            case 'tr': {
+                const ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
                 w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
-                h = bottom - y;
+                h = bottom - ny;
+                y = ny;
                 break;
+            }
             case 'ml':
                 x = Math.min(point.x, right - MIN_SHAPE_SIZE);
                 w = right - x;
@@ -176,11 +186,13 @@ export default class SelectMode extends DrawingMode {
             case 'mr':
                 w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
                 break;
-            case 'bl':
-                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
-                w = right - x;
+            case 'bl': {
+                const nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                w = right - nx;
                 h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
+                x = nx;
                 break;
+            }
             case 'bm':
                 h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
                 break;
@@ -190,10 +202,29 @@ export default class SelectMode extends DrawingMode {
                 break;
         }
 
+        // Corner handles maintain aspect ratio
+        if (isCorner && origBounds.h > 0) {
+            if (w / h > origAspect) {
+                w = h * origAspect;
+            } else {
+                h = w / origAspect;
+            }
+            // Re-anchor based on which corner is being dragged
+            if (handle.type === 'tl') {
+                x = right - w;
+                y = bottom - h;
+            } else if (handle.type === 'tr') {
+                y = bottom - h;
+            } else if (handle.type === 'bl') {
+                x = right - w;
+            }
+            // 'br' anchors at top-left, w and h already set correctly
+        }
+
         shape.x = x;
         shape.y = y;
-        shape.width = w;
-        shape.height = h;
+        shape.width = Math.max(MIN_SHAPE_SIZE, w);
+        shape.height = Math.max(MIN_SHAPE_SIZE, h);
     }
 
     private _applyRotation(point: TouchPoint): void {

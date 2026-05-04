@@ -128,22 +128,40 @@ export abstract class DrawableShape extends Observable {
         this.fromJSONData(data);
     }
 
-    /** Get the 8 resize handles + 1 rotation handle in canvas coordinates */
+    /** Get the 8 resize handles + 1 rotation handle in canvas (world) coordinates, accounting for rotation */
     getHandles(): HandlePoint[] {
-        const { left, top, right, bottom } = this.getTransformedBounds();
-        const cx = (left + right) / 2;
-        const cy = (top + bottom) / 2;
-        return [
-            { x: left, y: top, type: 'tl' },
-            { x: cx, y: top, type: 'tm' },
-            { x: right, y: top, type: 'tr' },
-            { x: left, y: cy, type: 'ml' },
-            { x: right, y: cy, type: 'mr' },
-            { x: left, y: bottom, type: 'bl' },
-            { x: cx, y: bottom, type: 'bm' },
-            { x: right, y: bottom, type: 'br' },
-            { x: cx, y: top - 30, type: 'rotate' }
+        const b = this.getBounds();
+        const cx = (b.left + b.right) / 2;
+        const cy = (b.top + b.bottom) / 2;
+        const halfW = (b.right - b.left) / 2;
+        const halfH = (b.bottom - b.top) / 2;
+        const ROTATE_OFFSET = 30;
+
+        // Local positions relative to center
+        const localPts: { lx: number; ly: number; type: HandlePoint['type'] }[] = [
+            { lx: -halfW, ly: -halfH, type: 'tl' },
+            { lx: 0, ly: -halfH, type: 'tm' },
+            { lx: halfW, ly: -halfH, type: 'tr' },
+            { lx: -halfW, ly: 0, type: 'ml' },
+            { lx: halfW, ly: 0, type: 'mr' },
+            { lx: -halfW, ly: halfH, type: 'bl' },
+            { lx: 0, ly: halfH, type: 'bm' },
+            { lx: halfW, ly: halfH, type: 'br' },
+            { lx: 0, ly: -halfH - ROTATE_OFFSET, type: 'rotate' }
         ];
+
+        if (this.rotation === 0) {
+            return localPts.map((p) => ({ x: cx + p.lx, y: cy + p.ly, type: p.type }));
+        }
+
+        const rad = (this.rotation * Math.PI) / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+        return localPts.map((p) => ({
+            x: cx + p.lx * cos - p.ly * sin,
+            y: cy + p.lx * sin + p.ly * cos,
+            type: p.type
+        }));
     }
 
     /** Get bounding box in canvas space (accounting for position, scale and rotation is simplified as AABB) */
@@ -157,20 +175,17 @@ export abstract class DrawableShape extends Observable {
         };
     }
 
-    /** Draw selection overlay: bounding box + handles */
+    /** Draw selection overlay: bounding box + handles, rotated with the shape */
     drawSelectionOverlay(canvas: Canvas, handleSize: number = 10): void {
         const bounds = this.getTransformedBounds();
-        const handles = this.getHandles();
+        const cx = (bounds.left + bounds.right) / 2;
+        const cy = (bounds.top + bounds.bottom) / 2;
 
         const linePaint = new Paint();
         linePaint.setAntiAlias(true);
         linePaint.setStyle(Style.STROKE);
         linePaint.setColor(new Color('#1976D2'));
         linePaint.setStrokeWidth(1.5);
-        // dashed line
-        canvas.save();
-        canvas.drawRect(bounds.left, bounds.top, bounds.right, bounds.bottom, linePaint);
-        canvas.restore();
 
         const handleFillPaint = new Paint();
         handleFillPaint.setAntiAlias(true);
@@ -183,20 +198,41 @@ export abstract class DrawableShape extends Observable {
         handleStrokePaint.setColor(new Color('#1976D2'));
         handleStrokePaint.setStrokeWidth(1.5);
 
+        // Apply rotation so that the bounding box and handles rotate with the shape
+        canvas.save();
+        if (this.rotation !== 0) {
+            canvas.rotate(this.rotation, cx, cy);
+        }
+
+        // Draw bounding box in local (unrotated) space
+        canvas.drawRect(bounds.left, bounds.top, bounds.right, bounds.bottom, linePaint);
+
         const r = handleSize / 2;
-        for (const h of handles) {
+        const ROTATE_OFFSET = 30;
+        const localHandles: { lx: number; ly: number; type: HandlePoint['type'] }[] = [
+            { lx: bounds.left, ly: bounds.top, type: 'tl' },
+            { lx: cx, ly: bounds.top, type: 'tm' },
+            { lx: bounds.right, ly: bounds.top, type: 'tr' },
+            { lx: bounds.left, ly: cy, type: 'ml' },
+            { lx: bounds.right, ly: cy, type: 'mr' },
+            { lx: bounds.left, ly: bounds.bottom, type: 'bl' },
+            { lx: cx, ly: bounds.bottom, type: 'bm' },
+            { lx: bounds.right, ly: bounds.bottom, type: 'br' },
+            { lx: cx, ly: bounds.top - ROTATE_OFFSET, type: 'rotate' }
+        ];
+
+        for (const h of localHandles) {
             if (h.type === 'rotate') {
-                // Draw circular handle for rotation
-                canvas.drawCircle(h.x, h.y, r, handleFillPaint);
-                canvas.drawCircle(h.x, h.y, r, handleStrokePaint);
-                // Draw line from center top to rotate handle
-                const cx = (bounds.left + bounds.right) / 2;
-                canvas.drawLine(cx, bounds.top, h.x, h.y, linePaint);
+                canvas.drawCircle(h.lx, h.ly, r, handleFillPaint);
+                canvas.drawCircle(h.lx, h.ly, r, handleStrokePaint);
+                canvas.drawLine(cx, bounds.top, h.lx, h.ly, linePaint);
             } else {
-                canvas.drawRect(h.x - r, h.y - r, h.x + r, h.y + r, handleFillPaint);
-                canvas.drawRect(h.x - r, h.y - r, h.x + r, h.y + r, handleStrokePaint);
+                canvas.drawRect(h.lx - r, h.ly - r, h.lx + r, h.ly + r, handleFillPaint);
+                canvas.drawRect(h.lx - r, h.ly - r, h.lx + r, h.ly + r, handleStrokePaint);
             }
         }
+
+        canvas.restore();
     }
 
     protected applyPaint(forFill: boolean): void {

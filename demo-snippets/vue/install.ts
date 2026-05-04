@@ -13,6 +13,7 @@ import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import SVGPlugin from '@nativescript-community/ui-svg/vue';
 import DrawingCanvasPlugin from '@nativescript-community/ui-drawingcanvas/vue';
+import ZoomImagePlugin from '@nativescript-community/ui-zoomimage/vue';
 
 export function installPlugin() {
     Vue.use(CanvasPlugin);
@@ -20,6 +21,7 @@ export function installPlugin() {
     Vue.use(CanvasLabelPlugin);
     Vue.use(CollectionViewPlugin);
     Vue.use(DrawingCanvasPlugin);
+    Vue.use(ZoomImagePlugin);
     Vue.registerElement('HTMLLabel', () => HTMLLabel);
 }
 

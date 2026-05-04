@@ -1,4 +1,4 @@
-import { Color, GestureTypes, Observable, TouchGestureEventData } from '@nativescript/core';
+import { Color, Observable, ObservableArray, TouchGestureEventData } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { CanvasView } from '@nativescript-community/ui-canvas';
 import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
@@ -72,6 +72,18 @@ export class DrawingCanvas extends CanvasView {
     /** Maximum number of undo snapshots to retain (default: 50) */
     maxUndoDepth: number = 50;
 
+    /**
+     * Global canvas scale factor applied when drawing (useful for zoom integration).
+     * Touch coordinates are inverse-transformed automatically.
+     */
+    canvasScale: number = 1;
+
+    /** Global canvas X translation applied when drawing (useful for pan integration) */
+    canvasTranslateX: number = 0;
+
+    /** Global canvas Y translation applied when drawing (useful for pan integration) */
+    canvasTranslateY: number = 0;
+
     /** Simplification options for pen strokes */
     simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
 
@@ -79,8 +91,8 @@ export class DrawingCanvas extends CanvasView {
     // Internal state
     // -----------------------------------------------------------------------
 
-    /** All drawable layers, bottom-to-top order */
-    readonly layers: DrawableShape[] = [];
+    /** All drawable layers, bottom-to-top order (ObservableArray for data-binding) */
+    readonly layers: ObservableArray<DrawableShape> = new ObservableArray<DrawableShape>();
 
     private _mode: DrawingMode;
     private _modes: Map<string, DrawingMode> = new Map();
@@ -132,6 +144,21 @@ export class DrawingCanvas extends CanvasView {
         this._modes.set(mode.name, mode);
     }
 
+    /**
+     * Programmatically select a shape: switches to 'select' mode and marks the shape as selected.
+     * Fires a 'selectionChange' event.
+     */
+    selectShape(shape: DrawableShape | null): void {
+        // Ensure we are in select mode
+        if (this._mode.name !== 'select') {
+            this.setMode('select');
+        }
+        const selectMode = this._modes.get('select') as SelectMode;
+        selectMode.setSelectedShape(shape);
+        this.notify({ eventName: 'selectionChange', object: this, shape });
+        this.redraw();
+    }
+
     // -----------------------------------------------------------------------
     // Layer management
     // -----------------------------------------------------------------------
@@ -143,8 +170,14 @@ export class DrawingCanvas extends CanvasView {
         this.redraw();
     }
 
-    /** Remove a shape */
+    /** Remove a shape (undoable) */
     removeLayer(shape: DrawableShape): void {
+        this.pushUndoSnapshot();
+        this._removeLayerInternal(shape);
+    }
+
+    /** Remove without pushing an undo snapshot (used internally by restore/importJSON) */
+    private _removeLayerInternal(shape: DrawableShape): void {
         const idx = this.layers.indexOf(shape);
         if (idx !== -1) {
             shape.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
@@ -248,9 +281,9 @@ export class DrawingCanvas extends CanvasView {
     importJSON(json: string): void {
         this.pushUndoSnapshot();
         const data: ShapeJSON[] = JSON.parse(json);
-        // Remove all existing layers
+        // Remove all existing layers (bypass public removeLayer to avoid multiple undo snapshots)
         for (const s of this.layers.slice()) {
-            this.removeLayer(s);
+            this._removeLayerInternal(s);
         }
         for (const item of data) {
             const shape = this._createShapeFromJSON(item);
@@ -305,14 +338,22 @@ export class DrawingCanvas extends CanvasView {
     // -----------------------------------------------------------------------
 
     onDraw(canvas: Canvas): void {
+        const hasTransform = this.canvasScale !== 1 || this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0;
+
+        if (hasTransform) {
+            canvas.save();
+            canvas.translate(this.canvasTranslateX, this.canvasTranslateY);
+            canvas.scale(this.canvasScale, this.canvasScale);
+        }
+
         // Draw all committed layers
         for (const shape of this.layers) {
             if (!shape.visible) continue;
             canvas.save();
             if (shape.rotation !== 0) {
                 const b = shape.getBounds();
-                const cx = b.left + (b.right - b.left) / 2;
-                const cy = b.top + (b.bottom - b.top) / 2;
+                const cx = (b.left + b.right) / 2;
+                const cy = (b.top + b.bottom) / 2;
                 canvas.rotate(shape.rotation, cx, cy);
             }
             if (shape.scaleX !== 1 || shape.scaleY !== 1) {
@@ -324,6 +365,10 @@ export class DrawingCanvas extends CanvasView {
 
         // Draw mode overlay (in-progress shape, handles, etc.)
         this._mode.drawOverlay(canvas);
+
+        if (hasTransform) {
+            canvas.restore();
+        }
 
         // Fire draw event for external listeners (consistent with CanvasView behaviour)
         this.notify({ eventName: 'draw', object: this, canvas });
@@ -350,7 +395,13 @@ export class DrawingCanvas extends CanvasView {
     }
 
     private _handleTouch(args: TouchGestureEventData): void {
-        const point = { x: args.getX(), y: args.getY() };
+        // Inverse-transform touch coordinates to account for canvasScale / canvasTranslate
+        const rawX = args.getX();
+        const rawY = args.getY();
+        const point = {
+            x: (rawX - this.canvasTranslateX) / this.canvasScale,
+            y: (rawY - this.canvasTranslateY) / this.canvasScale
+        };
 
         switch (args.action) {
             case 'down':
@@ -377,11 +428,11 @@ export class DrawingCanvas extends CanvasView {
     }
 
     private _restoreSnapshot(snap: Snapshot): void {
-        // Detach all current listeners
-        for (const s of this.layers) {
-            s.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
+        // Detach all current listeners and clear the ObservableArray
+        for (let i = 0; i < this.layers.length; i++) {
+            this.layers.getItem(i).off(Observable.propertyChangeEvent, this._onShapeChanged, this);
         }
-        this.layers.length = 0;
+        this.layers.splice(0, this.layers.length);
 
         for (const item of snap.layers) {
             const shape = this._createShapeFromJSON(item);
