@@ -86,9 +86,13 @@ export default class PenShape extends DrawableShape {
 
         // Apply scale around the raw path's center so the path scales in-place
         if (this.scaleX !== 1 || this.scaleY !== 1) {
-            const raw = this._getRawBounds()!;
-            const rawCx = (raw.minX + raw.maxX) / 2;
-            const rawCy = (raw.minY + raw.maxY) / 2;
+            const rawForScale = this._getRawBounds();
+            if (!rawForScale) {
+                canvas.restore();
+                return;
+            }
+            const rawCx = (rawForScale.minX + rawForScale.maxX) / 2;
+            const rawCy = (rawForScale.minY + rawForScale.maxY) / 2;
             canvas.translate(rawCx, rawCy);
             canvas.scale(this.scaleX, this.scaleY);
             canvas.translate(-rawCx, -rawCy);
@@ -134,10 +138,11 @@ export default class PenShape extends DrawableShape {
         this._invalidateBounds();
     }
 
+    private static readonly _BOUNDS_AFFECTING_PROPS = new Set(['x', 'y', 'scaleX', 'scaleY', 'strokeWidth']);
+
     notifyPropertyChange(propertyName: string, value: any, oldValue?: any): void {
         super.notifyPropertyChange(propertyName, value, oldValue);
-        // Invalidate bounds cache when any property that affects the visual bounds changes
-        if (propertyName === 'x' || propertyName === 'y' || propertyName === 'scaleX' || propertyName === 'scaleY' || propertyName === 'strokeWidth') {
+        if (PenShape._BOUNDS_AFFECTING_PROPS.has(propertyName)) {
             this._invalidateBounds();
         }
     }
