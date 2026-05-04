@@ -128,40 +128,45 @@ export abstract class DrawableShape extends Observable {
         this.fromJSONData(data);
     }
 
+    /** Rotate a point around a center by angleDegrees, returning the new world position */
+    protected static rotatePoint(px: number, py: number, cx: number, cy: number, angleDegrees: number): { x: number; y: number } {
+        if (angleDegrees === 0) return { x: px, y: py };
+        const rad = (angleDegrees * Math.PI) / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+        const dx = px - cx;
+        const dy = py - cy;
+        return {
+            x: cx + dx * cos - dy * sin,
+            y: cy + dx * sin + dy * cos
+        };
+    }
+
     /** Get the 8 resize handles + 1 rotation handle in canvas (world) coordinates, accounting for rotation */
     getHandles(): HandlePoint[] {
         const b = this.getBounds();
         const cx = (b.left + b.right) / 2;
         const cy = (b.top + b.bottom) / 2;
-        const halfW = (b.right - b.left) / 2;
-        const halfH = (b.bottom - b.top) / 2;
         const ROTATE_OFFSET = 30;
 
-        // Local positions relative to center
-        const localPts: { lx: number; ly: number; type: HandlePoint['type'] }[] = [
-            { lx: -halfW, ly: -halfH, type: 'tl' },
-            { lx: 0, ly: -halfH, type: 'tm' },
-            { lx: halfW, ly: -halfH, type: 'tr' },
-            { lx: -halfW, ly: 0, type: 'ml' },
-            { lx: halfW, ly: 0, type: 'mr' },
-            { lx: -halfW, ly: halfH, type: 'bl' },
-            { lx: 0, ly: halfH, type: 'bm' },
-            { lx: halfW, ly: halfH, type: 'br' },
-            { lx: 0, ly: -halfH - ROTATE_OFFSET, type: 'rotate' }
+        const rawHandles: { x: number; y: number; type: HandlePoint['type'] }[] = [
+            { x: b.left, y: b.top, type: 'tl' },
+            { x: cx, y: b.top, type: 'tm' },
+            { x: b.right, y: b.top, type: 'tr' },
+            { x: b.left, y: cy, type: 'ml' },
+            { x: b.right, y: cy, type: 'mr' },
+            { x: b.left, y: b.bottom, type: 'bl' },
+            { x: cx, y: b.bottom, type: 'bm' },
+            { x: b.right, y: b.bottom, type: 'br' },
+            { x: cx, y: b.top - ROTATE_OFFSET, type: 'rotate' }
         ];
 
-        if (this.rotation === 0) {
-            return localPts.map((p) => ({ x: cx + p.lx, y: cy + p.ly, type: p.type }));
-        }
+        if (this.rotation === 0) return rawHandles;
 
-        const rad = (this.rotation * Math.PI) / 180;
-        const cos = Math.cos(rad);
-        const sin = Math.sin(rad);
-        return localPts.map((p) => ({
-            x: cx + p.lx * cos - p.ly * sin,
-            y: cy + p.lx * sin + p.ly * cos,
-            type: p.type
-        }));
+        return rawHandles.map((h) => {
+            const rotated = DrawableShape.rotatePoint(h.x, h.y, cx, cy, this.rotation);
+            return { x: rotated.x, y: rotated.y, type: h.type };
+        });
     }
 
     /** Get bounding box in canvas space (accounting for position, scale and rotation is simplified as AABB) */

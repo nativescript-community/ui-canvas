@@ -162,8 +162,10 @@ export default class SelectMode extends DrawingMode {
 
         switch (handle.type) {
             case 'tl': {
-                let nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
-                let ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                const nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                const ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                x = nx;
+                y = ny;
                 w = right - nx;
                 h = bottom - ny;
                 break;

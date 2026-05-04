@@ -180,7 +180,7 @@ export default class DrawingCanvasDemo extends Vue {
         dc.strokeWidth = 3;
         dc.simplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
         // Keep layerItems in sync with dc.layers (same ObservableArray reference)
-        (this as any).layerItems = dc.layers;
+        this.layerItems = dc.layers;
 
         // Sync DrawingCanvas scale with ZoomImage zoom level
         const zoomNv = (this.$refs.zoomImg as any)?.nativeView;
@@ -188,8 +188,9 @@ export default class DrawingCanvasDemo extends Vue {
             zoomNv.on('propertyChange', (args: any) => {
                 if (args.propertyName === 'zoomScale') {
                     dc.canvasScale = args.value ?? 1;
-                    // canvasTranslateX/Y can be synced here too when
-                    // platform-specific transform access is added.
+                    // TODO: sync canvasTranslateX/Y when platform-specific transform access
+                    // is added to ZoomImage (UIScrollView.contentOffset on iOS,
+                    // ZoomableController.getTransform() on Android).
                     dc.redraw();
                 }
             });

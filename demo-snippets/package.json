@@ -12,7 +12,7 @@
         "@nativescript-community/ui-drawingcanvas": "*",
         "@nativescript-community/ui-label": "1.3.8",
         "@nativescript-community/ui-svg": "*",
-        "@nativescript-community/ui-zoomimage": "latest",
+        "@nativescript-community/ui-zoomimage": "^4.6.14",
         "copy-webpack-plugin": "^11.0.0",
         "nativescript-vue-template-compiler": "~2.9.3",
         "scss-symbols-parser": "^2.0.1",
