@@ -50,7 +50,9 @@ export default class ImageShape extends DrawableShape {
                     this.imageSource = src;
                     this.notifyPropertyChange('imageSource', src, null);
                 })
-                .catch(() => {});
+                .catch((err) => {
+                    console.error(`ImageShape: failed to load image from base64 – ${err}`);
+                });
         }
     }
 }

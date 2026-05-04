@@ -11,6 +11,8 @@ type TransformAction =
 
 /** Handle hit-test radius in dp */
 const HANDLE_RADIUS = 14;
+/** Minimum dimension when resizing a shape in dp */
+const MIN_SHAPE_SIZE = 2;
 
 export default class SelectMode extends DrawingMode {
     readonly name = 'select';
@@ -153,38 +155,38 @@ export default class SelectMode extends DrawingMode {
 
         switch (handle.type) {
             case 'tl':
-                x = Math.min(point.x, right - 2);
-                y = Math.min(point.y, bottom - 2);
+                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
                 w = right - x;
                 h = bottom - y;
                 break;
             case 'tm':
-                y = Math.min(point.y, bottom - 2);
+                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
                 h = bottom - y;
                 break;
             case 'tr':
-                y = Math.min(point.y, bottom - 2);
-                w = Math.max(2, point.x - origBounds.x);
+                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
                 h = bottom - y;
                 break;
             case 'ml':
-                x = Math.min(point.x, right - 2);
+                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
                 w = right - x;
                 break;
             case 'mr':
-                w = Math.max(2, point.x - origBounds.x);
+                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
                 break;
             case 'bl':
-                x = Math.min(point.x, right - 2);
+                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
                 w = right - x;
-                h = Math.max(2, point.y - origBounds.y);
+                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
                 break;
             case 'bm':
-                h = Math.max(2, point.y - origBounds.y);
+                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
                 break;
             case 'br':
-                w = Math.max(2, point.x - origBounds.x);
-                h = Math.max(2, point.y - origBounds.y);
+                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
+                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
                 break;
         }
 

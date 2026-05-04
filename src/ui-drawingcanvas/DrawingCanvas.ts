@@ -43,8 +43,6 @@ interface Snapshot {
     layers: ShapeJSON[];
 }
 
-const MAX_UNDO = 50;
-
 /**
  * DrawingCanvas – a CanvasView-based view that provides interactive drawing with
  * multiple modes, layers, undo/redo, selection & transform, and JSON serialization.
@@ -70,6 +68,9 @@ export class DrawingCanvas extends CanvasView {
 
     /** Handle size for selection overlay in dp */
     handleSize: number = 10;
+
+    /** Maximum number of undo snapshots to retain (default: 50) */
+    maxUndoDepth: number = 50;
 
     /** Simplification options for pen strokes */
     simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
@@ -208,7 +209,7 @@ export class DrawingCanvas extends CanvasView {
     pushUndoSnapshot(): void {
         const snapshot = this._captureSnapshot();
         this._undoStack.push(snapshot);
-        if (this._undoStack.length > MAX_UNDO) {
+        if (this._undoStack.length > this.maxUndoDepth) {
             this._undoStack.shift();
         }
         this._redoStack = [];

@@ -64,6 +64,9 @@ Vue.use(DrawingCanvasPlugin);
 dc.undo();
 dc.redo();
 console.log(dc.canUndo, dc.canRedo);
+
+// Configure undo history depth (default: 50)
+dc.maxUndoDepth = 30;
 ```
 
 ## Layer Management
