@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/ui-drawingcanvas",
+        "outDir": "./",
+        "paths": {
+            "@nativescript-community/ui-canvas": ["packages/ui-canvas/index"],
+            "@nativescript-community/ui-canvas/*": ["packages/ui-canvas/*"],
+            "@nativescript-community/ui-drawingcanvas": ["packages/ui-drawingcanvas/index"],
+            "@nativescript-community/ui-drawingcanvas/*": ["packages/ui-drawingcanvas/*"]
+        }
+    },
+    "include": [
+        "../../src/ui-drawingcanvas/**/*",
+        "../../references.d.ts",
+        "../../src/references.d.ts"
+    ]
+}

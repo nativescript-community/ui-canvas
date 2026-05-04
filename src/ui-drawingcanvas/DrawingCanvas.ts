@@ -1,0 +1,413 @@
+import { Color, GestureTypes, Observable, TouchGestureEventData } from '@nativescript/core';
+import { Canvas } from '@nativescript-community/ui-canvas';
+import { CanvasView } from '@nativescript-community/ui-canvas';
+import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
+import { DrawingMode } from './modes/DrawingMode';
+import PenMode from './modes/PenMode';
+import SelectMode from './modes/SelectMode';
+import MoveMode from './modes/MoveMode';
+import RectangleMode from './modes/RectangleMode';
+import EllipseMode from './modes/EllipseMode';
+import ArrowMode from './modes/ArrowMode';
+import ImageMode from './modes/ImageMode';
+
+// Shape factories for JSON deserialization
+import PenShape from './shapes/PenShape';
+import RectShape from './shapes/RectShape';
+import EllipseShape from './shapes/EllipseShape';
+import ArrowShape from './shapes/ArrowShape';
+import ImageShape from './shapes/ImageShape';
+import CustomShape from './shapes/CustomShape';
+
+/** Mode name type including built-in and any custom mode registered by the app */
+export type DrawingModeName = 'pen' | 'select' | 'move' | 'rectangle' | 'ellipse' | 'arrow' | 'image' | string;
+
+export interface SimplificationOptions {
+    /** Enable path simplification (default: true) */
+    enabled?: boolean;
+    /** Douglas-Peucker epsilon in dp (default: 2) */
+    epsilon?: number;
+    /** Apply Catmull-Rom smoothing after simplification (default: true) */
+    smoothing?: boolean;
+    /** Number of interpolation segments per control point (default: 8) */
+    splineSegments?: number;
+    /** Catmull-Rom alpha: 0=uniform, 0.5=centripetal, 1=chordal (default: 0.5) */
+    splineAlpha?: number;
+}
+
+/** Shape factory function registered for custom shape types */
+export type ShapeFactory = () => DrawableShape;
+
+/** Snapshot used for undo/redo */
+interface Snapshot {
+    layers: ShapeJSON[];
+}
+
+const MAX_UNDO = 50;
+
+/**
+ * DrawingCanvas – a CanvasView-based view that provides interactive drawing with
+ * multiple modes, layers, undo/redo, selection & transform, and JSON serialization.
+ *
+ * Usage:
+ *   const dc = new DrawingCanvas();
+ *   dc.setMode('pen');
+ *   dc.strokeColor = new Color('red');
+ */
+export class DrawingCanvas extends CanvasView {
+    // -----------------------------------------------------------------------
+    // Configurable properties
+    // -----------------------------------------------------------------------
+
+    /** Current stroke colour */
+    strokeColor: Color | null = new Color('#000000');
+    /** Current fill colour */
+    fillColor: Color | null = null;
+    /** Current stroke width in dp */
+    strokeWidth: number = 2;
+    /** Global opacity for newly created shapes (0-1) */
+    shapeOpacity: number = 1;
+
+    /** Handle size for selection overlay in dp */
+    handleSize: number = 10;
+
+    /** Simplification options for pen strokes */
+    simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
+
+    // -----------------------------------------------------------------------
+    // Internal state
+    // -----------------------------------------------------------------------
+
+    /** All drawable layers, bottom-to-top order */
+    readonly layers: DrawableShape[] = [];
+
+    private _mode: DrawingMode;
+    private _modes: Map<string, DrawingMode> = new Map();
+    private _undoStack: Snapshot[] = [];
+    private _redoStack: Snapshot[] = [];
+    private _shapeFactories: Map<string, ShapeFactory> = new Map();
+
+    constructor() {
+        super();
+
+        // Register built-in modes
+        this._registerBuiltinModes();
+        // Register built-in shape factories
+        this._registerBuiltinFactories();
+
+        // Default mode
+        this._mode = this._modes.get('pen')!;
+        this._mode.activate();
+
+        // Listen to touch events
+        this.on(GestureTypes.touch, this._handleTouch.bind(this));
+    }
+
+    // -----------------------------------------------------------------------
+    // Mode management
+    // -----------------------------------------------------------------------
+
+    /** Get the current active mode name */
+    get modeName(): string {
+        return this._mode.name;
+    }
+
+    /** Switch to a built-in or registered mode */
+    setMode(name: DrawingModeName): void {
+        if (this._mode.name === name) return;
+        const mode = this._modes.get(name);
+        if (!mode) {
+            throw new Error(`DrawingCanvas: unknown mode '${name}'. Register it with registerMode() first.`);
+        }
+        this._mode.deactivate();
+        this._mode = mode;
+        this._mode.activate();
+        this.notify({ eventName: 'modeChange', object: this, mode: name });
+        this.redraw();
+    }
+
+    /** Register a custom drawing mode */
+    registerMode(mode: DrawingMode): void {
+        this._modes.set(mode.name, mode);
+    }
+
+    // -----------------------------------------------------------------------
+    // Layer management
+    // -----------------------------------------------------------------------
+
+    /** Add a shape to the top of the layer stack */
+    addLayer(shape: DrawableShape): void {
+        this.layers.push(shape);
+        shape.on(Observable.propertyChangeEvent, this._onShapeChanged, this);
+        this.redraw();
+    }
+
+    /** Remove a shape */
+    removeLayer(shape: DrawableShape): void {
+        const idx = this.layers.indexOf(shape);
+        if (idx !== -1) {
+            shape.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
+            this.layers.splice(idx, 1);
+            this.redraw();
+        }
+    }
+
+    /** Duplicate a shape and add it slightly offset */
+    duplicateShape(shape: DrawableShape): DrawableShape {
+        const json = shape.toJSON();
+        const copy = this._createShapeFromJSON(json);
+        if (copy) {
+            copy.x += 10;
+            copy.y += 10;
+            this.pushUndoSnapshot();
+            this.addLayer(copy);
+        }
+        return copy!;
+    }
+
+    /** Move a shape to a specific index in the layer stack */
+    moveShapeToIndex(shape: DrawableShape, index: number): void {
+        const current = this.layers.indexOf(shape);
+        if (current === -1) return;
+        this.layers.splice(current, 1);
+        this.layers.splice(Math.max(0, Math.min(index, this.layers.length)), 0, shape);
+        this.redraw();
+    }
+
+    /** Move a layer up by one */
+    moveLayerUp(shape: DrawableShape): void {
+        const idx = this.layers.indexOf(shape);
+        if (idx < this.layers.length - 1) {
+            this.moveShapeToIndex(shape, idx + 1);
+        }
+    }
+
+    /** Move a layer down by one */
+    moveLayerDown(shape: DrawableShape): void {
+        const idx = this.layers.indexOf(shape);
+        if (idx > 0) {
+            this.moveShapeToIndex(shape, idx - 1);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Undo / Redo
+    // -----------------------------------------------------------------------
+
+    /** Whether undo is available */
+    get canUndo(): boolean {
+        return this._undoStack.length > 0;
+    }
+
+    /** Whether redo is available */
+    get canRedo(): boolean {
+        return this._redoStack.length > 0;
+    }
+
+    /** Take a snapshot of the current layers and push to undo stack */
+    pushUndoSnapshot(): void {
+        const snapshot = this._captureSnapshot();
+        this._undoStack.push(snapshot);
+        if (this._undoStack.length > MAX_UNDO) {
+            this._undoStack.shift();
+        }
+        this._redoStack = [];
+        this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
+    }
+
+    undo(): void {
+        if (!this.canUndo) return;
+        const current = this._captureSnapshot();
+        this._redoStack.push(current);
+        const snap = this._undoStack.pop()!;
+        this._restoreSnapshot(snap);
+        this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
+    }
+
+    redo(): void {
+        if (!this.canRedo) return;
+        const current = this._captureSnapshot();
+        this._undoStack.push(current);
+        const snap = this._redoStack.pop()!;
+        this._restoreSnapshot(snap);
+        this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
+    }
+
+    // -----------------------------------------------------------------------
+    // JSON import / export
+    // -----------------------------------------------------------------------
+
+    /** Export all layers as a compact JSON string */
+    exportJSON(): string {
+        const data = this.layers.map((s) => s.toJSON());
+        return JSON.stringify(data);
+    }
+
+    /** Import layers from a JSON string, replacing current layers */
+    importJSON(json: string): void {
+        this.pushUndoSnapshot();
+        const data: ShapeJSON[] = JSON.parse(json);
+        // Remove all existing layers
+        for (const s of this.layers.slice()) {
+            this.removeLayer(s);
+        }
+        for (const item of data) {
+            const shape = this._createShapeFromJSON(item);
+            if (shape) this.addLayer(shape);
+        }
+        this.redraw();
+    }
+
+    /** Register a custom shape factory for a given type string */
+    registerShapeFactory(type: string, factory: ShapeFactory): void {
+        this._shapeFactories.set(type, factory);
+    }
+
+    // -----------------------------------------------------------------------
+    // Shape property changes
+    // -----------------------------------------------------------------------
+
+    /** Change the stroke colour of a specific shape (or all selected shapes) */
+    setShapeStrokeColor(shape: DrawableShape, color: Color): void {
+        this.pushUndoSnapshot();
+        shape.strokeColor = color;
+        this.redraw();
+    }
+
+    /** Change the fill colour of a specific shape */
+    setShapeFillColor(shape: DrawableShape, color: Color | null): void {
+        this.pushUndoSnapshot();
+        shape.fillColor = color;
+        this.redraw();
+    }
+
+    /** Change the stroke width of a specific shape */
+    setShapeStrokeWidth(shape: DrawableShape, width: number): void {
+        this.pushUndoSnapshot();
+        shape.strokeWidth = width;
+        this.redraw();
+    }
+
+    // -----------------------------------------------------------------------
+    // Internal: committing shapes from modes
+    // -----------------------------------------------------------------------
+
+    /** Called by drawing modes to commit a finished shape to the layers */
+    commitShape(shape: DrawableShape): void {
+        this.pushUndoSnapshot();
+        this.addLayer(shape);
+        this.notify({ eventName: 'shapeAdded', object: this, shape });
+    }
+
+    // -----------------------------------------------------------------------
+    // Drawing
+    // -----------------------------------------------------------------------
+
+    onDraw(canvas: Canvas): void {
+        // Draw all committed layers
+        for (const shape of this.layers) {
+            if (!shape.visible) continue;
+            canvas.save();
+            if (shape.rotation !== 0) {
+                const b = shape.getBounds();
+                const cx = b.left + (b.right - b.left) / 2;
+                const cy = b.top + (b.bottom - b.top) / 2;
+                canvas.rotate(shape.rotation, cx, cy);
+            }
+            if (shape.scaleX !== 1 || shape.scaleY !== 1) {
+                canvas.scale(shape.scaleX, shape.scaleY);
+            }
+            shape.draw(canvas);
+            canvas.restore();
+        }
+
+        // Draw mode overlay (in-progress shape, handles, etc.)
+        this._mode.drawOverlay(canvas);
+
+        // Fire draw event for external listeners (consistent with CanvasView behaviour)
+        this.notify({ eventName: 'draw', object: this, canvas });
+    }
+
+    // -----------------------------------------------------------------------
+    // Private helpers
+    // -----------------------------------------------------------------------
+
+    private _registerBuiltinModes(): void {
+        const modes: DrawingMode[] = [
+            new PenMode(this),
+            new SelectMode(this),
+            new MoveMode(this),
+            new RectangleMode(this),
+            new EllipseMode(this),
+            new ArrowMode(this),
+            new ImageMode(this)
+        ];
+        for (const m of modes) {
+            this._modes.set(m.name, m);
+        }
+    }
+
+    private _registerBuiltinFactories(): void {
+        this._shapeFactories.set('pen', () => new PenShape());
+        this._shapeFactories.set('rect', () => new RectShape());
+        this._shapeFactories.set('ellipse', () => new EllipseShape());
+        this._shapeFactories.set('arrow', () => new ArrowShape());
+        this._shapeFactories.set('image', () => new ImageShape());
+        this._shapeFactories.set('custom', () => new CustomShape());
+    }
+
+    private _handleTouch(args: TouchGestureEventData): void {
+        const point = { x: args.getX(), y: args.getY() };
+
+        switch (args.action) {
+            case 'down':
+                this._mode.onTouchStart(point, args);
+                break;
+            case 'move':
+                this._mode.onTouchMove(point, args);
+                break;
+            case 'up':
+                this._mode.onTouchEnd(point, args);
+                break;
+            case 'cancel':
+                this._mode.onTouchCancel(point, args);
+                break;
+        }
+    }
+
+    private _onShapeChanged(): void {
+        this.redraw();
+    }
+
+    private _captureSnapshot(): Snapshot {
+        return { layers: this.layers.map((s) => s.toJSON()) };
+    }
+
+    private _restoreSnapshot(snap: Snapshot): void {
+        // Detach all current listeners
+        for (const s of this.layers) {
+            s.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
+        }
+        this.layers.length = 0;
+
+        for (const item of snap.layers) {
+            const shape = this._createShapeFromJSON(item);
+            if (shape) {
+                this.layers.push(shape);
+                shape.on(Observable.propertyChangeEvent, this._onShapeChanged, this);
+            }
+        }
+        this.redraw();
+    }
+
+    private _createShapeFromJSON(data: ShapeJSON): DrawableShape | null {
+        const factory = this._shapeFactories.get(data.type);
+        if (!factory) {
+            console.warn(`DrawingCanvas: no factory for shape type '${data.type}'`);
+            return null;
+        }
+        const shape = factory();
+        shape.fromJSON(data);
+        return shape;
+    }
+}

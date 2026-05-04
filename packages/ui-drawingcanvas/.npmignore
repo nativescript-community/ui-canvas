@@ -1,0 +1,11 @@
+*.js
+*.js.map
+*.mjs
+*.mjs.map
+*.d.ts
+*.tsbuildinfo
+shapes/
+modes/
+algorithms/
+vue/
+node_modules/
