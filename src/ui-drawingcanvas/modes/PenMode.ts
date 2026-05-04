@@ -4,7 +4,7 @@ import { DrawingMode, TouchPoint } from './DrawingMode';
 import PenShape from '../shapes/PenShape';
 import { douglasPeucker } from '../algorithms/douglasPeucker';
 import { catmullRomSpline } from '../algorithms/catmullRomSpline';
-import type DrawingCanvas from '../DrawingCanvas';
+import { type DrawingCanvas } from '../DrawingCanvas';
 import type { SimplificationOptions } from '../DrawingCanvas';
 
 export default class PenMode extends DrawingMode {

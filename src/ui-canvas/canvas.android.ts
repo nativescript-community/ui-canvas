@@ -1,14 +1,13 @@
-/* eslint-disable no-duplicate-imports */
-import { Application, Color, Device, Font, ImageSource, Screen, Utils } from '@nativescript/core';
-import type { View } from '@nativescript/core';
 import { arrayToNativeArray } from '@nativescript-community/arraybuffers';
+import type { View } from '@nativescript/core';
+import { Application, Color, Font, ImageSource, Utils } from '@nativescript/core';
 import { FontStyleType, FontWeightType } from '@nativescript/core/ui/styling/font-interfaces';
 import { sdkVersion } from './canvas.common';
 
 export * from './canvas.common';
 export * from './utils';
 
-export { Canvas, Cap, Direction, DrawFilter, FillType, Join, Matrix, Op, PathEffect, Rect, RectF, Style, TileMode, FontMetrics, Align, LayoutAlignment, PorterDuffMode, PorterDuffXfermode };
+export { Align, Canvas, Cap, Direction, DrawFilter, FillType, FontMetrics, Join, LayoutAlignment, Matrix, Op, PathEffect, PorterDuffMode, PorterDuffXfermode, Rect, RectF, Style, TileMode };
 
 function createColorParam(param) {
     if (param instanceof Array) {

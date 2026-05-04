@@ -1,4 +1,4 @@
-export { default as DrawableShape } from './DrawableShape';
+export { DrawableShape } from './DrawableShape';
 export type { BoundingBox, HandlePoint, Point, ShapeJSON } from './DrawableShape';
 export { default as PenShape } from './PenShape';
 export { default as RectShape } from './RectShape';

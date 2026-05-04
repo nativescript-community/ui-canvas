@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
-/* eslint-disable @typescript-eslint/unified-signatures */
-
 // Android ONLY!!!
 export class ProxyClass {
     getNative(): any;
@@ -271,8 +268,7 @@ export class LinearGradient extends android.graphics.LinearGradient {
 export class BitmapShader extends android.graphics.BitmapShader {
     constructor(image: ImageSource, tileX, tileY);
 }
-export class Shader extends android.graphics.Shader {
-}
+export class Shader extends android.graphics.Shader {}
 export class TileMode extends android.graphics.Shader.TileMode {}
 export class Path extends ProxyClass {
     computeBounds(rect: RectF, exact: boolean);

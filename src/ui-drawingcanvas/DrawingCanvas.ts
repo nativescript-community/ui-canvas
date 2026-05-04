@@ -101,7 +101,7 @@ export class DrawingCanvas extends CanvasView {
         this._mode.activate();
 
         // Listen to touch events
-        this.on(GestureTypes.touch, this._handleTouch.bind(this));
+        this.on('touch', this._handleTouch.bind(this));
     }
 
     // -----------------------------------------------------------------------
@@ -163,7 +163,7 @@ export class DrawingCanvas extends CanvasView {
             this.pushUndoSnapshot();
             this.addLayer(copy);
         }
-        return copy!;
+        return copy;
     }
 
     /** Move a shape to a specific index in the layer stack */
@@ -220,7 +220,7 @@ export class DrawingCanvas extends CanvasView {
         if (!this.canUndo) return;
         const current = this._captureSnapshot();
         this._redoStack.push(current);
-        const snap = this._undoStack.pop()!;
+        const snap = this._undoStack.pop();
         this._restoreSnapshot(snap);
         this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
     }
@@ -229,7 +229,7 @@ export class DrawingCanvas extends CanvasView {
         if (!this.canRedo) return;
         const current = this._captureSnapshot();
         this._undoStack.push(current);
-        const snap = this._redoStack.pop()!;
+        const snap = this._redoStack.pop();
         this._restoreSnapshot(snap);
         this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
     }
@@ -334,15 +334,7 @@ export class DrawingCanvas extends CanvasView {
     // -----------------------------------------------------------------------
 
     private _registerBuiltinModes(): void {
-        const modes: DrawingMode[] = [
-            new PenMode(this),
-            new SelectMode(this),
-            new MoveMode(this),
-            new RectangleMode(this),
-            new EllipseMode(this),
-            new ArrowMode(this),
-            new ImageMode(this)
-        ];
+        const modes: DrawingMode[] = [new PenMode(this), new SelectMode(this), new MoveMode(this), new RectangleMode(this), new EllipseMode(this), new ArrowMode(this), new ImageMode(this)];
         for (const m of modes) {
             this._modes.set(m.name, m);
         }

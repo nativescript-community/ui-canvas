@@ -288,6 +288,7 @@ export class Rect implements IRect {
         return CGRectContainsRect(this.cgRect, rect);
     }
     constructor(...args) {
+        // eslint-disable-next-line prefer-spread
         this.set.apply(this, args);
     }
 
@@ -406,6 +407,7 @@ export class Matrix implements IMatrix {
     // public mapVectors(param0: native.Array<number>): void;
     // public mapVectors(param0: native.Array<number>, param1: number, param2: native.Array<number>, param3: number, param4: number): void;
     public mapVectors(...args) {
+        // eslint-disable-next-line prefer-spread
         this.mapPoints.apply(this, args);
     }
     public setPolyToPoly(param0: number[], param1: number, param2: number[], param3: number, param4: number): boolean {
