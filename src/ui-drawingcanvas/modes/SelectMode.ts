@@ -5,7 +5,14 @@ import TextShape from '../shapes/TextShape';
 
 type TransformAction =
     | { kind: 'move'; startX: number; startY: number; origX: number; origY: number; start: boolean }
-    | { kind: 'resize'; handle: HandlePoint; origBounds: { x: number; y: number; w: number; h: number }; start: boolean }
+    | {
+          kind: 'resize';
+          handle: HandlePoint;
+          origBounds: { x: number; y: number; w: number; h: number };
+          /** World-space position of the fixed (opposite) anchor, captured at gesture start */
+          anchorWorld: { x: number; y: number };
+          start: boolean;
+      }
     | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number; start: boolean }
     | null;
 
@@ -26,7 +33,6 @@ export default class SelectMode extends DrawingMode {
 
     /** Programmatically set the selected shape (used by DrawingCanvas.selectShape) */
     setSelectedShape(shape: DrawableShape | null): void {
-        console.log('setSelectedShape', shape?.id, new Error().stack);
         this._activeShape = shape;
         this._action = null;
     }
@@ -184,103 +190,124 @@ export default class SelectMode extends DrawingMode {
                 origRotation: shape.rotation
             };
         } else {
+            const x0 = b.left, y0 = b.top, w0 = b.right - b.left, h0 = b.bottom - b.top;
+            const right = x0 + w0, bottom = y0 + h0;
+
+            // The fixed anchor is the handle OPPOSITE to the one being dragged.
+            // Its canvas-space position (before rotation):
+            let alx: number, aly: number;
+            switch (handle.type) {
+                case 'ml': alx = right;      aly = y0 + h0 / 2; break; // right-mid
+                case 'mr': alx = x0;         aly = y0 + h0 / 2; break; // left-mid
+                case 'tm': alx = x0 + w0 / 2; aly = bottom;     break; // bottom-mid
+                case 'bm': alx = x0 + w0 / 2; aly = y0;         break; // top-mid
+                case 'tl': alx = right;      aly = bottom;       break; // bottom-right
+                case 'tr': alx = x0;         aly = bottom;       break; // bottom-left
+                case 'bl': alx = right;      aly = y0;           break; // top-right
+                default:   alx = x0;         aly = y0;           break; // br → top-left
+            }
+
+            // Compute the world-space position of the fixed anchor once.
+            // (rotation is applied around the AABB centre in onDraw)
+            const anchorWorld =
+                shape.rotation !== 0
+                    ? DrawableShape.rotatePoint(alx, aly, cx, cy, shape.rotation)
+                    : { x: alx, y: aly };
+
             this._action = {
                 start: true,
                 kind: 'resize',
                 handle,
-                origBounds: { x: b.left, y: b.top, w: b.right - b.left, h: b.bottom - b.top }
+                origBounds: { x: x0, y: y0, w: w0, h: h0 },
+                anchorWorld
             };
         }
     }
 
     private _applyResize(point: TouchPoint): void {
         if (this._action?.kind !== 'resize' || !this._activeShape) return;
-        const { handle, origBounds } = this._action;
+        const { handle, origBounds, anchorWorld } = this._action;
         const shape = this._activeShape;
 
-        // For rotated shapes, transform the touch point into the shape's local
-        // (un-rotated) coordinate space so that the resize calculation is axis-aligned.
-        let lp = point;
-        if (shape.rotation !== 0) {
-            const cx = origBounds.x + origBounds.w / 2;
-            const cy = origBounds.y + origBounds.h / 2;
-            lp = DrawableShape.rotatePoint(lp.x, lp.y, cx, cy, -shape.rotation);
-        }
+        const rotationDeg = shape.rotation; // degrees, constant throughout this resize gesture
+        const { x: x0, y: y0, w: w0, h: h0 } = origBounds;
+        const right = x0 + w0, bottom = y0 + h0;
+        const cx0 = x0 + w0 / 2, cy0 = y0 + h0 / 2;
 
-        let x = origBounds.x;
-        let y = origBounds.y;
-        let w = origBounds.w;
-        let h = origBounds.h;
+        // Un-rotate the touch point to the shape's local (unrotated) space so the
+        // resize math is axis-aligned — we always use the ORIGINAL centre as pivot.
+        const lp = rotationDeg !== 0 ? DrawableShape.rotatePoint(point.x, point.y, cx0, cy0, -rotationDeg) : point;
 
-        const right = origBounds.x + origBounds.w;
-        const bottom = origBounds.y + origBounds.h;
-        const origAspect = origBounds.w / (origBounds.h || 1);
+        const origAspect = w0 / (h0 || 1);
         const isCorner = handle.type === 'tl' || handle.type === 'tr' || handle.type === 'bl' || handle.type === 'br';
 
+        // Compute new dimensions from the un-rotated touch position.
+        let wn: number, hn: number;
         switch (handle.type) {
-            case 'tl': {
-                const nx = Math.min(lp.x, right - MIN_SHAPE_SIZE);
-                const ny = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
-                x = nx;
-                y = ny;
-                w = right - nx;
-                h = bottom - ny;
-                break;
-            }
-            case 'tm':
-                y = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
-                h = bottom - y;
-                break;
-            case 'tr': {
-                const ny = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
-                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
-                h = bottom - ny;
-                y = ny;
-                break;
-            }
-            case 'ml':
-                x = Math.min(lp.x, right - MIN_SHAPE_SIZE);
-                w = right - x;
-                break;
-            case 'mr':
-                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
-                break;
-            case 'bl': {
-                const nx = Math.min(lp.x, right - MIN_SHAPE_SIZE);
-                w = right - nx;
-                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
-                x = nx;
-                break;
-            }
-            case 'bm':
-                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
-                break;
-            case 'br':
-                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
-                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
-                break;
+            case 'tl': wn = right - lp.x; hn = bottom - lp.y; break;
+            case 'tm': wn = w0;            hn = bottom - lp.y; break;
+            case 'tr': wn = lp.x - x0;    hn = bottom - lp.y; break;
+            case 'ml': wn = right - lp.x; hn = h0;            break;
+            case 'mr': wn = lp.x - x0;    hn = h0;            break;
+            case 'bl': wn = right - lp.x; hn = lp.y - y0;    break;
+            case 'bm': wn = w0;            hn = lp.y - y0;    break;
+            default:   wn = lp.x - x0;    hn = lp.y - y0;    break; // 'br'
         }
 
-        // Corner handles maintain aspect ratio
-        if (isCorner && origBounds.h > 0) {
-            if (w / h > origAspect) {
-                w = h * origAspect;
+        wn = Math.max(MIN_SHAPE_SIZE, wn);
+        hn = Math.max(MIN_SHAPE_SIZE, hn);
+
+        // Corner handles maintain aspect ratio.
+        if (isCorner && h0 > 0) {
+            if (wn / hn > origAspect) {
+                wn = hn * origAspect;
             } else {
-                h = w / origAspect;
+                hn = wn / origAspect;
             }
-            // Re-anchor based on which corner is being dragged
-            if (handle.type === 'tl') {
-                x = right - w;
-                y = bottom - h;
-            } else if (handle.type === 'tr') {
-                y = bottom - h;
-            } else if (handle.type === 'bl') {
-                x = right - w;
-            }
-            // 'br' anchors at top-left, w and h already set correctly
+            wn = Math.max(MIN_SHAPE_SIZE, wn);
+            hn = Math.max(MIN_SHAPE_SIZE, hn);
         }
 
-        shape.applyResize(x, y, Math.max(MIN_SHAPE_SIZE, w), Math.max(MIN_SHAPE_SIZE, h));
+        // -----------------------------------------------------------------------
+        // Anchor-preserving position correction
+        //
+        // After changing (w, h) the AABB centre shifts, which also shifts the
+        // world-space rotation pivot → the "fixed" opposite side would drift.
+        //
+        // Fix: compute the new AABB centre in world space such that the fixed
+        // anchor (captured at gesture start) stays exactly at anchorWorld.
+        //
+        //   anchor_world = c_new + R(θ) · anchor_relative_new
+        //   ⟹ c_new = anchor_world − R(θ) · anchor_relative_new
+        //
+        // anchor_relative_new is the anchor's offset from the new centre in local space:
+        // it is always ±wn/2 or ±hn/2 depending on which edge the anchor is on.
+        // -----------------------------------------------------------------------
+        let arx: number, ary: number; // anchor relative to new centre (local space)
+        switch (handle.type) {
+            case 'ml': arx =  wn / 2; ary =  0;       break; // anchor = right-mid
+            case 'mr': arx = -wn / 2; ary =  0;       break; // anchor = left-mid
+            case 'tm': arx =  0;      ary =  hn / 2;  break; // anchor = bottom-mid
+            case 'bm': arx =  0;      ary = -hn / 2;  break; // anchor = top-mid
+            case 'tl': arx =  wn / 2; ary =  hn / 2;  break; // anchor = bottom-right
+            case 'tr': arx = -wn / 2; ary =  hn / 2;  break; // anchor = bottom-left
+            case 'bl': arx =  wn / 2; ary = -hn / 2;  break; // anchor = top-right
+            default:   arx = -wn / 2; ary = -hn / 2;  break; // br → anchor = top-left
+        }
+
+        const rad = (rotationDeg * Math.PI) / 180;
+        const cosTheta = Math.cos(rad);
+        const sinTheta = Math.sin(rad);
+
+        // c_new (world) = anchor_world - R(θ) * anchor_rel
+        const cNewX = anchorWorld.x - (cosTheta * arx - sinTheta * ary);
+        const cNewY = anchorWorld.y - (sinTheta * arx + cosTheta * ary);
+
+        // top-left in canvas space
+        const xn = cNewX - wn / 2;
+        const yn = cNewY - hn / 2;
+
+        shape.applyResize(xn, yn, wn, hn);
     }
 
     private _applyRotation(point: TouchPoint): void {
