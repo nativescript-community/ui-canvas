@@ -211,11 +211,11 @@ export class DrawingCanvas extends CanvasView {
     /** Remove without pushing an undo snapshot (used internally by restore/importJSON) */
     private _removeLayerInternal(shape: DrawableShape): void {
         const idx = this.layers.indexOf(shape);
-        console.log('_removeLayerInternal', idx, shape.id)
+        console.log('_removeLayerInternal', idx, shape.id);
         if (idx !== -1) {
             shape.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
             this.layers.splice(idx, 1);
-            this._mode.onLayerRemoved(shape, idx)
+            this._mode.onLayerRemoved(shape, idx);
             this.redraw();
         }
     }
@@ -421,6 +421,9 @@ export class DrawingCanvas extends CanvasView {
         // Draw all committed layers
         for (const shape of this.layers) {
             if (!shape.visible) continue;
+            if (this._editingTextShape && this._editingTextShape.id === shape.id) {
+                continue;
+            }
             canvas.save();
             if (shape.rotation !== 0) {
                 const b = shape.getBounds();
@@ -591,6 +594,12 @@ export class DrawingCanvas extends CanvasView {
 
         if (!tf.parent) {
             this.addChild(tf);
+            // disable scroll container
+            if (__ANDROID__) {
+                tf.nativeTextViewProtected.setVerticalScrollBarEnabled(false);
+                tf.nativeTextViewProtected.setMovementMethod(null);
+                tf.nativeTextViewProtected.setScrollContainer(false);
+            }
         }
 
         // Listen for text changes
@@ -824,7 +833,7 @@ export class DrawingCanvas extends CanvasView {
             return shape;
         });
         this.layers.splice(0, this.layers.length, ...layers);
-        this._mode.onSnapShotRestored()
+        this._mode.onSnapShotRestored();
         this.redraw();
     }
 
