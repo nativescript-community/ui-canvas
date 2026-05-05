@@ -12,7 +12,6 @@ import ArrowMode from './modes/ArrowMode';
 import ImageMode from './modes/ImageMode';
 import TextMode from './modes/TextMode';
 
-// Shape factories for JSON deserialization
 import PenShape from './shapes/PenShape';
 import RectShape from './shapes/RectShape';
 import EllipseShape from './shapes/EllipseShape';
@@ -49,17 +48,8 @@ interface Snapshot {
 /**
  * DrawingCanvas – a CanvasView-based view that provides interactive drawing with
  * multiple modes, layers, undo/redo, selection & transform, and JSON serialization.
- *
- * Usage:
- *   const dc = new DrawingCanvas();
- *   dc.setMode('pen');
- *   dc.strokeColor = new Color('red');
  */
 export class DrawingCanvas extends CanvasView {
-    // -----------------------------------------------------------------------
-    // Configurable properties
-    // -----------------------------------------------------------------------
-
     /** Current stroke colour */
     strokeColor: Color | null = new Color('#000000');
     /** Current fill colour */
@@ -106,10 +96,6 @@ export class DrawingCanvas extends CanvasView {
     /** Minimum dimension when resizing a shape in dp */
     minShapeSize = 40;
 
-    // -----------------------------------------------------------------------
-    // Internal state
-    // -----------------------------------------------------------------------
-
     /** All drawable layers, bottom-to-top order (ObservableArray for data-binding) */
     readonly layers: ObservableArray<DrawableShape> = new ObservableArray<DrawableShape>();
 
@@ -147,10 +133,6 @@ export class DrawingCanvas extends CanvasView {
         // Listen to touch events
         this.on('touch', this._handleTouch.bind(this));
     }
-
-    // -----------------------------------------------------------------------
-    // Mode management
-    // -----------------------------------------------------------------------
 
     /** Get the current active mode name */
     get modeName(): string {
@@ -195,10 +177,6 @@ export class DrawingCanvas extends CanvasView {
         selectMode.setSelectedShape(shape);
         this.redraw();
     }
-
-    // -----------------------------------------------------------------------
-    // Layer management
-    // -----------------------------------------------------------------------
 
     /** Add a shape to the top of the layer stack */
     addLayer(shape: DrawableShape): void {
@@ -262,10 +240,6 @@ export class DrawingCanvas extends CanvasView {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Undo / Redo
-    // -----------------------------------------------------------------------
-
     /** Whether undo is available */
     get canUndo(): boolean {
         return this._undoStack.length > 0;
@@ -305,10 +279,6 @@ export class DrawingCanvas extends CanvasView {
         this.notify({ eventName: 'historyChange', object: this, canUndo: this.canUndo, canRedo: this.canRedo });
     }
 
-    // -----------------------------------------------------------------------
-    // JSON import / export
-    // -----------------------------------------------------------------------
-
     /** Export all layers as a compact JSON string */
     exportJSON(): string {
         const data = this.layers.map((s) => s.toJSON());
@@ -335,10 +305,6 @@ export class DrawingCanvas extends CanvasView {
         this._shapeFactories.set(type, factory);
     }
 
-    // -----------------------------------------------------------------------
-    // Shape property changes
-    // -----------------------------------------------------------------------
-
     /** Change the stroke colour of a specific shape (or all selected shapes) */
     setShapeStrokeColor(shape: DrawableShape, color: Color): void {
         this.pushUndoSnapshot();
@@ -360,10 +326,6 @@ export class DrawingCanvas extends CanvasView {
         this.redraw();
     }
 
-    // -----------------------------------------------------------------------
-    // Internal: committing shapes from modes
-    // -----------------------------------------------------------------------
-
     /** Called by drawing modes to commit a finished shape to the layers */
     commitShape(shape: DrawableShape): void {
         this.pushUndoSnapshot();
@@ -371,9 +333,6 @@ export class DrawingCanvas extends CanvasView {
         this.notify({ eventName: 'shapeAdded', object: this, shape });
     }
 
-    // -----------------------------------------------------------------------
-    // Drawing
-    // -----------------------------------------------------------------------
     augmentedCanvas: Canvas;
     callDrawBeforeShapes: boolean;
 
@@ -451,10 +410,6 @@ export class DrawingCanvas extends CanvasView {
             this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
         }
     }
-
-    // -----------------------------------------------------------------------
-    // Private helpers
-    // -----------------------------------------------------------------------
 
     private _registerBuiltinModes(): void {
         const modes: DrawingMode[] = [
@@ -548,10 +503,6 @@ export class DrawingCanvas extends CanvasView {
         this.redraw();
     }
 
-    // -----------------------------------------------------------------------
-    // Customizable selection overlay
-    // -----------------------------------------------------------------------
-
     /**
      * Draw the selection overlay for the given shape.
      * Override this method to customise the selection overlay appearance across all shapes,
@@ -560,10 +511,6 @@ export class DrawingCanvas extends CanvasView {
     drawShapeSelectionOverlay(canvas: Canvas, shape: DrawableShape): void {
         shape.drawSelectionOverlay(canvas, this.handleSize, this._currentDisplayScale);
     }
-
-    // -----------------------------------------------------------------------
-    // Text editing
-    // -----------------------------------------------------------------------
 
     /**
      * Open the shared TextField over the given TextShape so the user can type.
