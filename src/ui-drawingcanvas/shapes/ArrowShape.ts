@@ -11,7 +11,7 @@ export default class ArrowShape extends DrawableShape {
     y2: number = 100;
 
     /** Arrowhead size in dp */
-    arrowSize: number = 16;
+    arrowSize: number = 45;
     /** Whether to draw arrowhead at start */
     arrowStart: boolean = false;
     /** Whether to draw arrowhead at end */

@@ -26,6 +26,7 @@ export default class SelectMode extends DrawingMode {
 
     /** Programmatically set the selected shape (used by DrawingCanvas.selectShape) */
     setSelectedShape(shape: DrawableShape | null): void {
+        console.log('setSelectedShape', shape?.id, new Error().stack);
         this._activeShape = shape;
         this._action = null;
     }
@@ -132,10 +133,7 @@ export default class SelectMode extends DrawingMode {
         if (this._activeShape instanceof TextShape) {
             // If this was a simple tap (no drag occurred, start is still true), pass the
             // tap position so the cursor is placed where the user tapped.
-            const tapPoint =
-                action?.kind === 'move' && action.start
-                    ? { x: action.startX, y: action.startY }
-                    : null;
+            const tapPoint = action?.kind === 'move' && action.start ? { x: action.startX, y: action.startY } : null;
             this.canvas.beginTextEdit(this._activeShape, tapPoint);
         }
     }
@@ -287,9 +285,18 @@ export default class SelectMode extends DrawingMode {
 
     private _applyRotation(point: TouchPoint): void {
         if (this._action?.kind !== 'rotate' || !this._activeShape) return;
-        const { cx, cy, startAngle, origRotation } = this._action;
+        const { cx, cy, origRotation, startAngle } = this._action;
         const currentAngle = Math.atan2(point.y - cy, point.x - cx);
         const delta = (currentAngle - startAngle) * (180 / Math.PI);
         this._activeShape.rotation = origRotation + delta;
+    }
+    onSnapShotRestored() {
+        this.setSelectedShape(null);
+    }
+    onLayerRemoved(shape: DrawableShape, index: number) {
+        console.log('onLayerRemoved', shape.id, this._activeShape?.id);
+        if (shape.id === this._activeShape?.id) {
+            this.setSelectedShape(null);
+        }
     }
 }

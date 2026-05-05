@@ -211,9 +211,11 @@ export class DrawingCanvas extends CanvasView {
     /** Remove without pushing an undo snapshot (used internally by restore/importJSON) */
     private _removeLayerInternal(shape: DrawableShape): void {
         const idx = this.layers.indexOf(shape);
+        console.log('_removeLayerInternal', idx, shape.id)
         if (idx !== -1) {
             shape.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
             this.layers.splice(idx, 1);
+            this._mode.onLayerRemoved(shape, idx)
             this.redraw();
         }
     }
@@ -767,6 +769,7 @@ export class DrawingCanvas extends CanvasView {
             const wPx = Utils.layout.toDevicePixels(wDp);
             const hPx = Utils.layout.toDevicePixels(hDp);
             const scale = wPx / rect.width();
+            console.log('exportImage', wPx, rect.width(), scale);
 
             if (wPx <= 0 || hPx <= 0) return null;
 
@@ -780,7 +783,7 @@ export class DrawingCanvas extends CanvasView {
             }
             // Scale from dp to px, then offset so the image-rect origin maps to (0,0)
             offCanvas.scale(scale, scale);
-            offCanvas.translate(-rect.left, -rect.top);
+            // offCanvas.translate(-rect.left, -rect.top);
 
             // Draw all visible layers
             for (const shape of this.layers) {
@@ -821,6 +824,7 @@ export class DrawingCanvas extends CanvasView {
             return shape;
         });
         this.layers.splice(0, this.layers.length, ...layers);
+        this._mode.onSnapShotRestored()
         this.redraw();
     }
 

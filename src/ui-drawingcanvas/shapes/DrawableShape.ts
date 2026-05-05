@@ -1,7 +1,10 @@
 import { Color, Observable } from '@nativescript/core';
 import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
 
-export type Point = { x: number; y: number };
+export interface Point {
+    x: number;
+    y: number;
+}
 
 export interface BoundingBox {
     left: number;

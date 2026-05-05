@@ -1,25 +1,29 @@
 <template>
     <Page>
         <ActionBar title="Drawing Canvas Demo">
-            <ActionItem text="Undo" ios.position="left" :isEnabled="canUndo" @tap="undo" />
-            <ActionItem text="Redo" ios.position="left" :isEnabled="canRedo" @tap="redo" />
+            <ActionItem ios.position="left" @tap="undo">
+                <Button text="Undo" :isEnabled="canUndo" class="mode-btn" fontWeight="bold" padding="10" />
+            </ActionItem>
+            <ActionItem ios.position="left" @tap="redo">
+                <Button text="Redo" :isEnabled="canRedo" class="mode-btn" fontWeight="bold" padding="10" />
+            </ActionItem>
         </ActionBar>
 
         <!-- rows: toolbar | drawing surface | layer list -->
-        <GridLayout rows="auto, *, auto">
+        <GridLayout rows="auto, auto, *, auto" android:marginBottom="42">
             <!-- ── Top toolbar ── -->
-            <ScrollView row="0" orientation="horizontal">
-                <StackLayout orientation="horizontal" padding="8">
-                    <Button v-for="m in modes" :key="m.id" :text="m.label" :class="currentMode === m.id ? 'mode-btn active' : 'mode-btn'" @tap="setMode(m.id)" />
-                    <Button text="🗑 Clear" class="mode-btn danger" @tap="clearAll" />
-                    <Button text="💾 Save" class="mode-btn" @tap="saveShapes" />
-                    <Button text="📂 Restore" class="mode-btn" :isEnabled="hasSaved" @tap="restoreShapes" />
-                    <Button text="📸 Export" class="mode-btn" @tap="exportImage" />
-                </StackLayout>
-            </ScrollView>
+            <StackLayout orientation="horizontal" padding="8">
+                <Button :text="'🗑\nClear'" class="mode-btn danger" @tap="clearAll" />
+                <Button :text="'💾\nSave'" class="mode-btn" @tap="saveShapes" />
+                <Button :text="'📂\nRestore'" class="mode-btn" :isEnabled="hasSaved" @tap="restoreShapes" />
+                <Button :text="'📸\nExport'" class="mode-btn" @tap="exportImage" />
+            </StackLayout>
+            <WrapLayout row="1" orientation="horizontal" padding="8">
+                <Button v-for="m in modes" :key="m.id" :text="m.label" :class="currentMode === m.id ? 'mode-btn active' : 'mode-btn'" @tap="setMode(m.id)" />
+            </WrapLayout>
 
             <!-- ── Drawing surface: ZoomImage + DrawingCanvas overlay ── -->
-            <GridLayout row="1" rows="*" columns="*">
+            <GridLayout row="2" rows="*" columns="*">
                 <!-- Background zoomable image -->
                 <NSZoomImg ref="zoomImg" src="~/assets/images/test.jpg" maxZoom="10" stretch="aspectFit" @transformChanged="onImageViewTransform" @finalImageSet="onImageLoaded" />
 
@@ -44,7 +48,7 @@
             </GridLayout>
 
             <!-- ── Horizontal layer list ── -->
-            <ScrollView row="2" orientation="horizontal" height="80" backgroundColor="#f5f5f5">
+            <ScrollView row="3" orientation="horizontal" height="80" backgroundColor="#f5f5f5">
                 <StackLayout orientation="horizontal" padding="8">
                     <GridLayout
                         v-for="(shape, idx) in layerItems"
@@ -56,10 +60,10 @@
                         marginRight="8"
                         borderRadius="8"
                         :backgroundColor="selectedShapeId === shape.id ? '#1976D2' : '#e0e0e0'"
-                        @tap="selectShapeFromList(shape)"
+                        
                     >
                         <!-- Shape type label -->
-                        <Label row="0" col="0" :text="shapeEmoji(shape.shapeType)" fontSize="28" textAlignment="center" verticalAlignment="middle" />
+                        <Label row="0" col="0" :text="shapeEmoji(shape.shapeType)" fontSize="28" textAlignment="center" verticalAlignment="middle" @tap="selectShapeFromList(shape)"/>
                         <!-- Delete badge -->
                         <Label
                             row="0"
@@ -72,6 +76,7 @@
                             height="20"
                             borderRadius="10"
                             horizontalAlignment="right"
+                            textAlignment="center"
                             verticalAlignment="top"
                             margin="2"
                             @tap="deleteShape(shape)"
@@ -98,13 +103,13 @@ import { Rect } from '@nativescript-community/ui-canvas';
 import { RectF } from '@nativescript-community/ui-canvas';
 
 const MODES = [
-    { id: 'pen', label: '✏️ Pen' },
-    { id: 'rectangle', label: '▭ Rect' },
-    { id: 'ellipse', label: '⬭ Ellipse' },
-    { id: 'arrow', label: '→ Arrow' },
-    { id: 'text', label: '🔤 Text' },
-    { id: 'select', label: '↖ Select' },
-    { id: 'move', label: '✋ Move' }
+    { id: 'pen', label: '✏️\nPen' },
+    { id: 'rectangle', label: '▭\nRect' },
+    { id: 'ellipse', label: '⬭\nEllipse' },
+    { id: 'arrow', label: '→\nArrow' },
+    { id: 'text', label: '🔤\nText' },
+    { id: 'select', label: '↖\nSelect' },
+    { id: 'move', label: '✋\nMove' }
 ];
 
 const COLORS = ['#000000', '#e53935', '#43a047', '#1e88e5', '#fb8c00', '#8e24aa', '#ffffff'];
@@ -339,9 +344,9 @@ export default class DrawingCanvasDemo extends Vue {
 <style scoped>
 .mode-btn {
     font-size: 13;
-    padding: 6 12;
-    margin: 0 4;
-    border-radius: 16;
+    padding: 2;
+    margin: 4;
+    border-radius: 8;
     background-color: #eeeeee;
     color: #333333;
 }

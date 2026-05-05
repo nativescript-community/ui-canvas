@@ -113,7 +113,7 @@ export default class TextShape extends DrawableShape {
         const height = staticlayout.getHeight();
         if (height > b.bottom - b.top) {
             this.applyResize(b.left, b.top, b.right - b.left, height);
-            return true
+            return true;
         }
     }
 

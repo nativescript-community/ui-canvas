@@ -51,7 +51,7 @@ export default class PenShape extends DrawableShape {
             this._bounds = { left: this.x, top: this.y, right: this.x, bottom: this.y };
             return this._bounds;
         }
-        const { minX, minY, maxX, maxY } = raw;
+        const { maxX, maxY, minX, minY } = raw;
         const rawCx = (minX + maxX) / 2;
         const rawCy = (minY + maxY) / 2;
 
@@ -122,7 +122,7 @@ export default class PenShape extends DrawableShape {
     applyResize(newX: number, newY: number, newW: number, newH: number): void {
         const raw = this._getRawBounds();
         if (!raw) return;
-        const { minX, minY, maxX, maxY } = raw;
+        const { maxX, maxY, minX, minY } = raw;
         const rawW = maxX - minX;
         const rawH = maxY - minY;
         const rawCx = (minX + maxX) / 2;

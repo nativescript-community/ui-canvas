@@ -1,5 +1,6 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { type DrawingCanvas } from '../DrawingCanvas';
+import { DrawableShape } from '@nativescript-community/ui-drawingcanvas/shapes';
 
 export interface TouchPoint {
     x: number;
@@ -42,4 +43,8 @@ export abstract class DrawingMode {
 
     /** Called when this mode becomes inactive */
     deactivate(): void {}
+
+    onSnapShotRestored() {}
+
+    onLayerRemoved(shape: DrawableShape, index: number) {}
 }
