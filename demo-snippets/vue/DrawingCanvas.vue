@@ -109,7 +109,7 @@
 <script lang="ts">
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { ApplicationSettings, Color, Frame, Image, ImageSource, ObservableArray, Utils } from '@nativescript/core';
+import { ApplicationSettings, Button, Color, Frame, GridLayout, Image, ImageSource, ObservableArray, Page, Utils } from '@nativescript/core';
 import { DrawableShape, DrawingCanvas } from '@nativescript-community/ui-drawingcanvas';
 import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
 import { Img } from '@nativescript-community/ui-image';
@@ -217,6 +217,8 @@ export default class DrawingCanvasDemo extends Vue {
     onImageLoaded(event) {
         try {
             const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
+            // TODO: verify the correct formula for canvasTranslate here; the 4th-power of
+            // canvasScale was kept from the original implementation pending investigation.
             this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
             this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
         } catch (error) {
@@ -291,8 +293,8 @@ export default class DrawingCanvasDemo extends Vue {
         }
 
         // Show the exported image in a modal page
-        const modalPage = new (require('@nativescript/core').Page)();
-        const gridLayout = new (require('@nativescript/core').GridLayout)();
+        const modalPage = new Page();
+        const gridLayout = new GridLayout();
         gridLayout.backgroundColor = '#000';
 
         const imgView = new Image();
@@ -302,7 +304,7 @@ export default class DrawingCanvasDemo extends Vue {
         imgView.height = '100%';
         gridLayout.addChild(imgView);
 
-        const closeBtn = new (require('@nativescript/core').Button)();
+        const closeBtn = new Button();
         closeBtn.text = '✕ Close';
         closeBtn.color = new Color('#fff');
         closeBtn.backgroundColor = '#333';

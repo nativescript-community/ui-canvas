@@ -112,6 +112,7 @@ export default class SelectMode extends DrawingMode {
         this._action = null;
     }
 
+    /** Called when the SelectMode is switched away from. Commits any pending text edit and clears the selection. */
     deactivate(): void {
         if (this._activeShape instanceof TextShape) {
             this.canvas.endTextEdit();

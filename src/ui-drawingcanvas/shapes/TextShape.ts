@@ -11,6 +11,9 @@ export interface TextShapeJSON {
     align?: 'left' | 'center' | 'right';
 }
 
+/** Default line-height multiplier used when font metrics are unavailable */
+const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.4;
+
 export default class TextShape extends DrawableShape {
     /** The displayed text */
     text: string = '';
@@ -53,6 +56,9 @@ export default class TextShape extends DrawableShape {
         paint.setAlpha(Math.round(this.opacity * 255));
         paint.setTextSize(this.fontSize);
         if (this.fontFamily) paint.setFontFamily(this.fontFamily);
+        // Always reset to normal before conditionally setting bold/italic
+        paint.setFontWeight('normal');
+        paint.setFontStyle('normal');
         if (this.bold) paint.setFontWeight('bold');
         if (this.italic) paint.setFontStyle('italic');
 
@@ -86,16 +92,19 @@ export default class TextShape extends DrawableShape {
     }
 
     /** Measure the preferred width/height for the current text + font */
-    measureSize(canvas: Canvas): { width: number; height: number } {
-        if (!this.text) return { width: 60, height: this.fontSize * 1.4 };
-        const paint = new Paint();
+    measureSize(): { width: number; height: number } {
+        if (!this.text) return { width: 60, height: this.fontSize * DEFAULT_LINE_HEIGHT_MULTIPLIER };
+        // Reuse the shared _paint instance to avoid creating a new object on each call
+        const paint = this._paint;
         paint.setTextSize(this.fontSize);
         if (this.fontFamily) paint.setFontFamily(this.fontFamily);
+        paint.setFontWeight('normal');
+        paint.setFontStyle('normal');
         if (this.bold) paint.setFontWeight('bold');
         if (this.italic) paint.setFontStyle('italic');
         const w = paint.measureText(this.text);
         const fm = paint.getFontMetrics();
-        const h = fm ? fm.descent - fm.ascent : this.fontSize * 1.4;
+        const h = fm ? fm.descent - fm.ascent : this.fontSize * DEFAULT_LINE_HEIGHT_MULTIPLIER;
         return { width: w, height: h };
     }
 }

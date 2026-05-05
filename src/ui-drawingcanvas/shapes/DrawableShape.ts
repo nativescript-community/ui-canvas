@@ -208,8 +208,9 @@ export abstract class DrawableShape extends Observable {
         const cx = (bounds.left + bounds.right) / 2;
         const cy = (bounds.top + bounds.bottom) / 2;
 
-        // All sizes are divided by displayScale so they appear constant on screen
-        const invScale = displayScale > 0 ? 1 / displayScale : 1;
+        // All sizes are divided by displayScale so they appear constant on screen.
+        // Clamp to a sensible minimum to avoid extreme values near zero.
+        const invScale = displayScale >= 0.01 ? 1 / displayScale : 1;
 
         const linePaint = new Paint();
         linePaint.setAntiAlias(true);

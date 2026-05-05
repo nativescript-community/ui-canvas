@@ -380,14 +380,17 @@ export class DrawingCanvas extends CanvasView {
         let displayScale = this.canvasScale;
         if (hasCanvasMatrix) {
             try {
-                // Approximate scale from the matrix determinant square-root
-                // Works for uniform scale matrices produced by typical zoom widgets.
+                // Approximate scale from the matrix components.
+                // For a standard 2D affine matrix laid out as:
+                //   [ vals[0]  vals[1]  vals[2] ]   (scaleX / cosθ, skewX / -sinθ, translateX)
+                //   [ vals[3]  vals[4]  vals[5] ]   (skewY / sinθ,  scaleY / cosθ,  translateY)
+                // The scale magnitude along X is sqrt(vals[0]^2 + vals[3]^2).
                 const vals = Array.create('float', 9);
                 (this._canvasMatrix as any).getValues(vals);
                 const matScaleX = Math.sqrt(vals[0] * vals[0] + vals[3] * vals[3]);
                 if (isFinite(matScaleX) && matScaleX > 0) displayScale *= matScaleX;
             } catch (_e) {
-                // Fallback: use canvasScale only
+                // Fallback: use canvasScale only (matrix.getValues may not be available on all platforms)
             }
         }
         this._currentDisplayScale = displayScale;
@@ -457,6 +460,11 @@ export class DrawingCanvas extends CanvasView {
     }
 
     matrixMapPointArray: any
+    /**
+     * Cached inverse of `_canvasMatrix` used to transform touch coordinates from
+     * screen space back to canvas space in `_handleTouch`. Re-computed on each touch
+     * down since the matrix may change between gestures.
+     */
     private _inverseMatrixCache: Matrix | null = null;
 
     private _handleTouch(args: TouchGestureEventData): void {
@@ -536,7 +544,7 @@ export class DrawingCanvas extends CanvasView {
         }
         this._editingTextSnapshot = shape.text;
         this._editingTextShape = shape;
-        this.pushUndoSnapshot();
+        // NOTE: undo snapshot is pushed in endTextEdit only if text actually changed.
 
         const tf = this._getOrCreateTextField();
         tf.text = shape.text;
@@ -559,7 +567,7 @@ export class DrawingCanvas extends CanvasView {
 
         // Focus the field after a short delay so the keyboard appears
         setTimeout(() => {
-            try { tf.focus(); } catch (_e) {}
+            try { tf.focus(); } catch (_e) { /* keyboard focus failure is non-fatal */ }
         }, 100);
 
         this.redraw();
@@ -567,16 +575,17 @@ export class DrawingCanvas extends CanvasView {
 
     /**
      * Commit the TextField content to the shape and hide the TextField.
+     * An undo snapshot is pushed only if the text actually changed.
      */
     endTextEdit(): void {
         if (!this._editingTextShape || !this._textField) return;
         const shape = this._editingTextShape;
         const newText = this._textField.text ?? '';
 
-        // If text changed, push an undo snapshot
+        // Push an undo snapshot only when the text actually changed
         if (newText !== this._editingTextSnapshot) {
+            this.pushUndoSnapshot();
             shape.text = newText;
-            // The snapshot was already pushed in beginTextEdit; no need for another one.
         }
 
         this._editingTextShape = null;
@@ -585,13 +594,13 @@ export class DrawingCanvas extends CanvasView {
         try {
             this._textField.off('textChange');
             this._textField.dismissSoftInput();
-        } catch (_e) {}
+        } catch (_e) { /* dismissSoftInput failure is non-fatal */ }
 
         try {
             if (this._textField.parent) {
                 (this._textField.parent as any).removeChild(this._textField);
             }
-        } catch (_e) {}
+        } catch (_e) { /* removeChild failure is non-fatal */ }
 
         this.redraw();
     }
