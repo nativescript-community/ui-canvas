@@ -21,34 +21,14 @@
             <!-- ── Drawing surface: ZoomImage + DrawingCanvas overlay ── -->
             <GridLayout row="1" rows="*" columns="*">
                 <!-- Background zoomable image -->
-                <NSZoomImg
-                    ref="zoomImg"
-                    row="0"
-                    col="0"
-                    src="~/assets/images/test.jpg"
-                    width="100%"
-                    height="100%"
-                    maxZoom="10"
-                    stretch="aspectFit"
-                    @transformChanged="onImageViewTransform"
-                    @finalImageSet="onImageLoaded"
-                />
+                <NSZoomImg ref="zoomImg" src="~/assets/images/test.jpg" maxZoom="10" stretch="aspectFit" @transformChanged="onImageViewTransform" @finalImageSet="onImageLoaded" />
 
                 <!-- Drawing canvas overlaid on top -->
                 <DrawingCanvas
                     ref="dc"
-                    row="0"
-                    col="0"
                     :canvasScale="canvasScale"
                     :canvasTranslateX="canvasTranslateX"
                     :canvasTranslateY="canvasTranslateY"
-                    :canvasMatrix="currentMatrix"
-                    backgroundColor="#ff000055"
-                    :width="canvasWidth"
-                    :height="canvasHeight"
-                    horizontalAlignment="center"
-                    verticalAlignment="center"
-                    :callDrawBeforeShapes="true"
                     @draw="onDraw"
                     @selectiond="onShapeAdded"
                     @selectionChange="onSelectionChange"
@@ -112,7 +92,8 @@ import { Component } from 'vue-property-decorator';
 import { ApplicationSettings, Button, Color, Frame, GridLayout, Image, ImageSource, ObservableArray, Page, Utils } from '@nativescript/core';
 import { DrawableShape, DrawingCanvas } from '@nativescript-community/ui-drawingcanvas';
 import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
-import { Img } from '@nativescript-community/ui-image';
+import { ImageInfo, Img } from '@nativescript-community/ui-image';
+import { ZoomImg } from '@nativescript-community/ui-zoomimage';
 import { Rect } from '@nativescript-community/ui-canvas';
 import { RectF } from '@nativescript-community/ui-canvas';
 
@@ -150,12 +131,13 @@ export default class DrawingCanvasDemo extends Vue {
     hasSaved = false;
     canvasWidth = '100%';
     canvasHeight = '100%';
-    currentMatrix = new Matrix();
     canvasTranslateX = 0;
     canvasTranslateY = 0;
     canvasScale = Utils.layout.toDeviceIndependentPixels(1);
     scaleTypeMatrix = new Matrix();
     selectedShapeId: string | null = null;
+
+    imageInfo: ImageInfo;
     /** Mirror of dc.layers for the template (ObservableArray is reactive) */
     layerItems: ObservableArray<DrawableShape> = new ObservableArray();
 
@@ -183,7 +165,7 @@ export default class DrawingCanvasDemo extends Vue {
 
     onImageViewTransform(event: any) {
         const matrix = event.android as android.graphics.Matrix;
-        this.currentMatrix.set(matrix);
+        this.dc.setCurrentMatrix(matrix);
         this.dc.redraw();
     }
     getImageDisplayRect(draweeView: any, imageInfo) {
@@ -216,11 +198,13 @@ export default class DrawingCanvasDemo extends Vue {
     }
     onImageLoaded(event) {
         try {
+            this.imageInfo = event.imageInfo;
+            console.log('onImageLoaded', this.imageInfo.getWidth(), this.imageInfo.getHeight());
             const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
             // TODO: verify the correct formula for canvasTranslate here; the 4th-power of
             // canvasScale was kept from the original implementation pending investigation.
-            this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
-            this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
+            this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left);
+            this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top);
         } catch (error) {
             console.error(error, error.stack);
         }
@@ -274,19 +258,17 @@ export default class DrawingCanvasDemo extends Vue {
         const dc = this.dc;
         let wDp: number | undefined;
         let hDp: number | undefined;
-        let transform: Matrix | undefined;
+        let rect: RectF | undefined;
 
         try {
-            const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, (this.imageView as any)._imageInfo);
-            const density = Utils.layout.getDisplayDensity();
-            wDp = Utils.layout.toDeviceIndependentPixels(rect.width());
-            hDp = Utils.layout.toDeviceIndependentPixels(rect.height());
-            transform = this.currentMatrix;
+            rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, this.imageInfo);
+            wDp = Utils.layout.toDeviceIndependentPixels(this.imageInfo.getWidth());
+            hDp = Utils.layout.toDeviceIndependentPixels(this.imageInfo.getHeight());
         } catch (_e) {
             // Fallback: use canvas view size
         }
 
-        const imageSource = dc.exportImage(wDp, hDp, transform);
+        const imageSource = dc.exportImage(wDp, hDp, rect, ImageSource.fromFileSync('~/assets/images/test.jpg'));
         if (!imageSource) {
             console.warn('DrawingCanvas: exportImage returned null');
             return;
@@ -295,11 +277,15 @@ export default class DrawingCanvasDemo extends Vue {
         // Show the exported image in a modal page
         const modalPage = new Page();
         const gridLayout = new GridLayout();
-        gridLayout.backgroundColor = '#000';
+        gridLayout.backgroundColor = '#fff';
+        gridLayout.paddingBottom = 40;
 
-        const imgView = new Image();
+        const imgView = new ZoomImg();
         imgView.src = imageSource;
+
+        imgView.backgroundColor = 'green';
         imgView.stretch = 'aspectFit';
+        imgView.maxZoom = 10;
         imgView.width = '100%';
         imgView.height = '100%';
         gridLayout.addChild(imgView);

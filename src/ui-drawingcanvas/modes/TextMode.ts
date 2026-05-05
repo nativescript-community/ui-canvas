@@ -9,6 +9,8 @@ import TextShape from '../shapes/TextShape';
 export default class TextMode extends DrawingMode {
     readonly name = 'text';
 
+    
+
     onTouchStart(point: TouchPoint): void {
         const dc = this.canvas;
         const shape = new TextShape();

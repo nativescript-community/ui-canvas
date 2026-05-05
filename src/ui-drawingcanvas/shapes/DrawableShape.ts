@@ -79,7 +79,7 @@ export abstract class DrawableShape extends Observable {
     abstract getBounds(): BoundingBox;
 
     /** Hit-test a point (in canvas coordinates) against the shape */
-    abstract hitTest(px: number, py: number): boolean;
+    abstract hitTest(px: number, py: number, scale?: number): boolean;
 
     /** The shape type identifier for JSON serialization */
     abstract get shapeType(): string;
@@ -159,13 +159,15 @@ export abstract class DrawableShape extends Observable {
     }
 
     /** Get the 8 resize handles + 1 rotation handle in canvas (world) coordinates, accounting for rotation */
-    getHandles(): HandlePoint[] {
-        const b = this.getBounds();
+    getHandles(displayScale: number): HandlePoint[] {
+        const b = this.getTransformedBounds(displayScale);
         const cx = (b.left + b.right) / 2;
         const cy = (b.top + b.bottom) / 2;
-        const ROTATE_OFFSET = 30;
+        const invScale = displayScale >= 0.01 ? 1 / displayScale : 1;
+        const ROTATE_OFFSET = 30 * invScale;
 
         const rawHandles: { x: number; y: number; type: HandlePoint['type'] }[] = [
+            { x: cx, y: b.top - ROTATE_OFFSET, type: 'rotate' },
             { x: b.left, y: b.top, type: 'tl' },
             { x: cx, y: b.top, type: 'tm' },
             { x: b.right, y: b.top, type: 'tr' },
@@ -173,8 +175,7 @@ export abstract class DrawableShape extends Observable {
             { x: b.right, y: cy, type: 'mr' },
             { x: b.left, y: b.bottom, type: 'bl' },
             { x: cx, y: b.bottom, type: 'bm' },
-            { x: b.right, y: b.bottom, type: 'br' },
-            { x: cx, y: b.top - ROTATE_OFFSET, type: 'rotate' }
+            { x: b.right, y: b.bottom, type: 'br' }
         ];
 
         if (this.rotation === 0) return rawHandles;
@@ -186,7 +187,7 @@ export abstract class DrawableShape extends Observable {
     }
 
     /** Get bounding box in canvas space (accounting for position, scale and rotation is simplified as AABB) */
-    getTransformedBounds(): BoundingBox {
+    getTransformedBounds(displayScale: number): BoundingBox {
         const b = this.getBounds();
         return {
             left: b.left,
@@ -204,7 +205,7 @@ export abstract class DrawableShape extends Observable {
      *   by this value so that handles appear constant-size on screen regardless of zoom.
      */
     drawSelectionOverlay(canvas: Canvas, handleSize: number = 10, displayScale: number = 1): void {
-        const bounds = this.getTransformedBounds();
+        const bounds = this.getTransformedBounds(displayScale);
         const cx = (bounds.left + bounds.right) / 2;
         const cy = (bounds.top + bounds.bottom) / 2;
 
@@ -241,22 +242,22 @@ export abstract class DrawableShape extends Observable {
         const r = (handleSize / 2) * invScale;
         const ROTATE_OFFSET = 30 * invScale;
         const localHandles: { lx: number; ly: number; type: HandlePoint['type'] }[] = [
+            { lx: bounds.right, ly: bounds.bottom, type: 'br' },
+            { lx: cx, ly: bounds.top - ROTATE_OFFSET, type: 'rotate' },
             { lx: bounds.left, ly: bounds.top, type: 'tl' },
             { lx: cx, ly: bounds.top, type: 'tm' },
             { lx: bounds.right, ly: bounds.top, type: 'tr' },
             { lx: bounds.left, ly: cy, type: 'ml' },
             { lx: bounds.right, ly: cy, type: 'mr' },
             { lx: bounds.left, ly: bounds.bottom, type: 'bl' },
-            { lx: cx, ly: bounds.bottom, type: 'bm' },
-            { lx: bounds.right, ly: bounds.bottom, type: 'br' },
-            { lx: cx, ly: bounds.top - ROTATE_OFFSET, type: 'rotate' }
+            { lx: cx, ly: bounds.bottom, type: 'bm' }
         ];
 
         for (const h of localHandles) {
             if (h.type === 'rotate') {
+                canvas.drawLine(cx, bounds.top, h.lx, h.ly, linePaint);
                 canvas.drawCircle(h.lx, h.ly, r, handleFillPaint);
                 canvas.drawCircle(h.lx, h.ly, r, handleStrokePaint);
-                canvas.drawLine(cx, bounds.top, h.lx, h.ly, linePaint);
             } else {
                 canvas.drawRect(h.lx - r, h.ly - r, h.lx + r, h.ly + r, handleFillPaint);
                 canvas.drawRect(h.lx - r, h.ly - r, h.lx + r, h.ly + r, handleStrokePaint);

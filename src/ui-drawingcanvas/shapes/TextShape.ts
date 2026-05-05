@@ -1,5 +1,5 @@
 import { Color } from '@nativescript/core';
-import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, LayoutAlignment, Paint, StaticLayout, Style } from '@nativescript-community/ui-canvas';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
 export interface TextShapeJSON {
@@ -15,6 +15,7 @@ export interface TextShapeJSON {
 const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.4;
 
 export default class TextShape extends DrawableShape {
+    static PADDING = 12;
     /** The displayed text */
     text: string = '';
     /** Font size in dp */
@@ -40,15 +41,23 @@ export default class TextShape extends DrawableShape {
             bottom: this.y + this.height
         };
     }
-
-    hitTest(px: number, py: number): boolean {
+    getTransformedBounds(displayScale: number = 1): BoundingBox {
         const b = this.getBounds();
+        const delta = TextShape.PADDING / displayScale;
+        return {
+            left: b.left - delta,
+            top: b.top - delta,
+            right: b.right + delta,
+            bottom: b.bottom + delta
+        };
+    }
+
+    hitTest(px: number, py: number, scale?: number): boolean {
+        const b = this.getTransformedBounds(scale);
         return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
-    draw(canvas: Canvas): void {
-        if (!this.text) return;
-        const b = this.getBounds();
+    getPaint() {
         const paint = this._paint;
         paint.setAntiAlias(true);
         paint.setStyle(Style.FILL);
@@ -57,18 +66,26 @@ export default class TextShape extends DrawableShape {
         paint.setTextSize(this.fontSize);
         if (this.fontFamily) paint.setFontFamily(this.fontFamily);
         // Always reset to normal before conditionally setting bold/italic
-        paint.setFontWeight('normal');
-        paint.setFontStyle('normal');
-        if (this.bold) paint.setFontWeight('bold');
-        if (this.italic) paint.setFontStyle('italic');
+        paint.setFontWeight(this.bold ? 'bold' : 'normal');
+        paint.setFontStyle(this.italic ? 'italic' : 'normal');
+        return paint;
+    }
 
-        // Baseline y: top of bounds + ascent offset
-        const fm = paint.getFontMetrics();
-        const ascent = fm ? -fm.ascent : this.fontSize;
-        const baselineY = b.top + ascent;
-
+    draw(canvas: Canvas): void {
+        console.log('draw', this.text);
+        if (!this.text) return;
+        const b = this.getBounds();
+        const staticlayout = this.getStaticLayout(b);
         // Draw text at the left edge (width clipping is left to the canvas)
-        canvas.drawText(this.text, b.left, baselineY, paint);
+        canvas.save();
+        canvas.translate(b.left, b.top);
+        staticlayout.draw(canvas);
+        canvas.restore();
+    }
+
+    getStaticLayout(b: BoundingBox) {
+        const paint = this.getPaint();
+        return new StaticLayout(this.text, paint, b.right - b.left, LayoutAlignment.ALIGN_NORMAL);
     }
 
     protected toJSONData(): Record<string, any> {
@@ -89,6 +106,16 @@ export default class TextShape extends DrawableShape {
         this.bold = data.bold ?? false;
         this.italic = data.italic ?? false;
         this.textAlign = data.align ?? 'left';
+    }
+
+    public resizeIfNeeded() {
+        const b = this.getBounds();
+        const staticlayout = this.getStaticLayout(b);
+        const height = staticlayout.getHeight();
+        if (height > b.bottom - b.top) {
+            this.applyResize(b.left, b.top, b.right - b.left, height);
+            return true
+        }
     }
 
     /** Measure the preferred width/height for the current text + font */

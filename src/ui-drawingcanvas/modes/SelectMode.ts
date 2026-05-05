@@ -56,6 +56,10 @@ export default class SelectMode extends DrawingMode {
             // Deselect – end any ongoing text edit
             if (this._activeShape instanceof TextShape) {
                 this.canvas.endTextEdit();
+                if (this._activeShape.text?.length === 0) {
+                    //delete empty text shape on selection
+                    this.canvas.removeLayer(this._activeShape)
+                }
             }
             this._activeShape = null;
             this.canvas.notify({ eventName: 'selectionChange', object: this.canvas, shape: null });
@@ -65,7 +69,7 @@ export default class SelectMode extends DrawingMode {
         for (let i = shapes.length - 1; i >= 0; i--) {
             const s = shapes.getItem(i);
             if (!s.visible || s.locked) continue;
-            if (s.hitTest(point.x, point.y)) {
+            if (s.hitTest(point.x, point.y, this.canvas._currentDisplayScale)) {
                 this._activeShape = s;
                 this.canvas.notify({ eventName: 'selectionChange', object: this.canvas, shape: s });
                 // Start move immediately
@@ -129,7 +133,8 @@ export default class SelectMode extends DrawingMode {
     }
 
     private _hitTestHandle(shape: DrawableShape, point: TouchPoint): HandlePoint | null {
-        const handles = shape.getHandles();
+        const handles = shape.getHandles(this.canvas._currentDisplayScale);
+        console.log('_hitTestHandle', point, handles);
         for (const h of handles) {
             if (Math.hypot(point.x - h.x, point.y - h.y) <= HANDLE_RADIUS) {
                 return h;
