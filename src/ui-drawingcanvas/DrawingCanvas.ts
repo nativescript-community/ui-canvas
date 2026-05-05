@@ -388,7 +388,6 @@ export class DrawingCanvas extends CanvasView {
         if (isFinite(matScaleX) && matScaleX > 0) displayScale *= matScaleX;
 
         this._currentDisplayScale = displayScale;
-        console.log('setCurrentMatrix', this._canvasMatrix, this._currentDisplayScale);
     }
 
     onDraw(canvas: Canvas): void {
@@ -483,32 +482,42 @@ export class DrawingCanvas extends CanvasView {
     private _inverseMatrixCache: Matrix | null = null;
 
     private _handleTouch(args: TouchGestureEventData): void {
-        // Inverse-transform touch coordinates to account for canvasScale / canvasTranslate
         const rawX = args.getX();
         const rawY = args.getY();
-        const point = {
-            x: (rawX - this.canvasTranslateX) / this.canvasScale,
-            y: (rawY - this.canvasTranslateY) / this.canvasScale
-        };
+
+        // Correct inverse of the draw transform: scale(cs) → concat(M) → translate(tx/cs, ty/cs)
+        // Inverse order: S⁻¹ first, then M⁻¹, then T⁻¹.
+
+        // Step 1: undo canvasScale
+        let px = rawX / this.canvasScale;
+        let py = rawY / this.canvasScale;
+
+        // Step 2: undo canvasMatrix (apply M⁻¹ to the un-scaled point)
         const hasCanvasMatrix = this.canvasMatrix && !this.canvasMatrix.isIdentity();
         if (hasCanvasMatrix) {
             if (!this.matrixMapPointArray) {
                 this.matrixMapPointArray = Array.create('float', 2);
             }
-            // We need the INVERSE of canvasMatrix to go from screen → canvas space.
-            // Cache the inverse when the matrix changes (invert is a no-op if matrix is identity).
             if (!this._inverseMatrixCache) {
                 this._inverseMatrixCache = new Matrix();
             }
             if (this._canvasMatrix.invert(this._inverseMatrixCache)) {
-                this.matrixMapPointArray[0] = point.x;
-                this.matrixMapPointArray[1] = point.y;
+                this.matrixMapPointArray[0] = px;
+                this.matrixMapPointArray[1] = py;
                 this._inverseMatrixCache.mapPoints(this.matrixMapPointArray);
-                point.x = this.matrixMapPointArray[0];
-                point.y = this.matrixMapPointArray[1];
+                px = this.matrixMapPointArray[0];
+                py = this.matrixMapPointArray[1];
             }
-            // If invert fails (degenerate matrix), fall back to the un-matrix-mapped point.
+            // If invert fails (degenerate matrix), keep the un-matrix-mapped point.
         }
+
+        // Step 3: undo canvasTranslate (subtract the canvas-space offset applied in onDraw)
+        if (this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0) {
+            px -= this.canvasTranslateX / this.canvasScale;
+            py -= this.canvasTranslateY / this.canvasScale;
+        }
+
+        const point = { x: px, y: py };
 
         switch (args.action) {
             case 'down':
@@ -549,11 +558,22 @@ export class DrawingCanvas extends CanvasView {
 
     /**
      * Open the shared TextField over the given TextShape so the user can type.
-     * The TextField is added as a child of DrawingCanvas (which extends GridLayout),
-     * positioned and sized to match the shape's screen bounding box.
-     * Call `endTextEdit()` to commit changes and hide the field.
+     * If the same shape is already being edited, the TextField is just repositioned
+     * (no keyboard flicker). Pass `touchPoint` (in canvas coords) to position the
+     * text cursor at the tap location; omit to leave the cursor where the platform puts it.
      */
-    beginTextEdit(shape: TextShape): void {
+    beginTextEdit(shape: TextShape, touchPoint?: { x: number; y: number } | null): void {
+        // If we are already editing this shape, just reposition the overlay without
+        // restarting the keyboard session.
+        if (this._editingTextShape === shape) {
+            this._positionTextField(shape);
+            if (touchPoint) {
+                // Defer cursor move slightly so the native layout has settled after repositioning.
+                setTimeout(() => this._setTextCursorAtPoint(shape, touchPoint), 50);
+            }
+            return;
+        }
+
         if (this._editingTextShape) {
             this.endTextEdit();
         }
@@ -564,7 +584,7 @@ export class DrawingCanvas extends CanvasView {
         const tf = this._getOrCreateTextField();
         tf.text = shape.text;
 
-        // Position over the shape's bounds (in screen dp, accounting for canvasScale)
+        // Position over the shape's bounds (in screen dp, accounting for zoom)
         this._positionTextField(shape);
 
         if (!tf.parent) {
@@ -583,16 +603,53 @@ export class DrawingCanvas extends CanvasView {
             }
         });
 
-        // Focus the field after a short delay so the keyboard appears
+        // Focus the field after a short delay so the soft keyboard has time to appear,
+        // then position the cursor (Android needs the EditText to be focused first).
         setTimeout(() => {
             try {
                 tf.focus();
+                if (touchPoint) {
+                    this._setTextCursorAtPoint(shape, touchPoint);
+                }
             } catch (_e) {
                 /* keyboard focus failure is non-fatal */
             }
         }, 100);
 
         this.redraw();
+    }
+
+    /**
+     * Place the text cursor in the shared TextField at the position corresponding
+     * to `touchPoint` (canvas-space coordinates) inside `shape`.
+     * On Android this uses StaticLayout hit-testing; silently skipped on iOS.
+     */
+    private _setTextCursorAtPoint(shape: TextShape, touchPoint: { x: number; y: number }): void {
+        const tf = this._textField;
+        if (!tf || !shape.text) return;
+        try {
+            const b = shape.getBounds();
+            const localX = touchPoint.x - b.left;
+            const localY = touchPoint.y - b.top;
+            const layout = shape.getStaticLayout(b);
+            const line = layout.getLineForVertical(localY);
+            const offset = layout.getOffsetForHorizontal(line, localX);
+            // setSelection is an Android (EditText) API; wrapped in try-catch so it's a no-op on iOS.
+            const nativeView = (tf as any).nativeViewProtected;
+            if (nativeView?.setSelection) {
+                nativeView.setSelection(offset);
+            }
+        } catch (_e) {
+            /* Cursor positioning is non-fatal; platform may not support the API */
+        }
+    }
+
+    /** Re-position the shared TextField to match the currently edited TextShape's screen bounds.
+     *  Called from SelectMode during resize/move so the TextField follows the shape live. */
+    updateTextEditLayout(): void {
+        if (this._editingTextShape) {
+            this._positionTextField(this._editingTextShape);
+        }
     }
 
     /**
@@ -649,32 +706,38 @@ export class DrawingCanvas extends CanvasView {
     private _positionTextField(shape: TextShape): void {
         const tf = this._textField;
         const b = shape.getBounds();
-        const scale = this._currentDisplayScale;
+        const displayScale = this._currentDisplayScale ?? this.canvasScale;
 
-        // Convert canvas coordinates to screen dp: apply canvasTranslate + canvasScale,
-        // then the canvasMatrix (approximate, works well for pure scale/translate matrices).
-        let screenX = b.left * this.canvasScale + this.canvasTranslateX;
-        let screenY = b.top * this.canvasScale + this.canvasTranslateY;
-        const screenW = (b.right - b.left) * this.canvasScale;
-        const screenH = (b.bottom - b.top) * this.canvasScale;
+        // Forward transform mirrors onDraw: scale(cs) → concat(M) → translate(tx/cs, ty/cs)
+        // So: shape_point → T(tx/cs,ty/cs) → M → Scale(cs) → screen
 
+        // Step 1: apply translate offset in canvas space (before M and scale)
+        let cx = b.left + this.canvasTranslateX / this.canvasScale;
+        let cy = b.top + this.canvasTranslateY / this.canvasScale;
+
+        // Step 2: apply canvasMatrix
         if (this._canvasMatrix && !this._canvasMatrix.isIdentity()) {
             try {
                 const arr = Array.create('float', 2);
-                arr[0] = screenX;
-                arr[1] = screenY;
+                arr[0] = cx;
+                arr[1] = cy;
                 this._canvasMatrix.mapPoints(arr);
-                // After concat(canvasMatrix) the point is in screen pixels / density
-                screenX = arr[0];
-                screenY = arr[1];
+                cx = arr[0];
+                cy = arr[1];
             } catch (_e) {}
         }
+
+        // Step 3: apply canvasScale
+        const screenX = cx * this.canvasScale;
+        const screenY = cy * this.canvasScale;
+        const screenW = (b.right - b.left) * displayScale;
+        const screenH = (b.bottom - b.top) * displayScale;
 
         tf.marginLeft = screenX;
         tf.marginTop = screenY;
         tf.width = Math.max(40, screenW);
         tf.height = Math.max(20, screenH);
-        tf.fontSize = shape.fontSize * scale;
+        tf.fontSize = shape.fontSize * displayScale;
         if (shape.fontFamily) tf.fontFamily = shape.fontFamily;
         tf.fontWeight = shape.bold ? 'bold' : 'normal';
         tf.fontStyle = shape.italic ? 'italic' : 'normal';
@@ -704,8 +767,6 @@ export class DrawingCanvas extends CanvasView {
             const wPx = Utils.layout.toDevicePixels(wDp);
             const hPx = Utils.layout.toDevicePixels(hDp);
             const scale = wPx / rect.width();
-            console.log('exportImage1', wPx, hPx);
-            console.log('exportImage', targetWidthDp, targetHeightDp, rect, wPx, hPx, density, scale);
 
             if (wPx <= 0 || hPx <= 0) return null;
 
@@ -716,15 +777,10 @@ export class DrawingCanvas extends CanvasView {
             offCanvas.drawColor('#ff0000');
             if (backgroundImageSource) {
                 offCanvas.drawBitmap(backgroundImageSource, new Rect(0, 0, backgroundImageSource.width, backgroundImageSource.height), new Rect(0, 0, wPx, hPx), new Paint());
-            } else {
             }
-            // Scale from dp to px
+            // Scale from dp to px, then offset so the image-rect origin maps to (0,0)
             offCanvas.scale(scale, scale);
             offCanvas.translate(-rect.left, -rect.top);
-
-            // if (transform && !transform.isIdentity()) {
-            //     offCanvas.concat(transform);
-            // }
 
             // Draw all visible layers
             for (const shape of this.layers) {

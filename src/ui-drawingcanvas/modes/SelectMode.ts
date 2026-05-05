@@ -99,6 +99,10 @@ export default class SelectMode extends DrawingMode {
             const dx = point.x - this._action.startX;
             const dy = point.y - this._action.startY;
             this._activeShape.applyTranslate(this._action.origX + dx, this._action.origY + dy);
+            // Keep the TextField positioned over the shape while it moves
+            if (this._activeShape instanceof TextShape) {
+                this.canvas.updateTextEditLayout();
+            }
             this.canvas.redraw();
         } else if (this._action.kind === 'resize') {
             if (this._action.start) {
@@ -106,6 +110,10 @@ export default class SelectMode extends DrawingMode {
                 this._action.start = false;
             }
             this._applyResize(point);
+            // Keep the TextField positioned over the shape while it resizes
+            if (this._activeShape instanceof TextShape) {
+                this.canvas.updateTextEditLayout();
+            }
             this.canvas.redraw();
         } else if (this._action.kind === 'rotate') {
             if (this._action.start) {
@@ -118,10 +126,17 @@ export default class SelectMode extends DrawingMode {
     }
 
     onTouchEnd(_point: TouchPoint): void {
+        const action = this._action;
         this._action = null;
         // Re-position the TextField if we just moved/resized a TextShape
         if (this._activeShape instanceof TextShape) {
-            this.canvas.beginTextEdit(this._activeShape);
+            // If this was a simple tap (no drag occurred, start is still true), pass the
+            // tap position so the cursor is placed where the user tapped.
+            const tapPoint =
+                action?.kind === 'move' && action.start
+                    ? { x: action.startX, y: action.startY }
+                    : null;
+            this.canvas.beginTextEdit(this._activeShape, tapPoint);
         }
     }
 
@@ -185,6 +200,15 @@ export default class SelectMode extends DrawingMode {
         const { handle, origBounds } = this._action;
         const shape = this._activeShape;
 
+        // For rotated shapes, transform the touch point into the shape's local
+        // (un-rotated) coordinate space so that the resize calculation is axis-aligned.
+        let lp = point;
+        if (shape.rotation !== 0) {
+            const cx = origBounds.x + origBounds.w / 2;
+            const cy = origBounds.y + origBounds.h / 2;
+            lp = DrawableShape.rotatePoint(lp.x, lp.y, cx, cy, -shape.rotation);
+        }
+
         let x = origBounds.x;
         let y = origBounds.y;
         let w = origBounds.w;
@@ -197,8 +221,8 @@ export default class SelectMode extends DrawingMode {
 
         switch (handle.type) {
             case 'tl': {
-                const nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
-                const ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                const nx = Math.min(lp.x, right - MIN_SHAPE_SIZE);
+                const ny = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
                 x = nx;
                 y = ny;
                 w = right - nx;
@@ -206,36 +230,36 @@ export default class SelectMode extends DrawingMode {
                 break;
             }
             case 'tm':
-                y = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
+                y = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
                 h = bottom - y;
                 break;
             case 'tr': {
-                const ny = Math.min(point.y, bottom - MIN_SHAPE_SIZE);
-                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
+                const ny = Math.min(lp.y, bottom - MIN_SHAPE_SIZE);
+                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
                 h = bottom - ny;
                 y = ny;
                 break;
             }
             case 'ml':
-                x = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                x = Math.min(lp.x, right - MIN_SHAPE_SIZE);
                 w = right - x;
                 break;
             case 'mr':
-                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
+                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
                 break;
             case 'bl': {
-                const nx = Math.min(point.x, right - MIN_SHAPE_SIZE);
+                const nx = Math.min(lp.x, right - MIN_SHAPE_SIZE);
                 w = right - nx;
-                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
+                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
                 x = nx;
                 break;
             }
             case 'bm':
-                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
+                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
                 break;
             case 'br':
-                w = Math.max(MIN_SHAPE_SIZE, point.x - origBounds.x);
-                h = Math.max(MIN_SHAPE_SIZE, point.y - origBounds.y);
+                w = Math.max(MIN_SHAPE_SIZE, lp.x - origBounds.x);
+                h = Math.max(MIN_SHAPE_SIZE, lp.y - origBounds.y);
                 break;
         }
 

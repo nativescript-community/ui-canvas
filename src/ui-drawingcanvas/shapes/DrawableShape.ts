@@ -145,7 +145,7 @@ export abstract class DrawableShape extends Observable {
     }
 
     /** Rotate a point around a center by angleDegrees, returning the new world position */
-    protected static rotatePoint(px: number, py: number, cx: number, cy: number, angleDegrees: number): { x: number; y: number } {
+    static rotatePoint(px: number, py: number, cx: number, cy: number, angleDegrees: number): { x: number; y: number } {
         if (angleDegrees === 0) return { x: px, y: py };
         const rad = (angleDegrees * Math.PI) / 180;
         const cos = Math.cos(rad);
