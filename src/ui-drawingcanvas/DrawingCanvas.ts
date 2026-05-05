@@ -100,6 +100,12 @@ export class DrawingCanvas extends CanvasView {
     /** Simplification options for pen strokes */
     simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
 
+    /** Handle hit-test radius in dp */
+    handleTouchRadius = 25;
+
+    /** Minimum dimension when resizing a shape in dp */
+    minShapeSize = 40;
+
     // -----------------------------------------------------------------------
     // Internal state
     // -----------------------------------------------------------------------
@@ -160,7 +166,7 @@ export class DrawingCanvas extends CanvasView {
         }
         const oldMode = this._mode;
         this._mode.deactivate();
-        if (mode.name === 'move') {
+        if (name === 'move') {
             this.isUserInteractionEnabled = false;
         } else if (oldMode.name === 'move') {
             this.isUserInteractionEnabled = true;
@@ -187,7 +193,6 @@ export class DrawingCanvas extends CanvasView {
         }
         const selectMode = this._modes.get('select') as SelectMode;
         selectMode.setSelectedShape(shape);
-        this.notify({ eventName: 'selectionChange', object: this, shape });
         this.redraw();
     }
 
@@ -211,7 +216,6 @@ export class DrawingCanvas extends CanvasView {
     /** Remove without pushing an undo snapshot (used internally by restore/importJSON) */
     private _removeLayerInternal(shape: DrawableShape): void {
         const idx = this.layers.indexOf(shape);
-        console.log('_removeLayerInternal', idx, shape.id);
         if (idx !== -1) {
             shape.off(Observable.propertyChangeEvent, this._onShapeChanged, this);
             this.layers.splice(idx, 1);
@@ -778,14 +782,11 @@ export class DrawingCanvas extends CanvasView {
             const wPx = Utils.layout.toDevicePixels(wDp);
             const hPx = Utils.layout.toDevicePixels(hDp);
             const scale = wPx / rect.width();
-            console.log('exportImage', wPx, rect.width(), scale);
 
             if (wPx <= 0 || hPx <= 0) return null;
 
             // Create an off-screen ImageSource and a Canvas backed by it
-            const imageSource = createImage({ width: wPx, height: hPx });
-
-            const offCanvas = new Canvas(imageSource);
+            const offCanvas = new Canvas(wPx, hPx);
             offCanvas.drawColor('#ff0000');
             if (backgroundImageSource) {
                 offCanvas.drawBitmap(backgroundImageSource, new Rect(0, 0, backgroundImageSource.width, backgroundImageSource.height), new Rect(0, 0, wPx, hPx), new Paint());
@@ -808,8 +809,9 @@ export class DrawingCanvas extends CanvasView {
                 offCanvas.restore();
             }
 
+            const image = offCanvas.getImage();
             offCanvas.release();
-            return imageSource;
+            return new ImageSource(image);
         } catch (err) {
             console.error('DrawingCanvas.exportImage failed:', err);
             return null;
