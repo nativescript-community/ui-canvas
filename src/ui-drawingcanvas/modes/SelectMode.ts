@@ -1,6 +1,7 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { DrawingMode, TouchPoint } from './DrawingMode';
 import { DrawableShape, HandlePoint } from '../shapes/DrawableShape';
+import TextShape from '../shapes/TextShape';
 
 type TransformAction =
     | { kind: 'move'; startX: number; startY: number; origX: number; origY: number }
@@ -52,7 +53,10 @@ export default class SelectMode extends DrawingMode {
                 };
                 return;
             }
-            // Deselect
+            // Deselect – end any ongoing text edit
+            if (this._activeShape instanceof TextShape) {
+                this.canvas.endTextEdit();
+            }
             this._activeShape = null;
             this.canvas.notify({ eventName: 'selectionChange', object: this.canvas, shape: null });
         }
@@ -98,15 +102,28 @@ export default class SelectMode extends DrawingMode {
 
     onTouchEnd(_point: TouchPoint): void {
         this._action = null;
+        // Re-position the TextField if we just moved/resized a TextShape
+        if (this._activeShape instanceof TextShape) {
+            this.canvas.beginTextEdit(this._activeShape);
+        }
     }
 
     onTouchCancel(_point: TouchPoint): void {
         this._action = null;
     }
 
+    deactivate(): void {
+        if (this._activeShape instanceof TextShape) {
+            this.canvas.endTextEdit();
+        }
+        this._activeShape = null;
+        this._action = null;
+    }
+
     drawOverlay(canvas: Canvas): void {
         if (this._activeShape) {
-            this._activeShape.drawSelectionOverlay(canvas);
+            // Delegate to DrawingCanvas so the overlay can be customised at the canvas level
+            this.canvas.drawShapeSelectionOverlay(canvas, this._activeShape);
         }
     }
 

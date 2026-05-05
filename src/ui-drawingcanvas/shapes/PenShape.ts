@@ -62,7 +62,6 @@ export default class PenShape extends DrawableShape {
         const scaledBottom = rawCy + (maxY - rawCy) * this.scaleY + this.y;
 
         const pad = (this.strokeWidth ?? 2) / 2;
-        console.log('getBounds', scaledLeft, this.x);
         this._bounds = {
             left: scaledLeft - pad,
             top: scaledTop - pad,
@@ -74,7 +73,6 @@ export default class PenShape extends DrawableShape {
 
     hitTest(px: number, py: number): boolean {
         const b = this.getBounds();
-        console.log('hitTest', b, this.x, this.y);
         return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
@@ -118,6 +116,8 @@ export default class PenShape extends DrawableShape {
     /**
      * For PenShape, "resize" means adjusting scaleX/scaleY (plus x/y offset) so that
      * the rendered bounds match the requested rectangle.
+     * The input coordinates come from getBounds() which includes strokeWidth/2 padding,
+     * so we strip that padding before computing scale to avoid a "jump" on first move.
      */
     applyResize(newX: number, newY: number, newW: number, newH: number): void {
         const raw = this._getRawBounds();
@@ -128,16 +128,24 @@ export default class PenShape extends DrawableShape {
         const rawCx = (minX + maxX) / 2;
         const rawCy = (minY + maxY) / 2;
 
+        // Strip the stroke-pad that getBounds() adds on all sides so the
+        // first touch move does not cause a "jump" in position/scale.
+        const pad = (this.strokeWidth ?? 2) / 2;
+        const innerX = newX + pad;
+        const innerY = newY + pad;
+        const innerW = Math.max(2, newW - 2 * pad);
+        const innerH = Math.max(2, newH - 2 * pad);
+
         // Compute new scale
-        const newScaleX = rawW > 0 ? newW / rawW : 1;
-        const newScaleY = rawH > 0 ? newH / rawH : 1;
+        const newScaleX = rawW > 0 ? innerW / rawW : 1;
+        const newScaleY = rawH > 0 ? innerH / rawH : 1;
 
         // After canvas.translate(x, y) + scale around rawCx/rawCy, the rendered top-left is:
         //   x + rawCx + (minX - rawCx) * scaleX = x + rawCx - rawW/2 * scaleX
-        // We want this to equal newX:
-        //   x = newX - rawCx + rawW/2 * newScaleX
-        this.x = newX - rawCx + (rawW / 2) * newScaleX;
-        this.y = newY - rawCy + (rawH / 2) * newScaleY;
+        // We want this to equal innerX:
+        //   x = innerX - rawCx + rawW/2 * newScaleX
+        this.x = innerX - rawCx + (rawW / 2) * newScaleX;
+        this.y = innerY - rawCy + (rawH / 2) * newScaleY;
         this.scaleX = newScaleX;
         this.scaleY = newScaleY;
         this._invalidateBounds();

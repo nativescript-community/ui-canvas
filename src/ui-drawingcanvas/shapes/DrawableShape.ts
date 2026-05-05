@@ -196,17 +196,26 @@ export abstract class DrawableShape extends Observable {
         };
     }
 
-    /** Draw selection overlay: bounding box + handles, rotated with the shape */
-    drawSelectionOverlay(canvas: Canvas, handleSize: number = 10): void {
+    /**
+     * Draw selection overlay: bounding box + handles, rotated with the shape.
+     * @param canvas - the canvas to draw on (already inside the shape's canvas transform)
+     * @param handleSize - handle square size in dp at 1× zoom
+     * @param displayScale - the effective display scale (canvasScale × matrix scale). Sizes are divided
+     *   by this value so that handles appear constant-size on screen regardless of zoom.
+     */
+    drawSelectionOverlay(canvas: Canvas, handleSize: number = 10, displayScale: number = 1): void {
         const bounds = this.getTransformedBounds();
         const cx = (bounds.left + bounds.right) / 2;
         const cy = (bounds.top + bounds.bottom) / 2;
+
+        // All sizes are divided by displayScale so they appear constant on screen
+        const invScale = displayScale > 0 ? 1 / displayScale : 1;
 
         const linePaint = new Paint();
         linePaint.setAntiAlias(true);
         linePaint.setStyle(Style.STROKE);
         linePaint.setColor(new Color('#1976D2'));
-        linePaint.setStrokeWidth(1.5);
+        linePaint.setStrokeWidth(1.5 * invScale);
 
         const handleFillPaint = new Paint();
         handleFillPaint.setAntiAlias(true);
@@ -217,7 +226,7 @@ export abstract class DrawableShape extends Observable {
         handleStrokePaint.setAntiAlias(true);
         handleStrokePaint.setStyle(Style.STROKE);
         handleStrokePaint.setColor(new Color('#1976D2'));
-        handleStrokePaint.setStrokeWidth(1.5);
+        handleStrokePaint.setStrokeWidth(1.5 * invScale);
 
         // Apply rotation so that the bounding box and handles rotate with the shape
         canvas.save();
@@ -228,8 +237,8 @@ export abstract class DrawableShape extends Observable {
         // Draw bounding box in local (unrotated) space
         canvas.drawRect(bounds.left, bounds.top, bounds.right, bounds.bottom, linePaint);
 
-        const r = handleSize / 2;
-        const ROTATE_OFFSET = 30;
+        const r = (handleSize / 2) * invScale;
+        const ROTATE_OFFSET = 30 * invScale;
         const localHandles: { lx: number; ly: number; type: HandlePoint['type'] }[] = [
             { lx: bounds.left, ly: bounds.top, type: 'tl' },
             { lx: cx, ly: bounds.top, type: 'tm' },

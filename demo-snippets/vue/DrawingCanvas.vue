@@ -14,6 +14,7 @@
                     <Button text="🗑 Clear" class="mode-btn danger" @tap="clearAll" />
                     <Button text="💾 Save" class="mode-btn" @tap="saveShapes" />
                     <Button text="📂 Restore" class="mode-btn" :isEnabled="hasSaved" @tap="restoreShapes" />
+                    <Button text="📸 Export" class="mode-btn" @tap="exportImage" />
                 </StackLayout>
             </ScrollView>
 
@@ -108,7 +109,7 @@
 <script lang="ts">
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { ApplicationSettings, Color, ObservableArray, Utils } from '@nativescript/core';
+import { ApplicationSettings, Color, Frame, Image, ImageSource, ObservableArray, Utils } from '@nativescript/core';
 import { DrawableShape, DrawingCanvas } from '@nativescript-community/ui-drawingcanvas';
 import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
 import { Img } from '@nativescript-community/ui-image';
@@ -120,6 +121,7 @@ const MODES = [
     { id: 'rectangle', label: '▭ Rect' },
     { id: 'ellipse', label: '⬭ Ellipse' },
     { id: 'arrow', label: '→ Arrow' },
+    { id: 'text', label: '🔤 Text' },
     { id: 'select', label: '↖ Select' },
     { id: 'move', label: '✋ Move' }
 ];
@@ -132,6 +134,7 @@ const SHAPE_EMOJI: Record<string, string> = {
     ellipse: '⬭',
     arrow: '→',
     image: '🖼',
+    text: '🔤',
     custom: '⬡'
 };
 
@@ -157,7 +160,7 @@ export default class DrawingCanvasDemo extends Vue {
     layerItems: ObservableArray<DrawableShape> = new ObservableArray();
 
     get showColorPicker(): boolean {
-        return ['pen', 'rectangle', 'ellipse', 'arrow'].includes(this.currentMode);
+        return ['pen', 'rectangle', 'ellipse', 'arrow', 'text'].includes(this.currentMode);
     }
 
     get dc(): DrawingCanvas {
@@ -180,31 +183,15 @@ export default class DrawingCanvasDemo extends Vue {
 
     onImageViewTransform(event: any) {
         const matrix = event.android as android.graphics.Matrix;
-        // const zoomPanMatrix = new Matrix();
-        // const inverseScaleType = new Matrix();
-        // if (!matrix.isIdentity() &&  this.scaleTypeMatrix.invert(inverseScaleType)) {
-        // zoomPanMatrix.set(inverseScaleType);
-        // zoomPanMatrix.postConcat(matrix);
-        // } else {
-        //     zoomPanMatrix.set(matrix);
-
-        // }
-        // Recombine: ScaleType * ZoomPan
         this.currentMatrix.set(matrix);
-
-        // this.currentMatrix.postConcat(zoomPanMatrix);
-        // this.currentMatrix.postTranslate(0, -200);
         this.dc.redraw();
-        console.log('onImageViewTransform', event.android, this.scaleTypeMatrix, this.currentMatrix);
     }
     getImageDisplayRect(draweeView: any, imageInfo) {
         const hierarchy = draweeView.getHierarchy();
         const controller = draweeView.getZoomableController();
-        console.log('getImageDisplayRect', controller.getTransform);
 
         // Get the transform matrix
         const matrix = controller.getTransform();
-        console.log('getImageDisplayRect1', matrix);
 
         const imageWidth = imageInfo.getWidth();
         const imageHeight = imageInfo.getHeight();
@@ -213,7 +200,6 @@ export default class DrawingCanvasDemo extends Vue {
 
         const imageBounds = new RectF(0, 0, imageWidth, imageHeight);
         const viewBounds = new Rect(0, 0, draweeView.getWidth(), draweeView.getHeight());
-        console.log('imageBounds', imageBounds);
 
         // Calculate the matrix that the ScaleType applies
         scaleType.getTransform(
@@ -229,29 +215,15 @@ export default class DrawingCanvasDemo extends Vue {
         return imageBounds;
     }
     onImageLoaded(event) {
-        console.log('onImageLoaded1');
         try {
             const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
-            // this.canvasWidth = Utils.layout.toDeviceIndependentPixels(rect.width());
-            // this.canvasHeight = Utils.layout.toDeviceIndependentPixels(rect.height());
-            console.log('onImageLoaded', this.scaleTypeMatrix, rect);
             this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
             this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top) * this.canvasScale * this.canvasScale * this.canvasScale * this.canvasScale;
         } catch (error) {
             console.error(error, error.stack);
         }
     }
-    onDraw(event: any) {
-        // const canvas = event.canvas as Canvas;
-        // console.log('onDraw', this.currentMatrix);
-        // if (this.currentMatrix) {
-        //     try {
-        //         canvas.concat(this.currentMatrix);
-        //     } catch (error) {
-        //         console.error(error, error.stack);
-        //     }
-        // }
-    }
+    onDraw(_event: any) {}
 
     shapeEmoji(type: string): string {
         return SHAPE_EMOJI[type] ?? '◆';
@@ -284,15 +256,66 @@ export default class DrawingCanvasDemo extends Vue {
         const json = this.dc.exportJSON();
         ApplicationSettings.setString(SAVED_SHAPES_KEY, json);
         this.hasSaved = true;
-        console.log('Saved shapes JSON:', json);
     }
 
     restoreShapes() {
         const json = ApplicationSettings.getString(SAVED_SHAPES_KEY);
         if (json) {
             this.dc.importJSON(json);
-            console.log('Restored shapes from saved JSON');
         }
+    }
+
+    exportImage() {
+        // Export the shapes drawn over the image at its natural displayed size.
+        // The canvasMatrix maps canvas coordinates to screen pixels, so pass it
+        // along with the displayed image dimensions (in dp) as the export target.
+        const dc = this.dc;
+        let wDp: number | undefined;
+        let hDp: number | undefined;
+        let transform: Matrix | undefined;
+
+        try {
+            const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, (this.imageView as any)._imageInfo);
+            const density = Utils.layout.getDisplayDensity();
+            wDp = Utils.layout.toDeviceIndependentPixels(rect.width());
+            hDp = Utils.layout.toDeviceIndependentPixels(rect.height());
+            transform = this.currentMatrix;
+        } catch (_e) {
+            // Fallback: use canvas view size
+        }
+
+        const imageSource = dc.exportImage(wDp, hDp, transform);
+        if (!imageSource) {
+            console.warn('DrawingCanvas: exportImage returned null');
+            return;
+        }
+
+        // Show the exported image in a modal page
+        const modalPage = new (require('@nativescript/core').Page)();
+        const gridLayout = new (require('@nativescript/core').GridLayout)();
+        gridLayout.backgroundColor = '#000';
+
+        const imgView = new Image();
+        imgView.src = imageSource;
+        imgView.stretch = 'aspectFit';
+        imgView.width = '100%';
+        imgView.height = '100%';
+        gridLayout.addChild(imgView);
+
+        const closeBtn = new (require('@nativescript/core').Button)();
+        closeBtn.text = '✕ Close';
+        closeBtn.color = new Color('#fff');
+        closeBtn.backgroundColor = '#333';
+        closeBtn.borderRadius = 20;
+        closeBtn.padding = '8 16';
+        closeBtn.horizontalAlignment = 'center';
+        closeBtn.verticalAlignment = 'bottom';
+        closeBtn.marginBottom = 20;
+        closeBtn.on('tap', () => Frame.topmost().goBack());
+        gridLayout.addChild(closeBtn);
+
+        modalPage.content = gridLayout;
+        Frame.topmost().navigate({ create: () => modalPage, animated: true });
     }
 
     selectShapeFromList(shape: DrawableShape) {
@@ -316,7 +339,6 @@ export default class DrawingCanvasDemo extends Vue {
     onSelectionChange(args: any) {
         this.selectedShapeId = args.shape?.id ?? null;
         this.currentMode = 'select';
-        console.log('Selection changed:', args.shape?.shapeType ?? 'none');
     }
 
     onHistoryChange(args: any) {

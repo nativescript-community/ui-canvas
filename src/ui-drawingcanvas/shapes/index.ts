@@ -7,3 +7,5 @@ export { default as ArrowShape } from './ArrowShape';
 export { default as ImageShape } from './ImageShape';
 export { default as CustomShape } from './CustomShape';
 export type { PathCommand } from './CustomShape';
+export { default as TextShape } from './TextShape';
+export type { TextShapeJSON } from './TextShape';

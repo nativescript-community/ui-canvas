@@ -7,3 +7,4 @@ export { default as EllipseMode } from './EllipseMode';
 export { default as ArrowMode } from './ArrowMode';
 export { default as ImageMode } from './ImageMode';
 export { default as SelectMode } from './SelectMode';
+export { default as TextMode } from './TextMode';

@@ -1,5 +1,5 @@
-import { Color, Observable, ObservableArray, TouchGestureEventData } from '@nativescript/core';
-import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
+import { Color, ImageSource, Observable, ObservableArray, TextField, TouchGestureEventData, Utils } from '@nativescript/core';
+import { Canvas, Matrix, createImage } from '@nativescript-community/ui-canvas';
 import { CanvasView } from '@nativescript-community/ui-canvas';
 import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
 import { DrawingMode } from './modes/DrawingMode';
@@ -10,6 +10,7 @@ import RectangleMode from './modes/RectangleMode';
 import EllipseMode from './modes/EllipseMode';
 import ArrowMode from './modes/ArrowMode';
 import ImageMode from './modes/ImageMode';
+import TextMode from './modes/TextMode';
 
 // Shape factories for JSON deserialization
 import PenShape from './shapes/PenShape';
@@ -18,9 +19,10 @@ import EllipseShape from './shapes/EllipseShape';
 import ArrowShape from './shapes/ArrowShape';
 import ImageShape from './shapes/ImageShape';
 import CustomShape from './shapes/CustomShape';
+import TextShape from './shapes/TextShape';
 
 /** Mode name type including built-in and any custom mode registered by the app */
-export type DrawingModeName = 'pen' | 'select' | 'move' | 'rectangle' | 'ellipse' | 'arrow' | 'image' | string;
+export type DrawingModeName = 'pen' | 'select' | 'move' | 'rectangle' | 'ellipse' | 'arrow' | 'image' | 'text' | string;
 
 export interface SimplificationOptions {
     /** Enable path simplification (default: true) */
@@ -109,6 +111,19 @@ export class DrawingCanvas extends CanvasView {
     private _undoStack: Snapshot[] = [];
     private _redoStack: Snapshot[] = [];
     private _shapeFactories: Map<string, ShapeFactory> = new Map();
+
+    /**
+     * The effective display scale computed each frame in onDraw (canvasScale × matrix scale).
+     * Used by drawShapeSelectionOverlay to keep handle sizes constant on screen.
+     */
+    _currentDisplayScale: number = 1;
+
+    /** Shared TextField used for TextShape editing (created lazily) */
+    private _textField: TextField | null = null;
+    /** The TextShape currently being edited, or null */
+    private _editingTextShape: TextShape | null = null;
+    /** Text value captured before editing begins (for undo) */
+    private _editingTextSnapshot: string | null = null;
 
     constructor() {
         super();
@@ -360,6 +375,23 @@ export class DrawingCanvas extends CanvasView {
         const hasTranslate = this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0;
         const hasCanvasMatrix = this.canvasMatrix && !this.canvasMatrix.isIdentity();
         const hasTransform = hasScale || hasTranslate || hasCanvasMatrix;
+
+        // Compute the effective display scale so handles can compensate
+        let displayScale = this.canvasScale;
+        if (hasCanvasMatrix) {
+            try {
+                // Approximate scale from the matrix determinant square-root
+                // Works for uniform scale matrices produced by typical zoom widgets.
+                const vals = Array.create('float', 9);
+                (this._canvasMatrix as any).getValues(vals);
+                const matScaleX = Math.sqrt(vals[0] * vals[0] + vals[3] * vals[3]);
+                if (isFinite(matScaleX) && matScaleX > 0) displayScale *= matScaleX;
+            } catch (_e) {
+                // Fallback: use canvasScale only
+            }
+        }
+        this._currentDisplayScale = displayScale;
+
         if (hasTransform) {
             canvas.save();
             if (hasTranslate) {
@@ -408,7 +440,7 @@ export class DrawingCanvas extends CanvasView {
     // -----------------------------------------------------------------------
 
     private _registerBuiltinModes(): void {
-        const modes: DrawingMode[] = [new PenMode(this), new SelectMode(this), new MoveMode(this), new RectangleMode(this), new EllipseMode(this), new ArrowMode(this), new ImageMode(this)];
+        const modes: DrawingMode[] = [new PenMode(this), new SelectMode(this), new MoveMode(this), new RectangleMode(this), new EllipseMode(this), new ArrowMode(this), new ImageMode(this), new TextMode(this)];
         for (const m of modes) {
             this._modes.set(m.name, m);
         }
@@ -421,9 +453,12 @@ export class DrawingCanvas extends CanvasView {
         this._shapeFactories.set('arrow', () => new ArrowShape());
         this._shapeFactories.set('image', () => new ImageShape());
         this._shapeFactories.set('custom', () => new CustomShape());
+        this._shapeFactories.set('text', () => new TextShape());
     }
 
     matrixMapPointArray: any
+    private _inverseMatrixCache: Matrix | null = null;
+
     private _handleTouch(args: TouchGestureEventData): void {
         // Inverse-transform touch coordinates to account for canvasScale / canvasTranslate
         const rawX = args.getX();
@@ -437,11 +472,19 @@ export class DrawingCanvas extends CanvasView {
             if (!this.matrixMapPointArray) {
                 this.matrixMapPointArray = Array.create('float', 2);
             }
-            this.matrixMapPointArray[0] = point.x;
-            this.matrixMapPointArray[1] = point.y;
-            this._canvasMatrix.mapPoints(this.matrixMapPointArray);
-            point.x = this.matrixMapPointArray[0];
-            point.y = this.matrixMapPointArray[1];
+            // We need the INVERSE of canvasMatrix to go from screen → canvas space.
+            // Cache the inverse when the matrix changes (invert is a no-op if matrix is identity).
+            if (!this._inverseMatrixCache) {
+                this._inverseMatrixCache = new Matrix();
+            }
+            if (this._canvasMatrix.invert(this._inverseMatrixCache)) {
+                this.matrixMapPointArray[0] = point.x;
+                this.matrixMapPointArray[1] = point.y;
+                this._inverseMatrixCache.mapPoints(this.matrixMapPointArray);
+                point.x = this.matrixMapPointArray[0];
+                point.y = this.matrixMapPointArray[1];
+            }
+            // If invert fails (degenerate matrix), fall back to the un-matrix-mapped point.
         }
 
         switch (args.action) {
@@ -462,6 +505,202 @@ export class DrawingCanvas extends CanvasView {
 
     private _onShapeChanged(): void {
         this.redraw();
+    }
+
+    // -----------------------------------------------------------------------
+    // Customizable selection overlay
+    // -----------------------------------------------------------------------
+
+    /**
+     * Draw the selection overlay for the given shape.
+     * Override this method to customise the selection overlay appearance across all shapes,
+     * or let individual shapes override their own `drawSelectionOverlay()` for per-shape customisation.
+     */
+    drawShapeSelectionOverlay(canvas: Canvas, shape: DrawableShape): void {
+        shape.drawSelectionOverlay(canvas, this.handleSize, this._currentDisplayScale);
+    }
+
+    // -----------------------------------------------------------------------
+    // Text editing
+    // -----------------------------------------------------------------------
+
+    /**
+     * Open the shared TextField over the given TextShape so the user can type.
+     * The TextField is added as a child of DrawingCanvas (which extends GridLayout),
+     * positioned and sized to match the shape's screen bounding box.
+     * Call `endTextEdit()` to commit changes and hide the field.
+     */
+    beginTextEdit(shape: TextShape): void {
+        if (this._editingTextShape) {
+            this.endTextEdit();
+        }
+        this._editingTextSnapshot = shape.text;
+        this._editingTextShape = shape;
+        this.pushUndoSnapshot();
+
+        const tf = this._getOrCreateTextField();
+        tf.text = shape.text;
+
+        // Position over the shape's bounds (in screen dp, accounting for canvasScale)
+        this._positionTextField(shape);
+
+        if (!tf.parent) {
+            this.addChild(tf);
+        }
+
+        // Listen for text changes
+        tf.off('textChange');
+        tf.on('textChange', (args: any) => {
+            if (this._editingTextShape) {
+                this._editingTextShape.text = args.value ?? tf.text;
+                this.redraw();
+            }
+        });
+
+        // Focus the field after a short delay so the keyboard appears
+        setTimeout(() => {
+            try { tf.focus(); } catch (_e) {}
+        }, 100);
+
+        this.redraw();
+    }
+
+    /**
+     * Commit the TextField content to the shape and hide the TextField.
+     */
+    endTextEdit(): void {
+        if (!this._editingTextShape || !this._textField) return;
+        const shape = this._editingTextShape;
+        const newText = this._textField.text ?? '';
+
+        // If text changed, push an undo snapshot
+        if (newText !== this._editingTextSnapshot) {
+            shape.text = newText;
+            // The snapshot was already pushed in beginTextEdit; no need for another one.
+        }
+
+        this._editingTextShape = null;
+        this._editingTextSnapshot = null;
+
+        try {
+            this._textField.off('textChange');
+            this._textField.dismissSoftInput();
+        } catch (_e) {}
+
+        try {
+            if (this._textField.parent) {
+                (this._textField.parent as any).removeChild(this._textField);
+            }
+        } catch (_e) {}
+
+        this.redraw();
+    }
+
+    private _getOrCreateTextField(): TextField {
+        if (!this._textField) {
+            const tf = new TextField();
+            tf.backgroundColor = 'transparent';
+            tf.borderColor = 'transparent';
+            tf.borderWidth = 0;
+            tf.padding = 0;
+            tf.autocorrect = false;
+            tf.autocapitalizationType = 'none';
+            this._textField = tf;
+        }
+        return this._textField;
+    }
+
+    private _positionTextField(shape: TextShape): void {
+        const tf = this._textField!;
+        const b = shape.getBounds();
+        const scale = this._currentDisplayScale;
+
+        // Convert canvas coordinates to screen dp: apply canvasTranslate + canvasScale,
+        // then the canvasMatrix (approximate, works well for pure scale/translate matrices).
+        let screenX = b.left * this.canvasScale + this.canvasTranslateX;
+        let screenY = b.top * this.canvasScale + this.canvasTranslateY;
+        const screenW = (b.right - b.left) * this.canvasScale;
+        const screenH = (b.bottom - b.top) * this.canvasScale;
+
+        if (this._canvasMatrix && !this._canvasMatrix.isIdentity()) {
+            try {
+                const arr = Array.create('float', 2);
+                arr[0] = screenX;
+                arr[1] = screenY;
+                this._canvasMatrix.mapPoints(arr);
+                // After concat(canvasMatrix) the point is in screen pixels / density
+                screenX = arr[0];
+                screenY = arr[1];
+            } catch (_e) {}
+        }
+
+        tf.marginLeft = screenX;
+        tf.marginTop = screenY;
+        tf.width = Math.max(40, screenW);
+        tf.height = Math.max(20, screenH);
+        tf.fontSize = shape.fontSize * scale;
+        if (shape.fontFamily) tf.fontFamily = shape.fontFamily;
+        tf.fontWeight = shape.bold ? 'bold' : 'normal';
+        tf.fontStyle = shape.italic ? 'italic' : 'normal';
+        tf.rotate = shape.rotation;
+        tf.horizontalAlignment = 'left';
+        tf.verticalAlignment = 'top';
+    }
+
+    // -----------------------------------------------------------------------
+    // Image export
+    // -----------------------------------------------------------------------
+
+    /**
+     * Export the current canvas layers as an off-screen bitmap.
+     *
+     * @param targetWidthDp  - width of the output image in dp (defaults to the DrawingCanvas width)
+     * @param targetHeightDp - height of the output image in dp (defaults to the DrawingCanvas height)
+     * @param transform      - optional Matrix to apply when rendering shapes (e.g. the canvasMatrix
+     *                         that maps canvas coordinates to the image coordinate space)
+     * @returns ImageSource   containing the rendered bitmap, or null on error
+     */
+    exportImage(targetWidthDp?: number, targetHeightDp?: number, transform?: Matrix): ImageSource | null {
+        try {
+            const density = Utils.layout.getDisplayDensity();
+            const wDp = targetWidthDp ?? this.getMeasuredWidth() / density;
+            const hDp = targetHeightDp ?? this.getMeasuredHeight() / density;
+            const wPx = Math.round(wDp * density);
+            const hPx = Math.round(hDp * density);
+
+            if (wPx <= 0 || hPx <= 0) return null;
+
+            // Create an off-screen ImageSource and a Canvas backed by it
+            const imageSource = createImage({ width: wPx, height: hPx });
+            const offCanvas = new Canvas(imageSource);
+
+            // Scale from dp to px
+            offCanvas.scale(density, density);
+
+            if (transform && !transform.isIdentity()) {
+                offCanvas.concat(transform);
+            }
+
+            // Draw all visible layers
+            for (const shape of this.layers) {
+                if (!shape.visible) continue;
+                offCanvas.save();
+                if (shape.rotation !== 0) {
+                    const b = shape.getBounds();
+                    const cx = (b.left + b.right) / 2;
+                    const cy = (b.top + b.bottom) / 2;
+                    offCanvas.rotate(shape.rotation, cx, cy);
+                }
+                shape.draw(offCanvas);
+                offCanvas.restore();
+            }
+
+            offCanvas.release();
+            return imageSource;
+        } catch (err) {
+            console.error('DrawingCanvas.exportImage failed:', err);
+            return null;
+        }
     }
 
     private _captureSnapshot(): Snapshot {
