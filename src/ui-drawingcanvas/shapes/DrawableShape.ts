@@ -139,6 +139,10 @@ export abstract class DrawableShape extends Observable {
         this.width = Math.max(2, w);
         this.height = Math.max(2, h);
     }
+    applyTranslate(x: number, y: number): void {
+        this.x = x;
+        this.y = y;
+    }
 
     /** Rotate a point around a center by angleDegrees, returning the new world position */
     protected static rotatePoint(px: number, py: number, cx: number, cy: number, angleDegrees: number): { x: number; y: number } {

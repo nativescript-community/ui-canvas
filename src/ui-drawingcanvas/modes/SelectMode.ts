@@ -85,8 +85,7 @@ export default class SelectMode extends DrawingMode {
         if (this._action.kind === 'move') {
             const dx = point.x - this._action.startX;
             const dy = point.y - this._action.startY;
-            this._activeShape.x = this._action.origX + dx;
-            this._activeShape.y = this._action.origY + dy;
+            this._activeShape.applyTranslate(this._action.origX + dx, this._action.origY + dy);
             this.canvas.redraw();
         } else if (this._action.kind === 'resize') {
             this._applyResize(point);

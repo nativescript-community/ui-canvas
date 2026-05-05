@@ -31,7 +31,10 @@ export default class PenShape extends DrawableShape {
     private _getRawBounds(): { minX: number; minY: number; maxX: number; maxY: number } | null {
         const pts = this.renderPoints.length ? this.renderPoints : this.points;
         if (pts.length === 0) return null;
-        let minX = pts[0].x, minY = pts[0].y, maxX = pts[0].x, maxY = pts[0].y;
+        let minX = pts[0].x,
+            minY = pts[0].y,
+            maxX = pts[0].x,
+            maxY = pts[0].y;
         for (const p of pts) {
             if (p.x < minX) minX = p.x;
             if (p.y < minY) minY = p.y;
@@ -59,6 +62,7 @@ export default class PenShape extends DrawableShape {
         const scaledBottom = rawCy + (maxY - rawCy) * this.scaleY + this.y;
 
         const pad = (this.strokeWidth ?? 2) / 2;
+        console.log('getBounds', scaledLeft, this.x);
         this._bounds = {
             left: scaledLeft - pad,
             top: scaledTop - pad,
@@ -70,6 +74,7 @@ export default class PenShape extends DrawableShape {
 
     hitTest(px: number, py: number): boolean {
         const b = this.getBounds();
+        console.log('hitTest', b, this.x, this.y);
         return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
@@ -135,6 +140,11 @@ export default class PenShape extends DrawableShape {
         this.y = newY - rawCy + (rawH / 2) * newScaleY;
         this.scaleX = newScaleX;
         this.scaleY = newScaleY;
+        this._invalidateBounds();
+    }
+
+    applyTranslate(x: number, y: number): void {
+        super.applyTranslate(x, y);
         this._invalidateBounds();
     }
 
