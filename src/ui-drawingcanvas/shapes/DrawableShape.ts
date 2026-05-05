@@ -128,6 +128,18 @@ export abstract class DrawableShape extends Observable {
         this.fromJSONData(data);
     }
 
+    /**
+     * Apply a resize operation given the new bounding box position and size.
+     * The default implementation sets `x`, `y`, `width`, `height` directly.
+     * Subclasses (e.g. PenShape) may override to use `scaleX`/`scaleY` instead.
+     */
+    applyResize(x: number, y: number, w: number, h: number): void {
+        this.x = x;
+        this.y = y;
+        this.width = Math.max(2, w);
+        this.height = Math.max(2, h);
+    }
+
     /** Rotate a point around a center by angleDegrees, returning the new world position */
     protected static rotatePoint(px: number, py: number, cx: number, cy: number, angleDegrees: number): { x: number; y: number } {
         if (angleDegrees === 0) return { x: px, y: py };

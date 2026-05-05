@@ -82,7 +82,6 @@ export default class SelectMode extends DrawingMode {
 
     onTouchMove(point: TouchPoint): void {
         if (!this._action || !this._activeShape) return;
-        console.log('onTouchMove', this._action.kind)
         if (this._action.kind === 'move') {
             const dx = point.x - this._action.startX;
             const dy = point.y - this._action.startY;
@@ -140,7 +139,7 @@ export default class SelectMode extends DrawingMode {
             this._action = {
                 kind: 'resize',
                 handle,
-                origBounds: { x: shape.x, y: shape.y, w: shape.width, h: shape.height }
+                origBounds: { x: b.left, y: b.top, w: b.right - b.left, h: b.bottom - b.top }
             };
         }
     }
@@ -223,10 +222,7 @@ export default class SelectMode extends DrawingMode {
             // 'br' anchors at top-left, w and h already set correctly
         }
 
-        shape.x = x;
-        shape.y = y;
-        shape.width = Math.max(MIN_SHAPE_SIZE, w);
-        shape.height = Math.max(MIN_SHAPE_SIZE, h);
+        shape.applyResize(x, y, Math.max(MIN_SHAPE_SIZE, w), Math.max(MIN_SHAPE_SIZE, h));
     }
 
     private _applyRotation(point: TouchPoint): void {

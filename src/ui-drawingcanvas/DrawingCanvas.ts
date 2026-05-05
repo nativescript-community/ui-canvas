@@ -144,7 +144,6 @@ export class DrawingCanvas extends CanvasView {
         }
         const oldMode = this._mode;
         this._mode.deactivate();
-        console.log('setMode', mode.name, oldMode.name);
         if (mode.name === 'move') {
             this.isUserInteractionEnabled = false;
         } else if (oldMode.name === 'move') {
@@ -386,9 +385,6 @@ export class DrawingCanvas extends CanvasView {
                 const cx = (b.left + b.right) / 2;
                 const cy = (b.top + b.bottom) / 2;
                 canvas.rotate(shape.rotation, cx, cy);
-            }
-            if (shape.scaleX !== 1 || shape.scaleY !== 1) {
-                canvas.scale(shape.scaleX, shape.scaleY);
             }
             shape.draw(canvas);
             canvas.restore();

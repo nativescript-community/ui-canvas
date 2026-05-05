@@ -27,49 +27,76 @@ export default class PenShape extends DrawableShape {
         this._bounds = null;
     }
 
-    getBounds(): BoundingBox {
-        if (this._bounds) return this._bounds;
+    /** Raw bounding box of the stored points (no translation / scaling applied). */
+    private _getRawBounds(): { minX: number; minY: number; maxX: number; maxY: number } | null {
         const pts = this.renderPoints.length ? this.renderPoints : this.points;
-        if (pts.length === 0) {
-            this._bounds = { left: this.x, top: this.y, right: this.x, bottom: this.y };
-            return this._bounds;
-        }
-        let minX = pts[0].x;
-        let minY = pts[0].y;
-        let maxX = pts[0].x;
-        let maxY = pts[0].y;
+        if (pts.length === 0) return null;
+        let minX = pts[0].x, minY = pts[0].y, maxX = pts[0].x, maxY = pts[0].y;
         for (const p of pts) {
             if (p.x < minX) minX = p.x;
             if (p.y < minY) minY = p.y;
             if (p.x > maxX) maxX = p.x;
             if (p.y > maxY) maxY = p.y;
         }
+        return { minX, minY, maxX, maxY };
+    }
+
+    getBounds(): BoundingBox {
+        if (this._bounds) return this._bounds;
+        const raw = this._getRawBounds();
+        if (!raw) {
+            this._bounds = { left: this.x, top: this.y, right: this.x, bottom: this.y };
+            return this._bounds;
+        }
+        const { minX, minY, maxX, maxY } = raw;
+        const rawCx = (minX + maxX) / 2;
+        const rawCy = (minY + maxY) / 2;
+
+        // Apply scale around the raw center, then translate by x/y
+        const scaledLeft = rawCx + (minX - rawCx) * this.scaleX + this.x;
+        const scaledRight = rawCx + (maxX - rawCx) * this.scaleX + this.x;
+        const scaledTop = rawCy + (minY - rawCy) * this.scaleY + this.y;
+        const scaledBottom = rawCy + (maxY - rawCy) * this.scaleY + this.y;
+
         const pad = (this.strokeWidth ?? 2) / 2;
-        this._bounds = { left: minX - pad, top: minY - pad, right: maxX + pad, bottom: maxY + pad };
+        this._bounds = {
+            left: scaledLeft - pad,
+            top: scaledTop - pad,
+            right: scaledRight + pad,
+            bottom: scaledBottom + pad
+        };
         return this._bounds;
     }
 
-    // hitTest(px: number, py: number): boolean {
-    //     const b = this.getBounds();
-    //     if (px < b.left || px > b.right || py < b.top || py > b.bottom) return false;
-    //     const pts = this.renderPoints.length ? this.renderPoints : this.points;
-    //     const threshold = Math.max(this.strokeWidth * 2, 10);
-    //     for (let i = 1; i < pts.length; i++) {
-    //         const dist = distanceToSegment(px, py, pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
-    //         if (dist <= threshold) return true;
-    //     }
-    //     return false;
-    // }
-
     hitTest(px: number, py: number): boolean {
         const b = this.getBounds();
-        console.log('hitTest', b, px, py)
         return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
     }
 
     draw(canvas: Canvas): void {
         const pts = this.renderPoints.length ? this.renderPoints : this.points;
         if (pts.length < 2) return;
+
+        canvas.save();
+
+        // Apply translation
+        if (this.x !== 0 || this.y !== 0) {
+            canvas.translate(this.x, this.y);
+        }
+
+        // Apply scale around the raw path's center so the path scales in-place
+        if (this.scaleX !== 1 || this.scaleY !== 1) {
+            const rawForScale = this._getRawBounds();
+            if (!rawForScale) {
+                canvas.restore();
+                return;
+            }
+            const rawCx = (rawForScale.minX + rawForScale.maxX) / 2;
+            const rawCy = (rawForScale.minY + rawForScale.maxY) / 2;
+            canvas.translate(rawCx, rawCy);
+            canvas.scale(this.scaleX, this.scaleY);
+            canvas.translate(-rawCx, -rawCy);
+        }
 
         const path = new Path();
         path.moveTo(pts[0].x, pts[0].y);
@@ -79,6 +106,45 @@ export default class PenShape extends DrawableShape {
 
         this.applyPaint(false);
         canvas.drawPath(path, this._paint);
+
+        canvas.restore();
+    }
+
+    /**
+     * For PenShape, "resize" means adjusting scaleX/scaleY (plus x/y offset) so that
+     * the rendered bounds match the requested rectangle.
+     */
+    applyResize(newX: number, newY: number, newW: number, newH: number): void {
+        const raw = this._getRawBounds();
+        if (!raw) return;
+        const { minX, minY, maxX, maxY } = raw;
+        const rawW = maxX - minX;
+        const rawH = maxY - minY;
+        const rawCx = (minX + maxX) / 2;
+        const rawCy = (minY + maxY) / 2;
+
+        // Compute new scale
+        const newScaleX = rawW > 0 ? newW / rawW : 1;
+        const newScaleY = rawH > 0 ? newH / rawH : 1;
+
+        // After canvas.translate(x, y) + scale around rawCx/rawCy, the rendered top-left is:
+        //   x + rawCx + (minX - rawCx) * scaleX = x + rawCx - rawW/2 * scaleX
+        // We want this to equal newX:
+        //   x = newX - rawCx + rawW/2 * newScaleX
+        this.x = newX - rawCx + (rawW / 2) * newScaleX;
+        this.y = newY - rawCy + (rawH / 2) * newScaleY;
+        this.scaleX = newScaleX;
+        this.scaleY = newScaleY;
+        this._invalidateBounds();
+    }
+
+    private static readonly _BOUNDS_AFFECTING_PROPS = new Set(['x', 'y', 'scaleX', 'scaleY', 'strokeWidth']);
+
+    notifyPropertyChange(propertyName: string, value: any, oldValue?: any): void {
+        super.notifyPropertyChange(propertyName, value, oldValue);
+        if (PenShape._BOUNDS_AFFECTING_PROPS.has(propertyName)) {
+            this._invalidateBounds();
+        }
     }
 
     protected toJSONData(): Record<string, any> {
