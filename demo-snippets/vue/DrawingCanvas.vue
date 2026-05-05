@@ -27,6 +27,7 @@
                     src="~/assets/images/test.jpg"
                     width="100%"
                     height="100%"
+                    maxZoom="10"
                     stretch="aspectFit"
                     @transformChanged="onImageViewTransform"
                     @finalImageSet="onImageLoaded"
@@ -40,6 +41,7 @@
                     :canvasScale="canvasScale"
                     :canvasTranslateX="canvasTranslateX"
                     :canvasTranslateY="canvasTranslateY"
+                    :canvasMatrix="currentMatrix"
                     backgroundColor="#ff000055"
                     :width="canvasWidth"
                     :height="canvasHeight"
@@ -240,21 +242,15 @@ export default class DrawingCanvasDemo extends Vue {
         }
     }
     onDraw(event: any) {
-        const canvas = event.canvas as Canvas;
+        // const canvas = event.canvas as Canvas;
         // console.log('onDraw', this.currentMatrix);
-        if (this.currentMatrix) {
-            try {
-                // if (!this.currentMatrix.isIdentity()) {
-                //     const scale = Utils.layout.toDeviceIndependentPixels(1);
-                //     console.log('scale', scale);
-                //     // canvas.scale(scale, scale)
-                //     // this.currentMatrix.postScale(scale, scale);
-                // }
-                canvas.concat(this.currentMatrix);
-            } catch (error) {
-                console.error(error, error.stack);
-            }
-        }
+        // if (this.currentMatrix) {
+        //     try {
+        //         canvas.concat(this.currentMatrix);
+        //     } catch (error) {
+        //         console.error(error, error.stack);
+        //     }
+        // }
     }
 
     shapeEmoji(type: string): string {

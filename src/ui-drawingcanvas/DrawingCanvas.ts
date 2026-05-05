@@ -1,5 +1,5 @@
 import { Color, Observable, ObservableArray, TouchGestureEventData } from '@nativescript/core';
-import { Canvas } from '@nativescript-community/ui-canvas';
+import { Canvas, Matrix } from '@nativescript-community/ui-canvas';
 import { CanvasView } from '@nativescript-community/ui-canvas';
 import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
 import { DrawingMode } from './modes/DrawingMode';
@@ -83,6 +83,16 @@ export class DrawingCanvas extends CanvasView {
 
     /** Global canvas Y translation applied when drawing (useful for pan integration) */
     canvasTranslateY: number = 0;
+
+    /** Global canvas Matrix applied when drawing (useful for zoom integration) */
+    _canvasMatrix: Matrix;
+
+    set canvasMatrix(matrix) {
+        this._canvasMatrix = matrix;
+    }
+    get canvasMatrix() {
+        return this._canvasMatrix;
+    }
 
     /** Simplification options for pen strokes */
     simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
@@ -346,18 +356,26 @@ export class DrawingCanvas extends CanvasView {
     augmentedCanvas: Canvas;
     callDrawBeforeShapes: boolean;
 
-
     onDraw(canvas: Canvas): void {
-        const hasTransform = this.canvasScale !== 1 || this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0;
+        const hasScale = this.canvasScale !== 1;
+        const hasTranslate = this.canvasTranslateX !== 0 || this.canvasTranslateY !== 0;
+        const hasCanvasMatrix = this.canvasMatrix && !this.canvasMatrix.isIdentity();
+        const hasTransform = hasScale || hasTranslate || hasCanvasMatrix;
         if (hasTransform) {
             canvas.save();
-            canvas.translate(this.canvasTranslateX, this.canvasTranslateY);
-            canvas.scale(this.canvasScale, this.canvasScale);
+            if (hasTranslate) {
+                canvas.translate(this.canvasTranslateX, this.canvasTranslateY);
+            }
+            if (hasScale) {
+                canvas.scale(this.canvasScale, this.canvasScale);
+            }
+            if (hasCanvasMatrix) {
+                canvas.concat(this.canvasMatrix);
+            }
         }
         if (this.callDrawBeforeShapes) {
             this.notify({ eventName: 'draw', object: this, canvas: this.augmentedCanvas });
         }
-
 
         // Draw all committed layers
         for (const shape of this.layers) {
@@ -409,6 +427,7 @@ export class DrawingCanvas extends CanvasView {
         this._shapeFactories.set('custom', () => new CustomShape());
     }
 
+    matrixMapPointArray: any
     private _handleTouch(args: TouchGestureEventData): void {
         // Inverse-transform touch coordinates to account for canvasScale / canvasTranslate
         const rawX = args.getX();
@@ -417,6 +436,17 @@ export class DrawingCanvas extends CanvasView {
             x: (rawX - this.canvasTranslateX) / this.canvasScale,
             y: (rawY - this.canvasTranslateY) / this.canvasScale
         };
+        const hasCanvasMatrix = this.canvasMatrix && !this.canvasMatrix.isIdentity();
+        if (hasCanvasMatrix) {
+            if (!this.matrixMapPointArray) {
+                this.matrixMapPointArray = Array.create('float', 2);
+            }
+            this.matrixMapPointArray[0] = point.x;
+            this.matrixMapPointArray[1] = point.y;
+            this._canvasMatrix.mapPoints(this.matrixMapPointArray);
+            point.x = this.matrixMapPointArray[0];
+            point.y = this.matrixMapPointArray[1];
+        }
 
         switch (args.action) {
             case 'down':
