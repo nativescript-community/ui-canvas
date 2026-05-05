@@ -72,7 +72,6 @@ export default class TextShape extends DrawableShape {
     }
 
     draw(canvas: Canvas): void {
-        console.log('draw', this.text);
         if (!this.text) return;
         const b = this.getBounds();
         const staticlayout = this.getStaticLayout(b);

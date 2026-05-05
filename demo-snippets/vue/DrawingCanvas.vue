@@ -286,8 +286,8 @@ export default class DrawingCanvasDemo extends Vue {
         imgView.backgroundColor = 'green';
         imgView.stretch = 'aspectFit';
         imgView.maxZoom = 10;
-        imgView.width = '100%';
-        imgView.height = '100%';
+        // imgView.width = '100%' as any;
+        // imgView.height = '100%' as any;
         gridLayout.addChild(imgView);
 
         const closeBtn = new Button();

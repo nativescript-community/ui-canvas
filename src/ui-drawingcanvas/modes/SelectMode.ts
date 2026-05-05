@@ -4,9 +4,9 @@ import { DrawableShape, HandlePoint } from '../shapes/DrawableShape';
 import TextShape from '../shapes/TextShape';
 
 type TransformAction =
-    | { kind: 'move'; startX: number; startY: number; origX: number; origY: number }
-    | { kind: 'resize'; handle: HandlePoint; origBounds: { x: number; y: number; w: number; h: number } }
-    | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number }
+    | { kind: 'move'; startX: number; startY: number; origX: number; origY: number; start: boolean }
+    | { kind: 'resize'; handle: HandlePoint; origBounds: { x: number; y: number; w: number; h: number }; start: boolean }
+    | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number; start: boolean }
     | null;
 
 /** Handle hit-test radius in dp */
@@ -45,6 +45,7 @@ export default class SelectMode extends DrawingMode {
             if (this._activeShape.hitTest(point.x, point.y)) {
                 this.canvas.pushUndoSnapshot();
                 this._action = {
+                    start: true,
                     kind: 'move',
                     startX: point.x,
                     startY: point.y,
@@ -58,7 +59,7 @@ export default class SelectMode extends DrawingMode {
                 this.canvas.endTextEdit();
                 if (this._activeShape.text?.length === 0) {
                     //delete empty text shape on selection
-                    this.canvas.removeLayer(this._activeShape)
+                    this.canvas.removeLayer(this._activeShape);
                 }
             }
             this._activeShape = null;
@@ -73,8 +74,8 @@ export default class SelectMode extends DrawingMode {
                 this._activeShape = s;
                 this.canvas.notify({ eventName: 'selectionChange', object: this.canvas, shape: s });
                 // Start move immediately
-                this.canvas.pushUndoSnapshot();
                 this._action = {
+                    start: true,
                     kind: 'move',
                     startX: point.x,
                     startY: point.y,
@@ -91,14 +92,26 @@ export default class SelectMode extends DrawingMode {
     onTouchMove(point: TouchPoint): void {
         if (!this._action || !this._activeShape) return;
         if (this._action.kind === 'move') {
+            if (this._action.start) {
+                this.canvas.pushUndoSnapshot();
+                this._action.start = false;
+            }
             const dx = point.x - this._action.startX;
             const dy = point.y - this._action.startY;
             this._activeShape.applyTranslate(this._action.origX + dx, this._action.origY + dy);
             this.canvas.redraw();
         } else if (this._action.kind === 'resize') {
+            if (this._action.start) {
+                this.canvas.pushUndoSnapshot();
+                this._action.start = false;
+            }
             this._applyResize(point);
             this.canvas.redraw();
         } else if (this._action.kind === 'rotate') {
+            if (this._action.start) {
+                this.canvas.pushUndoSnapshot();
+                this._action.start = false;
+            }
             this._applyRotation(point);
             this.canvas.redraw();
         }
@@ -134,7 +147,6 @@ export default class SelectMode extends DrawingMode {
 
     private _hitTestHandle(shape: DrawableShape, point: TouchPoint): HandlePoint | null {
         const handles = shape.getHandles(this.canvas._currentDisplayScale);
-        console.log('_hitTestHandle', point, handles);
         for (const h of handles) {
             if (Math.hypot(point.x - h.x, point.y - h.y) <= HANDLE_RADIUS) {
                 return h;
@@ -151,6 +163,7 @@ export default class SelectMode extends DrawingMode {
 
         if (handle.type === 'rotate') {
             this._action = {
+                start: true,
                 kind: 'rotate',
                 cx,
                 cy,
@@ -159,6 +172,7 @@ export default class SelectMode extends DrawingMode {
             };
         } else {
             this._action = {
+                start: true,
                 kind: 'resize',
                 handle,
                 origBounds: { x: b.left, y: b.top, w: b.right - b.left, h: b.bottom - b.top }

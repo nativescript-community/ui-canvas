@@ -43,6 +43,7 @@ export type ShapeFactory = () => DrawableShape;
 /** Snapshot used for undo/redo */
 interface Snapshot {
     layers: ShapeJSON[];
+    date: number;
 }
 
 /**
@@ -396,25 +397,7 @@ export class DrawingCanvas extends CanvasView {
         const hasCanvasMatrix = this.canvasMatrix && !this.canvasMatrix.isIdentity();
         const hasTransform = hasScale || hasTranslate || hasCanvasMatrix;
 
-        // Compute the effective display scale so handles can compensate
-        let displayScale = this.canvasScale;
-        if (hasCanvasMatrix) {
-            try {
-                // Approximate scale from the matrix components.
-                // For a standard 2D affine matrix laid out as:
-                //   [ vals[0]  vals[1]  vals[2] ]   (scaleX / cosθ, skewX / -sinθ, translateX)
-                //   [ vals[3]  vals[4]  vals[5] ]   (skewY / sinθ,  scaleY / cosθ,  translateY)
-                // The scale magnitude along X is sqrt(vals[0]^2 + vals[3]^2).
-                const vals = Array.create('float', 9);
-                (this._canvasMatrix as any).getValues(vals);
-                const matScaleX = Math.sqrt(vals[0] * vals[0] + vals[3] * vals[3]);
-                if (isFinite(matScaleX) && matScaleX > 0) displayScale *= matScaleX;
-            } catch (_e) {
-                // Fallback: use canvasScale only (matrix.getValues may not be available on all platforms)
-            }
-        }
-        this._currentDisplayScale = this._currentDisplayScale ??this.canvasScale ;
-        console.log('onDraw', hasCanvasMatrix, this._canvasMatrix, this._currentDisplayScale);
+        this._currentDisplayScale = this._currentDisplayScale ?? this.canvasScale;
 
         if (hasTransform) {
             canvas.save();
@@ -622,7 +605,8 @@ export class DrawingCanvas extends CanvasView {
         const newText = this._textField.text ?? '';
 
         // Push an undo snapshot only when the text actually changed
-        if (newText !== this._editingTextSnapshot) {
+        if (this._editingTextSnapshot?.length && newText !== this._editingTextSnapshot) {
+            shape.text = this._editingTextSnapshot;
             this.pushUndoSnapshot();
             shape.text = newText;
         }
@@ -765,7 +749,8 @@ export class DrawingCanvas extends CanvasView {
     }
 
     private _captureSnapshot(): Snapshot {
-        return { layers: [...this.layers.map((s) => s.toJSON())] };
+        const date = Date.now();
+        return { layers: [...this.layers.map((s) => s.toJSON())], date };
     }
 
     private _restoreSnapshot(snap: Snapshot): void {
@@ -774,14 +759,12 @@ export class DrawingCanvas extends CanvasView {
             this.layers.getItem(i).off(Observable.propertyChangeEvent, this._onShapeChanged, this);
         }
         this.layers.splice(0, this.layers.length);
-
-        for (const item of snap.layers) {
-            const shape = this._createShapeFromJSON(item);
-            if (shape) {
-                this.layers.push(shape);
-                shape.on(Observable.propertyChangeEvent, this._onShapeChanged, this);
-            }
-        }
+        const layers = snap.layers.map((s) => {
+            const shape = this._createShapeFromJSON(s);
+            shape.on(Observable.propertyChangeEvent, this._onShapeChanged, this);
+            return shape;
+        });
+        this.layers.splice(0, this.layers.length, ...layers);
         this.redraw();
     }
 
