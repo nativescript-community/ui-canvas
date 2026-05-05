@@ -6,17 +6,24 @@ import Image from './Image.vue';
 import Complex from './Complex.vue';
 import SVG from './SVG.vue';
 import CanvasLabel from './CanvasLabel.vue';
+import DrawingCanvas from './DrawingCanvas.vue';
 import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
 import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import SVGPlugin from '@nativescript-community/ui-svg/vue';
+import DrawingCanvasPlugin from '@nativescript-community/ui-drawingcanvas/vue';
+import ZoomImagePlugin from '@nativescript-community/ui-zoomimage/vue';
+import {initialize} from '@nativescript-community/ui-image';
 
+initialize();
 export function installPlugin() {
     Vue.use(CanvasPlugin);
     Vue.use(SVGPlugin);
     Vue.use(CanvasLabelPlugin);
     Vue.use(CollectionViewPlugin);
+    Vue.use(DrawingCanvasPlugin);
+    Vue.use(ZoomImagePlugin);
     Vue.registerElement('HTMLLabel', () => HTMLLabel);
 }
 
@@ -27,5 +34,6 @@ export const demos = [
     { name: 'Image', path: 'Image', component: Image },
     { name: 'Complex', path: 'Complex', component: Complex },
     { name: 'SVG', path: 'SVG', component: SVG },
-    { name: 'CanvasLabel', path: 'CanvasLabel', component: CanvasLabel }
+    { name: 'CanvasLabel', path: 'CanvasLabel', component: CanvasLabel },
+    { name: 'DrawingCanvas', path: 'DrawingCanvas', component: DrawingCanvas }
 ];

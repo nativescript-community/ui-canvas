@@ -1,0 +1,46 @@
+{
+    "name": "@nativescript-community/ui-drawingcanvas",
+    "version": "0.1.0",
+    "description": "Interactive drawing canvas plugin for NativeScript – draw shapes, images and freehand paths with multiple modes, layers, undo/redo and JSON serialization.",
+    "main": "./index",
+    "sideEffects": false,
+    "typings": "./index.d.ts",
+    "nativescript": {
+        "platforms": {
+            "android": "3.0.0",
+            "ios": "3.0.0"
+        }
+    },
+    "scripts": {
+        "build": "npm run tsc && npm run readme",
+        "build.all": "npm run build",
+        "readme": "readme generate -c ../../tools/readme/blueprint.json",
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-drawingcanvas' --parents --cwd=../../src/ui-drawingcanvas && tsc --build",
+        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map ./*.tsbuildinfo ./*.mjs ./*.mjs.map ./shapes ./modes ./algorithms ./vue"
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "iOS",
+        "canvas",
+        "drawing",
+        "sketch"
+    ],
+    "author": {
+        "name": "Martin Guillon",
+        "email": "martin@akylas.fr"
+    },
+    "bugs": {
+        "url": "https://github.com/nativescript-community/ui-canvas/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nativescript-community/ui-canvas"
+    },
+    "license": "Apache-2.0",
+    "readmeFilename": "README.md",
+    "peerDependencies": {
+        "@nativescript-community/ui-canvas": "^4.6.41"
+    }
+}

@@ -1,0 +1,11 @@
+export { DrawableShape } from './DrawableShape';
+export type { BoundingBox, HandlePoint, Point, ShapeJSON } from './DrawableShape';
+export { default as PenShape } from './PenShape';
+export { default as RectShape } from './RectShape';
+export { default as EllipseShape } from './EllipseShape';
+export { default as ArrowShape } from './ArrowShape';
+export { default as ImageShape } from './ImageShape';
+export { default as CustomShape } from './CustomShape';
+export type { PathCommand } from './CustomShape';
+export { default as TextShape } from './TextShape';
+export type { TextShapeJSON } from './TextShape';

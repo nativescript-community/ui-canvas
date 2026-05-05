@@ -6,6 +6,8 @@
             "@nativescript-community/ui-canvas/*": ["src/ui-canvas/*"],
             "@nativescript-community/ui-svg": ["src/ui-svg/index"],
             "@nativescript-community/ui-svg/*": ["src/ui-svg/*"],
+            "@nativescript-community/ui-drawingcanvas": ["src/ui-drawingcanvas/index"],
+            "@nativescript-community/ui-drawingcanvas/*": ["src/ui-drawingcanvas/*"]
         }
     }
 }
