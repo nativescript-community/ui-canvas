@@ -4,7 +4,7 @@ import TextShape from '../shapes/TextShape';
 import { DrawingMode, TouchPoint } from './DrawingMode';
 
 type TransformAction =
-    | { kind: 'move'; startX: number; startY: number; origX: number; origY: number; start: boolean }
+    | { kind: 'move'; startX: number; startY: number; origX: number; origY: number; start: boolean; alreadySelected: boolean }
     | {
           kind: 'resize';
           handle: HandlePoint;
@@ -12,8 +12,9 @@ type TransformAction =
           /** World-space position of the fixed (opposite) anchor, captured at gesture start */
           anchorWorld: { x: number; y: number };
           start: boolean;
+          alreadySelected: boolean;
       }
-    | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number; start: boolean }
+    | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number; start: boolean; alreadySelected: boolean }
     | null;
 
 export default class SelectMode extends DrawingMode {
@@ -47,9 +48,9 @@ export default class SelectMode extends DrawingMode {
             }
             // Check if we tapped on the shape body for move
             if (this._activeShape.hitTest(point.x, point.y)) {
-                console.log('start moving');
                 this._action = {
                     start: true,
+                    alreadySelected: true,
                     kind: 'move',
                     startX: point.x,
                     startY: point.y,
@@ -79,6 +80,7 @@ export default class SelectMode extends DrawingMode {
                 this.canvas.notify({ eventName: 'selectionChange', object: this.canvas, shape: s });
                 // Start move immediately
                 this._action = {
+                    alreadySelected: false,
                     start: true,
                     kind: 'move',
                     startX: point.x,
@@ -131,14 +133,13 @@ export default class SelectMode extends DrawingMode {
 
     onTouchEnd(_point: TouchPoint): void {
         const action = this._action;
-        this._action = null;
-        // Re-position the TextField if we just moved/resized a TextShape
-        if (this._activeShape instanceof TextShape) {
+        if (this._activeShape instanceof TextShape && action && action.alreadySelected && action.start) {
+            // Re-position the TextField if we just moved/resized a TextShape
             // If this was a simple tap (no drag occurred, start is still true), pass the
             // tap position so the cursor is placed where the user tapped.
-            const tapPoint = action?.kind === 'move' && action.start ? { x: action.startX, y: action.startY } : null;
-            this.canvas.beginTextEdit(this._activeShape, tapPoint);
+            this.canvas.beginTextEdit(this._activeShape, _point);
         }
+        this._action = null;
     }
 
     onTouchCancel(_point: TouchPoint): void {
@@ -179,6 +180,7 @@ export default class SelectMode extends DrawingMode {
 
         if (handle.type === 'rotate') {
             this._action = {
+                alreadySelected: true,
                 start: true,
                 kind: 'rotate',
                 cx,
@@ -238,6 +240,7 @@ export default class SelectMode extends DrawingMode {
 
             this._action = {
                 start: true,
+                alreadySelected: true,
                 kind: 'resize',
                 handle,
                 origBounds: { x: x0, y: y0, w: w0, h: h0 },
