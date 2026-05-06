@@ -2,7 +2,22 @@ import { Canvas, Path } from '@nativescript-community/ui-canvas';
 import { BoundingBox, DrawableShape, Point, ShapeJSON } from './DrawableShape';
 
 export interface PenShapeJSON extends ShapeJSON {
-    pts: number[]; // flat array [x1,y1,x2,y2,...]
+    p: string; // encoded drawStringWithAttributesWithAlignment
+}
+
+/** Google polyline-style encoding */
+function encodeSigned(value: number): string {
+    // ZigZag encode
+    let v = value < 0 ? ~(value << 1) : value << 1;
+
+    let output = '';
+    while (v >= 0x20) {
+        output += String.fromCharCode((0x20 | (v & 0x1f)) + 63);
+        v >>= 5;
+    }
+    output += String.fromCharCode(v + 63);
+
+    return output;
 }
 
 export default class PenShape extends DrawableShape {
@@ -167,21 +182,61 @@ export default class PenShape extends DrawableShape {
 
     protected toJSONData(): Record<string, any> {
         const pts = this.renderPoints.length ? this.renderPoints : this.points;
-        const flat: number[] = [];
-        for (const p of pts) {
-            flat.push(Math.round(p.x * 10) / 10, Math.round(p.y * 10) / 10);
+        if (pts.length === 0) return { p: '' };
+
+        const scale = 10; // 0.1 precision
+        let result = '';
+
+        let prevX = 0;
+        let prevY = 0;
+
+        for (let i = 0; i < pts.length; i++) {
+            const x = Math.round(pts[i].x * scale);
+            const y = Math.round(pts[i].y * scale);
+
+            const dx = i === 0 ? x : x - prevX;
+            const dy = i === 0 ? y : y - prevY;
+
+            result += encodeSigned(dx) + encodeSigned(dy);
+
+            prevX = x;
+            prevY = y;
         }
-        return { pts: flat };
+        return { p: result };
     }
 
     protected fromJSONData(data: any): void {
-        const flat: number[] = data.pts ?? [];
+        const str: string = data.p ?? '';
+        const scale = 10;
+
         this.points = [];
-        for (let i = 0; i < flat.length - 1; i += 2) {
-            this.points.push({ x: flat[i], y: flat[i + 1] });
+
+        let index = 0;
+        let x = 0;
+        let y = 0;
+
+        while (index < str.length) {
+            x += decodeSigned();
+            y += decodeSigned();
+            this.points.push({ x: x / scale, y: y / scale });
         }
+
         this.renderPoints = this.points;
         this._invalidateBounds();
+
+        function decodeSigned(): number {
+            let result = 0;
+            let shift = 0;
+            let b: number;
+
+            do {
+                b = str.charCodeAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+
+            return result & 1 ? ~(result >> 1) : result >> 1;
+        }
     }
 }
 
