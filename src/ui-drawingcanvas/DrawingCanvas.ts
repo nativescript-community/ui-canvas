@@ -519,10 +519,9 @@ export class DrawingCanvas extends CanvasView {
         shape.drawSelectionOverlay(canvas, this.handleSize, this._currentDisplayScale);
     }
 
-    // -----------------------------------------------------------------------
-    // Text editing
-    // -----------------------------------------------------------------------
-
+    get editingTextShape() {
+        return this._editingTextShape;
+    }
     get editingTextField() {
         return this._getOrCreateTextField();
     }
