@@ -2,7 +2,12 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "rootDir": "../../src/ui-drawingcanvas",
-        "outDir": "./"
+        "outDir": "./",
+        "paths": {
+            "@nativescript-community/ui-canvas": ["packages/ui-canvas/index"],
+            "@nativescript-community/ui-canvas/*": ["packages/ui-canvas/*"],
+        },
     },
-    "include": ["../../src/ui-drawingcanvas/**/*", "../../tools/references.d.ts", "../../references.d.ts", "../../src/references.d.ts"]
+    "include": ["../../src/ui-drawingcanvas/**/*", "../../tools/references.d.ts", "../../references.d.ts", "../../src/references.d.ts"],
+
 }

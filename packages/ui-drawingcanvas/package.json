@@ -40,7 +40,7 @@
     },
     "license": "Apache-2.0",
     "readmeFilename": "README.md",
-    "peerDependencies": {
-        "@nativescript-community/ui-canvas": "^4.6.41"
+    "dependencies": {
+        "@nativescript-community/ui-canvas": "^4.6.47"
     }
 }
