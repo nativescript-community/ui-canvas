@@ -1,5 +1,5 @@
 import { Canvas, Paint, Path, Style } from '@nativescript-community/ui-canvas';
-import BaseCustomShape from '@nativescript-community/ui-drawingcanvas/shapes/BaseCustomShape';
+import BaseCustomShape from './BaseCustomShape';
 import { Color } from '@nativescript/core';
 
 export default class ArrowShape extends BaseCustomShape {

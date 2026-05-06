@@ -1,6 +1,6 @@
 import { Canvas, Path } from '@nativescript-community/ui-canvas';
-import BaseCustomShape from '@nativescript-community/ui-drawingcanvas/shapes/BaseCustomShape';
-import { BoundingBox, Point } from './DrawableShape';
+import BaseCustomShape from './BaseCustomShape';
+import { Point } from './DrawableShape';
 
 /**
  * CustomShape allows drawing arbitrary paths defined by a list of SVG-like commands.

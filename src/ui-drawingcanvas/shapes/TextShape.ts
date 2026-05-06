@@ -1,4 +1,4 @@
-import { Canvas, LayoutAlignment, StaticLayout, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, LayoutAlignment, StaticLayout } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
