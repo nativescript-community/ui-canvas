@@ -227,7 +227,6 @@ export default class DrawingCanvasDemo extends Vue {
         }
         const rect = this.getImageDisplayRect(imageView, this.imageInfo);
         if (rect) {
-            console.log('getImageDisplayRect', rect);
             this.needsImageDisplayRect = false;
             // canvasScale was kept from the original implementation pending investigation.
             this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left);
@@ -244,7 +243,6 @@ export default class DrawingCanvasDemo extends Vue {
         try {
             this.imageInfo = event.imageInfo;
             this.needsImageDisplayRect = true;
-            console.log('onImageLoaded', this.imageInfo.getWidth(), this.imageInfo.getHeight());
             this.updateImageDisplayRect();
         } catch (error) {
             console.error(error, error.stack);
