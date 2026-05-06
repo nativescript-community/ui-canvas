@@ -20,8 +20,7 @@ declare namespace UIDrawingText {
 }
 
 declare namespace UIDrawingShader {
-
-    export function applyBitmapShaderImageTileModeLocalMatrix(ctx: any, source: UIImage, tileMode: number, localMatrix: CGAffineTransform)
+    export function applyBitmapShaderImageTileModeLocalMatrix(ctx: any, source: UIImage, tileMode: number, localMatrix: CGAffineTransform);
 }
 
 // eslint-disable-next-line no-redeclare
@@ -227,3 +226,16 @@ declare function TransformGetRotation(t: CGAffineTransform): number;
 declare function TransformGetXScale(t: CGAffineTransform): number;
 
 declare function TransformGetYScale(t: CGAffineTransform): number;
+
+declare class StaticLayoutHelper extends NSObject {
+    getSelectionRectsTotalHeight(start: number, end: number, arg2: number);
+    getOffsetForHorizontalX(line: number, x: number): number;
+    getLineForVerticalTotalHeight(y: number, arg1: number): number;
+    getLineBaselineTotalHeight(line: number, arg1: number);
+    getLineBottomTotalHeight(line: number, arg1: number);
+    getLineTopTotalHeight(line: number, arg1: number);
+    getLineWidth(line: number): number;
+    getLineCount(): number;
+    static alloc(): StaticLayoutHelper;
+    initWithAttributedStringWidth(attributedStringToDraw: NSMutableAttributedString, width: number): StaticLayoutHelper;
+}

@@ -2382,79 +2382,52 @@ export class StaticLayout {
             this.nsAttributedString = NSAttributedString.alloc().initWithString(text + '');
         }
     }
-    createAttributedStringToDraw(canvas?) {
-        if (this.mToDraw) {
-            return;
-        }
+    createAttributedStringToDraw(canvas?) {}
 
-        const nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
+    get attributedStringToDraw() {
+        if (!this.mToDraw) {
+            const nsAttributedString: NSMutableAttributedString = NSMutableAttributedString.alloc().initWithStringAttributes(this.nsAttributedString.string, this.paint.getDrawTextAttribs());
 
-        const paragraphStyle = NSMutableParagraphStyle.alloc().init();
-        switch (this.align) {
-            case LayoutAlignment.ALIGN_CENTER:
-                paragraphStyle.alignment = NSTextAlignment.Center;
-                break;
-            case LayoutAlignment.ALIGN_NORMAL:
-                paragraphStyle.alignment = NSTextAlignment.Left;
-                break;
-            case LayoutAlignment.ALIGN_OPPOSITE:
-                paragraphStyle.alignment = NSTextAlignment.Right;
-                break;
-        }
-
-        if (this.ellipsize) {
-            // for now we only support end because we cant get NSLineBreakStrategy.Standard to work with
-            // others
-            // paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.ellipsize);
-            paragraphStyle.lineBreakStrategy = NSLineBreakStrategy.Standard;
-        }
-        const fullRange = { location: 0, length: nsAttributedString.length };
-        this.mToDraw = nsAttributedString;
-        this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0 as any, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
-            // if we find fontSizeNotSet we apply the font size of the paint
-            if (attributes.objectForKey('fontSizeNotSet') && attributes.objectForKey('NSFont')) {
-                const realAttributes = NSMutableDictionary.dictionaryWithDictionary(attributes);
-                const font = realAttributes.objectForKey('NSFont');
-                realAttributes.setObjectForKey(font.fontWithSize(this.paint.textSize), 'NSFont');
-                nsAttributedString.addAttributesRange(realAttributes, range);
-            } else {
-                nsAttributedString.addAttributesRange(attributes, range);
+            const paragraphStyle = NSMutableParagraphStyle.alloc().init();
+            switch (this.align) {
+                case LayoutAlignment.ALIGN_CENTER:
+                    paragraphStyle.alignment = NSTextAlignment.Center;
+                    break;
+                case LayoutAlignment.ALIGN_NORMAL:
+                    paragraphStyle.alignment = NSTextAlignment.Left;
+                    break;
+                case LayoutAlignment.ALIGN_OPPOSITE:
+                    paragraphStyle.alignment = NSTextAlignment.Right;
+                    break;
             }
-        });
-        nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
+
+            if (this.ellipsize) {
+                // for now we only support end because we cant get NSLineBreakStrategy.Standard to work with
+                // others
+                // paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.ellipsize);
+                paragraphStyle.lineBreakStrategy = NSLineBreakStrategy.Standard;
+            }
+            const fullRange = { location: 0, length: nsAttributedString.length };
+            this.mToDraw = nsAttributedString;
+            this.nsAttributedString.enumerateAttributesInRangeOptionsUsingBlock(fullRange, 0 as any, (attributes: NSDictionary<string, any>, range: NSRange, p3: any) => {
+                // if we find fontSizeNotSet we apply the font size of the paint
+                if (attributes.objectForKey('fontSizeNotSet') && attributes.objectForKey('NSFont')) {
+                    const realAttributes = NSMutableDictionary.dictionaryWithDictionary(attributes);
+                    const font = realAttributes.objectForKey('NSFont');
+                    realAttributes.setObjectForKey(font.fontWithSize(this.paint.textSize), 'NSFont');
+                    nsAttributedString.addAttributesRange(realAttributes, range);
+                } else {
+                    nsAttributedString.addAttributesRange(attributes, range);
+                }
+            });
+            nsAttributedString.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, fullRange);
+        }
+        return this.mToDraw;
     }
     draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
         const paint = this.paint;
         canvas.startApplyPaint(paint);
         const ctx = canvas.ctx;
-        this.createAttributedStringToDraw(canvas);
-        // const attributes = this.paint.getDrawTextAttribs();
-        // if (this.align || this.ellipsize) {
-        //     let paragraphStyle = attributes.objectForKey(NSParagraphStyleAttributeName) as NSMutableParagraphStyle;
-        //     if (!paragraphStyle) {
-        //         paragraphStyle = NSMutableParagraphStyle.alloc().init();
-        //         attributes.setObjectForKey(paragraphStyle, NSParagraphStyleAttributeName);
-        //     }
-        //     switch (this.align) {
-        //         case LayoutAlignment.ALIGN_CENTER:
-        //             paragraphStyle.alignment = NSTextAlignment.Center;
-        //             break;
-        //         case LayoutAlignment.ALIGN_NORMAL:
-        //             paragraphStyle.alignment = NSTextAlignment.Left;
-        //             break;
-        //         case LayoutAlignment.ALIGN_OPPOSITE:
-        //             paragraphStyle.alignment = NSTextAlignment.Right;
-        //             break;
-        //     }
-        //     if (this.ellipsize) {
-        //         paragraphStyle.lineBreakMode = lineBreakToLineBreakMode(this.ellipsize);
-        //     }
-        // }
-        // console.log('this.nsAttributedString', this.nsAttributedString);
-        // console.log('attributes', attributes);
-        // UIGraphicsPushContext(ctx);
-        // UIDrawingText.drawAttributedStringXYWidthHeightWithAttributes(this.nsAttributedString, 0, 0, this.width, maxHeight, attributes);
-
         UIGraphicsPushContext(ctx);
         if (paint.align !== Align.LEFT) {
             let offsetx = 0;
@@ -2466,7 +2439,7 @@ export class StaticLayout {
             }
             CGContextTranslateCTM(ctx, offsetx, 0);
         }
-        this.mToDraw.drawWithRectOptionsContext(
+        this.attributedStringToDraw.drawWithRectOptionsContext(
             CGRectMake(0, 0, this.width, Math.min(maxHeight, this.height || Number.MAX_VALUE)),
             NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
             null
@@ -2483,8 +2456,7 @@ export class StaticLayout {
     }
     getBounds() {
         if (!this.rect) {
-            this.createAttributedStringToDraw();
-            this.rect = this.mToDraw.boundingRectWithSizeOptionsContext(CGSizeMake(this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
+            this.rect = this.attributedStringToDraw.boundingRectWithSizeOptionsContext(CGSizeMake(this.width, Number.MAX_VALUE), NSStringDrawingOptions.UsesLineFragmentOrigin, null);
         }
         return this.rect;
     }
@@ -2500,16 +2472,6 @@ export class StaticLayout {
         }
         return result;
     }
-    getLineWidth(lineNumber: number) {
-        // TODO: actually find line used width
-        let result = this.getBounds().size.width;
-        if (isNaN(result)) {
-            result = this.width;
-        } else {
-            result = Math.min(result, this.width);
-        }
-        return result;
-    }
     getHeight() {
         const result = this.getBounds().size.height;
         return result;
@@ -2518,5 +2480,45 @@ export class StaticLayout {
     getActualWidth() {
         const result = this.getBounds().size.width;
         return result;
+    }
+    private _iosHelper: StaticLayoutHelper;
+
+    get iosHelper() {
+        if (!this._iosHelper) {
+            this._iosHelper = StaticLayoutHelper.alloc().initWithAttributedStringWidth(this.attributedStringToDraw, this.width);
+        }
+        return this._iosHelper;
+    }
+
+    getLineCount(): number {
+        return this.iosHelper.getLineCount();
+    }
+
+    getLineWidth(line: number) {
+        return Math.min(this.iosHelper.getLineWidth(line), this.width);
+    }
+
+    getLineTop(line: number) {
+        return this.iosHelper.getLineTopTotalHeight(line, this.getHeight());
+    }
+
+    getLineBottom(line: number) {
+        return this.iosHelper.getLineBottomTotalHeight(line, this.getHeight());
+    }
+
+    getLineBaseline(line: number) {
+        return this.iosHelper.getLineBaselineTotalHeight(line, this.getHeight());
+    }
+
+    getLineForVertical(y: number): number {
+        return this.iosHelper.getLineForVerticalTotalHeight(y, this.getHeight());
+    }
+
+    getOffsetForHorizontal(line: number, x: number): number {
+        return this.iosHelper.getOffsetForHorizontalX(line, x);
+    }
+
+    getSelectionRects(start: number, end: number) {
+        return this.iosHelper.getSelectionRectsTotalHeight(start, end, this.getHeight());
     }
 }
