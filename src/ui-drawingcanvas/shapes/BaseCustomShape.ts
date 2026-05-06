@@ -51,8 +51,6 @@ export default abstract class BaseCustomShape extends DrawableShape {
     }
 
     draw(canvas: Canvas): void {
-        this.applyPaint(false);
-
         canvas.save();
 
         // Apply translation

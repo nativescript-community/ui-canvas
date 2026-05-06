@@ -390,9 +390,9 @@ export class DrawingCanvas extends CanvasView {
         // Draw all committed layers
         for (const shape of this.layers) {
             if (!shape.visible) continue;
-            // if (this._editingTextShape && this._editingTextShape.id === shape.id) {
-            //     continue;
-            // }
+            if (this._editingTextShape && this._editingTextShape.id === shape.id) {
+                continue;
+            }
             canvas.save();
             if (shape.rotation !== 0) {
                 const b = shape.getBounds();
@@ -558,14 +558,13 @@ export class DrawingCanvas extends CanvasView {
 
         if (!tf.parent) {
             this.addChild(tf);
-            // disable scroll container
             if (__ANDROID__) {
+                // disable scroll container
                 tf.nativeTextViewProtected.setVerticalScrollBarEnabled(false);
-                tf.nativeTextViewProtected.setMovementMethod(null);
                 tf.nativeTextViewProtected.setScrollContainer(false);
             } else if (__IOS__) {
                 // fix for UITextView still getting a small padding
-                tf.nativeTextViewProtected.textContainer.lineFragmentPadding = 0
+                tf.nativeTextViewProtected.textContainer.lineFragmentPadding = 0;
             }
         }
 
@@ -740,31 +739,30 @@ export class DrawingCanvas extends CanvasView {
             if (wPx <= 0 || hPx <= 0) return null;
 
             // Create an off-screen ImageSource and a Canvas backed by it
-            const offCanvas = new Canvas(wPx, hPx);
-            offCanvas.drawColor('#ff0000');
+            const canvas = new Canvas(wPx, hPx);
             if (backgroundImageSource) {
-                offCanvas.drawBitmap(backgroundImageSource, new Rect(0, 0, backgroundImageSource.width, backgroundImageSource.height), new Rect(0, 0, wPx, hPx), new Paint());
+                canvas.drawBitmap(backgroundImageSource, new Rect(0, 0, backgroundImageSource.width, backgroundImageSource.height), new Rect(0, 0, wPx, hPx), new Paint());
             }
             // Scale from dp to px, then offset so the image-rect origin maps to (0,0)
-            offCanvas.scale(scale, scale);
+            canvas.scale(scale, scale);
             // offCanvas.translate(-rect.left, -rect.top);
 
             // Draw all visible layers
             for (const shape of this.layers) {
                 if (!shape.visible) continue;
-                offCanvas.save();
+                canvas.save();
                 if (shape.rotation !== 0) {
                     const b = shape.getBounds();
                     const cx = (b.left + b.right) / 2;
                     const cy = (b.top + b.bottom) / 2;
-                    offCanvas.rotate(shape.rotation, cx, cy);
+                    canvas.rotate(shape.rotation, cx, cy);
                 }
-                shape.draw(offCanvas);
-                offCanvas.restore();
+                shape.draw(canvas, this._currentDisplayScale);
+                canvas.restore();
             }
 
-            const image = offCanvas.getImage();
-            offCanvas.release();
+            const image = canvas.getImage();
+            // offCanvas.release();
             return new ImageSource(image);
         } catch (err) {
             console.error('DrawingCanvas.exportImage failed:', err);

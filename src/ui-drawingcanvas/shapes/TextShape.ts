@@ -1,4 +1,4 @@
-import { Canvas, LayoutAlignment, StaticLayout } from '@nativescript-community/ui-canvas';
+import { Canvas, LayoutAlignment, StaticLayout, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
@@ -61,7 +61,7 @@ export default class TextShape extends DrawableShape {
             // fix for UITextView vs NSAttributedString != kernel
             paint.letterSpacing = 0.035;
         }
-        // paint.setStyle(Style.FILL);
+        paint.setStyle(Style.FILL);
         paint.setColor(this.strokeColor ?? new Color('#000000'));
         if (this.opacity !== 1) {
             paint.setAlpha(Math.round(this.opacity * 255));
@@ -80,6 +80,7 @@ export default class TextShape extends DrawableShape {
     }
 
     draw(canvas: Canvas, displayScale?: number): void {
+        console.log('draw text', this.text);
         if (!this.text) return;
         this.applyPaint(false);
         const b = this.getBounds();

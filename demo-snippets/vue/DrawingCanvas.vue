@@ -25,7 +25,15 @@
             <!-- ── Drawing surface: ZoomImage + DrawingCanvas overlay ── -->
             <GridLayout row="2" rows="*" columns="*">
                 <!-- Background zoomable image -->
-                <NSZoomImg ref="zoomImg" src="~/assets/images/test.jpg" maxZoom="10" stretch="aspectFit" @transformChanged="onImageViewTransform" @finalImageSet="onImageLoaded" />
+                <NSZoomImg
+                    ref="zoomImg"
+                    src="~/assets/images/test.jpg"
+                    maxZoom="10"
+                    stretch="aspectFit"
+                    @transformChanged="onImageViewTransform"
+                    @finalImageSet="onImageLoaded"
+                    @layoutChanged="onLayoutChanged"
+                />
 
                 <!-- Drawing canvas overlaid on top -->
                 <DrawingCanvas
@@ -198,7 +206,7 @@ export default class DrawingCanvasDemo extends Vue {
 
         const imageBounds = new RectF(0, 0, imageWidth, imageHeight);
         const viewBounds = new Rect(0, 0, draweeView.getWidth(), draweeView.getHeight());
-
+        console.log('getImageDisplayRect', imageBounds, viewBounds, scaleType);
         // Calculate the matrix that the ScaleType applies
         scaleType.getTransform(
             this.scaleTypeMatrix,
@@ -212,15 +220,32 @@ export default class DrawingCanvasDemo extends Vue {
         this.scaleTypeMatrix.mapRect(imageBounds);
         return imageBounds;
     }
-    onImageLoaded(event) {
-        try {
-            this.imageInfo = event.imageInfo;
-            console.log('onImageLoaded', this.imageInfo.getWidth(), this.imageInfo.getHeight());
-            const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
+    updateImageDisplayRect() {
+        const imageView = this.imageView.nativeViewProtected;
+        if (!imageView || imageView.getWidth() === 0) {
+            return;
+        }
+        const rect = this.getImageDisplayRect(imageView, this.imageInfo);
+        if (rect) {
             console.log('getImageDisplayRect', rect);
+            this.needsImageDisplayRect = false;
             // canvasScale was kept from the original implementation pending investigation.
             this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left);
             this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top);
+        }
+    }
+    needsImageDisplayRect = true;
+    onLayoutChanged(event) {
+        if (this.needsImageDisplayRect && this.imageInfo) {
+            this.updateImageDisplayRect();
+        }
+    }
+    onImageLoaded(event) {
+        try {
+            this.imageInfo = event.imageInfo;
+            this.needsImageDisplayRect = true;
+            console.log('onImageLoaded', this.imageInfo.getWidth(), this.imageInfo.getHeight());
+            this.updateImageDisplayRect();
         } catch (error) {
             console.error(error, error.stack);
         }
