@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-drawingcanvas",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Interactive drawing canvas plugin for NativeScript – draw shapes, images and freehand paths with multiple modes, layers, undo/redo and JSON serialization.",
     "main": "./index",
     "sideEffects": false,
@@ -44,6 +44,6 @@
         "access": "public"
     },
     "dependencies": {
-        "@nativescript-community/ui-canvas": "^4.6.49"
+        "@nativescript-community/ui-canvas": "^4.6.50"
     }
 }

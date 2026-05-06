@@ -1,6 +1,6 @@
 {
     "name": "@nativescript-community/ui-svg",
-    "version": "0.2.21",
+    "version": "0.2.22",
     "description": "Adds support for SVGs in your NativeScript apps.",
     "main": "./index",
     "sideEffects": false,
@@ -39,7 +39,7 @@
         "url": "https://github.com/nativescript-community/ui-canvas/issues"
     },
     "dependencies": {
-        "@nativescript-community/ui-canvas": "^4.6.49"
+        "@nativescript-community/ui-canvas": "^4.6.50"
     },
     "gitHead": "6dc5e24339bbc329a239584e71c1cc30de9cedd4"
 }
