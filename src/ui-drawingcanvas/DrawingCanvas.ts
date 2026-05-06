@@ -177,6 +177,13 @@ export class DrawingCanvas extends CanvasView {
         selectMode.setSelectedShape(shape);
         this.redraw();
     }
+    getSelectedShape() {
+        if (this._mode.name !== 'select') {
+            return null;
+        }
+        const selectMode = this._modes.get('select') as SelectMode;
+        return selectMode.selectedShape;
+    }
 
     /** Add a shape to the top of the layer stack */
     addLayer(shape: DrawableShape): void {
@@ -512,6 +519,12 @@ export class DrawingCanvas extends CanvasView {
         shape.drawSelectionOverlay(canvas, this.handleSize, this._currentDisplayScale);
     }
 
+    get editingTextShape() {
+        return this._editingTextShape;
+    }
+    get editingTextField() {
+        return this._getOrCreateTextField();
+    }
     /**
      * Open the shared TextField over the given TextShape so the user can type.
      * If the same shape is already being edited, the TextField is just repositioned
@@ -538,6 +551,7 @@ export class DrawingCanvas extends CanvasView {
         // NOTE: undo snapshot is pushed in endTextEdit only if text actually changed.
 
         const tf = this._getOrCreateTextField();
+        tf.color = shape.strokeColor;
         tf.text = shape.text;
 
         // Position over the shape's bounds (in screen dp, accounting for zoom)
@@ -713,7 +727,7 @@ export class DrawingCanvas extends CanvasView {
     // -----------------------------------------------------------------------
 
     /**
-     * Export the current canvas layers as an off-screen bitmap.
+     * TODO: work in progress , just for testing. Export the current canvas layers as an off-screen bitmap.
      *
      * @param targetWidthDp  - width of the output image in dp (defaults to the DrawingCanvas width)
      * @param targetHeightDp - height of the output image in dp (defaults to the DrawingCanvas height)
@@ -723,7 +737,6 @@ export class DrawingCanvas extends CanvasView {
      */
     exportImage(targetWidthDp: number, targetHeightDp: number, rect: RectF, backgroundImageSource?: ImageSource): ImageSource | null {
         try {
-            const density = Utils.layout.getDisplayDensity();
             const wDp = targetWidthDp ?? Utils.layout.toDeviceIndependentPixels(this.getMeasuredWidth());
             const hDp = targetHeightDp ?? Utils.layout.toDeviceIndependentPixels(this.getMeasuredHeight());
             const wPx = Utils.layout.toDevicePixels(wDp);

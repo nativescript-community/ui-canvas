@@ -42,13 +42,11 @@ export default class SelectMode extends DrawingMode {
         if (this._activeShape) {
             const handle = this._hitTestHandle(this._activeShape, point);
             if (handle) {
-                this.canvas.pushUndoSnapshot();
                 this._startTransform(handle, point);
                 return;
             }
             // Check if we tapped on the shape body for move
             if (this._activeShape.hitTest(point.x, point.y)) {
-                this.canvas.pushUndoSnapshot();
                 this._action = {
                     start: true,
                     kind: 'move',
@@ -393,11 +391,11 @@ export default class SelectMode extends DrawingMode {
         this._activeShape.rotation = origRotation + delta;
     }
     onSnapShotRestored() {
-        this.setSelectedShape(null);
+        this.deactivate();
     }
     onLayerRemoved(shape: DrawableShape, index: number) {
         if (shape.id === this._activeShape?.id) {
-            this.setSelectedShape(null);
+            this.deactivate();
         }
     }
 }
