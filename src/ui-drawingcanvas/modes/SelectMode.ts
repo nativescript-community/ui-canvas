@@ -44,13 +44,11 @@ export default class SelectMode extends DrawingMode {
         if (this._activeShape) {
             const handle = this._hitTestHandle(this._activeShape, point);
             if (handle) {
-                this.canvas.pushUndoSnapshot();
                 this._startTransform(handle, point);
                 return;
             }
             // Check if we tapped on the shape body for move
             if (this._activeShape.hitTest(point.x, point.y)) {
-                this.canvas.pushUndoSnapshot();
                 this._action = {
                     start: true,
                     kind: 'move',
@@ -190,29 +188,54 @@ export default class SelectMode extends DrawingMode {
                 origRotation: shape.rotation
             };
         } else {
-            const x0 = b.left, y0 = b.top, w0 = b.right - b.left, h0 = b.bottom - b.top;
-            const right = x0 + w0, bottom = y0 + h0;
+            const x0 = b.left,
+                y0 = b.top,
+                w0 = b.right - b.left,
+                h0 = b.bottom - b.top;
+            const right = x0 + w0,
+                bottom = y0 + h0;
 
             // The fixed anchor is the handle OPPOSITE to the one being dragged.
             // Its canvas-space position (before rotation):
             let alx: number, aly: number;
             switch (handle.type) {
-                case 'ml': alx = right;      aly = y0 + h0 / 2; break; // right-mid
-                case 'mr': alx = x0;         aly = y0 + h0 / 2; break; // left-mid
-                case 'tm': alx = x0 + w0 / 2; aly = bottom;     break; // bottom-mid
-                case 'bm': alx = x0 + w0 / 2; aly = y0;         break; // top-mid
-                case 'tl': alx = right;      aly = bottom;       break; // bottom-right
-                case 'tr': alx = x0;         aly = bottom;       break; // bottom-left
-                case 'bl': alx = right;      aly = y0;           break; // top-right
-                default:   alx = x0;         aly = y0;           break; // br → top-left
+                case 'ml':
+                    alx = right;
+                    aly = y0 + h0 / 2;
+                    break; // right-mid
+                case 'mr':
+                    alx = x0;
+                    aly = y0 + h0 / 2;
+                    break; // left-mid
+                case 'tm':
+                    alx = x0 + w0 / 2;
+                    aly = bottom;
+                    break; // bottom-mid
+                case 'bm':
+                    alx = x0 + w0 / 2;
+                    aly = y0;
+                    break; // top-mid
+                case 'tl':
+                    alx = right;
+                    aly = bottom;
+                    break; // bottom-right
+                case 'tr':
+                    alx = x0;
+                    aly = bottom;
+                    break; // bottom-left
+                case 'bl':
+                    alx = right;
+                    aly = y0;
+                    break; // top-right
+                default:
+                    alx = x0;
+                    aly = y0;
+                    break; // br → top-left
             }
 
             // Compute the world-space position of the fixed anchor once.
             // (rotation is applied around the AABB centre in onDraw)
-            const anchorWorld =
-                shape.rotation !== 0
-                    ? DrawableShape.rotatePoint(alx, aly, cx, cy, shape.rotation)
-                    : { x: alx, y: aly };
+            const anchorWorld = shape.rotation !== 0 ? DrawableShape.rotatePoint(alx, aly, cx, cy, shape.rotation) : { x: alx, y: aly };
 
             this._action = {
                 start: true,
@@ -231,8 +254,10 @@ export default class SelectMode extends DrawingMode {
 
         const rotationDeg = shape.rotation; // degrees, constant throughout this resize gesture
         const { x: x0, y: y0, w: w0, h: h0 } = origBounds;
-        const right = x0 + w0, bottom = y0 + h0;
-        const cx0 = x0 + w0 / 2, cy0 = y0 + h0 / 2;
+        const right = x0 + w0,
+            bottom = y0 + h0;
+        const cx0 = x0 + w0 / 2,
+            cy0 = y0 + h0 / 2;
 
         // Un-rotate the touch point to the shape's local (unrotated) space so the
         // resize math is axis-aligned — we always use the ORIGINAL centre as pivot.
@@ -244,14 +269,38 @@ export default class SelectMode extends DrawingMode {
         // Compute new dimensions from the un-rotated touch position.
         let wn: number, hn: number;
         switch (handle.type) {
-            case 'tl': wn = right - lp.x; hn = bottom - lp.y; break;
-            case 'tm': wn = w0;            hn = bottom - lp.y; break;
-            case 'tr': wn = lp.x - x0;    hn = bottom - lp.y; break;
-            case 'ml': wn = right - lp.x; hn = h0;            break;
-            case 'mr': wn = lp.x - x0;    hn = h0;            break;
-            case 'bl': wn = right - lp.x; hn = lp.y - y0;    break;
-            case 'bm': wn = w0;            hn = lp.y - y0;    break;
-            default:   wn = lp.x - x0;    hn = lp.y - y0;    break; // 'br'
+            case 'tl':
+                wn = right - lp.x;
+                hn = bottom - lp.y;
+                break;
+            case 'tm':
+                wn = w0;
+                hn = bottom - lp.y;
+                break;
+            case 'tr':
+                wn = lp.x - x0;
+                hn = bottom - lp.y;
+                break;
+            case 'ml':
+                wn = right - lp.x;
+                hn = h0;
+                break;
+            case 'mr':
+                wn = lp.x - x0;
+                hn = h0;
+                break;
+            case 'bl':
+                wn = right - lp.x;
+                hn = lp.y - y0;
+                break;
+            case 'bm':
+                wn = w0;
+                hn = lp.y - y0;
+                break;
+            default:
+                wn = lp.x - x0;
+                hn = lp.y - y0;
+                break; // 'br'
         }
 
         wn = Math.max(MIN_SHAPE_SIZE, wn);
@@ -285,14 +334,38 @@ export default class SelectMode extends DrawingMode {
         // -----------------------------------------------------------------------
         let arx: number, ary: number; // anchor relative to new centre (local space)
         switch (handle.type) {
-            case 'ml': arx =  wn / 2; ary =  0;       break; // anchor = right-mid
-            case 'mr': arx = -wn / 2; ary =  0;       break; // anchor = left-mid
-            case 'tm': arx =  0;      ary =  hn / 2;  break; // anchor = bottom-mid
-            case 'bm': arx =  0;      ary = -hn / 2;  break; // anchor = top-mid
-            case 'tl': arx =  wn / 2; ary =  hn / 2;  break; // anchor = bottom-right
-            case 'tr': arx = -wn / 2; ary =  hn / 2;  break; // anchor = bottom-left
-            case 'bl': arx =  wn / 2; ary = -hn / 2;  break; // anchor = top-right
-            default:   arx = -wn / 2; ary = -hn / 2;  break; // br → anchor = top-left
+            case 'ml':
+                arx = wn / 2;
+                ary = 0;
+                break; // anchor = right-mid
+            case 'mr':
+                arx = -wn / 2;
+                ary = 0;
+                break; // anchor = left-mid
+            case 'tm':
+                arx = 0;
+                ary = hn / 2;
+                break; // anchor = bottom-mid
+            case 'bm':
+                arx = 0;
+                ary = -hn / 2;
+                break; // anchor = top-mid
+            case 'tl':
+                arx = wn / 2;
+                ary = hn / 2;
+                break; // anchor = bottom-right
+            case 'tr':
+                arx = -wn / 2;
+                ary = hn / 2;
+                break; // anchor = bottom-left
+            case 'bl':
+                arx = wn / 2;
+                ary = -hn / 2;
+                break; // anchor = top-right
+            default:
+                arx = -wn / 2;
+                ary = -hn / 2;
+                break; // br → anchor = top-left
         }
 
         const rad = (rotationDeg * Math.PI) / 180;
@@ -318,12 +391,12 @@ export default class SelectMode extends DrawingMode {
         this._activeShape.rotation = origRotation + delta;
     }
     onSnapShotRestored() {
-        this.setSelectedShape(null);
+        this.deactivate();
     }
     onLayerRemoved(shape: DrawableShape, index: number) {
         console.log('onLayerRemoved', shape.id, this._activeShape?.id);
         if (shape.id === this._activeShape?.id) {
-            this.setSelectedShape(null);
+            this.deactivate();
         }
     }
 }
