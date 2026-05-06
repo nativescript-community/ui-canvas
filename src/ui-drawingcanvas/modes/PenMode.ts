@@ -1,11 +1,9 @@
-import { Color } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
-import PenShape from '../shapes/PenShape';
-import { douglasPeucker } from '../algorithms/douglasPeucker';
+import { Color } from '@nativescript/core';
 import { catmullRomSpline } from '../algorithms/catmullRomSpline';
-import { type DrawingCanvas } from '../DrawingCanvas';
-import type { SimplificationOptions } from '../DrawingCanvas';
+import { douglasPeucker } from '../algorithms/douglasPeucker';
+import PenShape from '../shapes/PenShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 export default class PenMode extends DrawingMode {
     readonly name = 'pen';

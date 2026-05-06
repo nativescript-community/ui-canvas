@@ -1,5 +1,5 @@
+import { Canvas, LayoutAlignment, StaticLayout, Style } from '@nativescript-community/ui-canvas';
 import { Color } from '@nativescript/core';
-import { Canvas, LayoutAlignment, Paint, StaticLayout, Style } from '@nativescript-community/ui-canvas';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
 export interface TextShapeJSON {
@@ -77,7 +77,7 @@ export default class TextShape extends DrawableShape {
         const staticlayout = this.getStaticLayout(b);
         // Draw text at the left edge (width clipping is left to the canvas)
         canvas.save();
-        canvas.clipRect(b.left, b.top, b.right, b.bottom)
+        canvas.clipRect(b.left, b.top, b.right, b.bottom);
         canvas.translate(b.left, b.top);
         staticlayout.draw(canvas);
         canvas.restore();

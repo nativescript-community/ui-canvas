@@ -1,7 +1,6 @@
 import { ImageSource } from '@nativescript/core';
-import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
 import ImageShape from '../shapes/ImageShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 export default class ImageMode extends DrawingMode {
     readonly name = 'image';

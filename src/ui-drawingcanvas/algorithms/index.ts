@@ -1,2 +1,2 @@
-export { douglasPeucker } from './douglasPeucker';
 export { catmullRomSpline } from './catmullRomSpline';
+export { douglasPeucker } from './douglasPeucker';

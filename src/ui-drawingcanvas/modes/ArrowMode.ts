@@ -1,7 +1,7 @@
-import { Color } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
+import { Color } from '@nativescript/core';
 import ArrowShape from '../shapes/ArrowShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 export default class ArrowMode extends DrawingMode {
     readonly name = 'arrow';

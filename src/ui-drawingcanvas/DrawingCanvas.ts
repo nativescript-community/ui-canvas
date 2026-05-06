@@ -1,23 +1,22 @@
-import { Color, ImageSource, Observable, ObservableArray, TextField, TextView, TouchGestureEventData, Utils } from '@nativescript/core';
-import { Canvas, Matrix, Paint, Rect, RectF, createImage } from '@nativescript-community/ui-canvas';
-import { CanvasView } from '@nativescript-community/ui-canvas';
-import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
-import { DrawingMode } from './modes/DrawingMode';
-import PenMode from './modes/PenMode';
-import SelectMode from './modes/SelectMode';
-import MoveMode from './modes/MoveMode';
-import RectangleMode from './modes/RectangleMode';
-import EllipseMode from './modes/EllipseMode';
+import { Canvas, CanvasView, Matrix, Paint, Rect, RectF } from '@nativescript-community/ui-canvas';
+import { Color, ImageSource, Observable, ObservableArray, TextView, TouchGestureEventData, Utils } from '@nativescript/core';
 import ArrowMode from './modes/ArrowMode';
+import { DrawingMode } from './modes/DrawingMode';
+import EllipseMode from './modes/EllipseMode';
 import ImageMode from './modes/ImageMode';
+import MoveMode from './modes/MoveMode';
+import PenMode from './modes/PenMode';
+import RectangleMode from './modes/RectangleMode';
+import SelectMode from './modes/SelectMode';
 import TextMode from './modes/TextMode';
+import { DrawableShape, ShapeJSON } from './shapes/DrawableShape';
 
+import ArrowShape from './shapes/ArrowShape';
+import CustomShape from './shapes/CustomShape';
+import EllipseShape from './shapes/EllipseShape';
+import ImageShape from './shapes/ImageShape';
 import PenShape from './shapes/PenShape';
 import RectShape from './shapes/RectShape';
-import EllipseShape from './shapes/EllipseShape';
-import ArrowShape from './shapes/ArrowShape';
-import ImageShape from './shapes/ImageShape';
-import CustomShape from './shapes/CustomShape';
 import TextShape from './shapes/TextShape';
 
 /** Mode name type including built-in and any custom mode registered by the app */

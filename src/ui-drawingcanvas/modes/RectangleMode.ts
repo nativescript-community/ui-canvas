@@ -1,7 +1,7 @@
-import { Color } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
+import { Color } from '@nativescript/core';
 import RectShape from '../shapes/RectShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 export default class RectangleMode extends DrawingMode {
     readonly name = 'rectangle';

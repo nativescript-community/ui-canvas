@@ -1,5 +1,5 @@
-import { ImageSource } from '@nativescript/core';
 import { Canvas, Paint } from '@nativescript-community/ui-canvas';
+import { ImageSource } from '@nativescript/core';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
 export default class ImageShape extends DrawableShape {

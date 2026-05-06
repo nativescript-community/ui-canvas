@@ -1,4 +1,4 @@
-import { Canvas, Path, Style } from '@nativescript-community/ui-canvas';
+import { Canvas, Path } from '@nativescript-community/ui-canvas';
 import { BoundingBox, DrawableShape, Point } from './DrawableShape';
 
 /**
@@ -76,17 +76,10 @@ export default class CustomShape extends DrawableShape {
                     path.lineTo(cmd.args[0] + this.x, cmd.args[1] + this.y);
                     break;
                 case 'C':
-                    path.cubicTo(
-                        cmd.args[0] + this.x, cmd.args[1] + this.y,
-                        cmd.args[2] + this.x, cmd.args[3] + this.y,
-                        cmd.args[4] + this.x, cmd.args[5] + this.y
-                    );
+                    path.cubicTo(cmd.args[0] + this.x, cmd.args[1] + this.y, cmd.args[2] + this.x, cmd.args[3] + this.y, cmd.args[4] + this.x, cmd.args[5] + this.y);
                     break;
                 case 'Q':
-                    path.quadTo(
-                        cmd.args[0] + this.x, cmd.args[1] + this.y,
-                        cmd.args[2] + this.x, cmd.args[3] + this.y
-                    );
+                    path.quadTo(cmd.args[0] + this.x, cmd.args[1] + this.y, cmd.args[2] + this.x, cmd.args[3] + this.y);
                     break;
                 case 'Z':
                     path.close();

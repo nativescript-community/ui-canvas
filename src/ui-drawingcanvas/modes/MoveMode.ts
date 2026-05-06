@@ -1,4 +1,3 @@
-import { Canvas } from '@nativescript-community/ui-canvas';
 import { DrawingMode, TouchPoint } from './DrawingMode';
 
 /**

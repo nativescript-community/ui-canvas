@@ -1,6 +1,6 @@
-import { Color } from '@nativescript/core';
 import { Canvas, Paint, Path, Style } from '@nativescript-community/ui-canvas';
-import { BoundingBox, DrawableShape, Point } from './DrawableShape';
+import { Color } from '@nativescript/core';
+import { BoundingBox, DrawableShape } from './DrawableShape';
 
 export default class ArrowShape extends DrawableShape {
     /** Start point */

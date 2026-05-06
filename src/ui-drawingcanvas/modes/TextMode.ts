@@ -1,6 +1,6 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
 import TextShape from '../shapes/TextShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 /**
  * Text mode: tap anywhere to create a new TextShape at the touch position,

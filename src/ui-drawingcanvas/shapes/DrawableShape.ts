@@ -1,5 +1,5 @@
-import { Color, Observable } from '@nativescript/core';
 import { Canvas, Paint, Style } from '@nativescript-community/ui-canvas';
+import { Color, Observable } from '@nativescript/core';
 
 export interface Point {
     x: number;

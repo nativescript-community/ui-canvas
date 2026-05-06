@@ -1,4 +1,4 @@
-import { Canvas, Style } from '@nativescript-community/ui-canvas';
+import { Canvas } from '@nativescript-community/ui-canvas';
 import { BoundingBox, DrawableShape } from './DrawableShape';
 
 export default class EllipseShape extends DrawableShape {

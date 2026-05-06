@@ -1,7 +1,7 @@
-import { Color } from '@nativescript/core';
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
+import { Color } from '@nativescript/core';
 import EllipseShape from '../shapes/EllipseShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 export default class EllipseMode extends DrawingMode {
     readonly name = 'ellipse';

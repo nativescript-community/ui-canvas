@@ -1,7 +1,7 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
-import { DrawingMode, TouchPoint } from './DrawingMode';
 import { DrawableShape, HandlePoint } from '../shapes/DrawableShape';
 import TextShape from '../shapes/TextShape';
+import { DrawingMode, TouchPoint } from './DrawingMode';
 
 type TransformAction =
     | { kind: 'move'; startX: number; startY: number; origX: number; origY: number; start: boolean }
