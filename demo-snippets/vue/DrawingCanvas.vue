@@ -60,10 +60,9 @@
                         marginRight="8"
                         borderRadius="8"
                         :backgroundColor="selectedShapeId === shape.id ? '#1976D2' : '#e0e0e0'"
-                        
                     >
                         <!-- Shape type label -->
-                        <Label row="0" col="0" :text="shapeEmoji(shape.shapeType)" fontSize="28" textAlignment="center" verticalAlignment="middle" @tap="selectShapeFromList(shape)"/>
+                        <Label row="0" col="0" :text="shapeEmoji(shape.shapeType)" fontSize="28" textAlignment="center" verticalAlignment="middle" @tap="selectShapeFromList(shape)" />
                         <!-- Delete badge -->
                         <Label
                             row="0"
@@ -147,7 +146,7 @@ export default class DrawingCanvasDemo extends Vue {
     layerItems: ObservableArray<DrawableShape> = new ObservableArray();
 
     get showColorPicker(): boolean {
-        return ['pen', 'rectangle', 'ellipse', 'arrow', 'text'].includes(this.currentMode);
+        return ['pen', 'rectangle', 'ellipse', 'arrow', 'text', 'select'].includes(this.currentMode);
     }
 
     get dc(): DrawingCanvas {
@@ -226,8 +225,20 @@ export default class DrawingCanvasDemo extends Vue {
     }
 
     setColor(hex: string) {
-        this.dc.strokeColor = new Color(hex);
-        this.dc.fillColor = null;
+        if (this.currentMode === 'select' && this.selectedShapeId) {
+            const shape = this.dc.getSelectedShape();
+            if (shape) {
+                this.dc.pushUndoSnapshot();
+                shape.strokeColor = new Color(hex);
+                if (this.dc.editingTextShape) {
+                    this.dc.editingTextField.color = shape.strokeColor;
+                }
+                this.dc.redraw();
+            }
+        } else {
+            this.dc.strokeColor = new Color(hex);
+            this.dc.fillColor = null;
+        }
     }
 
     undo() {
