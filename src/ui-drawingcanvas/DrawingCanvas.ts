@@ -390,9 +390,9 @@ export class DrawingCanvas extends CanvasView {
         // Draw all committed layers
         for (const shape of this.layers) {
             if (!shape.visible) continue;
-            if (this._editingTextShape && this._editingTextShape.id === shape.id) {
-                continue;
-            }
+            // if (this._editingTextShape && this._editingTextShape.id === shape.id) {
+            //     continue;
+            // }
             canvas.save();
             if (shape.rotation !== 0) {
                 const b = shape.getBounds();
@@ -400,7 +400,7 @@ export class DrawingCanvas extends CanvasView {
                 const cy = (b.top + b.bottom) / 2;
                 canvas.rotate(shape.rotation, cx, cy);
             }
-            shape.draw(canvas);
+            shape.draw(canvas, this._currentDisplayScale);
             canvas.restore();
         }
 
@@ -563,6 +563,9 @@ export class DrawingCanvas extends CanvasView {
                 tf.nativeTextViewProtected.setVerticalScrollBarEnabled(false);
                 tf.nativeTextViewProtected.setMovementMethod(null);
                 tf.nativeTextViewProtected.setScrollContainer(false);
+            } else if (__IOS__) {
+                // fix for UITextView still getting a small padding
+                tf.nativeTextViewProtected.textContainer.lineFragmentPadding = 0
             }
         }
 
@@ -581,13 +584,9 @@ export class DrawingCanvas extends CanvasView {
         // Focus the field after a short delay so the soft keyboard has time to appear,
         // then position the cursor (Android needs the EditText to be focused first).
         setTimeout(() => {
-            try {
-                tf.focus();
-                if (touchPoint) {
-                    this._setTextCursorAtPoint(shape, touchPoint);
-                }
-            } catch (_e) {
-                /* keyboard focus failure is non-fatal */
+            tf.focus();
+            if (touchPoint) {
+                this._setTextCursorAtPoint(shape, touchPoint);
             }
         }, 100);
 

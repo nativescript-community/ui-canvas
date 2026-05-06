@@ -29,6 +29,9 @@ export default class TextShape extends DrawableShape {
     /** Text alignment */
     textAlign: 'left' | 'center' | 'right' = 'left';
 
+    insideHorizontalPadding = 0;
+    insideVerticalPadding = __IOS__ ? -0.5 : 0;
+
     get shapeType(): string {
         return 'text';
     }
@@ -54,33 +57,48 @@ export default class TextShape extends DrawableShape {
 
     getPaint() {
         const paint = this._paint;
-        paint.setAntiAlias(true);
-        paint.setStyle(Style.FILL);
+        if (__IOS__) {
+            // fix for UITextView vs NSAttributedString != kernel
+            paint.letterSpacing = 0.035;
+        }
+        // paint.setStyle(Style.FILL);
         paint.setColor(this.strokeColor ?? new Color('#000000'));
-        paint.setAlpha(Math.round(this.opacity * 255));
+        if (this.opacity !== 1) {
+            paint.setAlpha(Math.round(this.opacity * 255));
+        }
         paint.setTextSize(this.fontSize);
-        if (this.fontFamily) paint.setFontFamily(this.fontFamily);
-        // Always reset to normal before conditionally setting bold/italic
-        paint.setFontWeight(this.bold ? 'bold' : 'normal');
-        paint.setFontStyle(this.italic ? 'italic' : 'normal');
+        if (this.fontFamily) {
+            paint.setFontFamily(this.fontFamily);
+        }
+        if (this.bold) {
+            paint.setFontWeight('bold');
+        }
+        if (this.italic) {
+            paint.setFontStyle('italic');
+        }
         return paint;
     }
 
-    draw(canvas: Canvas): void {
+    draw(canvas: Canvas, displayScale?: number): void {
         if (!this.text) return;
+        this.applyPaint(false);
         const b = this.getBounds();
+
         const staticlayout = this.getStaticLayout(b);
         // Draw text at the left edge (width clipping is left to the canvas)
         canvas.save();
-        canvas.clipRect(b.left, b.top, b.right, b.bottom);
-        canvas.translate(b.left, b.top);
+        const hPadding = this.insideHorizontalPadding / displayScale;
+        const vPadding = this.insideVerticalPadding / displayScale;
+        // canvas.clipRect(b.left, b.top, b.right, b.bottom);
+        canvas.translate(b.left + hPadding, b.top + vPadding);
+
         staticlayout.draw(canvas);
         canvas.restore();
     }
 
     getStaticLayout(b: BoundingBox) {
         const paint = this.getPaint();
-        return new StaticLayout(this.text, paint, b.right - b.left, LayoutAlignment.ALIGN_NORMAL);
+        return new StaticLayout(this.text, paint, b.right - b.left - 2 * this.insideHorizontalPadding, LayoutAlignment.ALIGN_NORMAL);
     }
 
     protected toJSONData(): Record<string, any> {
@@ -111,22 +129,5 @@ export default class TextShape extends DrawableShape {
             this.applyResize(b.left, b.top, b.right - b.left, height);
             return true;
         }
-    }
-
-    /** Measure the preferred width/height for the current text + font */
-    measureSize(): { width: number; height: number } {
-        if (!this.text) return { width: 60, height: this.fontSize * DEFAULT_LINE_HEIGHT_MULTIPLIER };
-        // Reuse the shared _paint instance to avoid creating a new object on each call
-        const paint = this._paint;
-        paint.setTextSize(this.fontSize);
-        if (this.fontFamily) paint.setFontFamily(this.fontFamily);
-        paint.setFontWeight('normal');
-        paint.setFontStyle('normal');
-        if (this.bold) paint.setFontWeight('bold');
-        if (this.italic) paint.setFontStyle('italic');
-        const w = paint.measureText(this.text);
-        const fm = paint.getFontMetrics();
-        const h = fm ? fm.descent - fm.ascent : this.fontSize * DEFAULT_LINE_HEIGHT_MULTIPLIER;
-        return { width: w, height: h };
     }
 }

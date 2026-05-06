@@ -1,5 +1,5 @@
 import { Canvas, Path } from '@nativescript-community/ui-canvas';
-import BaseCustomShape from '@nativescript-community/ui-drawingcanvas/shapes/BaseCustomShape';
+import BaseCustomShape from './BaseCustomShape';
 import { BoundingBox, Point, ShapeJSON } from './DrawableShape';
 
 export interface PenShapeJSON extends ShapeJSON {

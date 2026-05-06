@@ -68,7 +68,7 @@ export abstract class DrawableShape extends Observable {
         super();
         this.id = generateId();
         this._paint = new Paint();
-        this._paint.setAntiAlias(true);
+        // this._paint.setAntiAlias(true);
     }
 
     get paint(): Paint {
@@ -76,7 +76,7 @@ export abstract class DrawableShape extends Observable {
     }
 
     /** Draw the shape on the given canvas */
-    abstract draw(canvas: Canvas): void;
+    abstract draw(canvas: Canvas, displayScale?: number): void;
 
     /** Return the untransformed bounding box (in local coordinates offset by x,y) */
     abstract getBounds(): BoundingBox;
