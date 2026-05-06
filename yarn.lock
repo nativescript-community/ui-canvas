@@ -1993,7 +1993,7 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=fda307&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=422d9c&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": "npm:6.5.95"
     "@nativescript-community/perms": "npm:2.3.6"
@@ -2012,7 +2012,7 @@ __metadata:
     string-replace-loader: "npm:^3.1.0"
     vue-class-component: "npm:7.2.6"
     vue-property-decorator: "npm:9.1.2"
-  checksum: 10/9cbcc948d4afc3f068900f6578e833e5b38e6479ad5403ff7a4fd7d09c7cf6c630eb994ad5010eae25b0ba00bbad8e1b8c899969a401cb7630df3f9c63a72aac
+  checksum: 10/dd443d09dcd8a2f5f2586c82b5355a314a1d1c0cd8441a4adffb91e6f351f4fb548dda795ed263b9bc485dc910ad88e5583169555d8abec24006a80522d4c398
   languageName: node
   linkType: hard
 
