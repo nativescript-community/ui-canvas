@@ -40,6 +40,9 @@
     },
     "license": "Apache-2.0",
     "readmeFilename": "README.md",
+    "publishConfig": {
+        "access": "public"
+    },
     "dependencies": {
         "@nativescript-community/ui-canvas": "^4.6.48"
     }
