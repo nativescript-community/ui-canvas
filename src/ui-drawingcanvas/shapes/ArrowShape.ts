@@ -1,8 +1,8 @@
 import { Canvas, Paint, Path, Style } from '@nativescript-community/ui-canvas';
+import BaseCustomShape from '@nativescript-community/ui-drawingcanvas/shapes/BaseCustomShape';
 import { Color } from '@nativescript/core';
-import { BoundingBox, DrawableShape } from './DrawableShape';
 
-export default class ArrowShape extends DrawableShape {
+export default class ArrowShape extends BaseCustomShape {
     /** Start point */
     x1: number = 0;
     y1: number = 0;
@@ -21,17 +21,17 @@ export default class ArrowShape extends DrawableShape {
         return 'arrow';
     }
 
-    getBounds(): BoundingBox {
+    _getRawBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
         const pad = Math.max(this.strokeWidth, this.arrowSize) + 2;
         return {
-            left: Math.min(this.x1, this.x2) - pad,
-            top: Math.min(this.y1, this.y2) - pad,
-            right: Math.max(this.x1, this.x2) + pad,
-            bottom: Math.max(this.y1, this.y2) + pad
+            minX: Math.min(this.x1, this.x2) - pad,
+            minY: Math.min(this.y1, this.y2) - pad,
+            maxX: Math.max(this.x1, this.x2) + pad,
+            maxY: Math.max(this.y1, this.y2) + pad
         };
     }
 
-    draw(canvas: Canvas): void {
+    _draw(canvas: Canvas): void {
         this.applyPaint(false);
         canvas.drawLine(this.x1, this.y1, this.x2, this.y2, this._paint);
 

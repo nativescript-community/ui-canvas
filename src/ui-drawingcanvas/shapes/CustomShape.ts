@@ -1,5 +1,6 @@
 import { Canvas, Path } from '@nativescript-community/ui-canvas';
-import { BoundingBox, DrawableShape, Point } from './DrawableShape';
+import BaseCustomShape from '@nativescript-community/ui-drawingcanvas/shapes/BaseCustomShape';
+import { BoundingBox, Point } from './DrawableShape';
 
 /**
  * CustomShape allows drawing arbitrary paths defined by a list of SVG-like commands.
@@ -10,7 +11,7 @@ export interface PathCommand {
     args: number[];
 }
 
-export default class CustomShape extends DrawableShape {
+export default class CustomShape extends BaseCustomShape {
     commands: PathCommand[] = [];
 
     get shapeType(): string {
@@ -22,14 +23,10 @@ export default class CustomShape extends DrawableShape {
         this._bounds = null;
     }
 
-    private _bounds: BoundingBox | null = null;
-
-    getBounds(): BoundingBox {
-        if (this._bounds) return this._bounds;
+    _getRawBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
         const pts = this._collectPoints();
         if (pts.length === 0) {
-            this._bounds = { left: this.x, top: this.y, right: this.x + this.width, bottom: this.y + this.height };
-            return this._bounds;
+            return;
         }
         let minX = pts[0].x;
         let minY = pts[0].y;
@@ -42,11 +39,10 @@ export default class CustomShape extends DrawableShape {
             if (p.y > maxY) maxY = p.y;
         }
         const pad = (this.strokeWidth ?? 2) / 2;
-        this._bounds = { left: minX - pad, top: minY - pad, right: maxX + pad, bottom: maxY + pad };
-        return this._bounds;
+        return { minX: minX - pad, minY: minY - pad, maxX: maxX + pad, maxY: maxY + pad };
     }
 
-    draw(canvas: Canvas): void {
+    _draw(canvas: Canvas): void {
         if (this.commands.length === 0) return;
         const path = this._buildPath();
 

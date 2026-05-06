@@ -47,6 +47,7 @@ export default class SelectMode extends DrawingMode {
             }
             // Check if we tapped on the shape body for move
             if (this._activeShape.hitTest(point.x, point.y)) {
+                console.log('start moving');
                 this._action = {
                     start: true,
                     kind: 'move',
