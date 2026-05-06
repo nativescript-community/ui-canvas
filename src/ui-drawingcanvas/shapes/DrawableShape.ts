@@ -82,7 +82,10 @@ export abstract class DrawableShape extends Observable {
     abstract getBounds(): BoundingBox;
 
     /** Hit-test a point (in canvas coordinates) against the shape */
-    abstract hitTest(px: number, py: number, scale?: number): boolean;
+    hitTest(px: number, py: number, scale?: number): boolean {
+        const b = this.getTransformedBounds(scale);
+        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
+    }
 
     /** The shape type identifier for JSON serialization */
     abstract get shapeType(): string;

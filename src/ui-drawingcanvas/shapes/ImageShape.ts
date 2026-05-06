@@ -21,11 +21,6 @@ export default class ImageShape extends DrawableShape {
         };
     }
 
-    hitTest(px: number, py: number): boolean {
-        const b = this.getBounds();
-        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
-    }
-
     draw(canvas: Canvas): void {
         if (!this.imageSource) return;
         const p = new Paint();

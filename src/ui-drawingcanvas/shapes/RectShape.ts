@@ -17,11 +17,6 @@ export default class RectShape extends DrawableShape {
         };
     }
 
-    hitTest(px: number, py: number): boolean {
-        const b = this.getBounds();
-        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
-    }
-
     draw(canvas: Canvas): void {
         const b = this.getBounds();
         if (this.fillColor) {

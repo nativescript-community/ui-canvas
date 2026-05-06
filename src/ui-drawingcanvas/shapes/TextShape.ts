@@ -52,11 +52,6 @@ export default class TextShape extends DrawableShape {
         };
     }
 
-    hitTest(px: number, py: number, scale?: number): boolean {
-        const b = this.getTransformedBounds(scale);
-        return px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
-    }
-
     getPaint() {
         const paint = this._paint;
         paint.setAntiAlias(true);

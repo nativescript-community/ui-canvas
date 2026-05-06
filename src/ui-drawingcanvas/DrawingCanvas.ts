@@ -90,7 +90,7 @@ export class DrawingCanvas extends CanvasView {
     simplificationOptions: SimplificationOptions = { enabled: true, epsilon: 2, smoothing: true };
 
     /** Handle hit-test radius in dp */
-    handleTouchRadius = 25;
+    handleTouchRadius = 15;
 
     /** Minimum dimension when resizing a shape in dp */
     minShapeSize = 40;
@@ -609,11 +609,7 @@ export class DrawingCanvas extends CanvasView {
             const layout = shape.getStaticLayout(b);
             const line = layout.getLineForVertical(localY);
             const offset = layout.getOffsetForHorizontal(line, localX);
-            // setSelection is an Android (EditText) API; wrapped in try-catch so it's a no-op on iOS.
-            const nativeView = (tf as any).nativeViewProtected;
-            if (nativeView?.setSelection) {
-                nativeView.setSelection(offset);
-            }
+            tf.setSelection(offset);
         } catch (_e) {
             /* Cursor positioning is non-fatal; platform may not support the API */
         }
