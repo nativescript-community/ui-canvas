@@ -34,8 +34,9 @@
                     :canvasTranslateX="canvasTranslateX"
                     :canvasTranslateY="canvasTranslateY"
                     @draw="onDraw"
-                    @selectiond="onShapeAdded"
+                    @shapeAdded="onShapeAdded"
                     @selectionChange="onSelectionChange"
+                    @modeChange="onModeChange"
                     @historyChange="onHistoryChange"
                 />
 
@@ -173,6 +174,17 @@ export default class DrawingCanvasDemo extends Vue {
         this.dc.redraw();
     }
     getImageDisplayRect(draweeView: any, imageInfo) {
+        if (__IOS__) {
+            const cgRect = draweeView.getImageDisplayRect() as CGRect;
+            const rect = new Rect(
+                Utils.layout.toDevicePixels(cgRect.origin.x),
+                Utils.layout.toDevicePixels(cgRect.origin.y),
+                Utils.layout.toDevicePixels(cgRect.origin.x + cgRect.size.width),
+                Utils.layout.toDevicePixels(cgRect.origin.y + cgRect.size.height)
+            );
+            // rect.set();
+            return rect;
+        }
         const hierarchy = draweeView.getHierarchy();
         const controller = draweeView.getZoomableController();
 
@@ -205,7 +217,7 @@ export default class DrawingCanvasDemo extends Vue {
             this.imageInfo = event.imageInfo;
             console.log('onImageLoaded', this.imageInfo.getWidth(), this.imageInfo.getHeight());
             const rect = this.getImageDisplayRect(this.imageView.nativeViewProtected, event.imageInfo);
-            // TODO: verify the correct formula for canvasTranslate here; the 4th-power of
+            console.log('getImageDisplayRect', rect);
             // canvasScale was kept from the original implementation pending investigation.
             this.canvasTranslateX = Utils.layout.toDeviceIndependentPixels(rect.left);
             this.canvasTranslateY = Utils.layout.toDeviceIndependentPixels(rect.top);
@@ -342,7 +354,9 @@ export default class DrawingCanvasDemo extends Vue {
 
     onSelectionChange(args: any) {
         this.selectedShapeId = args.shape?.id ?? null;
-        this.currentMode = 'select';
+    }
+    onModeChange(args: any) {
+        this.currentMode = args.mode;
     }
 
     onHistoryChange(args: any) {

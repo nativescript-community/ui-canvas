@@ -1,6 +1,6 @@
 import { Canvas } from '@nativescript-community/ui-canvas';
 import { type DrawingCanvas } from '../DrawingCanvas';
-import { DrawableShape } from '@nativescript-community/ui-drawingcanvas/shapes';
+import { DrawableShape } from '../shapes';
 
 export interface TouchPoint {
     x: number;

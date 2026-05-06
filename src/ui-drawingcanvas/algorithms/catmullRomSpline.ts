@@ -14,11 +14,7 @@ export function catmullRomSpline(points: Point[], segments: number = 10, alpha: 
     if (points.length === 2) return points.slice();
 
     // Extend endpoints so spline passes through first and last points
-    const pts = [
-        reflect(points[1], points[0]),
-        ...points,
-        reflect(points[points.length - 2], points[points.length - 1])
-    ];
+    const pts = [reflect(points[1], points[0]), ...points, reflect(points[points.length - 2], points[points.length - 1])];
 
     const result: Point[] = [];
 

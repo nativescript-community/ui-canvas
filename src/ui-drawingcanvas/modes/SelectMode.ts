@@ -16,11 +16,6 @@ type TransformAction =
     | { kind: 'rotate'; cx: number; cy: number; startAngle: number; origRotation: number; start: boolean }
     | null;
 
-/** Handle hit-test radius in dp */
-const HANDLE_RADIUS = 14;
-/** Minimum dimension when resizing a shape in dp */
-const MIN_SHAPE_SIZE = 2;
-
 export default class SelectMode extends DrawingMode {
     readonly name = 'select';
 
@@ -33,8 +28,11 @@ export default class SelectMode extends DrawingMode {
 
     /** Programmatically set the selected shape (used by DrawingCanvas.selectShape) */
     setSelectedShape(shape: DrawableShape | null): void {
-        this._activeShape = shape;
-        this._action = null;
+        if (this._activeShape !== shape) {
+            this._activeShape = shape;
+            this._action = null;
+            this.canvas.notify({ eventName: 'selectionChange', shape });
+        }
     }
 
     onTouchStart(point: TouchPoint): void {
@@ -151,8 +149,7 @@ export default class SelectMode extends DrawingMode {
         if (this._activeShape instanceof TextShape) {
             this.canvas.endTextEdit();
         }
-        this._activeShape = null;
-        this._action = null;
+        this.setSelectedShape(null);
     }
 
     drawOverlay(canvas: Canvas): void {
@@ -164,8 +161,9 @@ export default class SelectMode extends DrawingMode {
 
     private _hitTestHandle(shape: DrawableShape, point: TouchPoint): HandlePoint | null {
         const handles = shape.getHandles(this.canvas._currentDisplayScale);
+        const radius = this.canvas.handleTouchRadius / this.canvas._currentDisplayScale;
         for (const h of handles) {
-            if (Math.hypot(point.x - h.x, point.y - h.y) <= HANDLE_RADIUS) {
+            if (Math.hypot(point.x - h.x, point.y - h.y) <= radius) {
                 return h;
             }
         }
@@ -249,11 +247,11 @@ export default class SelectMode extends DrawingMode {
 
     private _applyResize(point: TouchPoint): void {
         if (this._action?.kind !== 'resize' || !this._activeShape) return;
-        const { handle, origBounds, anchorWorld } = this._action;
+        const { anchorWorld, handle, origBounds } = this._action;
         const shape = this._activeShape;
 
         const rotationDeg = shape.rotation; // degrees, constant throughout this resize gesture
-        const { x: x0, y: y0, w: w0, h: h0 } = origBounds;
+        const { h: h0, w: w0, x: x0, y: y0 } = origBounds;
         const right = x0 + w0,
             bottom = y0 + h0;
         const cx0 = x0 + w0 / 2,
@@ -303,8 +301,10 @@ export default class SelectMode extends DrawingMode {
                 break; // 'br'
         }
 
-        wn = Math.max(MIN_SHAPE_SIZE, wn);
-        hn = Math.max(MIN_SHAPE_SIZE, hn);
+        const minShapeSize = this.canvas.minShapeSize / this.canvas._currentDisplayScale;
+
+        wn = Math.max(minShapeSize, wn);
+        hn = Math.max(minShapeSize, hn);
 
         // Corner handles maintain aspect ratio.
         if (isCorner && h0 > 0) {
@@ -313,8 +313,8 @@ export default class SelectMode extends DrawingMode {
             } else {
                 hn = wn / origAspect;
             }
-            wn = Math.max(MIN_SHAPE_SIZE, wn);
-            hn = Math.max(MIN_SHAPE_SIZE, hn);
+            wn = Math.max(minShapeSize, wn);
+            hn = Math.max(minShapeSize, hn);
         }
 
         // -----------------------------------------------------------------------
@@ -394,7 +394,6 @@ export default class SelectMode extends DrawingMode {
         this.deactivate();
     }
     onLayerRemoved(shape: DrawableShape, index: number) {
-        console.log('onLayerRemoved', shape.id, this._activeShape?.id);
         if (shape.id === this._activeShape?.id) {
             this.deactivate();
         }

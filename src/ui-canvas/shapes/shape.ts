@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 import { Color, CoreTypes, Length, Observable, PercentLength, Utils } from '@nativescript/core';
 import { booleanConverter } from '@nativescript/core/ui/core/view-base';
 import { Canvas, CanvasView, Cap, Join, Paint, PorterDuffXfermode, Style } from '..';
@@ -100,7 +99,7 @@ function createSetter(key, options: ShapePropertyOptions) {
     };
 }
 
-function shapePropertyGenerator(target: Object, key: string | symbol, options?: ShapePropertyOptions) {
+function shapePropertyGenerator(target: object, key: string | symbol, options?: ShapePropertyOptions) {
     Object.defineProperty(target, key, {
         get: createGetter(key, options),
         set: createSetter(key, options),
@@ -224,7 +223,8 @@ export default abstract class Shape extends Observable {
     @colorProperty({
         converter: parseShadow,
         paintSetter: applyShadow
-    }) shadow: Shadow;
+    })
+    shadow: Shadow;
     @stringProperty({ nonPaintProp: true }) visibility: CoreTypes.VisibilityType = 'visible';
     @stringProperty({ nonPaintProp: true }) horizontalAlignment: CoreTypes.HorizontalAlignmentType & 'middle';
     @stringProperty({ nonPaintProp: true }) verticalAlignment: CoreTypes.VerticalAlignmentType & 'center';
