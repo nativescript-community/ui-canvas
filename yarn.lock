@@ -1993,7 +1993,7 @@ __metadata:
 
 "@nativescript-community/template-snippet@file:demo-snippets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.1
-  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=9569c7&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@nativescript-community/template-snippet@file:demo-snippets#demo-snippets::hash=5adb80&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@mdi/font": "npm:6.5.95"
     "@nativescript-community/perms": "npm:2.3.6"
@@ -2012,7 +2012,7 @@ __metadata:
     string-replace-loader: "npm:^3.1.0"
     vue-class-component: "npm:7.2.6"
     vue-property-decorator: "npm:9.1.2"
-  checksum: 10/8070ed543a209c9214d916c6a3a7fe74f1448ad1e7b6af6b38355bc752c8508497a3eb4204d5e5f92cacad0bc556e698d54f7e01f9370a53649cd15e328d8510
+  checksum: 10/61f58f06cb46868739f497d772272e8ba9d3e40a84d5087cfff4f6664f8edcc0bc55017dd7faa3f15dd9c9102c5e6c0733bda6098fb36e55abe16fbb0df46d02
   languageName: node
   linkType: hard
 
@@ -2063,7 +2063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nativescript-community/ui-canvas@npm:*, @nativescript-community/ui-canvas@npm:^4.6.50, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
+"@nativescript-community/ui-canvas@npm:*, @nativescript-community/ui-canvas@npm:^4.6.51, @nativescript-community/ui-canvas@workspace:packages/ui-canvas":
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-canvas@workspace:packages/ui-canvas"
   dependencies:
@@ -2076,7 +2076,7 @@ __metadata:
   resolution: "@nativescript-community/ui-canvaslabel@workspace:packages/ui-canvaslabel"
   dependencies:
     "@nativescript-community/text": "npm:^1.6.24"
-    "@nativescript-community/ui-canvas": "npm:^4.6.50"
+    "@nativescript-community/ui-canvas": "npm:^4.6.51"
   languageName: unknown
   linkType: soft
 
@@ -2093,7 +2093,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-drawingcanvas@workspace:packages/ui-drawingcanvas"
   dependencies:
-    "@nativescript-community/ui-canvas": "npm:^4.6.50"
+    "@nativescript-community/ui-canvas": "npm:^4.6.51"
   languageName: unknown
   linkType: soft
 
@@ -2124,7 +2124,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nativescript-community/ui-svg@workspace:packages/ui-svg"
   dependencies:
-    "@nativescript-community/ui-canvas": "npm:^4.6.50"
+    "@nativescript-community/ui-canvas": "npm:^4.6.51"
   languageName: unknown
   linkType: soft
 
