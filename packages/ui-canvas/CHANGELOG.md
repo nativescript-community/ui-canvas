@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.52](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.51...@nativescript-community/ui-canvas@4.6.52) (2026-05-12)
+
+### Bug Fixes
+
+* **ui-canvas:** ios build fix ([5e1bde6](https://github.com/nativescript-community/ui-canvas/commit/5e1bde62c30f41105a79d16c641cc3c51ba608dc))
+
 ## [4.6.51](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.50...@nativescript-community/ui-canvas@4.6.51) (2026-05-06)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
