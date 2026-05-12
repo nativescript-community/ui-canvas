@@ -152,7 +152,7 @@ class StaticLayoutHelper: NSObject {
     }
 
     // MARK: - Ellipsizing (END only)
-
+    @nonobjc
     func createEllipsizedLine(_ line: Int) -> CTLine? {
         guard line < lines.count else { return nil }
 
