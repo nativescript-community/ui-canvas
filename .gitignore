@@ -38,8 +38,6 @@ devices.js
 *.xcframework
 **/*.js.map
 src/**/*.js
-packages/**/*.js
-packages/**/*.d.ts
 bin
 build
 Pods
@@ -49,8 +47,8 @@ Pods
 /demo-snippets/**/*.aar
 *.xcuserdatad
 /packages/README.md
-packages/**/*js.map
 packages/**/*js
+packages/**/*.d.ts
 packages/typings
 packages/**/angular
 packages/**/*.ngsummary.json

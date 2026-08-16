@@ -15,8 +15,8 @@
         "build": "npm run tsc && npm run readme",
         "build.all": "npm run build",
         "readme": "readme generate -c ../../tools/readme/blueprint.json",
-        "tsc": "cpy '**/*.d.ts' '../../packages/ui-drawingcanvas' --parents --cwd=../../src/ui-drawingcanvas && tsc --build",
-        "clean": "rimraf ./*.d.ts ./*.js ./*.js.map ./*.tsbuildinfo ./*.mjs ./*.mjs.map ./shapes ./modes ./algorithms ./vue"
+        "tsc": "cpy '**/*.d.ts' '../../packages/ui-drawingcanvas' --parents --cwd=../../src/ui-drawingcanvas && tsc  --build",
+        "clean": "bin/rimraf ./*.d.ts ./*.js ./*.js.map ./*.tsbuildinfo ./*.mjs ./*.mjs.map ./angular ./svelte ./vue* ./react"
     },
     "keywords": [
         "NativeScript",
