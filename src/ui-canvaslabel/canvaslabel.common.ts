@@ -233,7 +233,10 @@ export abstract class SpanBase extends Shape {
                 SCREEN_DENSITY = Screen.mainScreen.scale;
                 FONT_SIZE_FACTOR = com.akylas.canvas.CanvasView.getFontSizeFactor(Utils.android.getApplicationContext(), 1);
             }
-            paint.textSize = fontSize;
+            if(fontSize) {
+                paint.textSize = fontSize;
+            }
+            
             cachedPaint = paintCache[cacheKey] = paint;
             paintFontCache[fontKey] = paint;
         }
