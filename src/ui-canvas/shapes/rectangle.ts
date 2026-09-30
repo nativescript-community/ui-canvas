@@ -19,8 +19,8 @@ export default class Rectangle extends Shape {
         const availableWidth = Utils.layout.toDevicePixels(canvas.getWidth());
         const availableHeight = Utils.layout.toDevicePixels(canvas.getHeight());
         const rect = createRectF(
-            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left)),
-            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top)),
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.left, 0, availableWidth)),
+            Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.top, 0, availableHeight)),
             Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.width, 0, availableWidth)),
             Utils.layout.toDeviceIndependentPixels(PercentLength.toDevicePixels(this.height, 0, availableHeight))
         );
