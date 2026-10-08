@@ -190,6 +190,7 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
     constructor(paint?: Paint) {
         super();
         if (paint) {
+            // getNative() applies any pending font update so the native typeface is copied up to date
             this.mNative = new android.graphics.Paint(paint.getNative());
             //we need to clone the typeface or it is shared
             const original = this.mNative.getTypeface();
@@ -198,6 +199,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
                 const cloned = android.graphics.Typeface.create(original, style);
                 this.mNative.setTypeface(cloned);
             }
+            // keep the font so later setFontWeight/setFontStyle/getFontFamily start from it and not from Font.default
+            this.mFontInternal = paint.mFontInternal;
+            this.handlesFont = paint.handlesFont;
         } else {
             this.mNative = new android.graphics.Paint(1); //android.graphics.Paint.ANTI_ALIAS_FLAG
         }
@@ -211,13 +215,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             }
             args[0] = createColorParam(args[0]);
         } else if (methodName === 'setTypeface') {
-            if (args[0] instanceof Font) {
-                this.mFontInternal = args[0];
-            } else {
-                this.font['_typeface'] = args[0] as android.graphics.Typeface;
-            }
-            this.mNeedsFontUpdate = true;
-            return this.mFontInternal;
+            this.setTypeface(args[0]);
+            // never return undefined or the native setTypeface would be called with the raw argument
+            return this.mFontInternal ?? null;
         } else if (methodName === 'setLetterSpacing' && sdkVersion < 21) {
             return true;
         } else if (methodName === 'getLetterSpacing' && sdkVersion < 21) {
@@ -321,7 +321,11 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             this.setFont(font);
             return this.mFontInternal;
         } else if (font) {
-            this.mFontInternal['_typeface'] = font;
+            // Font instances are shared (Font.default, fonts passed to several paints) and cache their typeface:
+            // attach the native typeface to a private copy so it does not leak into other paints
+            const fontCopy = this.font.withFontFamily(this.font.fontFamily);
+            fontCopy['_typeface'] = font;
+            this.mFontInternal = fontCopy;
         } else {
             this.mFontInternal = null;
         }

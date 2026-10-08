@@ -931,6 +931,8 @@ export class Paint implements IPaint {
     style: Style = Style.FILL;
     align: Align = Align.LEFT;
     mFont: Font;
+    // native font set through setTypeface(UIFont), takes precedence over mFont until the font family/weight/style changes
+    mUIFont: UIFont;
     strokeWidth = 0;
     strokeMiter = 0;
     strokeCap: Cap = Cap.BUT;
@@ -957,6 +959,7 @@ export class Paint implements IPaint {
             this.style = paint.style;
             this.align = paint.align;
             this.mFont = paint.mFont;
+            this.mUIFont = paint.mUIFont;
             this.strokeWidth = paint.strokeWidth;
             this.strokeMiter = paint.strokeMiter;
             this.strokeCap = paint.strokeCap;
@@ -1099,23 +1102,27 @@ export class Paint implements IPaint {
         return value;
     }
     setFont(font: Font) {
-        if (font === this.mFont) {
+        if (font === this.mFont && !this.mUIFont) {
             return;
         }
         this.mFont = font;
+        this.mUIFont = null;
         this.mTextAttribs = null;
     }
     public setTypeface(font: Font | UIFont): Font {
-        if (this.font === font) {
+        if (this.font === font && !this.mUIFont) {
             return this.mFont;
         }
         if (font instanceof Font) {
             this.setFont(font);
             return this.mFont;
         } else if (font) {
-            this.mFont['_uiFont'] = font;
+            // do not store it in mFont: Font instances are shared (Font.default, fonts passed to several paints)
+            const textSize = this.mFont?.fontSize;
+            this.mUIFont = textSize ? font.fontWithSize(textSize) : font;
         } else {
             this.mFont = null;
+            this.mUIFont = null;
         }
         this.mTextAttribs = null;
         return this.mFont;
@@ -1138,6 +1145,7 @@ export class Paint implements IPaint {
             return;
         }
         this.mFont = this.font.withFontFamily(familyName);
+        this.mUIFont = null;
         this.mTextAttribs = null;
     }
     set fontFamily(familyName: string) {
@@ -1158,6 +1166,7 @@ export class Paint implements IPaint {
     }
     setFontWeight(weight: FontWeightType) {
         this.mFont = this.font.withFontWeight(weight);
+        this.mUIFont = null;
         this.mTextAttribs = null;
     }
     set fontStyle(style: FontStyleType) {
@@ -1168,10 +1177,14 @@ export class Paint implements IPaint {
             return;
         }
         this.mFont = this.font.withFontStyle(style);
+        this.mUIFont = null;
         this.mTextAttribs = null;
     }
 
     getUIFont(): UIFont {
+        if (this.mUIFont) {
+            return this.mUIFont;
+        }
         return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
     }
     getUIColor() {
@@ -1193,6 +1206,9 @@ export class Paint implements IPaint {
             return;
         }
         this.mFont = this.font.withFontSize(textSize);
+        if (this.mUIFont && textSize) {
+            this.mUIFont = this.mUIFont.fontWithSize(textSize);
+        }
         this.mTextAttribs = null;
     }
     getLetterSpacing() {
