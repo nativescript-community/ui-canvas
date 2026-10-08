@@ -7,6 +7,7 @@ import Complex from './Complex.vue';
 import SVG from './SVG.vue';
 import CanvasLabel from './CanvasLabel.vue';
 import DrawingCanvas from './DrawingCanvas.vue';
+import FontSwitch from './FontSwitch.vue';
 import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
 import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
@@ -35,5 +36,6 @@ export const demos = [
     { name: 'Complex', path: 'Complex', component: Complex },
     { name: 'SVG', path: 'SVG', component: SVG },
     { name: 'CanvasLabel', path: 'CanvasLabel', component: CanvasLabel },
-    { name: 'DrawingCanvas', path: 'DrawingCanvas', component: DrawingCanvas }
+    { name: 'DrawingCanvas', path: 'DrawingCanvas', component: DrawingCanvas },
+    { name: 'FontSwitch', path: 'FontSwitch', component: FontSwitch }
 ];
