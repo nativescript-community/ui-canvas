@@ -1,0 +1,31 @@
+BENCH_START|ios
+BENCH|unit|empty js loop|0.006|0.006|10164297
+BENCH|unit|raw: CGContextSetAlpha (1 c call)|0.122|0.118|471130
+BENCH|unit|raw: CGContextSave+Restore (2 c calls)|0.292|0.236|249305
+BENCH|wrapper|canvas.save+restore|0.300|0.296|200522
+BENCH|wrapper|canvas.translate|0.156|0.154|378862
+BENCH|wrapper|canvas.getWidth|0.012|0.012|4945616
+BENCH|wrapper|paint.color = Color|0.208|0.206|287930
+BENCH|wrapper|paint.color = string|0.515|0.514|115298
+BENCH|wrapper|paint.setStrokeWidth|0.013|0.013|4536724
+BENCH|wrapper|drawRect(l,t,r,b,paint)|7.566|7.482|7508
+BENCH|wrapper|drawLine|17.471|17.105|3512
+BENCH|wrapper|drawCircle|12.067|11.955|4904
+BENCH|wrapper|drawText(short)|14.610|14.234|141
+BENCH|wrapper|drawRoundRect(RectF)|15.054|14.608|497
+BENCH|wrapper|drawPath(20 pts, prebuilt)|14.700|14.528|4102
+BENCH|wrapper|path build (new Path + 100 lineTo) per lineTo|0.176|0.173|3444
+BENCH|raw|raw drawRect (Begin+AddRect+DrawPath, state preset)|1.897|1.881|31083
+BENCH|raw|raw drawLine (Begin+Move+AddLine+DrawPath)|5.720|5.358|11156
+BENCH|raw|raw CGRectMake only|1.540|1.041|41360
+BENCH|raw|startApplyPaint+finishApplyPaint only|4.300|4.283|13828
+BENCH|raw|paint.getUIColor()|0.028|0.027|2141233
+BENCH|raw|paint.getUIFont()|2.834|2.771|21439
+BENCH|raw|UIGraphicsPushContext+Pop|0.223|0.221|269031
+BENCH|text|StaticLayout create (cold)|0.967|0.897|22754
+BENCH|text|StaticLayout draw (cached)|45.599|45.401|1297
+BENCH|text|StaticLayout getHeight+getWidth|0.697|0.692|105676
+BENCH|frame|chart-ish: 500 rect + 100 line + 30 text + 5 path (us per FRAME)|9166.500|9032.100|10
+BENCH|frame|dense: 2000 rect (us per FRAME)|16975.400|14817.400|10
+BENCH|frame|text heavy: 200 drawText (us per FRAME)|2827.619|2815.333|21
+BENCH_DONE

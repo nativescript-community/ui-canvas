@@ -1,0 +1,50 @@
+BENCH_START|android
+BENCH|unit|empty js loop|0.001|0.001|13173065
+BENCH|unit|raw: paint.setStrokeWidth (1 java call)|0.295|0.293|202158
+BENCH|unit|raw: canvas.save+restore (2 java calls)|0.457|0.449|131597
+BENCH|wrapper|canvas.save+restore|0.574|0.569|103826
+BENCH|wrapper|canvas.translate|0.391|0.389|150081
+BENCH|wrapper|canvas.getWidth|0.292|0.289|204514
+BENCH|wrapper|paint.color = Color|0.690|0.681|85585
+BENCH|wrapper|paint.color = string|0.769|0.765|76098
+BENCH|wrapper|paint.setStrokeWidth|0.370|0.366|160142
+BENCH|wrapper|drawRect(l,t,r,b,paint)|1.513|1.496|39316
+BENCH|wrapper|drawLine|3.944|3.919|13584
+BENCH|wrapper|drawCircle|3.259|3.247|18101
+BENCH|wrapper|drawText(short)|3.217|3.191|18709
+BENCH|wrapper|drawRoundRect(RectF)|2.316|2.289|25656
+BENCH|wrapper|drawPath(20 pts, prebuilt)|7.916|7.871|7454
+BENCH|wrapper|path build (new Path + 100 lineTo) per lineTo|0.429|0.421|1407
+BENCH|raw|raw drawRect|1.067|1.064|55720
+BENCH|raw|raw drawLine|3.442|3.426|17171
+BENCH|raw|raw drawCircle|2.819|2.797|21408
+BENCH|raw|raw drawText(short)|2.715|2.642|22319
+BENCH|raw|raw drawPath|7.362|7.337|8120
+BENCH|raw|raw getWidth|0.225|0.224|265142
+BENCH|raw|raw path build per lineTo|0.342|0.336|1751
+BENCH|forwarder|fwd drawRect|1.073|1.066|15081
+BENCH|forwarder|fwd drawLine|3.482|3.449|17253
+BENCH|forwarder|fwd drawCircle|2.795|2.773|21489
+BENCH|forwarder|fwd drawText(short)|2.688|2.645|21929
+BENCH|forwarder|fwd drawPath|7.418|7.346|8115
+BENCH|forwarder|fwd save+restore|0.455|0.449|129092
+BENCH|text|StaticLayout create (cold)|20.514|19.072|2942
+BENCH|text|StaticLayout draw (cached)|9.309|9.245|6467
+BENCH|text|StaticLayout getHeight+getWidth|0.552|0.549|105317
+BENCH|frame|chart-ish: 500 rect + 100 line + 30 text + 5 path (us per FRAME)|1257.146|1247.312|48
+BENCH|frame|dense: 2000 rect (us per FRAME)|2668.091|2632.727|22
+BENCH|frame|text heavy: 200 drawText (us per FRAME)|623.680|610.227|97
+BENCH_DONE
+BENCH|view|wrapper|dense 2000 rects (ms per FRAME in draw callback)|3.930|3.723|50
+BENCH|view|wrapper|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.387|1.292|50
+BENCH|view|raw|dense 2000 rects (ms per FRAME in draw callback)|2.933|2.784|50
+BENCH|view|raw|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.142|1.045|50
+BENCH|view|fwd|dense 2000 rects (ms per FRAME in draw callback)|3.045|2.847|50
+BENCH|view|fwd|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.085|1.039|50
+BENCH|view|wrapper|dense 2000 rects (ms per FRAME in draw callback)|3.967|3.722|50
+BENCH|view|wrapper|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.443|1.288|50
+BENCH|view|raw|dense 2000 rects (ms per FRAME in draw callback)|2.921|2.829|50
+BENCH|view|raw|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.076|0.994|50
+BENCH|view|fwd|dense 2000 rects (ms per FRAME in draw callback)|3.058|2.847|50
+BENCH|view|fwd|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|1.085|0.993|50
+BENCH_VIEW_DONE

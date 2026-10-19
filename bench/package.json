@@ -1,0 +1,19 @@
+{
+  "name": "benchapp",
+  "main": "app/app.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript-community/ui-canvas": "file:../nativescript-community-ui-canvas-4.6.53.tgz",
+    "@nativescript/core": "~9.1.0",
+    "@nativescript/theme": "^3.1.0"
+  },
+  "devDependencies": {
+    "@nativescript/android": "9.1.1",
+    "@nativescript/android-quickjs-ng": "0.0.1",
+    "@nativescript/ios": "9.1.0",
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "typescript": "~5.9.3"
+  }
+}

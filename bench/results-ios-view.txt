@@ -1,0 +1,5 @@
+BENCH|view|wrapper|dense 2000 rects (ms per FRAME in draw callback)|16.977|15.610|50
+BENCH|view|wrapper|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|4.955|4.644|50
+BENCH|view|wrapper|dense 2000 rects (ms per FRAME in draw callback)|16.878|15.105|50
+BENCH|view|wrapper|chart-ish 500r+100l+30t (ms per FRAME in draw callback)|5.059|4.765|50
+BENCH_VIEW_DONE
