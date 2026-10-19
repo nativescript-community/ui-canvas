@@ -177,6 +177,9 @@ class ProxyClass<T> {
 }
 Object.setPrototypeOf(ProxyClass.prototype, nativeMethodsResolver);
 
+const drawRectForwarder = createForwarder('drawRect');
+const drawTextForwarder = createForwarder('drawText');
+
 let FONT_SIZE_FACTOR;
 let SCREEN_DENSITY;
 class Canvas extends ProxyClass<android.graphics.Canvas> {
@@ -247,6 +250,47 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
             //     paint.setTextSize(textSize);
             //     return true;
         }
+    }
+    // The calls a frame is made of, written out with fixed parameters. The generic forwarder reads `arguments` and looks at
+    // every arg, which is all that is left between the wrapper and the raw native call (about a quarter of a frame on the
+    // interpreter-based runtimes). Any overload other than the usual one still goes through the generic forwarder.
+    save(flags?: number) {
+        return flags === undefined ? this.mNative.save() : (this.mNative as any).save(flags);
+    }
+    restore() {
+        this.mNative.restore();
+    }
+    translate(dx: number, dy: number) {
+        this.mNative.translate(dx, dy);
+    }
+    scale(sx: number, sy: number, px?: number, py?: number) {
+        if (px === undefined) {
+            this.mNative.scale(sx, sy);
+        } else {
+            this.mNative.scale(sx, sy, px, py);
+        }
+    }
+    drawRect(left: any, top: any, right?: any, bottom?: any, paint?: any) {
+        if (paint !== undefined) {
+            return this.mNative.drawRect(left, top, right, bottom, paint instanceof ProxyClass ? paint.getNative() : paint);
+        }
+        return drawRectForwarder.apply(this, arguments);
+    }
+    drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: any) {
+        return this.mNative.drawLine(startX, startY, stopX, stopY, paint instanceof ProxyClass ? paint.getNative() : paint);
+    }
+    drawCircle(cx: number, cy: number, radius: number, paint: any) {
+        return this.mNative.drawCircle(cx, cy, radius, paint instanceof ProxyClass ? paint.getNative() : paint);
+    }
+    drawText(text: any, x: any, y: any, paint?: any, extra1?: any, extra2?: any) {
+        // (text, x, y, paint): the other overloads have 6 args
+        if (paint !== undefined && extra1 === undefined && extra2 === undefined) {
+            return this.mNative.drawText(text, x, y, paint instanceof ProxyClass ? paint.getNative() : paint);
+        }
+        return drawTextForwarder.apply(this, arguments);
+    }
+    drawPath(path: any, paint: any) {
+        return this.mNative.drawPath(path instanceof ProxyClass ? path.getNative() : path, paint instanceof ProxyClass ? paint.getNative() : paint);
     }
     getImage() {
         return this.mBitmap;
