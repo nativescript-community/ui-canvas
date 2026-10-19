@@ -52,45 +52,130 @@ function drawViewOnCanvas(canvas: android.graphics.Canvas, view: View, rect?: an
     }
 }
 
+function unwrapArg(element: any) {
+    // numbers, strings and booleans are the bulk of the args: leave them first
+    if (typeof element === 'object' && element !== null) {
+        if (element instanceof ProxyClass) {
+            return element.getNative();
+        }
+        if (element.getNative) {
+            return element.getNative();
+        }
+        if (Array.isArray(element)) {
+            return arrayToNativeArray(element, false, false);
+        }
+    }
+    return element;
+}
+
+/** Forwarder for a native method that no `handleCustomMethods` branch cares about: no args array, no spread for the usual arities. */
+function createForwarder(name: string) {
+    return function (this: ProxyClass<any>) {
+        const native = this.getNative();
+        // eslint-disable-next-line prefer-rest-params
+        const args = arguments;
+        switch (args.length) {
+            case 0:
+                return native[name]();
+            case 1:
+                return native[name](unwrapArg(args[0]));
+            case 2:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]));
+            case 3:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]), unwrapArg(args[2]));
+            case 4:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]), unwrapArg(args[2]), unwrapArg(args[3]));
+            case 5:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]), unwrapArg(args[2]), unwrapArg(args[3]), unwrapArg(args[4]));
+            case 6:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]), unwrapArg(args[2]), unwrapArg(args[3]), unwrapArg(args[4]), unwrapArg(args[5]));
+            case 7:
+                return native[name](unwrapArg(args[0]), unwrapArg(args[1]), unwrapArg(args[2]), unwrapArg(args[3]), unwrapArg(args[4]), unwrapArg(args[5]), unwrapArg(args[6]));
+            default: {
+                const unwrapped = new Array(args.length);
+                for (let i = 0; i < args.length; i++) {
+                    unwrapped[i] = unwrapArg(args[i]);
+                }
+                return native[name](...unwrapped);
+            }
+        }
+    };
+}
+
+/** Forwarder for the names listed in `customMethods`: `handleCustomMethods` may rewrite the args or answer on its own. */
+function createCustomForwarder(name: string) {
+    return function (this: ProxyClass<any>) {
+        const native = this.getNative();
+        // eslint-disable-next-line prefer-rest-params
+        const args = arguments;
+        const unwrapped = new Array(args.length);
+        for (let i = 0; i < args.length; i++) {
+            unwrapped[i] = unwrapArg(args[i]);
+        }
+        const result = this.handleCustomMethods(this, native, name, unwrapped);
+        if (result !== undefined) {
+            return result;
+        }
+        return native[name](...unwrapped);
+    };
+}
+
+const hasOwn = Object.prototype.hasOwnProperty;
+
+/**
+ * The native methods of the wrapped object are exposed on the wrapper without listing them.
+ * The first time a name is read on a class and found on the native object, a real forwarder is
+ * defined on that class prototype, so every later call is a plain prototype method call.
+ * Names that are neither on the class nor on the native object are cached as `undefined` the same way.
+ * Instances are not proxied: only this object, sitting at the end of the prototype chain, is, and it
+ * is only reached for a name the class prototype does not know yet.
+ */
+const nativeMethodsResolver = new Proxy(Object.create(Object.prototype), {
+    get(target, name, receiver) {
+        // `mNative` is read raw: getNative() can be overridden (Paint applies its pending font there), and reading a
+        // prototype (receiver === class prototype) must not recurse into this trap
+        const native = typeof name === 'string' && hasOwn.call(receiver, 'mNative') ? receiver.mNative : null;
+        if (!native) {
+            return Reflect.get(target, name, receiver);
+        }
+        const methodName = name as string;
+        const ctor = receiver.constructor as typeof ProxyClass;
+        if (ctor.nonNativeMethods.indexOf(methodName) >= 0) {
+            return undefined;
+        }
+        const proto = Object.getPrototypeOf(receiver);
+        let value;
+        if (ctor.augmentedMethods.indexOf(methodName) >= 0 || typeof native[methodName] === 'function') {
+            const custom = ctor.customMethods === null || ctor.customMethods.indexOf(methodName) >= 0 || ctor.augmentedMethods.indexOf(methodName) >= 0;
+            value = custom ? createCustomForwarder(methodName) : createForwarder(methodName);
+        } else if (native[methodName]) {
+            // not something we can forward
+            return undefined;
+        }
+        // writable so that a later `this.name = x` still creates an own property
+        Object.defineProperty(proto, methodName, { value, writable: true, configurable: true, enumerable: false });
+        return value;
+    }
+});
+
 class ProxyClass<T> {
     mNative: T;
-    static augmentedMethods = [];
-    static nonNativeMethods = [];
+    static augmentedMethods: string[] = [];
+    static nonNativeMethods: string[] = [];
+    /**
+     * Names `handleCustomMethods` has a branch for (those calls go through it).
+     * Every other native method is forwarded directly. null: send every method through `handleCustomMethods`.
+     */
+    static customMethods: string[] | null = [];
     getNative() {
         return this.mNative;
     }
     setNative(nativeObj) {
         this.mNative = nativeObj;
     }
-    constructor() {
-        const proxy = new Proxy(this, this);
-        return proxy;
-    }
     handleCustomMethods(target: this, native: T, methodName: string, args: any[]): any {}
-    get(target: this, name, receiver) {
-        const native = target.getNative();
-        if (native && target.constructor['nonNativeMethods'].indexOf(name) === -1 && (target.constructor['augmentedMethods'].indexOf(name) >= 0 || native[name])) {
-            return function (...args) {
-                const methodName = name;
-                for (let index = 0; index < args.length; index++) {
-                    const element = args[index];
-                    if (element && element.getNative) {
-                        args[index] = element.getNative();
-                    } else if (Array.isArray(element)) {
-                        args[index] = arrayToNativeArray(element, false, false);
-                    }
-                }
-                const result = target.handleCustomMethods(target, native, methodName, args);
-                if (result !== undefined) {
-                    return result;
-                }
-                return native[methodName](...args);
-            };
-        } else {
-            return Reflect.get(target, name, receiver);
-        }
-    }
 }
+Object.setPrototypeOf(ProxyClass.prototype, nativeMethodsResolver);
 
 let FONT_SIZE_FACTOR;
 let SCREEN_DENSITY;
@@ -98,6 +183,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
     mBitmap: android.graphics.Bitmap;
     mShouldReleaseBitmap = false;
     static augmentedMethods = ['clear', 'drawBitmap', 'drawView'];
+    static customMethods = ['setBitmap', 'drawColor', 'drawLines', 'getWidth', 'getHeight', 'clear', 'drawBitmap', 'drawView'];
     constructor(imageOrWidth?: ImageSource | android.graphics.Bitmap | number | android.graphics.Canvas, height?: number) {
         super();
         if (imageOrWidth) {
@@ -174,6 +260,7 @@ class Canvas extends ProxyClass<android.graphics.Canvas> {
 }
 
 export class Paint extends ProxyClass<android.graphics.Paint> {
+    static customMethods = ['setColor', 'setLetterSpacing', 'getLetterSpacing', 'setShadowLayer'];
     mNative: android.graphics.Paint;
     mFontInternal: Font;
     mNeedsFontUpdate;
@@ -214,10 +301,6 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
                 return;
             }
             args[0] = createColorParam(args[0]);
-        } else if (methodName === 'setTypeface') {
-            this.setTypeface(args[0]);
-            // never return undefined or the native setTypeface would be called with the raw argument
-            return this.mFontInternal ?? null;
         } else if (methodName === 'setLetterSpacing' && sdkVersion < 21) {
             return true;
         } else if (methodName === 'getLetterSpacing' && sdkVersion < 21) {
@@ -226,7 +309,9 @@ export class Paint extends ProxyClass<android.graphics.Paint> {
             args[3] = createColorParam(args[3]);
         }
     }
-    setTextSize(size) {}
+    setTextSize(size: number) {
+        this.mNative.setTextSize(size);
+    }
     setFont(font: Font) {
         this.mFontInternal = font;
         if (this.handlesFont) {
