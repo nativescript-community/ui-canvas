@@ -19,6 +19,13 @@ declare namespace UIDrawingText {
     function measureTextFromToAttributes(text: string, start: number, end: number, attributes: NSDictionary<any, any>): number;
 }
 
+declare namespace CanvasNative {
+    // whole draw calls in one crossing, see CanvasNative.h; style: 0 fill, 1 stroke, 2 fill and stroke
+    function drawRectLeftTopRightBottomColorAlphaStyleStrokeWidthCapJoinAntiAlias(ctx: any, left: number, top: number, right: number, bottom: number, color: UIColor, alpha: number, style: number, strokeWidth: number, cap: number, join: number, antiAlias: boolean): void;
+    function drawLineStartXStartYStopXStopYColorAlphaStrokeWidthCapJoinAntiAlias(ctx: any, startX: number, startY: number, stopX: number, stopY: number, color: UIColor, alpha: number, strokeWidth: number, cap: number, join: number, antiAlias: boolean): void;
+    function drawCircleCxCyRadiusColorAlphaStyleStrokeWidthCapJoinAntiAlias(ctx: any, cx: number, cy: number, radius: number, color: UIColor, alpha: number, style: number, strokeWidth: number, cap: number, join: number, antiAlias: boolean): void;
+}
+
 declare namespace UIDrawingShader {
     export function applyBitmapShaderImageTileModeLocalMatrix(ctx: any, source: UIImage, tileMode: number, localMatrix: CGAffineTransform);
 }

@@ -82,6 +82,15 @@ function paintPropertyGenerator(target: object, key: string, descriptor: TypedPr
 
     return descriptor;
 }
+/**
+ * Whether Canvas can hand a whole draw call to CanvasNative for this paint: it covers the plain color/stroke setup only,
+ * anything with a shader, path effect, shadow or blend mode keeps going through the JS implementation.
+ */
+const hasCanvasNative = typeof CanvasNative !== 'undefined';
+function isNativeDrawable(paint: any): boolean {
+    return hasCanvasNative && paint instanceof Paint && !paint.shader && !paint.pathEffect && !paint.shadowLayer && !paint.xfermode;
+}
+
 function paint(target: any, k?, desc?: TypedPropertyDescriptor<any>): any;
 function paint(options: PaintDecoratorOptions): (target: any, k?, desc?: TypedPropertyDescriptor<any>) => any;
 function paint(...args) {
@@ -926,6 +935,14 @@ export class FontMetrics implements IFontMetrics {
     top: number;
 }
 
+let defaultUIFont: UIFont;
+function getDefaultUIFont() {
+    if (!defaultUIFont) {
+        defaultUIFont = UIFont.systemFontOfSize(UIFont.labelFontSize);
+    }
+    return defaultUIFont;
+}
+
 export class Paint implements IPaint {
     mColor: Color = new Color('black');
     style: Style = Style.FILL;
@@ -953,6 +970,8 @@ export class Paint implements IPaint {
     pathEffect: PathEffect;
     xfermode: IPorterDuffXfermode;
     mTextAttribs: NSMutableDictionary<any, any>;
+    mCachedUIFont: UIFont;
+    mCachedUIFontFor: Font;
     constructor(paint?: Paint) {
         if (paint) {
             this.mColor = paint.mColor;
@@ -1185,7 +1204,14 @@ export class Paint implements IPaint {
         if (this.mUIFont) {
             return this.mUIFont;
         }
-        return this.font.getUIFont(UIFont.systemFontOfSize(UIFont.labelFontSize));
+        // Font.getUIFont is slow (builds a descriptor and looks it up on every call) and Font is immutable:
+        // keep the result for as long as the paint holds the same Font
+        const font = this.font;
+        if (this.mCachedUIFontFor !== font) {
+            this.mCachedUIFont = font.getUIFont(getDefaultUIFont());
+            this.mCachedUIFontFor = font;
+        }
+        return this.mCachedUIFont;
     }
     getUIColor() {
         return this.mColor && (this.mColor.ios as UIColor);
@@ -1630,9 +1656,30 @@ export class Canvas implements ICanvas {
         }
         this._drawPath(paint, ctx);
     }
-    @paint
     //@ts-ignore
     drawLine(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void {
+        if (isNativeDrawable(paint)) {
+            this.needsApplyDefaultPaint = paint !== this.mPaint || this.needsApplyDefaultPaint;
+            CanvasNative.drawLineStartXStartYStopXStopYColorAlphaStrokeWidthCapJoinAntiAlias(
+                this.mCgContext,
+                startX,
+                startY,
+                stopX,
+                stopY,
+                paint.getUIColor(),
+                paint.alpha / 255,
+                paint.strokeWidth,
+                paint.strokeCap,
+                paint.strokeJoin,
+                paint.antiAlias
+            );
+            return;
+        }
+        this._drawLineJS(startX, startY, stopX, stopY, paint);
+    }
+    @paint
+    //@ts-ignore
+    _drawLineJS(startX: number, startY: number, stopX: number, stopY: number, paint: Paint): void {
         const oldStyle = paint.style;
         paint.style = Style.STROKE;
         const ctx = this.ctx;
@@ -1683,9 +1730,30 @@ export class Canvas implements ICanvas {
     concat(mat: Matrix) {
         CGContextConcatCTM(this.ctx, mat.mTransform);
     }
-    @paint
     //@ts-ignore
     drawCircle(cx: number, cy: number, radius: number, paint: Paint): void {
+        if (isNativeDrawable(paint)) {
+            this.needsApplyDefaultPaint = paint !== this.mPaint || this.needsApplyDefaultPaint;
+            CanvasNative.drawCircleCxCyRadiusColorAlphaStyleStrokeWidthCapJoinAntiAlias(
+                this.mCgContext,
+                cx,
+                cy,
+                radius,
+                paint.getUIColor(),
+                paint.alpha / 255,
+                paint.style,
+                paint.strokeWidth,
+                paint.strokeCap,
+                paint.strokeJoin,
+                paint.antiAlias
+            );
+            return;
+        }
+        this._drawCircleJS(cx, cy, radius, paint);
+    }
+    @paint
+    //@ts-ignore
+    _drawCircleJS(cx: number, cy: number, radius: number, paint: Paint): void {
         const ctx = this.ctx;
         const hR = radius / 2;
         const rect = CGRectMake(cx - radius, cy - radius, radius * 2, radius * 2);
@@ -1826,9 +1894,10 @@ export class Canvas implements ICanvas {
             const offsetY = this.mIsBitmap ? -s.dy : s.dy;
 
             CGContextSetShadowWithColor(ctx, CGSizeMake(s.dx, offsetY), s.radius, s.color.ios.CGColor);
-        } else {
-            CGContextSetShadow(ctx, CGSizeZero, 0);
         }
+        // no else: this runs between save() and restore(), so a paint without a shadow draws without one. Do not "clear" it
+        // with CGContextSetShadow(ctx, CGSizeZero, 0): that installs CoreGraphics' default shadow (black, about 1/3 alpha,
+        // no offset, no blur), which draws a faint copy of everything under it and darkens translucent colors.
         if (paint.strokeWidth) {
             CGContextSetLineWidth(ctx, paint.strokeWidth);
         }
@@ -1913,11 +1982,51 @@ export class Canvas implements ICanvas {
         this._drawPath(paint, ctx);
     }
 
+    drawRect(left?: any, top?: any, right?: any, bottom?: any, paint?: any) {
+        // eslint-disable-next-line prefer-rest-params
+        if (paint !== undefined && arguments.length === 5 && isNativeDrawable(paint) && right >= left && bottom >= top) {
+            this.needsApplyDefaultPaint = paint !== this.mPaint || this.needsApplyDefaultPaint;
+            CanvasNative.drawRectLeftTopRightBottomColorAlphaStyleStrokeWidthCapJoinAntiAlias(
+                this.mCgContext,
+                left,
+                top,
+                right,
+                bottom,
+                paint.getUIColor(),
+                paint.alpha / 255,
+                paint.style,
+                paint.strokeWidth,
+                paint.strokeCap,
+                paint.strokeJoin,
+                paint.antiAlias
+            );
+            return;
+        }
+        // eslint-disable-next-line prefer-rest-params
+        return this._drawRectJS.apply(this, arguments);
+    }
     @paint
-    drawRect(...params) {
+    _drawRectJS(...params) {
         const length = params.length;
         const paint = params[length - 1] as Paint;
         const ctx = this.ctx;
+        if (length === 5) {
+            const left = params[0];
+            const top = params[1];
+            const right = params[2];
+            const bottom = params[3];
+            if (right >= left && bottom >= top) {
+                // same subpath as CGContextAddRect, without paying to marshal a CGRect struct
+                CGContextBeginPath(ctx);
+                CGContextMoveToPoint(ctx, left, top);
+                CGContextAddLineToPoint(ctx, right, top);
+                CGContextAddLineToPoint(ctx, right, bottom);
+                CGContextAddLineToPoint(ctx, left, bottom);
+                CGContextClosePath(ctx);
+                this._drawPath(paint, ctx);
+                return;
+            }
+        }
         let rect: CGRect;
         if (length === 5) {
             rect = createCGRect(params[0], params[1], params[2], params[3]);
@@ -2374,6 +2483,34 @@ function lineBreakToLineBreakMode(value: string) {
     }
 }
 
+// attributes whose rendering through a TextKit stack is not pixel identical to drawWithRect (or that draw something else)
+const TEXTKIT_UNSUPPORTED_ATTRIBUTES = ['NSBackgroundColor', 'NSUnderline', 'NSStrikethrough', 'NSShadow', 'NSAttachment', 'NSStrokeWidth', 'NSLink'];
+// color emoji are anti-aliased slightly differently through a TextKit stack
+// with hard line breaks drawWithRect and TextKit disagree on which lines fit and where the ellipsis goes
+const LINE_BREAK_REGEX = /[\n\r\u2028\u2029]/;
+const EMOJI_REGEX = /[\u2600-\u27bf\ufe0f\u{1f000}-\u{1faff}]/u;
+
+function isTextKitCompatible(attributedString: NSAttributedString) {
+    const string = attributedString.string;
+    if (EMOJI_REGEX.test(string) || LINE_BREAK_REGEX.test(string)) {
+        return false;
+    }
+    const fullRange = { location: 0, length: attributedString.length };
+    let decorated = false;
+    for (const name of TEXTKIT_UNSUPPORTED_ATTRIBUTES) {
+        // the block is also called for the ranges that do not have the attribute (with a nil value)
+        attributedString.enumerateAttributeInRangeOptionsUsingBlock(name, fullRange, 0 as any, (value) => {
+            if (value) {
+                decorated = true;
+            }
+        });
+        if (decorated) {
+            return false;
+        }
+    }
+    return true;
+}
+
 export class StaticLayout {
     rect: CGRect;
     nsAttributedString: NSAttributedString;
@@ -2440,6 +2577,45 @@ export class StaticLayout {
         }
         return this.mToDraw;
     }
+    private mDrawCount = 0;
+    // the storage has to be kept: NSLayoutManager only holds a weak reference to its text storage, so a collected one draws nothing
+    private mTextKit: { storage: NSTextStorage; layoutManager: NSLayoutManager; container: NSTextContainer; height: number };
+    private mTextKitUnsupported = false;
+
+    /**
+     * NSAttributedString.drawWithRect lays the text out again on every call (about 85% of the cost of a draw), so a layout
+     * that is drawn several times gets a TextKit stack that lays it out once.
+     * It draws the same pixels as drawWithRect for plain text, so it is only used for that: the first draw, a text with
+     * decorations (their rendering is off by a pixel) and an unbounded height all keep using drawWithRect.
+     */
+    private getTextKit(height: number) {
+        if (this.mTextKitUnsupported || !(height < 1e9) || !(this.width > 0)) {
+            return null;
+        }
+        let textKit = this.mTextKit;
+        // a stack whose container changed size can lose the truncation ellipsis: build a new one for a new height
+        if (!textKit || textKit.height !== height) {
+            // drawn once is the common case (static labels): do not pay for a stack that would never be reused
+            if (!textKit && ++this.mDrawCount < 2) {
+                return null;
+            }
+            const attributedString = this.attributedStringToDraw;
+            if (!textKit && !isTextKitCompatible(attributedString)) {
+                this.mTextKitUnsupported = true;
+                return null;
+            }
+            const storage = NSTextStorage.alloc().initWithAttributedString(attributedString);
+            const layoutManager = NSLayoutManager.alloc().init();
+            const container = NSTextContainer.alloc().initWithSize(CGSizeMake(this.width, height));
+            container.lineFragmentPadding = 0;
+            // what NSStringDrawingTruncatesLastVisibleLine does
+            container.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
+            layoutManager.addTextContainer(container);
+            storage.addLayoutManager(layoutManager);
+            textKit = this.mTextKit = { storage, layoutManager, container, height };
+        }
+        return textKit;
+    }
     draw(canvas: Canvas, maxHeight = Number.MAX_VALUE) {
         const paint = this.paint;
         canvas.startApplyPaint(paint);
@@ -2455,11 +2631,18 @@ export class StaticLayout {
             }
             CGContextTranslateCTM(ctx, offsetx, 0);
         }
-        this.attributedStringToDraw.drawWithRectOptionsContext(
-            CGRectMake(0, 0, this.width, Math.min(maxHeight, this.height || Number.MAX_VALUE)),
-            NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
-            null
-        );
+        const height = Math.min(maxHeight, this.height || Number.MAX_VALUE);
+        const textKit = this.getTextKit(height);
+        if (textKit) {
+            const layoutManager = textKit.layoutManager;
+            layoutManager.drawGlyphsForGlyphRangeAtPoint(layoutManager.glyphRangeForTextContainer(textKit.container), CGPointMake(0, 0));
+        } else {
+            this.attributedStringToDraw.drawWithRectOptionsContext(
+                CGRectMake(0, 0, this.width, height),
+                NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesFontLeading,
+                null
+            );
+        }
         UIGraphicsPopContext();
         canvas.finishApplyPaint(paint);
     }

@@ -19,3 +19,4 @@
 #import "Drawing-Text.h"
 #import "Drawing-Util.h"
 #import "Drawing-Shader.h"
+#import "CanvasNative.h"
