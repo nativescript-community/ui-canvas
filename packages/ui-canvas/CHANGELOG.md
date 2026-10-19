@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.55](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.54...@nativescript-community/ui-canvas@4.6.55) (2026-10-19)
+
+### Performance Improvements
+
+* **ios:** draw rects, lines and circles in one native call, cache fonts and text layouts ([c185ea4](https://github.com/nativescript-community/ui-canvas/commit/c185ea4c7f909b670c5695897ec453cb1f17fc33))
+
 ## [4.6.54](https://github.com/nativescript-community/ui-canvas/compare/@nativescript-community/ui-canvas@4.6.53...@nativescript-community/ui-canvas@4.6.54) (2026-10-08)
 
 **Note:** Version bump only for package @nativescript-community/ui-canvas
