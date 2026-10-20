@@ -121,6 +121,8 @@ function createCustomForwarder(name: string) {
 }
 
 const hasOwn = Object.prototype.hasOwnProperty;
+// built from an object literal, not written as a string: apps mangle `m[A-Z]*` properties when minifying, a string would not follow
+const nativeKey = Object.keys({ mNative: true })[0];
 
 /**
  * The native methods of the wrapped object are exposed on the wrapper without listing them.
@@ -134,7 +136,7 @@ const nativeMethodsResolver = new Proxy(Object.create(Object.prototype), {
     get(target, name, receiver) {
         // `mNative` is read raw: getNative() can be overridden (Paint applies its pending font there), and reading a
         // prototype (receiver === class prototype) must not recurse into this trap
-        const native = typeof name === 'string' && hasOwn.call(receiver, 'mNative') ? receiver.mNative : null;
+        const native = typeof name === 'string' && hasOwn.call(receiver, nativeKey) ? receiver.mNative : null;
         if (!native) {
             return Reflect.get(target, name, receiver);
         }
