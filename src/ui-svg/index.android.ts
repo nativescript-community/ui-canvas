@@ -234,6 +234,7 @@ export class SVGView extends SVGViewBase {
             return;
         }
         this.nativeViewProtected.setSvg(getSVG(src));
+        this.requestLayout();
     }
 
     [srcProperty.setNative](value) {
