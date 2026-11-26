@@ -5,7 +5,7 @@
         "prepare": "npm run setup",
         "tsc": "cp src/canvas.d.ts plugin && tsc -skipLibCheck -d",
         "build.plugin": "cp README.md plugin/ && rm -f .tsbuildinfo && npm run tsc",
-        "clean": "rimraf -g 'packages/**/*.d.ts' 'packages/**/*.tsbuildinfo' 'packages/**/*.js' 'packages/**/*.mjs' 'packages/**/*.js.map' 'packages/**/*.mjs.map' 'packages/**/*.metada' 'packages/**/angular/ng-package.json'",
+        "clean": "rimraf -g 'packages/**/*.d.ts' 'packages/**/*.tsbuildinfo' 'packages/*/*.js' 'packages/*/!(platforms)/**/*.js' 'packages/**/*.mjs' 'packages/**/*.js.map' 'packages/**/*.mjs.map' 'packages/**/*.metada' 'packages/**/angular/ng-package.json'",
         "build.android": "bash src-native/android/build.sh",
         "build.ios": "bash src-native/ios/build.sh",
         "build.native": "npm run build.android && npm run build.ios",
@@ -33,7 +33,7 @@
         "start": "./node_modules/.bin/ntl -A -s 15 -o",
         "submodules": "git submodule update --init",
         "update": "node ./tools/update.js",
-        "commit_readme_doc_changes": "git add docs/** *.md ; git commit -m \"readme/doc\" ; echo \"commit readme doc done\""
+        "commit_readme_doc_changes": "git add docs *.md ; git commit -m \"readme/doc\" ; echo \"commit readme doc done\""
     },
     "devDependencies": {
         "@nativescript-community/arraybuffers": "^1.1.5",
